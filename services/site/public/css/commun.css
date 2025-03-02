@@ -1,0 +1,292 @@
+@import url("https://fonts.googleapis.com/css2?family=Agbalumo&display=swap");
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("/img/background.webp");
+  background-size: 100%;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.9);
+  margin: 0px;
+  text-align: center;
+  color: rgb(255, 255, 255);
+  font-family: Agbalumo, sans-serif;
+  overflow-x: hidden;
+}
+
+button {
+  padding: 5px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 15px;
+  font-size: 18px;
+  background-color: #fef4c3;
+  color: rgb(0, 0, 0);
+  transition: all ease-in-out 0.2s;
+}
+
+button:hover {
+  cursor: pointer;
+  transform: translate(3px, 3px);
+  box-shadow: 0 0px 10px rgb(0, 0, 0);
+}
+
+/* --------------------------------------- */
+/* --------------- en-tête --------------- */
+/* --------------------------------------- */
+
+.bandeau {
+  width: 100%;
+  height: 100px;
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 50px;
+  background-color: #222;
+  z-index: 1;
+  border-bottom: 1px solid white;
+}
+
+.bandeauHaut {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 50px;
+  text-align: center;
+}
+
+.headerdivuser {
+  width: 20%;
+  min-width: 180px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 350px;
+  padding: 5px 0px;
+}
+
+.user {
+  width: 20%;
+  max-width: 150px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: aquamarine;
+  position: fixed;
+  z-index: 1;
+}
+
+.UsernameBandeau {
+  font-size: 20px;
+  vertical-align: middle;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.userImg {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.userImg img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.logoheader {
+  height: 80%;
+  cursor: pointer;
+}
+
+.logoheader img {
+  height: 100%;
+  border-radius: 50%;
+  margin: 0;
+  margin-left: 20px;
+  object-fit: contain;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.logoheader:hover {
+  animation: float 1s ease-in-out infinite;
+}
+
+.Title {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 150px;
+  width: 80%;
+  z-index: 2;
+  text-align: left;
+  color: rgb(255, 255, 255);
+  font-family: Agbalumo, sans-serif;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  transition: all ease-in-out 0.4s;
+  padding-left: 15px;
+}
+
+#disconnect {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.DisconnectButton,
+.loginButton {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
+.sousBandeau {
+  padding-top: 130px;
+}
+
+/* --------------------------------------- */
+/* --------------- Contenu --------------- */
+/* --------------------------------------- */
+
+.body {
+  min-height: calc(100vh - 505px);
+  margin: auto;
+  margin-top: 20px;
+  padding-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#error {
+  display: none;
+  margin-top: 40px;
+  height: auto;
+  padding: 20px;
+  margin-left: 19%;
+  margin-right: 19%;
+  width: 60%;
+  background-color: #fff;
+  justify-content: center;
+  text-align: center;
+  font-size: 30px;
+  color: black;
+  border-style: solid;
+  border-color: black;
+  border-radius: 50px;
+}
+
+.no-style-link {
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+}
+
+/* --------------------------------------- */
+/* --------------- Language --------------- */
+/* --------------------------------------- */
+
+.language-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-right: 40px;
+}
+
+#lang-select {
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* -------------------------------------------- */
+/* ------------------ Footer ------------------ */
+/* -------------------------------------------- */
+
+footer {
+  background-color: #222;
+  color: white;
+  padding: 0;
+  text-align: center;
+}
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 5px;
+  border-top: 1px solid white;
+  margin-top: 50px;
+}
+.footer-section {
+  flex: 1;
+  margin: 5px;
+}
+.footer-section h4 {
+  margin-bottom: 10px;
+}
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+.footer-section ul li {
+  margin: 5px 0;
+}
+.footer-section ul li a {
+  color: white;
+  text-decoration: none;
+}
+.footer-bottom {
+  background-color: #111;
+  padding: 10px;
+}
+
+@media screen and (max-width: 1200px) {
+  .Title {
+    font-size: 36px;
+  }
+}
+
+@media screen and (max-width: 1030px) {
+  .Title {
+    font-size: 28px;
+  }
+}
+
+@media screen and (max-width: 940px) {
+  .Title {
+    font-size: 14px;
+  }
+}

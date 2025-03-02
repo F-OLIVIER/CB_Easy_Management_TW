@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head id="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="/css/index.css" type="text/css" />
+    <link rel="stylesheet" href="/css/commun.css" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" />
+    <title>E.M.GvG</title>
+  </head>
+
+
+  <!--------------------------------------------------------------------->
+  <!-------------------------- BANDEAU EN TETE -------------------------->
+  <!--------------------------------------------------------------------->
+  <header>
+    <div class="bandeau">
+      <div class="bandeauHaut">
+        <a id="logoheader" class="logoheader" href="/" title="Home / Accueil">
+          <img src="img/Logo_EMGVG.png" alt="Logo de l'application">
+        </a>
+        <p class="Title">Easy Management GvG</p>
+        <div class="language-selector">
+          <select id="lang-select">
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+          </select>
+        </div>
+        
+        <div id="user"></div>
+        <div id="headerdivuser" class="headerdivuser">
+            <div></div>
+            <div id="disconnect"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sousBandeau"></div>
+  <header>
+    <!--------------------------------------------------------------------->
+    <!------------------------- CONTENU DE LA PAGE ------------------------>
+    <!--------------------------------------------------------------------->
+  <body>
+    <div id="error"></div>
+    <div id="Container" class="body"></div>
+  </body>
+
+  <script type="module" src="/js/main.js"></script>
+
+  <!--------------------------------------------------------------------->
+  <!---------------------------- PIED DE PAGE --------------------------->
+  <!--------------------------------------------------------------------->
+  <footer id ="footer"></footer>
+</html>

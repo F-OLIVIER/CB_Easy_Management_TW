@@ -1,0 +1,1678 @@
+:root {
+  --main-background-color: rgba(0, 0, 0, 0.6);
+  --main-backgroundbutton-color: rgb(63, 85, 116);
+}
+
+/* -------------------------------------------- */
+/* ----------------- Accueil ------------------ */
+/* -------------------------------------------- */
+.containerAccueil {
+  padding: 40px;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 25px;
+  font-size: xx-large;
+  text-shadow: 1px 1px 5px black, 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.zone {
+  width: 100%;
+}
+
+.listbuttonaccueil {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  height: 65px;
+}
+
+#buttondescription,
+#buttoninvitebot {
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background-color: rgb(59, 66, 82);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 15px;
+  font-size: 18px;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#buttoninvitebot img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+#buttoninvitebot:hover,
+#buttondescription:hover {
+  background-color: #4752c4;
+  transform: scale(1.05);
+}
+
+#buttoninvitebot:active,
+#buttondescription:active {
+  transform: scale(0.95);
+}
+
+/* -------------------------------------------- */
+/* --------------- Descripiton ---------------- */
+/* -------------------------------------------- */
+.containerDescription {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 20px;
+  gap: 20px;
+}
+
+.section {
+  font-size: x-large;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--main-background-color);
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid white;
+}
+
+.commandTable {
+  width: 90%;
+  margin-bottom: 50px;
+}
+
+.commandCell {
+  min-width: 200px;
+  color: red;
+  text-align: left;
+  vertical-align: text-top;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.descCell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Style des blocs de commandes */
+.commandSection {
+  background: #2c2f33;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  width: 30%;
+  min-width: 300px;
+  text-align: center;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.commandTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  border-bottom: 2px solid #7289da;
+  padding-bottom: 5px;
+}
+
+.commandList {
+  text-align: left;
+  font-size: 16px;
+}
+
+.commandItem {
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #23272a;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.commandItem span {
+  font-weight: bold;
+  color: #7289da;
+}
+
+.commandImage {
+  margin-top: 15px;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.carouselContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-in;
+}
+
+.carouselImage {
+  max-width: 100%; /* Définit la largeur maximale */
+  max-height: 300px; /* Définit la hauteur maximale */
+  width: auto; /* Permet de conserver le ratio d'aspect */
+  height: auto;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.carouselButton {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid white;
+}
+
+.carouselButton:hover {
+  background-color: rgb(0, 38, 255);
+}
+
+.modal {
+  display: none; /* Caché par défaut */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fond sombre semi-transparent */
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-out;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 5px;
+}
+
+/* Flèches de navigation */
+.modal-prev,
+.modal-next {
+  position: absolute;
+  top: 50%;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid white;
+}
+
+.modal-prev {
+  left: 10px;
+}
+
+.modal-next {
+  right: 10px;
+}
+
+.modal-prev:hover,
+.modal-next:hover {
+  background: rgb(0, 38, 255);
+}
+
+/* -------------------------------------------- */
+/* --------------- NotConnected --------------- */
+/* -------------------------------------------- */
+
+.containerHomeNotConnected {
+  font-size: 30px;
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+.discordConnect {
+  padding: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 25px;
+  transition: all ease-in-out 0.2s;
+}
+
+.discordConnect:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid white;
+}
+
+.linkDiscord {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-family: Agbalumo, sans-serif;
+  text-shadow: 1px 1px 5px black, 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.divlink {
+  margin-bottom: 20px;
+}
+
+.discordConnect img {
+  width: 250px;
+}
+
+.discordConnect:hover {
+  cursor: pointer;
+}
+
+.divinfonotconnected {
+  margin-top: 30px;
+  padding: 15px;
+  padding-left: 25px;
+  justify-content: center;
+  color: red;
+  text-shadow: 1px 1px 5px rgba(255, 255, 255), 0 0 1em rgb(255, 255, 255), 0 0 0.2em rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 25px;
+}
+
+.divinfonotconnected p {
+  text-align: center;
+}
+
+.divinfonotconnected li {
+  text-align: left;
+  padding-left: 30px;
+}
+
+/* --------------------------------------------- */
+/* ----------------- page /home ---------------- */
+/* --------------------------------------------- */
+
+.subContainer,
+.containerhouses,
+.subcontainerAdmin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+}
+
+/* Espace House */
+.containerhouses,
+.subcontainerAdmin {
+  justify-content: center;
+  background-color: var(--main-background-color);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  border: 1px solid white;
+}
+
+.containerhouses h1 {
+  margin: 0;
+}
+
+.listhouse {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  margin: 0px 15px;
+  border-radius: 20px;
+}
+
+.house {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--main-backgroundbutton-color);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 15px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.house img {
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+  border-radius: 50%;
+}
+
+.house h2 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  align-items: center;
+}
+
+.zonetexthouse {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  flex-grow: 1;
+}
+
+.subcontainerUser {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.subcontainerUser img {
+  max-width: 50%;
+}
+
+.subcontainerUser a {
+  background-color: var(--main-background-color);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  border: 1px solid white;
+}
+
+/* space lien */
+.subcontainerOfficier {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  background-color: var(--main-background-color);
+  border-radius: 20px;
+  border: 1px solid white;
+}
+
+.subcontainerAdmin {
+  width: 100%;
+  margin-top: 30px;
+}
+
+.subcontainerOfficier a,
+.subcontainerAdmin a,
+.subcontainerUser a {
+  width: 100%;
+}
+
+.subcontainerOfficier a div,
+.subcontainerAdmin a div,
+.subcontainerUser a div {
+  width: 95%;
+  margin: 0 auto;
+  margin-bottom: 25px;
+}
+
+.titlesubcontainerOfficier,
+.titlesubcontainerAdmin {
+  font-size: 50px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  padding-bottom: 15px;
+}
+
+.buttoncharacterCard,
+.buttonCaserne,
+.buttonCreateGroup,
+.buttonAppAdmin,
+.buttonStat,
+.buttonconsulcaserne {
+  width: 100%;
+  padding-bottom: 5px;
+  font-size: 50px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  background-color: var(--main-backgroundbutton-color);
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  transition: all ease-in-out 0.2s;
+}
+
+.buttoncharacterCard:hover,
+.buttonCaserne:hover,
+.buttonCreateGroup:hover,
+.buttonAppAdmin:hover,
+.buttonStat:hover,
+.buttonconsulcaserne:hover {
+  background-color: rgb(63, 85, 116, 0.8);
+  border: 1px solid white;
+}
+
+/* --------------------------------------------- */
+/* --------------- page /caserne --------------- */
+/* --------------------------------------------- */
+
+.avertissementsavecaserne {
+  width: 80%;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  margin-bottom: 10px;
+}
+
+.caserne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.caserne img {
+  width: 200px;
+  height: 260px;
+  background-color: black;
+}
+
+.titlelistUnit {
+  width: 100%;
+  padding-bottom: 5px;
+  font-size: 50px;
+  text-align: center;
+  cursor: pointer;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.listUnit {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.listUnit select {
+  text-align: center;
+}
+
+.divInfanterie,
+.divDistant,
+.divCav {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  text-decoration: none;
+}
+
+.divInfanterie {
+  background-color: rgb(63, 85, 116, 0.9);
+}
+
+#titleInfanterie,
+#titleDistant,
+#titleCav {
+  transition: all ease-in-out 0.2s;
+}
+
+#titleInfanterie:hover {
+  border: 1px solid white;
+  border-radius: 15px;
+}
+
+.divDistant {
+  background-color: rgb(98, 35, 32, 0.9);
+}
+
+#titleDistant:hover {
+  border: 1px solid white;
+  border-radius: 15px;
+}
+
+.divCav {
+  background-color: rgb(152, 138, 85, 0.9);
+}
+
+#titleCav:hover {
+  border: 1px solid white;
+  border-radius: 15px;
+}
+
+.unit {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+}
+
+.selecctLevelCaserne,
+.selecctMaitriseCaserne {
+  width: 100%;
+}
+
+.selecctMaitriseCaserne {
+  margin-top: 8px;
+}
+
+.MAJCaserne {
+  width: 50%;
+  font-size: 20px;
+  border-radius: 20px;
+  padding: 10px;
+  color: rgb(0, 0, 0);
+  background-color: rgb(254, 244, 195);
+  cursor: pointer;
+}
+
+/* ----------------------------------------------------------- */
+/* ------------- page /creategroup et /viewgroup ------------- */
+/* ----------------------------------------------------------- */
+
+.containerGroupe {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+}
+
+.listInscripted,
+.divwhohaveunit {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.divinscripted {
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.divinscripted,
+.legendInscripted,
+.whohaveunit {
+  width: 100%;
+  background-color: var(--main-background-color);
+  border-radius: 15px;
+  text-align: center;
+  font-size: 18px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.whohaveunit {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 0px 10px 0px;
+}
+
+.whohaveunit select {
+  height: 40px;
+  margin: 5px;
+  padding: 2px;
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  background-color: white;
+  border: 2px solid white;
+  border-radius: 15px;
+  font-size: medium;
+}
+
+.selectwhohaveunit,
+.listplayerwhohaveunit {
+  width: 95%;
+}
+
+.legendInscripted {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.divlistlegend {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.legendplaced,
+.Legendconnected {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.inscripted {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+}
+
+.inscriptedtitledivuser {
+  font-size: 22px;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.divconnected,
+.divplace {
+  width: 15px;
+}
+
+.divconnected {
+  padding-left: 10px;
+}
+
+.inscriptedinfluence {
+  width: 180px;
+}
+
+.inscriptedname,
+.inscriptedclass {
+  width: calc((100% - 40px - 180px) / 2);
+}
+
+.divcreategroup {
+  width: 100%;
+}
+
+.creategroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.viewgroup {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.divgroup {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+
+.divViewGroup {
+  width: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.divnamegroup {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.namegroup {
+  font-size: 30px;
+  color: black;
+  text-shadow: 1px 1px 5px rgb(255, 255, 255), 0 0 1em rgb(255, 255, 255), 0 0 0.2em rgb(255, 255, 255);
+}
+
+.divnamegroup input {
+  margin: 15px 5px 5px 15px;
+  vertical-align: middle;
+  font-size: 16px;
+  text-align: center;
+  justify-content: center;
+  border: 2px solid rgb(0, 0, 0);
+  border-radius: 15px;
+}
+
+.divuser,
+.divuserviewgroup {
+  width: 100%;
+  min-height: 15px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.divuser,
+.divuserviewgroup {
+  border-bottom: 1px solid black;
+  box-sizing: border-box;
+}
+
+.divuser {
+  width: 100%;
+  padding: 5px;
+}
+
+.divuser:last-child,
+.divuserviewgroup:last-child {
+  border-bottom: none;
+}
+
+.divuserviewgroup {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 18px;
+}
+
+.line {
+  border-bottom: 1px black solid;
+}
+
+.divuser select {
+  width: calc((100% - 35px) / 5);
+  height: 40px;
+  margin: 5px;
+  padding: 2px;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  background-color: white;
+  border: 2px solid white;
+  border-radius: 15px;
+}
+
+.divuser select option {
+  overflow-wrap: break-word;
+}
+
+.titlename {
+  width: 18%;
+  padding-left: 20px;
+}
+
+.titleclass {
+  width: 10%;
+}
+
+.titleinfluence {
+  width: 15%;
+}
+
+.divnameunit {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.influenceplayer,
+.influenceUnit {
+  width: 40px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.viewtitlename {
+  width: 18%;
+}
+
+.viewusername {
+  width: 20%;
+}
+
+.classplayer {
+  width: 20%;
+}
+
+.viewdivlistUnit {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-left: 1px black solid;
+}
+
+.unit1,
+.unit2,
+.unit3,
+.unit4 {
+  width: calc(100% / 4);
+}
+
+.legendMaitrise,
+.titledivuser {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: var(--main-background-color);
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  border-radius: 15px;
+}
+
+.legendMaitrise {
+  width: 100%;
+  justify-content: space-around;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+.titledivuser {
+  margin-bottom: 10px;
+}
+
+.group1,
+.viewgroup1 {
+  background-color: rgb(216, 202, 130);
+}
+
+.group1 {
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.viewgroup1 {
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.viewgroup1 .consultOff {
+  background-color: #f98348;
+}
+
+.group2,
+.viewgroup2 {
+  background-color: #daf7a6;
+}
+
+.group3,
+.viewgroup3 {
+  background-color: #ff5733;
+}
+
+.group4,
+.viewgroup4 {
+  background-color: #f98348;
+}
+
+.group5,
+.viewgroup5 {
+  background-color: #f9c74f;
+}
+
+.group6,
+.viewgroup6 {
+  background-color: #90be6d;
+}
+
+.group7,
+.viewgroup7 {
+  background-color: #43aa8b;
+}
+
+.group8,
+.viewgroup8 {
+  background-color: #4d908e;
+}
+
+.group9,
+.viewgroup9 {
+  background-color: #577590;
+}
+
+.group10,
+.viewgroup10 {
+  background-color: #277da1;
+}
+
+.buttonAddGroup,
+.buttonSaveGroup,
+.buttonGroupType,
+.buttonViewGroup,
+.buttonEditGroup,
+.buttonDownloadGroup,
+.buttonDisplayInscripted,
+.buttonDisplaycreategroup,
+.buttonDisplaywhohaveunit {
+  margin-top: 20px;
+  width: 100%;
+  padding-bottom: 5px;
+  font-size: 50px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 15px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.buttonDisplayInscripted,
+.buttonDisplaycreategroup,
+.buttonViewGroup,
+.buttonEditGroup,
+.buttonDisplaywhohaveunit {
+  margin-bottom: 10px;
+  background-color: var(--main-backgroundbutton-color);
+  transition: all ease-in-out 0.2s;
+}
+
+.buttonDisplayInscripted:hover,
+.buttonDisplaycreategroup:hover,
+.buttonViewGroup:hover,
+.buttonEditGroup:hover {
+  background-color: rgb(63, 85, 116, 0.8);
+  border: 1px solid white;
+}
+
+.buttonAddGroup,
+.buttonDownloadGroup,
+.buttonSaveGroup {
+  background-color: rgb(254, 244, 195);
+  transition: all ease-in-out 0.2s;
+}
+
+.buttonAddGroup:hover,
+.buttonDownloadGroup:hover,
+.buttonSaveGroup:hover {
+  background-color: rgba(254, 244, 195, 0.8);
+  border: 1px solid white;
+}
+
+.buttonGroupType {
+  background-color: rgb(152, 138, 85);
+  transition: all ease-in-out 0.2s;
+}
+
+.buttonGroupType:hover {
+  background-color: rgb(152, 138, 85, 0.8);
+  border: 1px solid white;
+}
+
+.consultOff {
+  color: black;
+  text-shadow: none;
+  border: 1px #e9ddb1 solid;
+  border-radius: 25px;
+  background-color: #fef4c3;
+}
+
+.divGroupType {
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #33fae9;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  border-radius: 20px;
+}
+
+.divGroupType p {
+  text-align: left;
+  padding-left: 40px;
+  font-size: large;
+}
+
+.divSave,
+.divCharger {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(0, 0, 0, 0.2);
+  margin: 10px;
+  border-radius: 25px;
+}
+
+.saveGroupType,
+.chargerGroupType {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding-bottom: 15px;
+}
+
+.buttonSaveGroupTypeAtt,
+.buttonSaveGroupTypeDef,
+.buttonChargerGroupTypeAtt,
+.buttonChargerGroupTypeDef {
+  width: 25%;
+  background-color: rgb(92, 72, 224);
+  border-radius: 25px;
+  padding: 10px;
+  font-size: large;
+  cursor: pointer;
+  transition: all ease-in-out 0.2s;
+}
+
+.buttonSaveGroupTypeAtt:hover,
+.buttonSaveGroupTypeDef:hover,
+.buttonChargerGroupTypeAtt:hover,
+.buttonChargerGroupTypeDef:hover {
+  background-color: rgb(92, 72, 224, 0.8);
+  border: 1px solid white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+/* --------------------------------------------- */
+/* ------------ page /characterCard ------------ */
+/* --------------------------------------------- */
+
+.subcontainerProfile {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 10px;
+}
+
+.subcontainerProfile .divError {
+  font-size: 25px;
+}
+
+.divMAJ {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  margin: 10px;
+}
+
+.titlepersonnage,
+.titleinfoGvG {
+  display: flex;
+  justify-content: center;
+  font-size: 35px;
+  width: 100%;
+  color: white;
+  padding: 10px;
+  padding-bottom: 20px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.personnage,
+.infoGvG {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 45%;
+  border-radius: 15px;
+  background-color: var(--main-background-color);
+  font-size: 20px;
+  text-shadow: none;
+  color: white;
+  padding: 10px;
+  padding-bottom: 25px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.listButton {
+  width: 100%;
+  margin: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.listButton button {
+  width: 40%;
+}
+
+.changeClass {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.personnage select,
+.personnage input {
+  border-radius: 15px;
+  border: 2px solid white;
+  margin-left: 10px;
+}
+
+.changeInfo {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.buttonMAJpersonnage {
+  width: 70%;
+}
+
+/* --------------------------------------------- */
+/* --------------- page /AppAdmin -------------- */
+/* --------------------------------------------- */
+
+.subContainerbotEtat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 85%;
+  margin: 10px;
+  font-size: 25px;
+}
+
+.divError {
+  width: 100%;
+  padding: 15px;
+  color: red;
+  background-color: white;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.divNewUnit,
+.divChangeUnit,
+.divNewclass {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  width: 100%;
+  padding: 10px;
+  background-color: var(--main-background-color);
+  border: 5px solid white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  padding: 25px;
+}
+
+.divChangeUnit,
+.divNewUnit {
+  margin-bottom: 50px;
+}
+
+.titleNewUnit,
+.titleChangeUnit,
+.titleNewclass {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.newUnit,
+.formchangeUnit,
+.formNewclass {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.divNewUnit select,
+.divNewUnit input,
+.divChangeUnit select,
+.divChangeUnit input,
+.formNewclass input {
+  font-size: 16px;
+  text-align: center;
+  border: 2px solid white;
+  border-radius: 15px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.formchangeUnit > .selectChangeUnit {
+  background-color: #fef4c3;
+}
+
+.maitriseUnit,
+.changemaitriseUnit {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.maitriseUnit label,
+.changemaitriseUnit label {
+  cursor: pointer;
+}
+
+#buttonConfirmDeleteUser {
+  margin-top: 5px;
+  background-color: red;
+}
+
+/* --------------------------------------------- */
+/* ----------------- page /stat ---------------- */
+/* --------------------------------------------- */
+
+.subContainerStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin: 10px;
+  font-size: 20px;
+  border-radius: 15px;
+}
+
+.subContainerStatForSort {
+  width: 100%;
+}
+
+.statfilter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  background-color: var(--main-background-color);
+  font-size: 25px;
+  border-radius: 25px;
+  margin-bottom: 5px;
+  padding: 5px 0px 5px 0px;
+  color: black;
+  text-shadow: 1px 1px 5px rgb(255, 255, 255), 0 0 1em rgb(255, 255, 255), 0 0 0.2em rgb(255, 255, 255);
+}
+
+.statfilter button {
+  width: 20%;
+}
+
+.linefilter {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: 4px;
+  padding-bottom: 8px;
+}
+
+.titlefilter {
+  width: 18%;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.buttonFilter {
+  width: 82%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.legendstat {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--main-background-color);
+  border-radius: 15px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  margin-bottom: 10px;
+  padding: 5px 0px 8px 0px;
+}
+
+.divstat {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.statuser {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  background-color: var(--main-background-color);
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  min-height: 40px;
+  border-bottom: 2px solid black;
+}
+
+.divstatwitchinfo .statuser {
+  transition: all ease-in-out 0.2s;
+}
+
+.divstatwitchinfo .statuser:hover {
+  cursor: pointer;
+  background-color: rgb(98, 35, 32, 0.8);
+}
+
+.titlelistGvGstat {
+  justify-content: center;
+  text-align: center;
+}
+
+.statinfo {
+  width: calc(100% - 20px);
+  background-color: var(--main-background-color);
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  text-align: left;
+  padding: 0px 10px 0px 10px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 1s ease, max-height 1s ease;
+}
+
+.statinfo.show {
+  opacity: 1;
+  max-height: 1000px;
+}
+
+.titlepresencediscord {
+  text-decoration: underline;
+}
+
+.presencediscord,
+.titlelistGvGstat {
+  margin-bottom: 20px;
+}
+
+.divTitleStat {
+  width: 100%;
+  height: 75px;
+  background-color: gray;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.statconnected {
+  width: 15px;
+}
+
+.statname {
+  width: 20%;
+}
+
+.statclass {
+  width: 20%;
+}
+
+.statinfluence {
+  width: 10%;
+}
+
+.statlvl {
+  width: 10%;
+}
+
+.statnbgvg {
+  width: 15%;
+}
+
+.statlastgvg {
+  width: 23%;
+}
+
+/* --------------------------------------------- */
+/* ---------------- modal confirm -------------- */
+/* --------------------------------------------- */
+
+.confirm {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  border: 2px solid black;
+  border-radius: 25px;
+}
+
+.confirm p {
+  color: black;
+}
+
+.confirmContent {
+  padding: 20px;
+  text-align: center;
+}
+
+.confirmBtn,
+.cancelBtn {
+  width: 40%;
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  color: black;
+}
+
+.confirmBtn {
+  background-color: green;
+}
+
+.cancelBtn {
+  background-color: red;
+}
+
+/* --------------------------------------------- */
+/* --------------- Consult caserne ------------- */
+/* --------------------------------------------- */
+.selectusercaserne {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  font-size: xx-large;
+  margin: 0px 0px 10px 0px;
+  padding: 10px 0px;
+  border-radius: 15px;
+  background-color: rgb(254, 244, 195);
+}
+
+.selectusercaserne select {
+  min-width: 40%;
+  height: 40px;
+  margin: 10px;
+  padding: 2px;
+  text-align: center;
+  white-space: normal;
+  word-wrap: break-word;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 15px;
+  font-size: large;
+}
+
+/* --------------------------------------------- */
+/* ----------------- image House --------------- */
+/* --------------------------------------------- */
+.subContainerscreenhouse {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+
+.divimg,
+.formnewscreen {
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.divimg {
+  background-color: rgb(63, 85, 116, 0.9);
+  margin-top: 25px;
+  align-items: center;
+}
+
+.img-container {
+  position: relative;
+  display: inline-block;
+}
+
+.img-normal {
+  position: relative; /* Assurez-vous que l'image se positionne par rapport à son conteneur parent */
+  width: 30%; /* L'image est à 30% de sa taille normale */
+  height: auto; /* Conserver le ratio d'aspect */
+  cursor: zoom-in;
+  z-index: 1;
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.img-zoomed {
+  position: fixed; /* L'image se positionne par rapport à la fenêtre du navigateur */
+  top: 50%;
+  left: 50%;
+  width: 90%; /* Ajuster la largeur pour le zoom */
+  height: auto; /* Conserver le ratio d'aspect */
+  transform: translate(-50%, -50%); /* Centrer l'image */
+  z-index: 1000; /* Mettre l'image au-dessus des autres éléments */
+  cursor: zoom-out;
+  transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.formnewscreen h2 {
+  margin: 0;
+  padding: 0px 0px 20px 0px;
+}
+
+.formnewscreen {
+  background-color: rgb(98, 35, 32, 0.9);
+}
+
+.charcountnewscreen {
+  text-align: right;
+}
+
+.formnewscreen textarea {
+  border-radius: 15px;
+  padding: 8px;
+}
+
+.formnewscreen input {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+/* --------------------------------------------- */
+/* ------------------- mention ----------------- */
+/* --------------------------------------------- */
+.mention {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 25px;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 80%;
+  text-align: left;
+  padding-top: 25px;
+  padding-left: 45px;
+  padding-right: 35px;
+  padding-bottom: 35px;
+}
+
+.mention h1,
+.mention h2 {
+  color: #fff;
+  text-align: left;
+  text-decoration: underline;
+}
+
+.mention p {
+  color: #ddd;
+}
+
+.mention ul {
+  color: #ddd;
+}
+
+/* --------------------------------------------- */
+/* -------------------- @media ----------------- */
+/* --------------------------------------------- */
+@media (max-width: 600px) {
+  .banner {
+    display: none;
+  }
+
+  .Title {
+    font-size: x-large;
+  }
+
+  .UsernameBandeau {
+    font-size: 15px;
+  }
+
+  .changeInfo {
+    flex-direction: column;
+  }
+
+  .buttoncharacterCard,
+  .buttonCaserne,
+  .buttonCreateGroup,
+  .buttonAppAdmin,
+  .buttonStat,
+  .buttonconsulcaserne {
+    font-size: 25px;
+  }
+
+  .unit > img {
+    height: 150px;
+    width: auto;
+  }
+
+  .listhouse {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 1000px) {
+  .divMAJ {
+    flex-direction: column;
+  }
+
+  .personnage,
+  .infoGvG {
+    width: 100%;
+  }
+
+  .personnage {
+    margin-bottom: 20px;
+  }
+}
