@@ -1,0 +1,260 @@
+// fichier annexe
+import { ActionRowBuilder, MessageFlags, REST, Routes, StringSelectMenuBuilder } from "discord.js";
+import { cmdclass, resetManuelMsgGvG, updateBotActivation, updateInflu, updateLvl, updateclass, userInfo } from "./database.js";
+import { client, msgChanDiscord, reponseUserInteraction } from "./Constant.js";
+import { get_houseData } from "./config_house.js";
+import { noGvGReactMsgGvG } from "./Embed_gvg.js";
+import { translate } from "./translate.js";
+import { logToFile } from "./log.js";
+
+// Module nodejs et npm
+import {} from "dotenv/config";
+
+export async function createCommands() {
+  try {
+    console.log("│ • Started creating application (/) commands     │");
+    // Type 1 correspond à une Subcommand
+    // Type 2 correspond à un Subcommand Group
+    // Type 3 correspond à un String
+    // Type 4 correspond à un entier
+    // Type 5 correspond à un Boolean
+    // Type 6 correspond à un User (Un utilisateur Discord)
+    // Type 7 correspond à un Channel (Un canal Discord)
+    // Type 8 correspond à un Role (Un rôle Discord)
+
+    // -------------------------------------------------------------------
+    // ---------------------- Command utilisateur ------------------------
+    // -------------------------------------------------------------------
+
+    // Suppression les slash command de l'intégration discord
+    // const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+    // await rest.put(Routes.applicationCommands(process.env.ID_APP), { body: [] });
+
+    // Création de la commande '/visite'
+    await client.application.commands.create({
+      name: "visit",
+      description: "List of commands proposed by the bot",
+    });
+
+    // Création de la commande '/data'
+    await client.application.commands.create({
+      name: "data",
+      description: "Displays user information",
+    });
+
+    // Création de la commande '/guide'
+    await client.application.commands.create({
+      name: "guide",
+      description: "Displays help information (tutorials, etc.) about Conqueror's Blade",
+    });
+
+    // Création de la commande '/site'
+    await client.application.commands.create({
+      name: "site",
+      description: "Link to the bot's associated website",
+    });
+
+    // Création de la commande '/smarthone'
+    await client.application.commands.create({
+      name: "smartphone",
+      description: "Generates a connection token for the mobile application",
+    });
+
+    // Création de la commande '/class'
+    await client.application.commands.create({
+      name: "class",
+      description: "Update the weapon played with your hero",
+    });
+
+    // Création de la commande '/lvl'
+    await client.application.commands.create({
+      name: "level",
+      description: "Update your hero's level",
+      options: [
+        {
+          name: "lvl_number",
+          description: "hero's level",
+          type: 4, // entier
+          min_value: 0,
+          max_value: 100000,
+          required: true,
+        },
+      ],
+    });
+
+    // Création de la commande '/influ'
+    await client.application.commands.create({
+      name: "influence",
+      description: "Update your hero's influence",
+      options: [
+        {
+          name: "influ_number",
+          description: "hero's influence",
+          type: 4, // entier
+          min_value: 700,
+          max_value: 1000,
+          required: true,
+        },
+      ],
+    });
+
+    // -------------------------------------------------------------------
+    // ------------------- Command gestionnaire du bot -------------------
+    // -------------------------------------------------------------------
+    // Création de la commande '/config'
+    await client.application.commands.create({
+      name: "config",
+      description: "Configuring the bot discord",
+    });
+
+    // -------------------------------------------------------------------
+    // ---------------------- Command admin du bot -----------------------
+    // -------------------------------------------------------------------
+
+    // Création de la commande '/resetmsggvg'
+    await client.application.commands.create({
+      name: "reset_msg_gvg",
+      description: "Manual reset of the GvG registration message (for managers only)",
+    });
+
+    // Création de la commande '/manager_bot_activation'
+    await client.application.commands.create({
+      name: "bot_activation",
+      description: "Enable or disable GvG registration message (for managers only)",
+      options: [
+        {
+          name: "option_bot_activation",
+          description: "Choose an option",
+          type: 3, // 3 correspond à une option de type chaîne de texte
+          required: true,
+          choices: [
+            {
+              name: "on",
+              value: "on",
+            },
+            {
+              name: "off",
+              value: "off",
+            },
+          ],
+        },
+      ],
+    });
+
+    console.log("│ • Successfully created application (/) commands │");
+  } catch (err) {
+    logToFile(`Error created application (/) commands :\n ${err}`, "errors_bot.log");
+    console.error("Error created application (/) commands :\n", err);
+  }
+}
+
+// -------------------------------------------------------------------
+// --------------------- Function utilisateur ------------------------
+// -------------------------------------------------------------------
+
+export async function slashLevel(interaction) {
+  const lvlnumber = interaction.options.getInteger("lvl_number");
+  updateLvl(interaction.guildId, interaction.user.id, lvlnumber);
+  interaction.reply({
+    content: `Votre nouveau level de héros est : ${lvlnumber}`,
+    flags: MessageFlags.Ephemeral,
+  });
+  return true;
+}
+
+export async function slashInflu(interaction) {
+  const influnumber = interaction.options.getInteger("influ_number");
+  updateInflu(interaction.guildId, interaction.user.id, influnumber);
+  interaction.reply({
+    content: `Votre nouvelle influence de héros est de ${influnumber}`,
+    flags: MessageFlags.Ephemeral,
+  });
+  return true;
+}
+
+export async function slashClass(interaction) {
+  const user_Info = await userInfo(interaction.user.id);
+  const options = await cmdclass(user_Info.userLangage);
+  const select = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId("class_selector").addOptions(options));
+  const responseClass = await interaction.reply({
+    content: "Choisissez votre classe",
+    components: [select],
+    flags: MessageFlags.Ephemeral,
+  });
+
+  // attente de la réponse de l'utilisateur
+  const collectorFilter = (i) => i.user.id === interaction.user.id;
+  try {
+    const confirmation_responseClass = await responseClass.awaitMessageComponent({
+      filter: collectorFilter,
+      time: 60_000,
+    });
+    // intéraction une fois la réponse récupéré
+    if (confirmation_responseClass.customId === "class_selector") {
+      if (updateclass(interaction.guildId, interaction.user.id, confirmation_responseClass.values[0])) {
+        interaction.editReply({
+          content: "Votre classe à bien été mis à jour",
+          components: [],
+        });
+        return true;
+      } else {
+        interaction.editReply({
+          content: "Erreur lors de la mise à jour de votre classe",
+          components: [],
+        });
+      }
+    }
+  } catch (e) {
+    await interaction.editReply({
+      content: "Delais de réponse dépassé",
+      components: [],
+    });
+  }
+  return false;
+}
+
+// -------------------------------------------------------------------
+// ------------------ Function gestionnaire du bot -------------------
+// -------------------------------------------------------------------
+export async function slashResetmsggvg(interaction) {
+  const houseData = await get_houseData(interaction.guildId);
+  if (houseData.Allumage == "0") {
+    resetManuelMsgGvG(houseData);
+    msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate[houseData.Langage].gestion.resetmanuelmsggvg);
+    reponseUserInteraction(interaction, translate[houseData.Langage].gestion.resetmsggvg.ok);
+  } else {
+    reponseUserInteraction(interaction, translate[houseData.Langage].gestion.resetmsggvg.notok);
+  }
+  return true;
+}
+
+export async function botActivation(interaction) {
+  const option = interaction.options.getString("option_bot_activation");
+  const houseData = await get_houseData(interaction.guildId);
+
+  // Activation des inscriptions GvG
+  if (option === "on") {
+    if (houseData.Allumage == "1") {
+      await updateBotActivation(interaction.guildId, "0");
+      await resetManuelMsgGvG(houseData);
+      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate[houseData.Langage].gestion.updateBotActivation);
+      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.ok);
+    } else {
+      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.notok);
+    }
+  }
+
+  // Désactivation des inscriptions GvG
+  if (option === "off") {
+    if (houseData.Allumage == "0") {
+      await updateBotActivation(interaction.guildId, "1");
+      await noGvGReactMsgGvG(houseData);
+      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate[houseData.Langage].gestion.updateBotActivation);
+      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.ok);
+    } else {
+      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.notok);
+    }
+  }
+
+  return true;
+}
