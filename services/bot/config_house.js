@@ -120,6 +120,7 @@ export async function config_8_name_house(interaction) {
 }
 
 export async function config_finish(interaction) {
+  await interaction.deferUpdate();
   const userId = interaction.user.id;
   // Récupération du cache utilisateur
   let houseData = interactionsCache.get(userId);
@@ -159,7 +160,6 @@ export async function config_finish(interaction) {
       .setStyle(ButtonStyle.Danger)
   );
   // Reponse à l'utilisateur
-  await interaction.deferUpdate();
   await interaction.deleteReply();
   await interaction.followUp({
     content: "<@" + userId + ">\n" + translate[houseData.Langage].config.Config_finish,
@@ -175,7 +175,6 @@ export async function config_finish_yes(interaction) {
   msgChanDiscord(houseData.ID_Group_Users, houseData.ID_Chan_Users, translate[houseData.Langage].config.Welcome_msg);
 
   // Supression des bouttons
-  await interaction.deferUpdate();
   await interaction.deleteReply();
   await interaction.followUp({
     content: "<@" + userId + ">\n" + translate[houseData.Langage].config.finish,
@@ -186,10 +185,11 @@ export async function config_finish_yes(interaction) {
 }
 
 export async function config_finish_no(interaction) {
+  await interaction.deferUpdate();
+
   const userId = interaction.user.id;
   const houseData = interactionsCache.get(userId);
   // Supression des bouttons
-  await interaction.deferUpdate();
   await interaction.deleteReply();
   await interaction.followUp({
     content: "<@" + userId + ">\n" + translate[houseData.Langage].config.finish,
@@ -205,6 +205,8 @@ export async function config_finish_no(interaction) {
 
 // Affiche un menu de selection avec la liste des channels
 export async function list_discord_channels(interaction, custom_content, custom_name) {
+  await interaction.deferUpdate();
+
   const options = interaction.guild.channels.cache
     .filter(
       (channel) => channel.type === 0 // salons textuels uniquement
@@ -218,7 +220,6 @@ export async function list_discord_channels(interaction, custom_content, custom_
 
   const row = new ActionRowBuilder().addComponents(selectMenu);
 
-  await interaction.deferUpdate();
   await interaction.deleteReply();
   await interaction.followUp({
     content: "<@" + interaction.user.id + ">\n" + custom_content,
@@ -229,6 +230,8 @@ export async function list_discord_channels(interaction, custom_content, custom_
 
 // Affiche un menu de selection avec la liste des roles discord
 export async function list_discord_roles(interaction, custom_content, custom_role) {
+  await interaction.deferUpdate();
+
   const options = interaction.guild.roles.cache
     .filter(
       (role) => !role.managed // Exclut les rôles des bots et des intégrations (gérés automatiquement)
@@ -242,7 +245,6 @@ export async function list_discord_roles(interaction, custom_content, custom_rol
 
   const row = new ActionRowBuilder().addComponents(selectMenu);
 
-  await interaction.deferUpdate();
   await interaction.deleteReply();
   await interaction.followUp({
     content: "<@" + interaction.user.id + ">\n" + custom_content,
