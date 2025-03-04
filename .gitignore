@@ -1,0 +1,21 @@
+***.vscode
+***node_modules
+***.env
+***package-lock.json
+***mail dev.txt
+
+# fichier build
+***main
+# database
+services/database/databaseGvG.db
+
+# fichier de configuration
+file_config
+***config.js
+***config.go
+***config.dart
+***/logs
+***app.log
+***/app_mobile.old
+***/images
+# Pour l'application mobile
