@@ -1,6 +1,7 @@
 // Fichier annexe
 import { msgreactgvg } from "./Embed_gvg.js";
 import { Resetac } from "./FuncRaid.js";
+import { adressdb } from "./config.js";
 
 // module nodejs et npm
 import sqlite3 from "sqlite3";

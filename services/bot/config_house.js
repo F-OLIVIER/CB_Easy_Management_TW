@@ -29,6 +29,8 @@ export async function config_1_language(interaction) {
 }
 
 export async function config_2_avertissement(interaction) {
+  await interaction.deferUpdate();
+
   // Récupération de la valeur et initialisation du cache
   const userId = interaction.user.id;
   const language = interaction.values[0];
@@ -49,7 +51,6 @@ export async function config_2_avertissement(interaction) {
   const buttons = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId("config_avertissement").setLabel("Suite").setStyle(ButtonStyle.Primary));
 
   // Suppression de l'intéraction précédente
-  await interaction.deferUpdate();
   await interaction.deleteReply();
   await interaction.followUp({
     content: "<@" + userId + ">\n" + translate[language].config.avertissement + "\n" + siteInternet,
@@ -272,7 +273,7 @@ async function config_house_db(houseData, exist_id_house) {
       const insertQuery_Houses = `INSERT INTO Houses 
         (House_name, House_logo, Langage, ID_Server, ID_Group_Users, ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, ID_MessageGvG) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
-      console.log("insertQuery_Houses : ", insertQuery_Houses);
+
       const result_house = await db.run(insertQuery_Houses, [
         houseData.House_name,
         houseData.House_logo,
