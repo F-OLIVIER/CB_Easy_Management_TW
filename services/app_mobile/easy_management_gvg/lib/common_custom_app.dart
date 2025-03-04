@@ -30,13 +30,6 @@ AppBar customAppBar(
         fontSize: 24,
         letterSpacing: 1.2,
         color: Colors.white,
-        shadows: [
-          Shadow(
-            offset: Offset(2.0, 2.0),
-            blurRadius: 5.0,
-            color: Color.fromARGB(100, 0, 0, 0),
-          ),
-        ],
       ),
     ),
     centerTitle: true,

@@ -168,34 +168,94 @@ class Casernepage extends State<Caserne> {
       }
 
       if (data['ListUnit'] != null) {
-        List units = data['ListUnit'] ?? [];
-
-        // Tri des unités par type et tier
-        units.sort((a, b) {
-          int typeComparison = a['Unit_type'].compareTo(b['Unit_type']);
-          if (typeComparison != 0) {
-            return typeComparison;
-          }
-          return b['Unit_tier'].compareTo(a['Unit_tier']);
-        });
-
-        // Regroupement des unités par type
-        Map<String, List> tempUnitsByType = {};
-        for (var unit in units) {
-          String unitType = unit['Unit_type'];
-          if (!tempUnitsByType.containsKey(unitType)) {
-            tempUnitsByType[unitType] = [];
-          }
-          tempUnitsByType[unitType]?.add(unit);
-        }
-
-        setState(() {
-          unitsByType = tempUnitsByType;
-          tabs = unitsByType.keys.map((type) => Tab(text: type)).toList();
-        });
+        _processUnits(data['ListUnit']);
       }
+
+      // if (data['ListUnit'] != null) {
+      //   List units = data['ListUnit'] ?? [];
+
+      //   // Tri des unités par type et tier
+      //   units.sort((a, b) {
+      //     int typeComparison = a['Unit_type'].compareTo(b['Unit_type']);
+      //     if (typeComparison != 0) {
+      //       return typeComparison;
+      //     }
+      //     return b['Unit_tier'].compareTo(a['Unit_tier']);
+      //   });
+
+      //   // Regroupement des unités par type
+      //   Map<String, List> tempUnitsByType = {};
+      //   Map<String, String> unitTypeMap = {
+      //     "infanterie": "Infantry",
+      //     "cavalerie": "Cavalry",
+      //     "archer": "Archer",
+      //   };
+      //   for (var unit in units) {
+      //     String unitType =
+      //         Config.language == "fr"
+      //             ? unit['Unit_type']
+      //             : unitTypeMap[unit['Unit_type']] ?? unit['Unit_type'];
+      //     if (!tempUnitsByType.containsKey(unitType)) {
+      //       tempUnitsByType[unitType] = [];
+      //     }
+      //     tempUnitsByType[unitType]?.add(unit);
+      //   }
+
+      //   setState(() {
+      //     unitsByType = tempUnitsByType;
+      //     tabs = unitsByType.keys.map((type) => Tab(text: type)).toList();
+      //   });
+      // }
     } catch (error) {
       // print('Erreur lors du chargement des données: $error');
+    }
+  }
+
+  void _processUnits(List<dynamic> unitData) {
+    List<Map<String, dynamic>> units = List<Map<String, dynamic>>.from(
+      unitData,
+    );
+
+    // Définition de l'ordre personnalisé
+    Map<String, int> typeOrder = {
+      "Infanterie": 0,
+      "Distant": 1,
+      "Cavalerie": 2,
+    };
+
+    // Mapping des noms en anglais
+    Map<String, String> unitTypeMap = {
+      "Infanterie": "Infantry",
+      "Distant": "Distant",
+      "Cavalerie": "Cavalry",
+    };
+
+    // Tri des unités par type (selon notre ordre) puis par tier (du plus grand au plus petit)
+    units.sort((a, b) {
+      int typeComparison =
+          (typeOrder[a['Unit_type']] ?? 99) - (typeOrder[b['Unit_type']] ?? 99);
+      return typeComparison != 0
+          ? typeComparison
+          : b['Unit_tier'].compareTo(a['Unit_tier']);
+    });
+
+    // Regroupement par type
+    Map<String, List<Map<String, dynamic>>> tempUnitsByType = {};
+    for (var unit in units) {
+      String unitType =
+          Config.language == "fr"
+              ? unit['Unit_type']
+              : unitTypeMap[unit['Unit_type']] ?? unit['Unit_type'];
+
+      tempUnitsByType.putIfAbsent(unitType, () => []).add(unit);
+    }
+
+    // Mise à jour de l'état
+    if (mounted) {
+      setState(() {
+        unitsByType = tempUnitsByType;
+        tabs = unitsByType.keys.map((type) => Tab(text: type)).toList();
+      });
     }
   }
 

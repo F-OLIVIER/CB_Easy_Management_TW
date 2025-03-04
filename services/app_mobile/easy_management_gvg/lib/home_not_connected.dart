@@ -29,12 +29,30 @@ class _LoginPageState extends State<LoginPage> {
           'Easy Management GvG',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
           ),
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(153, 0, 0, 0),
+        backgroundColor: Colors.transparent,
+        elevation: 4,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(230, 63, 85, 116),
+                Color.fromARGB(255, 63, 85, 116),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+          ),
+        ),
       ),
       backgroundColor: Color.fromARGB(255, 115, 147, 214),
       body: SingleChildScrollView(
