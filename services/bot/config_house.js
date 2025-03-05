@@ -140,6 +140,10 @@ export async function config_finish(interaction) {
       houseData.ID_MessageGvG = db_houseData.ID_Chan_GvG;
     }
   }
+  if (houseData.ID_MessageGvG == 0) {
+    return;
+  }
+
   // Mise à jour du cache
   interactionsCache.set(userId, houseData);
 
@@ -186,8 +190,6 @@ export async function config_finish_yes(interaction) {
 }
 
 export async function config_finish_no(interaction) {
-  await interaction.deferUpdate();
-
   const userId = interaction.user.id;
   const houseData = interactionsCache.get(userId);
   // Supression des bouttons
@@ -234,9 +236,7 @@ export async function list_discord_roles(interaction, custom_content, custom_rol
   await interaction.deferUpdate();
 
   const options = interaction.guild.roles.cache
-    .filter(
-      (role) => !role.managed // Exclut les rôles des bots et des intégrations (gérés automatiquement)
-    )
+    .filter((role) => !role.managed) // Exclut les rôles des bots et des intégrations (gérés automatiquement)
     .map((role) => ({
       label: role.name,
       value: role.id,
@@ -259,8 +259,6 @@ export async function list_discord_roles(interaction, custom_content, custom_rol
 // -------------------------------------------------------------------
 
 async function config_house_db(houseData, exist_id_house) {
-  // console.log("houseData : ", houseData);
-
   // Ouvrir la base de données (par defaut en mode lecture/écriture)
   const db = await open({
     filename: adressdb,
@@ -293,6 +291,7 @@ async function config_house_db(houseData, exist_id_house) {
       await createCaserneTable(insertedID, db);
       await createGroupsTable(insertedID, db);
       logToFile(`Création de la maison ${houseData.House_name} (${houseData.ID_Server})`);
+
     } else {
       // Mise a jour des information de la maison
       const updateQuery_house = `UPDATE Houses SET

@@ -1,12 +1,12 @@
 // Fichier annexe
-import { adressdb } from "./config.js";
 import { get_ID_House } from "./config_house.js";
+import { adressdb } from "./config.js";
+import { logToFile } from "./log.js";
 
 // Module nodejs et npm
 import { v4 as uuidv4 } from "uuid";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
-import { logToFile } from "./log.js";
 
 export async function genereTokenApp(ServerID, AuthorID) {
   try {

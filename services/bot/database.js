@@ -28,14 +28,12 @@ export async function CreateOrUpdateUser(data) {
 
     if (rows.length > 0) {
       // Mise à jour de l'utilisateur existant
-      // console.log("UPDATE User");
       const updateQuery = `UPDATE Users 
                            SET DiscordName = ?, DiscordBaseName = ?, DiscordRole = ?, DiscordPhoto = ? 
                            WHERE DiscordID = ? AND ID_House = ?;`;
       await db.run(updateQuery, [data.DiscordName, data.DiscordBaseName, data.DiscordRole, data.DiscordPhoto, data.DiscordID, data.ID_House]);
     } else {
       // Création d'un nouvel utilisateur
-      // console.log("INSERT User");
       const houseData = await get_houseData(data.ID_Server);
 
       const insertQuery = `INSERT INTO Users 
@@ -222,24 +220,25 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
   try {
     let id_house = await get_ID_House(ID_Server);
 
-    const sql = `
+    const selectUserQuery = `
         SELECT Users.ID, Users.ID_House, Users.DiscordName, Houses.ID_Chan_Gestion, Houses.Langage
         FROM Users
         INNER JOIN Houses ON Users.ID_House = Houses.ID
         WHERE Users.DiscordID = ? AND Users.ID_House = ?;
       `;
 
-    const row = await db.get(sql, [member.user.id, id_house]);
+    const row = await db.get(selectUserQuery, [member.user.id, id_house]);
 
     if (row) {
       // console.log(`Utilisateur ${row.DiscordName} supprimé, ID : ${member.user.id}`);.
       if (leaveDiscord) {
-        UserLeave(ow.ID_Chan_Gestion, member.user.displayName, member.user.username, translate[row.Langage].information.UserLeaveDiscord);
+        UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate[row.Langage].information.UserLeaveDiscord);
       } else {
-        UserLeave(ow.ID_Chan_Gestion, member.user.displayName, member.user.username, translate[row.Langage].information.UserLeaveGroupDiscord);
+        UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate[row.Langage].information.UserLeaveGroupDiscord);
       }
 
       const userID = row.ID;
+      // Suppression de l'utilisateur des table de la maison auquel il appartient
       const listQuery = [
         `DELETE FROM Caserne${userID} WHERE User_ID = ?;`,
         `DELETE FROM CaserneMaitrise${userID} WHERE User_ID = ?;`,
@@ -248,11 +247,16 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
         `DELETE FROM GroupTypeDef${userID} WHERE User_ID = ?;`,
         `DELETE FROM Users WHERE ID = ?;`,
       ];
-
-      // Exécuter toutes les suppressions en parallèle
-      await Promise.all(listQuery.map((deleteQuery) => db.run(deleteQuery, [userID]).catch((error) => logToFile(`Erreur suppression (deleteUser Promise):\n ${error.message}`, "errors_bot.log"))));
+      // Exécuter toutes les suppressions
+      for (const deleteQuery of listQuery) {
+        try {
+          await db.run(deleteQuery, [userID]);
+        } catch (error) {
+          logToFile(`Erreur suppression deleteUser (${deleteQuery}):\n ${error.message}`, "errors_bot.log");
+        }
+      }
     }
-  } catch (error) {
+  } catch (err) {
     logToFile(`Erreur lors de la suppression de l'utilisateur ${member.user.id} (deleteUser) :\n${err.message}`, "errors_bot.log");
   } finally {
     await db.close();

@@ -59,7 +59,7 @@ client.on("guildMemberRemove", async (member) => {
   if (member.user.bot) return;
   // console.log(`${member.user.username} a quitté le serveur.`);
   if (await houseExist(member.guild.id)) {
-    deleteUser(member.guild.id, member, true);
+    await deleteUser(member.guild.id, member, true);
   }
 });
 
@@ -93,7 +93,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
     const newRoles = newMember.roles.cache;
 
     // Récupére les roles autorisé pour le bot sur le serveur
-    const list_role = getUserDiscordRole(newMember.guild.id);
+    const list_role = await getUserDiscordRole(newMember.guild.id);
 
     // Has Role user ?
     const oldHasuser = oldRoles.has(list_role.ID_Group_Users);
@@ -101,7 +101,7 @@ client.on("guildMemberUpdate", async (oldMember, newMember) => {
     // Check if removed or added
     if (oldHasuser && !newHasuser) {
       // Role user remove
-      deleteUser(newMember.guild.id, newMember);
+      await deleteUser(newMember.guild.id, newMember);
     } else if (!oldHasuser && newHasuser) {
       // Role user add
       await PlayerCreateOrUpdate(newMember.guild.id, newMember.user.id);

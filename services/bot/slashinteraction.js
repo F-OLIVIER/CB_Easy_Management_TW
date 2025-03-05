@@ -1,6 +1,5 @@
 // Fichier annexe
 import { isMember, isOfficier, listInscription } from "./database.js";
-import { siteInternet, siteAndroidApp, siteIosApp } from "./config.js";
 import {
   config_1_language,
   config_2_avertissement,
@@ -16,8 +15,7 @@ import {
   get_houseData,
   houseExist,
 } from "./config_house.js";
-import { slashvisite, visit1, modalvisitelvlAndInflu, visit2, visit3, visite_language } from "./visite.js";
-import { botActivation, slashClass, slashInflu, slashLevel, slashResetmsggvg } from "./slashcommand.js";
+import { botActivation, slashClass, slashHelp, slashInflu, slashLevel, slashResetmsggvg } from "./slashcommand.js";
 import { PlayerCreateOrUpdate } from "./FuncData.js";
 import { MAJinscription } from "./FuncRaid.js";
 import { genereTokenApp } from "./appMobile.js";
@@ -41,7 +39,7 @@ export async function slash_interaction(interaction) {
 
   if (interaction.isButton() && isMember(interaction.guildId, userId)) {
     if (interaction.customId === "config_avertissement") {
-      config_3_ID_Chan_GvG(interaction);
+      await config_3_ID_Chan_GvG(interaction);
     }
 
     // Gestion des boutons d'inscription au GvG
@@ -90,18 +88,11 @@ export async function slash_interaction(interaction) {
       return;
     }
   }
-  // ---------------------------------------------------------------------------------
-  // ---------------------------------------------------------------------------------
-  // ---------------------------------------------------------------------------------
 
   // ------------------------
   // ----- Modal Submit -----
   // ------------------------
   if (interaction.isModalSubmit()) {
-    if (interaction.customId === "modalvisite") {
-      return visit2(interaction);
-    }
-
     if (interaction.customId === "modalHouse_name") {
       await config_finish(interaction);
       return true;
@@ -110,23 +101,6 @@ export async function slash_interaction(interaction) {
 
   // L'interaction est de type composant d'un message
   if (interaction.isMessageComponent()) {
-    // ------------ Visite guidé ------------
-    if (interaction.customId === "visit_language") {
-      return await slashvisite(interaction);
-    }
-
-    if (interaction.customId === "visite_start") {
-      return visit1(interaction);
-    }
-
-    if (interaction.customId === "visite_modal") {
-      modalvisitelvlAndInflu(interaction);
-    }
-
-    if (interaction.customId === "visite_class") {
-      return visit3(interaction);
-    }
-
     // ------------ Config_house ------------
     if (interaction.customId === "config_language") {
       await config_2_avertissement(interaction);
@@ -179,7 +153,7 @@ export async function slash_interaction(interaction) {
         // Une fois la maison crée, seul les membres du groupe gestionnaire peuvent modifier la configuration
         config_1_language(interaction);
       } else {
-        reponseUserInteraction(interaction, "<@" + interaction.user.id + ">\n" + translate.global_config.config_exist[1] + houseData.ID_Group_Officier + translate.global_config.config_exist[2]);
+        reponseUserInteraction(interaction, `${translate.global_config.config_exist[1]} <@${houseData.ID_Group_Officier}> ${translate.global_config.config_exist[2]}`);
       }
     } else {
       // Tous les utilisateurs peuvent effectué la configuration
@@ -188,16 +162,8 @@ export async function slash_interaction(interaction) {
   }
 
   // interaction changement de level du héros, Command /visite
-  if (interaction.commandName === "visit") {
-    if (await houseExist(interaction.guildId)) {
-      if (isMember(interaction.guildId, userId)) {
-        return await visite_language(interaction);
-      } else {
-        reponseUserInteraction(interaction, translate.global_config.noingroup);
-      }
-    } else {
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
-    }
+  if (interaction.commandName === "help") {
+    return await slashHelp(interaction);
   }
 
   // interaction qui retourne l'embed data de l'utilisateur, Command /data
@@ -273,11 +239,8 @@ export async function slash_interaction(interaction) {
   }
 
   // interaction qui donne l'adresse du site internet associé au bot, Command /site
-  if (interaction.commandName === "site") {
-    interaction.reply({
-      content: "Voici le lien du site internet associé au bot :\n<" + siteInternet + ">",
-      flags: MessageFlags.Ephemeral,
-    });
+  if (interaction.commandName === "website") {
+    reponseUserInteraction(interaction, translate.website);
     return true;
   }
 
@@ -286,26 +249,12 @@ export async function slash_interaction(interaction) {
     if (await houseExist(interaction.guildId)) {
       if (isMember(interaction.guildId, userId)) {
         const tokenapp = await genereTokenApp(interaction.guildId, interaction.user.id);
-        console.log("tokenapp : ", tokenapp);
+        const houseData = await get_houseData(interaction.guildId);
 
         if (tokenapp == "") {
-          await interaction.reply({
-            content: "<@" + interaction.user.id + ">\nVous ne faites pas partie de la maison sur le jeu Conqueror's Blade !!!",
-            flags: MessageFlags.Ephemeral,
-          });
+          reponseUserInteraction(interaction, translate.fr.information.smartphone.err);
         } else {
-          await interaction.reply({
-            content:
-              "<@" +
-              interaction.user.id +
-              ">\n:information_source: Votre Token (à usage unique) vous permet de vous connecter à l'application mobile, afin de pouvoir le copier facilement, il vous est envoyé dans un autre message (ci-dessous).\n:warning: Ce Token est associé à votre compte, ne le donner à personne sous aucun prétexte.\n" +
-              "\nLien de l'application Android (Google Play Store) :\n<" +
-              siteAndroidApp +
-              ">\n\nLien de l'application iOS (Apple Store) :\n<" +
-              siteIosApp +
-              ">",
-            flags: MessageFlags.Ephemeral,
-          });
+          reponseUserInteraction(interaction, translate.fr.information.smartphone.ok);
           await interaction.followUp({
             content: tokenapp,
             flags: MessageFlags.Ephemeral,

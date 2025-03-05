@@ -30,9 +30,9 @@ export async function createCommands() {
     // const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
     // await rest.put(Routes.applicationCommands(process.env.ID_APP), { body: [] });
 
-    // Création de la commande '/visite'
+    // Création de la commande '/help'
     await client.application.commands.create({
-      name: "visit",
+      name: "help",
       description: "List of commands proposed by the bot",
     });
 
@@ -48,9 +48,9 @@ export async function createCommands() {
       description: "Displays help information (tutorials, etc.) about Conqueror's Blade",
     });
 
-    // Création de la commande '/site'
+    // Création de la commande '/website'
     await client.application.commands.create({
-      name: "site",
+      name: "website",
       description: "Link to the bot's associated website",
     });
 
@@ -152,32 +152,38 @@ export async function createCommands() {
 // --------------------- Function utilisateur ------------------------
 // -------------------------------------------------------------------
 
+export async function slashHelp(interaction) {
+  const houseData = await get_houseData(interaction.guildId);
+  reponseUserInteraction(interaction, translate[houseData.Langage].help)
+  return true;
+}
+
 export async function slashLevel(interaction) {
   const lvlnumber = interaction.options.getInteger("lvl_number");
-  updateLvl(interaction.guildId, interaction.user.id, lvlnumber);
-  interaction.reply({
-    content: `Votre nouveau level de héros est : ${lvlnumber}`,
-    flags: MessageFlags.Ephemeral,
-  });
+  await updateLvl(interaction.guildId, interaction.user.id, lvlnumber);
+
+  const houseData = await get_houseData(interaction.guildId);
+  reponseUserInteraction(interaction, `${translate[houseData.Langage].information.lvl} : ${lvlnumber}`)
   return true;
 }
 
 export async function slashInflu(interaction) {
   const influnumber = interaction.options.getInteger("influ_number");
-  updateInflu(interaction.guildId, interaction.user.id, influnumber);
-  interaction.reply({
-    content: `Votre nouvelle influence de héros est de ${influnumber}`,
-    flags: MessageFlags.Ephemeral,
-  });
+  await updateInflu(interaction.guildId, interaction.user.id, influnumber);
+
+  const houseData = await get_houseData(interaction.guildId);
+  reponseUserInteraction(interaction, `${translate[houseData.Langage].information.influ} ${influnumber}`)
   return true;
 }
 
 export async function slashClass(interaction) {
   const user_Info = await userInfo(interaction.user.id);
   const options = await cmdclass(user_Info.userLangage);
+
+  const houseData = await get_houseData(interaction.guildId);
   const select = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId("class_selector").addOptions(options));
   const responseClass = await interaction.reply({
-    content: "Choisissez votre classe",
+    content: translate[houseData.Langage].information.class.select,
     components: [select],
     flags: MessageFlags.Ephemeral,
   });
@@ -193,20 +199,20 @@ export async function slashClass(interaction) {
     if (confirmation_responseClass.customId === "class_selector") {
       if (updateclass(interaction.guildId, interaction.user.id, confirmation_responseClass.values[0])) {
         interaction.editReply({
-          content: "Votre classe à bien été mis à jour",
+          content: translate[houseData.Langage].information.class.confirm,
           components: [],
         });
         return true;
       } else {
         interaction.editReply({
-          content: "Erreur lors de la mise à jour de votre classe",
+          content: translate[houseData.Langage].information.class.err,
           components: [],
         });
       }
     }
   } catch (e) {
     await interaction.editReply({
-      content: "Delais de réponse dépassé",
+      content: translate[houseData.Langage].information.class.delay,
       components: [],
     });
   }

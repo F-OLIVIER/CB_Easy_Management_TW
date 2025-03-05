@@ -1,5 +1,5 @@
 // fichier annexe
-import { siteInternet } from "./config.js";
+import { siteInternet, store_app_android, store_app_ios } from "./config.js";
 
 // WARNING : Traduction dans database.js (requete sql qui select directement en fonction de la langue)
 
@@ -15,6 +15,7 @@ export const translate = {
       name: "Français",
     },
   },
+
   global_config: {
     // Si la configuration n'a pas encore été faite
     botNotExist: `Impossible to use this command, you haven't configured the bot yet.
@@ -30,6 +31,8 @@ ${siteInternet}`,
     },
   },
 
+  website: `Link to the website associated with the bot:\n${siteInternet}`,
+  
   // ███████ ███    ██  ██████  ██      ██ ███████ ██   ██
   // ██      ████   ██ ██       ██      ██ ██      ██   ██
   // █████   ██ ██  ██ ██   ███ ██      ██ ███████ ███████
@@ -38,6 +41,28 @@ ${siteInternet}`,
   en: {
     yes: "yes",
     no: "no",
+
+    help: `Bonjour brave héros,
+
+    Je suis **Easy Management GvG**
+    Mon rôle principal est de gérer les inscriptions aux guerre de territoire (GvG) pour le jeu **Conqueror's Blade**.
+    Pour **s'inscrire au GvG**, il suffit de répondre "présent" ou ""absent" sur le message dédié au GvG. Je me charge de le changer après chaque guerre de territoire.
+    
+    **Voici la liste des commandes utilisateur**
+    * \`/level\` permet de mettre à jour le niveau de ton héros.
+    * \`/influence\`, permet de mettre à jour l'influence de ton héros.
+    * \`/class\` permet de mettre à jour l'arme jouer de ton héros.
+    * \`/data\` permet de voir les informations te concernant.
+    * \`/guide\` permet d'avoir une liste de guides et tutoriels de Conqueror's Blade.
+    * \`/site\` permet d'afficher le lien du site internet associé.
+    * \`/smartphone\` permet de générer un token a usage unique pour se connecter à l'application téléphone.
+    
+    **Voici la liste des commande réservé au gestionnaire**
+    * \`/config\` permet de configurer la maison
+    * \`/bot_activation\` permet d'activé (option \`on\`) ou desactivé (option \`off\`) le message d'inscription au GvG afin d'éviter des ping inutile.
+    * \`/reset_msg_gvg\` permet en cas de bug du reset du message d'inscription au GvG de le faire manuellement.
+
+    Que la gloire soit dans ton sillage !`,
 
     config: {
       avertissement: `We're going to go through all the information needed for the bot to work properly.
@@ -82,8 +107,8 @@ For more details, to get to know me and find out what I can do for you, you can 
     visite: {},
     information: {
       UserJoinGroup: {
-        1: "User <@",
-        2: "> has just been added to the group",
+        1: "User",
+        2: "has just been added to the group",
       },
       UserLeaveDiscord: "abandonne le combat, il/elle viens de quitter le Discord.\nGrrrr, je vais encore faire plein de rature sur le registre !!!",
       UserLeaveGroupDiscord: "à été retiré des groupes Discord autorisé.",
@@ -136,6 +161,31 @@ For more details, to get to know me and find out what I can do for you, you can 
     yes: "oui",
     no: "non",
 
+    help: `Bonjour brave héros,
+
+Je suis **Easy Management GvG**
+
+Mon rôle principal est de gérer les inscriptions aux guerre de territoire (GvG) pour le jeu **Conqueror's Blade**.
+Pour **s'inscrire au GvG**, il suffit de répondre "présent" ou "absent" sur le message dédié au GvG. Je me charge de le changer après chaque guerre de territoire.
+
+**Voici la liste des commandes général**
+* \`/config\` permet de configurer la maison (si la maison est déja crée, c'est une commande réservé au gestionnaire)
+* \`/website\` permet d'afficher le lien du site internet associé.
+* \`/guide\` permet d'avoir une liste de guides et tutoriels de Conqueror's Blade.
+
+**Voici la liste des commandes utilisateur**
+* \`/data\` permet de voir les informations te concernant.
+* \`/class\` permet de mettre à jour l'arme de ton héros.
+* \`/level\` permet de mettre à jour le level de ton héros.
+* \`/influence\` permet de mettre à jour l'influence de ton héros.
+* \`/smartphone\` permet de générer un token pour se connecter à l'application téléphone.
+
+**Voici la liste des commandes réservé au gestionnaire**
+* \`/bot_activation\` permet d'activé (option \`on\`) ou desactivé (option \`off\`) le message d'inscription au GvG afin d'éviter des ping inutile.
+* \`/reset_msg_gvg\` permet en cas de bug du reset du message d'inscription au GvG de le faire manuellement.
+
+Que la gloire soit dans ton sillage !`,
+
     config: {
       avertissement: `Nous allons passer en revue toutes les informations nécessaires au bon fonctionnement du bot.
 Merci de lire les explications sur le site internet avant de continuer, car vous avez éventuellement des paramétrages Discord à effectuer.
@@ -176,43 +226,6 @@ Pour plus de détail, faire connaissance avec moi et connaître les possibilité
       },
     },
 
-    visite: {
-      1: `Bonjour brave héros`,
-      2: `Je suis **Easy Management GvG**.
-Mon rôle principal est de gérer les inscriptions au GvG pour le jeu **Conqueror's Blade**
-
-Étant chargé d'écrire la légende, je vais enregistrer tes informations pendant la visite.`,
-      3: `Saisir mon level et mon influence`,
-      4: `Pour commencer, nous allons voir la commande **/level**
-Cette commande te permet à tout moment de mettre à jour le niveau de ton héros.
-        
-Une autre commande importante et la commande **/influence**, elle te permet à tout moment de mettre à jour l'influence de ton héros.
-        
-Quelles sont les informations te concernant ?`,
-      5: `Level de ton héros`,
-      6: `Influence de ton héros`,
-      7: `Parfait.
-      
-Continuons la visite, avec la commande **/class** tu pourras mettre à jour la classe d'arme que tu joues.
-Quelle classe d'arme as-tu choisie de jouer ?`,
-      8: `Hum… je vois, un petit malin qui essaye de m'avoir !!!!
-
-Continuons la visite, avec la commande **/class**, tu pourras mettre à jour la classe d'arme que tu joues.
-Quelle classe d'arme as-tu choisi de jouer ?`,
-      9: `* **/data** te permettra de voir les informations te concernant.
-* **/guide** te permettra d'avoir une liste de guides et tutoriels.
-* **/site** te permettra d'avoir le lien du site internet associé où tu pourras remplir ta caserne afin que les gestionnaires puissent préparer les guerres de territoire au mieux et puissent indiquer quelle troupe tu devras prendre pour les batailles.
-        
-La visite est terminée, tu connais maintenant toutes les commandes de base.
-        
-Je t'invite maintenant à te rendre sur le site internet afin de compléter ta caserne pour être prêt au combat pour la prochaine GvG
-Voici le lien : ${siteInternet}
-        
-J'ai failli oublier, une dernière information très importante, pour **t'inscrire au GvG**, il te suffit de répondre "présent" ou ""absent" sur le message dédié au GvG. Je me charge de le changer après chaque guerre de territoire.
-        
-Que la gloire soit dans ton sillage !`,
-    },
-
     information: {
       UserJoinGroup: {
         1: "L'utilisateur <@",
@@ -220,6 +233,21 @@ Que la gloire soit dans ton sillage !`,
       },
       UserLeaveDiscord: "abandonne le combat, il/elle viens de quitter le Discord.\nGrrrr, je vais encore faire plein de rature sur le registre !!!",
       UserLeaveGroupDiscord: "à été retiré des groupes Discord autorisé.",
+      lvl: "Votre nouveau level de héros est",
+      influ: "Votre nouvelle influence de héros est de",
+      class: {
+        select: "Choisissez votre arme",
+        confirm: "Votre arme à bien été mis à jour",
+        err: "Erreur lors de la mise à jour de votre arme",
+        delay: "Delais de réponse dépassé",
+      },
+      smartphone: {
+        err: "Vous ne faites pas partie de la maison sur le jeu Conqueror's Blade !!!",
+        ok: `:information_source: Votre Token (à usage unique) vous permet de vous connecter à l'application mobile, afin de pouvoir le copier facilement, il vous est envoyé dans un autre message (ci-dessous).
+        :warning: Ce Token est associé à votre compte, ne le donner à personne sous aucun prétexte.
+        Lien de l'application Android (Google Play Store) :\n<${store_app_android}>
+        Lien de l'application iOS (Apple Store) :\n<${store_app_ios}>`
+      }
     },
 
     EmbedGuide: {

@@ -1,4 +1,5 @@
 // fichier annexe
+import { logToFile } from "./log.js";
 import { translate } from "./translate.js";
 
 // Module nodejs et npm
@@ -29,11 +30,19 @@ export function reponseUserInteraction(interaction, msg) {
 // Log dans un chan Discord (chan utilisateur ou chan de gestion)
 export function msgChanDiscord(ID_Group, ID_Chan, msg) {
   const chan = client.channels.cache.get(ID_Chan);
+  if (!chan) {
+    logToFile(`Chan ${ID_Chan} innexistant`, "errors_bot.log");
+    return;
+  }
   chan.send("<@&" + ID_Group + ">\n" + msg);
 }
 
 // Message utilisateur retirer de la database
 export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
   const chan = client.channels.cache.get(ID_Chan_Gestion);
+  if (!chan) {
+    logToFile(`Chan ${ID_Chan_Gestion} innexistant`, "errors_bot.log");
+    return;
+  }
   chan.send(name + " (" + nickname + ") " + msg);
 }

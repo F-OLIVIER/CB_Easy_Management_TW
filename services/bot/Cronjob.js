@@ -21,8 +21,8 @@ export async function cronResetMsgReaction() {
     if (!rows || rows.length === 0) return; // Vérifie s'il y a des résultats
 
     for (const row of rows) {
-      Resetac(db);
-      msgreactgvg(db, row.ID_Server, row.ID_MessageGvG, row.Langage, row.ID_Chan_GvG, row.ID_Group_Users);
+      await Resetac(db);
+      await msgreactgvg(db, row.ID_Server, row.ID_MessageGvG, row.Langage, row.ID_Chan_GvG, row.ID_Group_Users);
     }
   } catch (err) {
     logToFile(`Erreur lors du cronjob reset GvG (cronResetMsgReaction) :\n${err.message}`, "errors_bot.log");

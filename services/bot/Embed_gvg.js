@@ -4,6 +4,7 @@ import { updateIdMessage } from "./database.js";
 import { client } from "./Constant.js";
 import { translate } from "./translate.js";
 import { adressdb } from "./config.js";
+import { logToFile } from "./log.js";
 
 // module nodejs et npm
 import moment from "moment-timezone";
@@ -13,6 +14,10 @@ import { open } from "sqlite";
 export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) {
   const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
   const chan = client.channels.cache.get(ID_Chan_GvG);
+  if (!chan) {
+    logToFile(`Chan ${ID_Chan_GvG} innexistant`, "errors_bot.log");
+    return 0;
+  }
 
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
   const sendMessage = await chan.send({
@@ -28,17 +33,15 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
 
 // Renouvellement du message d'inscription GvG pour reset les réactions
 export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan_GvG, ID_Group_Users) {
-  console.log("ID_MessageGvG : ", ID_MessageGvG);
-  const channel = client.channels.cache.get(ID_Chan_GvG);
-  if (!channel) {
-    console.error("Le canal n'a pas été trouvé !");
+  const chan = client.channels.cache.get(ID_Chan_GvG);
+  if (!chan) {
+    logToFile(`Chan ${ID_Chan_GvG} innexistant pour le serveur ${ID_Server}`, "errors_bot.log");
     return;
   }
-  
-  await channel.messages.fetch(ID_MessageGvG).then((message) => message.delete());
+
+  await chan.messages.fetch(ID_MessageGvG).then((message) => message.delete());
 
   const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
-  const chan = client.channels.cache.get(ID_Chan_GvG);
 
   // Génére le message et l'envoi sur discord
   const sendMessage = await chan.send({
@@ -93,6 +96,12 @@ export async function ButtonEmbedInscription(Langage) {
 }
 
 export async function noGvGReactMsgGvG(houseData) {
+  const chan = client.channels.cache.get(houseData.ID_Chan_GvG);
+  if (!chan) {
+    logToFile(`Chan ${houseData.ID_Chan_GvG} innexistant pour le serveur ${houseData.ID_Server}`, "errors_bot.log");
+    return;
+  }
+
   await client.channels.cache
     .get(houseData.ID_Chan_GvG)
     .messages.fetch(houseData.ID_MessageGvG)
@@ -106,7 +115,6 @@ export async function noGvGReactMsgGvG(houseData) {
     .setThumbnail("https://i43.servimg.com/u/f43/15/76/70/95/spear10.png");
 
   // Génére le message et l'envoi sur discord
-  const chan = client.channels.cache.get(houseData.ID_Chan_GvG);
   const sendMessage = await chan.send({
     files: [imageAttachment],
     embeds: [embedData],
@@ -119,7 +127,7 @@ export async function noGvGReactMsgGvG(houseData) {
   });
 
   try {
-    updateIdMessage(db, houseData.ID_Server, sendMessage.id);
+    await updateIdMessage(db, houseData.ID_Server, sendMessage.id);
   } catch (err) {
     logToFile(`Erreur updateIdMessage (noGvGReactMsgGvG) :\n${err.message}`, "errors_bot.log");
     throw err;
