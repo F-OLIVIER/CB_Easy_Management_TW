@@ -1,10 +1,10 @@
 // Fichier annexe
+import { change_admin, deleteUser, getUserDiscordRole, list_admin } from "./database.js";
 import { PlayerCreateOrUpdate, checkAllUser } from "./FuncData.js";
+import { deleteHouse, houseExist } from "./config_house.js";
 import { slash_interaction } from "./slashinteraction.js";
 import { createCommands } from "./slashcommand.js";
 import { cronResetMsgReaction } from "./Cronjob.js";
-import { change_admin, deleteUser, getUserDiscordRole, list_admin } from "./database.js";
-import { deleteHouse, houseExist } from "./config_house.js";
 import { client } from "./Constant.js";
 import { ListAdmin } from "./config.js";
 import { logToFile } from "./log.js";
@@ -155,7 +155,7 @@ client.on("messageCreate", async (message) => {
   // !create_admin_db 179655652153491456
   if (MC.startsWith("!create_admin_db")) {
     const id_new_admin = MC.replace("!create_admin_db", "").trim();
-    const valid = change_admin(id_new_admin, 1);
+    const valid = await change_admin(id_new_admin, 1);
     if (valid) {
       await message.reply({
         content: `<@${AuthorID}>, admin ajouté`,

@@ -1,11 +1,11 @@
 // Fichier annexe
 import { client, msgChanDiscord, UserLeave } from "./Constant.js";
 import { get_houseData, get_ID_House } from "./config_house.js";
+import { loadTranslations } from "./language.js";
 import { msgreactgvg } from "./Embed_gvg.js";
 import { ResetHousesc } from "./FuncRaid.js";
 import { adressdb } from "./config.js";
 import { logToFile } from "./log.js";
-import { translate } from "./translate.js";
 
 // module nodejs et npm
 import sqlite3 from "sqlite3";
@@ -55,10 +55,12 @@ export async function CreateOrUpdateUser(data) {
       await db.run(`INSERT INTO Caserne${houseData.ID} (User_ID) VALUES (?);`, [userId]);
       await db.run(`INSERT INTO CaserneMaitrise${houseData.ID} (User_ID) VALUES (?);`, [userId]);
 
+      const translate = await loadTranslations(houseData.Langage);
+
       msgChanDiscord(
         houseData.ID_Group_Officier,
         houseData.ID_Chan_Gestion,
-        translate[houseData.Langage].information.UserJoinGroup[1] + data.DiscordID + translate[houseData.Langage].information.UserJoinGroup[2]
+        `${translate.information.UserJoinGroup[1]} <@${data.DiscordID}> ${translate.information.UserJoinGroup[2]}`
       );
     }
   } catch (err) {
@@ -71,13 +73,13 @@ export async function CreateOrUpdateUser(data) {
 export async function userInfo(ServerID, user_id) {
   const id_house = await get_ID_House(ServerID);
 
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-    mode: sqlite3.OPEN_READONLY, // Mode lecture seule
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+      mode: sqlite3.OPEN_READONLY, // Mode lecture seule
+    });
+
     const selectQuery = `
         SELECT Users.DiscordID, Users.DiscordName, Users.DiscordRole,
               Users.Lvl, Users.Influence, Users.EtatInscription, 
@@ -98,13 +100,12 @@ export async function userInfo(ServerID, user_id) {
       `;
 
     const row = await db.get(selectQuery, [user_id, id_house]);
+    await db.close();
 
     return row || null; // Retourne `null` si aucun utilisateur trouvé
   } catch (err) {
     logToFile(`Erreur lors de la récupération des infos utilisateur (userInfo) :\n ${err.message}`, "errors_bot.log");
     throw err;
-  } finally {
-    await db.close();
   }
 }
 
@@ -156,59 +157,61 @@ export async function isOfficier(ServerID, AuthorID) {
 // --------------- mise à jour de l'utilisateur ---------------
 // ------------------------------------------------------------
 export async function updateclass(ID_Server, AuthorID, GameCharacter_ID) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+
     let id_house = await get_ID_House(ID_Server);
     const updateQuery = `UPDATE Users SET GameCharacter_ID = ? WHERE DiscordID = ? AND Users.ID_House = ?;`;
     await db.run(updateQuery, [GameCharacter_ID, AuthorID, id_house]);
+    await db.close();
+
     return true;
   } catch (err) {
     logToFile(`Erreur lors de la mise à jour de la classe de ${AuthorID} :\n ${err.message}`, "errors_bot.log");
     return false;
   } finally {
-    await db.close();
   }
 }
 
 export async function updateLvl(ID_Server, AuthorID, lvl) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+
     let id_house = await get_ID_House(ID_Server);
     const updateQuery = `UPDATE Users SET Lvl = ? WHERE DiscordID = ? AND Users.ID_House = ?;`;
     await db.run(updateQuery, [lvl, AuthorID, id_house]);
+    await db.close();
+
     return true;
   } catch (err) {
     logToFile(`Erreur lors de la mise à jour du niveau de ${AuthorID} :\n ${err.message}`, "errors_bot.log");
     return false;
   } finally {
-    await db.close();
   }
 }
 
 export async function updateInflu(ID_Server, AuthorID, influ) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+
     let id_house = await get_ID_House(ID_Server);
     const updateQuery = `UPDATE Users SET Influence = ? WHERE DiscordID = ? AND Users.ID_House = ?;`;
     await db.run(updateQuery, [influ, AuthorID, id_house]);
+    await db.close();
+
     return true;
   } catch (err) {
     logToFile(`Erreur lors de la mise à jour de l'influence ${AuthorID} :\n ${err.message}`, "errors_bot.log");
     return false;
-  } finally {
-    await db.close();
   }
 }
 
@@ -231,10 +234,11 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
 
     if (row) {
       // console.log(`Utilisateur ${row.DiscordName} supprimé, ID : ${member.user.id}`);.
+      const translate = await loadTranslations(row.Langage);
       if (leaveDiscord) {
-        UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate[row.Langage].information.UserLeaveDiscord);
+        UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate.information.UserLeaveDiscord);
       } else {
-        UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate[row.Langage].information.UserLeaveGroupDiscord);
+        UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate.information.UserLeaveGroupDiscord);
       }
 
       const userID = row.ID;
@@ -267,17 +271,18 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
 // ---------- Récupération d'informations dans la DB ----------
 // ------------------------------------------------------------
 export async function getUserDiscordRole(ID_Server) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-    mode: sqlite3.OPEN_READONLY, // Mode lecture seule
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+      mode: sqlite3.OPEN_READONLY, // Mode lecture seule
+    });
+
     const requestQuery = `SELECT ID_Group_Users, ID_Group_Officier FROM Houses WHERE ID_Server = ?;`;
     const row = await db.get(requestQuery, [ID_Server]);
 
     if (!row) return null;
+    await db.close();
 
     return {
       ID_Group_Users: row.ID_Group_Users,
@@ -287,42 +292,40 @@ export async function getUserDiscordRole(ID_Server) {
     logToFile(`Erreur lors de la récupération des rôles (getUserDiscordRole) :\n${err.message}`, "errors_bot.log");
     return null;
   } finally {
-    await db.close();
   }
 }
 
 export async function listInscription(ID_House) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-    mode: sqlite3.OPEN_READONLY, // Mode lecture seule
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+      mode: sqlite3.OPEN_READONLY, // Mode lecture seule
+    });
+
     const requestQueries = [
       `SELECT DiscordID FROM Users WHERE EtatInscription = 1 AND ID_House = ?;`, // List present
       `SELECT DiscordID FROM Users WHERE EtatInscription = 3 AND ID_House = ?;`, // List absent
     ];
 
     const playerLists = await Promise.all(requestQueries.map((query) => db.all(query, [ID_House])));
+    await db.close();
 
     return playerLists.map((rows) => rows.map((row) => row.DiscordID));
   } catch (err) {
     logToFile(`Erreur récupération des inscrit house : ${ID_House} (listInscription) :\n ${err.message}`, "errors_bot.log");
     return [];
-  } finally {
-    await db.close();
   }
 }
 
 export async function listclass(language) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-    mode: sqlite3.OPEN_READONLY, // Mode lecture seule
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+      mode: sqlite3.OPEN_READONLY, // Mode lecture seule
+    });
+
     const requestQuery = `
       SELECT ID, 
              CASE 
@@ -333,13 +336,13 @@ export async function listclass(language) {
     `;
 
     const list = await db.all(requestQuery, [language]);
+    await db.close();
 
     return list;
   } catch (err) {
     logToFile(`Erreur lors de la récupération des classes (listclass) :\n${err.message}`, "errors_bot.log");
     throw err;
   } finally {
-    await db.close();
   }
 }
 
@@ -414,37 +417,38 @@ export async function resetManuelMsgGvG(houseData) {
 export async function change_admin(discord_id, newstate) {
   if (discord_id == null || newstate === null) return false;
 
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+
     const updateQuery = `UPDATE Users SET userAdmin = ? WHERE DiscordID = ?;`;
     const result = await db.run(updateQuery, [newstate, discord_id]);
+
+    await db.close();
+
     return result.changes > 0;
   } catch (err) {
     logToFile(`Erreur lors du changement d'admin (change_admin) :\n${err.message}`, "errors_bot.log");
     throw err;
-  } finally {
-    await db.close();
   }
 }
 
 export async function list_admin() {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
-
   try {
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+
     const selectQuery = `SELECT DiscordID, DiscordName, DiscordBaseName FROM Users WHERE userAdmin = 1;`;
     const rows = await db.all(selectQuery);
+    await db.close();
+
     return rows.map((row) => `- ${row.DiscordName} (${row.DiscordID}, ${row.DiscordBaseName})\n`);
   } catch (err) {
     logToFile(`Erreur (list_admin) :\n${err.message}`, "errors_bot.log");
     throw err;
-  } finally {
-    await db.close();
   }
 }

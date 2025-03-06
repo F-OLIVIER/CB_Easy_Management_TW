@@ -1,8 +1,8 @@
 // fichier annexe
 import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from "discord.js";
+import { loadTranslations } from "./language.js";
 import { updateIdMessage } from "./database.js";
 import { client } from "./Constant.js";
-import { translate } from "./translate.js";
 import { adressdb } from "./config.js";
 import { logToFile } from "./log.js";
 
@@ -66,29 +66,33 @@ export async function EmbedInscription(Langage, presents = [], absents = []) {
     nbabsents = absents.length;
   }
 
+  const translate = await loadTranslations(Langage);
+
   const embedData = new EmbedBuilder()
     .setTitle(":regional_indicator_g::regional_indicator_v::regional_indicator_g:")
     .setColor(13373715)
-    .setDescription(translate[Langage].EmbedGvG.description)
+    .setDescription(translate.EmbedGvG.description)
     .setThumbnail("https://i43.servimg.com/u/f43/15/76/70/95/poleax10.png")
     .addFields(
-      { name: translate[Langage].EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
-      { name: "✅ " + nbpresent + " __" + translate[Langage].EmbedGvG.nbpresent + "__", value: presents.length ? presents.join("\n") : translate[Langage].EmbedGvG.noinscrit, inline: true },
-      { name: "❌ " + nbabsents + " __" + translate[Langage].EmbedGvG.nbabsent + "__", value: absents.length ? absents.join("\n") : translate[Langage].EmbedGvG.noinscrit, inline: true }
+      { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
+      { name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__", value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit, inline: true },
+      { name: "❌ " + nbabsents + " __" + translate.EmbedGvG.nbabsent + "__", value: absents.length ? absents.join("\n") : translate.EmbedGvG.noinscrit, inline: true }
     );
 
   return embedData;
 }
 
 export async function ButtonEmbedInscription(Langage) {
+  const translate = await loadTranslations(Langage);
+
   const buttons = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId("present")
-      .setLabel("✅ " + translate[Langage].EmbedGvG.button_present)
+      .setLabel("✅ " + translate.EmbedGvG.button_present)
       .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
       .setCustomId("absent")
-      .setLabel("✖️ " + translate[Langage].EmbedGvG.button_absent)
+      .setLabel("✖️ " + translate.EmbedGvG.button_absent)
       .setStyle(ButtonStyle.Danger)
   );
 
@@ -107,11 +111,13 @@ export async function noGvGReactMsgGvG(houseData) {
     .messages.fetch(houseData.ID_MessageGvG)
     .then((message) => message.delete());
 
+  const translate = await loadTranslations(houseData.Langage);
+
   const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
   const embedData = new EmbedBuilder()
     .setTitle(":regional_indicator_g::regional_indicator_v::regional_indicator_g:")
     .setColor(13373715)
-    .setDescription(translate[houseData.Langage].EmbedGvG.description_nogvg)
+    .setDescription(translate.EmbedGvG.description_nogvg)
     .setThumbnail("https://i43.servimg.com/u/f43/15/76/70/95/spear10.png");
 
   // Génére le message et l'envoi sur discord

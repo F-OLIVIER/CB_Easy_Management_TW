@@ -4,7 +4,7 @@ import { cmdclass, resetManuelMsgGvG, updateBotActivation, updateInflu, updateLv
 import { client, msgChanDiscord, reponseUserInteraction } from "./Constant.js";
 import { get_houseData } from "./config_house.js";
 import { noGvGReactMsgGvG } from "./Embed_gvg.js";
-import { translate } from "./translate.js";
+import { loadTranslations } from "./language.js";
 import { logToFile } from "./log.js";
 
 // Module nodejs et npm
@@ -154,7 +154,8 @@ export async function createCommands() {
 
 export async function slashHelp(interaction) {
   const houseData = await get_houseData(interaction.guildId);
-  reponseUserInteraction(interaction, translate[houseData.Langage].help)
+  const translate = await loadTranslations(houseData.Langage);
+  reponseUserInteraction(interaction, translate.help.join('\n'))
   return true;
 }
 
@@ -163,7 +164,8 @@ export async function slashLevel(interaction) {
   await updateLvl(interaction.guildId, interaction.user.id, lvlnumber);
 
   const houseData = await get_houseData(interaction.guildId);
-  reponseUserInteraction(interaction, `${translate[houseData.Langage].information.lvl} : ${lvlnumber}`)
+  const translate = await loadTranslations(houseData.Langage);
+  reponseUserInteraction(interaction, `${translate.information.lvl} : ${lvlnumber}`)
   return true;
 }
 
@@ -172,7 +174,8 @@ export async function slashInflu(interaction) {
   await updateInflu(interaction.guildId, interaction.user.id, influnumber);
 
   const houseData = await get_houseData(interaction.guildId);
-  reponseUserInteraction(interaction, `${translate[houseData.Langage].information.influ} ${influnumber}`)
+  const translate = await loadTranslations(houseData.Langage);
+  reponseUserInteraction(interaction, `${translate.information.influ} ${influnumber}`)
   return true;
 }
 
@@ -181,9 +184,10 @@ export async function slashClass(interaction) {
   const options = await cmdclass(user_Info.userLangage);
 
   const houseData = await get_houseData(interaction.guildId);
+  const translate = await loadTranslations(houseData.Langage);
   const select = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId("class_selector").addOptions(options));
   const responseClass = await interaction.reply({
-    content: translate[houseData.Langage].information.class.select,
+    content: translate.information.class.select,
     components: [select],
     flags: MessageFlags.Ephemeral,
   });
@@ -199,20 +203,20 @@ export async function slashClass(interaction) {
     if (confirmation_responseClass.customId === "class_selector") {
       if (updateclass(interaction.guildId, interaction.user.id, confirmation_responseClass.values[0])) {
         interaction.editReply({
-          content: translate[houseData.Langage].information.class.confirm,
+          content: translate.information.class.confirm,
           components: [],
         });
         return true;
       } else {
         interaction.editReply({
-          content: translate[houseData.Langage].information.class.err,
+          content: translate.information.class.err,
           components: [],
         });
       }
     }
   } catch (e) {
     await interaction.editReply({
-      content: translate[houseData.Langage].information.class.delay,
+      content: translate.information.class.delay,
       components: [],
     });
   }
@@ -224,12 +228,14 @@ export async function slashClass(interaction) {
 // -------------------------------------------------------------------
 export async function slashResetmsggvg(interaction) {
   const houseData = await get_houseData(interaction.guildId);
+  const translate = await loadTranslations(houseData.Langage);
+
   if (houseData.Allumage == "0") {
     resetManuelMsgGvG(houseData);
-    msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate[houseData.Langage].gestion.resetmanuelmsggvg);
-    reponseUserInteraction(interaction, translate[houseData.Langage].gestion.resetmsggvg.ok);
+    msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.resetmanuelmsggvg);
+    reponseUserInteraction(interaction, translate.gestion.resetmsggvg.ok);
   } else {
-    reponseUserInteraction(interaction, translate[houseData.Langage].gestion.resetmsggvg.notok);
+    reponseUserInteraction(interaction, translate.gestion.resetmsggvg.notok);
   }
   return true;
 }
@@ -237,16 +243,17 @@ export async function slashResetmsggvg(interaction) {
 export async function botActivation(interaction) {
   const option = interaction.options.getString("option_bot_activation");
   const houseData = await get_houseData(interaction.guildId);
+  const translate = await loadTranslations(houseData.Langage);
 
   // Activation des inscriptions GvG
   if (option === "on") {
     if (houseData.Allumage == "1") {
       await updateBotActivation(interaction.guildId, "0");
       await resetManuelMsgGvG(houseData);
-      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate[houseData.Langage].gestion.updateBotActivation);
-      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.ok);
+      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.updateBotActivation);
+      reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
     } else {
-      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.notok);
+      reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
     }
   }
 
@@ -255,10 +262,10 @@ export async function botActivation(interaction) {
     if (houseData.Allumage == "0") {
       await updateBotActivation(interaction.guildId, "1");
       await noGvGReactMsgGvG(houseData);
-      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate[houseData.Langage].gestion.updateBotActivation);
-      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.ok);
+      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.updateBotActivation);
+      reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
     } else {
-      reponseUserInteraction(interaction, translate[houseData.Langage].gestion.botActivation.notok);
+      reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
     }
   }
 

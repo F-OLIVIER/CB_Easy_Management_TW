@@ -1,0 +1,134 @@
+{
+  "yes": "oui",
+  "no": "non",
+
+  "help": [
+    "Bonjour brave héros,",
+    "Je suis **Easy Management GvG**.",
+    "Mon rôle principal est de gérer les inscriptions aux guerres de territoire (GvG) pour le jeu **Conqueror's Blade**.",
+    "Pour **s'inscrire au GvG**, il suffit de répondre \"présent\" ou \"absent\" sur le message dédié au GvG. Je me charge de le changer après chaque guerre de territoire.",
+    "",
+    "**Voici la liste des commandes utilisateur**",
+    "* `/level` permet de mettre à jour le niveau de ton héros.",
+    "* `/influence` permet de mettre à jour l'influence de ton héros.",
+    "* `/class` permet de mettre à jour l'arme jouée de ton héros.",
+    "* `/data` permet de voir les informations te concernant.",
+    "* `/guide` permet d'avoir une liste de guides et tutoriels de Conqueror's Blade.",
+    "* `/site` permet d'afficher le lien du site internet associé.",
+    "* `/smartphone` permet de générer un token à usage unique pour se connecter à l'application téléphone.",
+    "",
+    "**Voici la liste des commandes réservées aux gestionnaires**",
+    "* `/config` permet de configurer la maison.",
+    "* `/bot_activation` permet d'activer (option `on`) ou de désactiver (option `off`) le message d'inscription au GvG afin d'éviter des pings inutiles.",
+    "* `/reset_msg_gvg` permet, en cas de bug du reset du message d'inscription au GvG, de le faire manuellement.",
+    "",
+    "Que la gloire soit dans ton sillage !"
+  ],
+
+  "config": {
+    "avertissement": "Nous allons passer en revue toutes les informations nécessaires au bon fonctionnement du bot.\nMerci de lire les explications sur le site internet avant de continuer, car vous avez éventuellement des paramétrages Discord à effectuer.\nLien des explications sur le site internet : ",
+    "ID_Chan_GvG": "**Chan Discord ou les utilisateurs vont s'inscrire.**",
+    "ID_Chan_Gestion": "**Chan Discord ou des messages d'information d'administration s'afficheront.**",
+    "ID_Chan_Users": "**Chan Discord ou des messages d'information au utilisateur du bot s'afficheront.**",
+    "ID_Group_Users": "**Groupe qui aura accès au site internet pour remplir leurs informations.**",
+    "ID_Group_Officier": "**Groupe qui aura accès à de l'administration du bot Discord.**",
+    "House_name": "Nom de la maison",
+    "Config_finish": [
+      "Vous avez terminé la configuration, vous pouvez à présent profiter de `CB_Easy_Management_GvG` !",
+      "",
+      "Vos utilisateurs peuvent aller sur le site internet compléter leurs informations et vous allez pouvoir facilement créer vos groupes pour les GvG.",
+      "",
+      "Souhaitez-vous que j'envoie un message dans le canal utilisateur pour les prévenir ?"
+    ],
+    "Welcome_msg": [
+      "Bonjour à tous,",
+      "Enchanté de faire votre connaissance",
+      "Je me présente, je suis `Easy_Management_GvG` et vos responsables Discord mon chargé d'écrire votre légende !",
+      "",
+      "__J'ai 2 missions principales :__",
+      "- Collecter vos présences pour les prochaines GvG (chose que je ferais directement sur ce Discord)",
+      "- Collecter vos informations IG. Par exemple : caserne, niveau, etc. (chose que je ferais via le site internet ou l'application mobile)",
+      "",
+      "Pour plus de détail, faire connaissance avec moi et connaître les possibilités que je peux vous apporter, vous pouvez utiliser la commande `/visit`."
+    ],
+    "finish": "Félicitations :tada:\nInteraction terminée, bot opérationnel."
+  },
+
+  "gestion": {
+    "resetmanuelmsggvg": "viens d'effectuer un reset manuel du message d'inscription au GvG",
+    "resetmsggvg": {
+      "ok": "Re-initialisation du message d'inscription au GvG effectué.",
+      "notok": "Action impossible, le message d'inscription GvG est désactivé. Utilise la commande `/bot_activation` pour l'activer."
+    },
+    "updateBotActivation": "viens de changer l'état des inscriptions du message d'inscription au GvG.",
+    "botActivation": {
+      "ok": "L'etat du message d'inscription a bien été changé.",
+      "notok": "Action impossible, le message d'inscription au GvG est déja dans l'etat souhaité."
+    }
+  },
+
+  "information": {
+    "UserJoinGroup": {
+      "1": "L'utilisateur",
+      "2": "viens d'être ajouté."
+    },
+    "UserLeaveDiscord": "abandonne le combat, il/elle viens de quitter le Discord.\nGrrrr, je vais encore faire plein de rature sur le registre !!!",
+    "UserLeaveGroupDiscord": "à été retiré des groupes Discord autorisé.",
+    "lvl": "Votre nouveau level de héros est",
+    "influ": "Votre nouvelle influence de héros est de",
+    "class": {
+      "select": "Choisissez votre arme",
+      "confirm": "Votre arme à bien été mis à jour",
+      "err": "Erreur lors de la mise à jour de votre arme",
+      "delay": "Delais de réponse dépassé"
+    },
+    "smartphone": {
+      "err": "Vous ne faites pas partie de la maison sur le jeu Conqueror's Blade !!!",
+      "ok": {
+        "description": [
+          ":information_source: Votre Token (à usage unique) vous permet de vous connecter à l'application mobile, afin de pouvoir le copier facilement, il vous est envoyé dans un autre message (ci-dessous).",
+          ":warning: Ce Token est associé à votre compte, ne le donner à personne sous aucun prétexte."
+        ],
+        "link_android": "Lien de l'application Android (Google Play Store)",
+        "link_ios": "Lien de l'application iOS (Apple Store)"
+      }
+    }
+  },
+
+  "EmbedGuide": {
+    "link1": "",
+    "link2": ""
+  },
+
+  "EmbedData": {
+    "nodata": "Aucune donnée",
+    "description_lvl": "Niveau de héros",
+    "lvl": "non defini \nutilise /level pour le definir",
+    "description_classe": "Classe joué en GvG",
+    "classe": "non defini\nutilise /classe pour le definir",
+    "description_influence": "Influence de votre héros (700 + armure)",
+    "description_inscription_GvG": "inscription GvG",
+    "present": "Inscrit présent",
+    "noinscrit": "Non inscrit",
+    "absent": "Inscrit absent",
+    "never": "Jamais inscrit",
+    "player": "Joueur",
+    "stat": "Statistique GvG",
+    "partiped_GvG": "GvG participé",
+    "last_GvG": "Derniére gvg participé",
+    "nolastGvG": "Jamais",
+    "pourcent_GvG": "Presence"
+  },
+
+  "EmbedGvG": {
+    "button_present": "Présent",
+    "button_absent": "Absent",
+    "description": "Veuillez indiquer votre présence pour la prochaine GvG.",
+    "description_nogvg": "La prochaine GvG sera une GvG d'entrainement (aussi appelée drill).\nPar conséquent, les inscriptions ne sont pas demandées.",
+
+    "date": "Date de la prochaine GvG",
+    "nbpresent": "Présent(s)",
+    "nbabsent": "Absent(s)",
+    "noinscrit": "Aucun"
+  }
+}

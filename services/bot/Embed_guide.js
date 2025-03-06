@@ -1,12 +1,14 @@
 // fichier annexe
-import { translate } from "./translate.js";
+import { loadTranslations } from "./language.js";
 
 // Embled DATA
 export async function EmbedGuide(Langage) {
+  const translate = await loadTranslations(Langage);
+
   let link1 = "[Le guide des guides / Guide to guides](https://conqblade.com/news/460)";
   let link2 = "[Bien commencer dans le jeu / Getting started in the game](https://conqblade.com/fr/news/538)";
 
-  let linkFR = "Guide et calculateur en Fran�ais / French guide and calculator :";
+  let linkFR = "Guide et calculateur en Français / French guide and calculator :";
   let linkFR1 = "[Conqueror's Blade - Caracteteristique heros et unites](https://drive.google.com/file/d/1g4vRkolXGbCKJVP3yk95u7AYdMS8yReL)";
   let linkFR2 = "[Conqueror's Blade - Artisanat](https://docs.google.com/spreadsheets/d/1WFi3G6ABFnwbTDQmeW2knrs99g3qF8PPzXpTk2vya6Q)";
   let linkFR3 = "[Guide des Quetes de Fiefs](https://docs.google.com/document/d/1Xu5TTSMOVv3AfecrL5VRPWmy0EQv8NGeFs4KhiPt8yQ )";

@@ -3,8 +3,8 @@ import { interactionsCache } from "./Main.js";
 import { adressdb, siteInternet } from "./config.js";
 import { initial_msgreactgvg } from "./Embed_gvg.js";
 import { createUserOneDiscord } from "./FuncData.js";
+import { loadTranslations } from "./language.js";
 import { msgChanDiscord } from "./Constant.js";
-import { translate } from "./translate.js";
 import { logToFile } from "./log.js";
 
 // Module nodejs et npm
@@ -13,6 +13,8 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
 export async function config_1_language(interaction) {
+  const translate = await loadTranslations('global');
+
   const options = Object.values(translate.list_language).map((language) => ({
     label: language.name,
     value: language.id,
@@ -49,11 +51,11 @@ export async function config_2_avertissement(interaction) {
   });
 
   const buttons = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId("config_avertissement").setLabel("Suite").setStyle(ButtonStyle.Primary));
-
+  const translate = await loadTranslations(language);
   // Suppression de l'intéraction précédente
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate[language].config.avertissement + "\n" + siteInternet,
+    content: "<@" + userId + ">\n" + translate.config.avertissement + "\n" + siteInternet,
     flags: MessageFlags.Ephemeral,
     components: [buttons],
   });
@@ -61,7 +63,8 @@ export async function config_2_avertissement(interaction) {
 
 export async function config_3_ID_Chan_GvG(interaction) {
   let houseData = interactionsCache.get(interaction.user.id);
-  return await list_discord_channels(interaction, translate[houseData.Langage].config.ID_Chan_GvG, "config_3_ID_Chan_GvG");
+  const translate = await loadTranslations(houseData.Langage);
+  return await list_discord_channels(interaction, translate.config.ID_Chan_GvG, "config_3_ID_Chan_GvG");
 }
 
 export async function config_4_ID_Chan_Gestion(interaction) {
@@ -71,7 +74,8 @@ export async function config_4_ID_Chan_Gestion(interaction) {
   houseData.ID_Chan_GvG = interaction.values[0];
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
-  return await list_discord_channels(interaction, translate[houseData.Langage].config.ID_Chan_Gestion, "config_4_ID_Chan_Gestion");
+  const translate = await loadTranslations(houseData.Langage);
+  return await list_discord_channels(interaction, translate.config.ID_Chan_Gestion, "config_4_ID_Chan_Gestion");
 }
 
 export async function config_5_ID_Chan_Users(interaction) {
@@ -81,7 +85,8 @@ export async function config_5_ID_Chan_Users(interaction) {
   houseData.ID_Chan_Gestion = interaction.values[0];
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
-  return await list_discord_channels(interaction, translate[houseData.Langage].config.ID_Chan_Users, "config_5_ID_Chan_Users");
+  const translate = await loadTranslations(houseData.Langage);
+  return await list_discord_channels(interaction, translate.config.ID_Chan_Users, "config_5_ID_Chan_Users");
 }
 
 export async function config_6_ID_Group_Users(interaction) {
@@ -91,7 +96,8 @@ export async function config_6_ID_Group_Users(interaction) {
   houseData.ID_Chan_Users = interaction.values[0];
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
-  return await list_discord_roles(interaction, translate[houseData.Langage].config.ID_Group_Users, "config_6_ID_Group_Users");
+  const translate = await loadTranslations(houseData.Langage);
+  return await list_discord_roles(interaction, translate.config.ID_Group_Users, "config_6_ID_Group_Users");
 }
 
 export async function config_7_ID_Group_Officier(interaction) {
@@ -101,7 +107,8 @@ export async function config_7_ID_Group_Officier(interaction) {
   houseData.ID_Group_Users = interaction.values[0];
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
-  return await list_discord_roles(interaction, translate[houseData.Langage].config.ID_Group_Officier, "config_7_ID_Group_Officier");
+  const translate = await loadTranslations(houseData.Langage);
+  return await list_discord_roles(interaction, translate.config.ID_Group_Officier, "config_7_ID_Group_Officier");
 }
 
 export async function config_8_name_house(interaction) {
@@ -110,12 +117,13 @@ export async function config_8_name_house(interaction) {
   let houseData = interactionsCache.get(userId);
   houseData.ID_Group_Officier = interaction.values[0];
   interactionsCache.set(userId, houseData);
+  const translate = await loadTranslations(houseData.Langage);
   // Modal pour récupérer le nom de la maison
   const modal = new ModalBuilder()
     .setTitle("Création d'un événement")
     .setCustomId("modalHouse_name")
     .setComponents(
-      new ActionRowBuilder().setComponents(new TextInputBuilder().setCustomId("House_name").setLabel(translate[houseData.Langage].config.House_name).setStyle(TextInputStyle.Short).setRequired(true))
+      new ActionRowBuilder().setComponents(new TextInputBuilder().setCustomId("House_name").setLabel(translate.config.House_name).setStyle(TextInputStyle.Short).setRequired(true))
     );
   await interaction.showModal(modal);
 }
@@ -146,43 +154,48 @@ export async function config_finish(interaction) {
 
   // Mise à jour du cache
   interactionsCache.set(userId, houseData);
-
+  
   // Création de la maison dans la db
   await config_house_db(houseData, exist_id_house);
-
+  
   // Ajout des utilisateurs des groupes selectionné à la db
   await createUserOneDiscord(houseData.ID_Server);
+  
+  const translate = await loadTranslations(houseData.Langage);
 
   // Réponse à l'utilisateur
   const buttons = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
       .setCustomId("config_finish_yes")
-      .setLabel("✅ " + translate[houseData.Langage].yes)
+      .setLabel("✅ " + translate.yes)
       .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
       .setCustomId("config_finish_no")
-      .setLabel("✖️ " + translate[houseData.Langage].no)
+      .setLabel("✖️ " + translate.no)
       .setStyle(ButtonStyle.Danger)
   );
   // Reponse à l'utilisateur
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate[houseData.Langage].config.Config_finish,
+    content: "<@" + userId + ">\n" + translate.config.Config_finish.join('\n'),
     flags: MessageFlags.Ephemeral,
     components: [buttons],
   });
 }
 
 export async function config_finish_yes(interaction) {
+  await interaction.deferUpdate();
+
   const userId = interaction.user.id;
   // Message de présentation au utilisateurs
   const houseData = interactionsCache.get(userId);
-  msgChanDiscord(houseData.ID_Group_Users, houseData.ID_Chan_Users, translate[houseData.Langage].config.Welcome_msg);
+  const translate = await loadTranslations(houseData.Langage);
+  msgChanDiscord(houseData.ID_Group_Users, houseData.ID_Chan_Users, translate.config.Welcome_msg.join('\n'));
 
   // Supression des bouttons
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate[houseData.Langage].config.finish,
+    content: "<@" + userId + ">\n" + translate.config.finish,
     flags: MessageFlags.Ephemeral,
   });
   // Suppression du cache utilisateur
@@ -190,12 +203,15 @@ export async function config_finish_yes(interaction) {
 }
 
 export async function config_finish_no(interaction) {
+  await interaction.deferUpdate();
+
   const userId = interaction.user.id;
   const houseData = interactionsCache.get(userId);
+  const translate = await loadTranslations(houseData.Langage);
   // Supression des bouttons
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate[houseData.Langage].config.finish,
+    content: "<@" + userId + ">\n" + translate.config.finish,
     flags: MessageFlags.Ephemeral,
   });
   // Suppression du cache utilisateur

@@ -1,6 +1,5 @@
 // fichier annexe
 import { logToFile } from "./log.js";
-import { translate } from "./translate.js";
 
 // Module nodejs et npm
 import { Client, GatewayIntentBits, MessageFlags, Partials } from "discord.js";
