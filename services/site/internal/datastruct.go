@@ -73,7 +73,7 @@ type Unit struct {
 	Maitrise     string       `json:"Unit_maitrise"`
 	UserMaitrise string       `json:"UserMaitrise"`
 
-	Newunitname string `json:"New_unit_name"`
+	Newunitname ListLanguage `json:"New_unit_name"`
 }
 
 type ChangeUnitCaserne struct {

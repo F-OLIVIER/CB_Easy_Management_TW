@@ -12,7 +12,7 @@ export async function administration() {
 
 let checkedRadioValue_Unit_maitrise = "";
 function containerAppAdmin(data) {
-  if (data.Gestion.Logged && data.Gestion.Officier) {
+  if (data.Gestion.Logged && data.Gestion.Admin) {
     communBlock(data);
 
     const subContainer = createHTMLElement("div", "subContainerbotEtat");
@@ -37,12 +37,12 @@ function containerAppAdmin(data) {
     formNewUnit.method = "POST";
     formNewUnit.enctype = "multipart/form-data";
     // Unit_name.EN
-    let input_Unit_nameEN = createHTMLElement("input", "nameNewUnit");
+    let input_Unit_nameEN = createHTMLElement("input", "nameNewUnitEN");
     input_Unit_nameEN.placeholder = "Name unit (English)";
     input_Unit_nameEN.required;
     formNewUnit.appendChild(input_Unit_nameEN);
     // Unit_name.FR
-    let input_Unit_nameFR = createHTMLElement("input", "nameNewUnit");
+    let input_Unit_nameFR = createHTMLElement("input", "nameNewUnitFR");
     input_Unit_nameFR.placeholder = "Name unit (French)";
     input_Unit_nameFR.required;
     formNewUnit.appendChild(input_Unit_nameFR);
@@ -185,12 +185,12 @@ function containerAppAdmin(data) {
     formNewclass.className = "formNewclass";
     formNewclass.method = "POST";
     // class_name
-    let input_class_name_en = createHTMLElement("input", "nameNewclass");
-    input_class_name_en.placeholder = "Name new class (English)";
+    let input_class_name_en = createHTMLElement("input", "nameNewclassEN");
+    input_class_name_en.placeholder = "Name new weapon (English)";
     input_class_name_en.required;
     formNewclass.appendChild(input_class_name_en);
-    let input_class_name_fr = createHTMLElement("input", "nameNewclass");
-    input_class_name_fr.placeholder = "Name new class (French)";
+    let input_class_name_fr = createHTMLElement("input", "nameNewclassFR");
+    input_class_name_fr.placeholder = "Name new weapon (French)";
     input_class_name_fr.required;
     formNewclass.appendChild(input_class_name_fr);
 
@@ -219,7 +219,7 @@ function addEventOnAllButton(listUnit) {
     event.preventDefault();
 
     // fenetre de confirmation
-    const userConfirmed = await confirmwindows("Confirmer la création de la nouvelle unité ?");
+    const userConfirmed = await confirmwindows("Confirm the creation of the new unit ?");
     if (userConfirmed) {
       const now = new Date();
       if (now - timerThrottlebutton > 500) {
@@ -244,8 +244,11 @@ function addEventOnAllButton(listUnit) {
       }
 
       // suppression des anciens éléments si existant
-      if (document.getElementById("changeUnitName")) {
-        document.getElementById("changeUnitName").remove();
+      if (document.getElementById("changeUnitNameEN")) {
+        document.getElementById("changeUnitNameEN").remove();
+      }
+      if (document.getElementById("changeUnitNameFR")) {
+        document.getElementById("changeUnitNameFR").remove();
       }
       if (document.getElementById("changeUnitInfluence")) {
         document.getElementById("changeUnitInfluence").remove();
@@ -265,16 +268,19 @@ function addEventOnAllButton(listUnit) {
       if (document.getElementById("changemaitriseUnit")) {
         document.getElementById("changemaitriseUnit").remove();
       }
+      if (document.getElementById("changeUnitType")) {
+        document.getElementById("changeUnitType").remove();
+      }
 
       if (selectChangeUnit.value != "") {
         // Ajout des nouveaux éléments
         let formChangeUnit = document.getElementById("formchangeUnit");
         // name_unit
-        let input_Unit_name_en = createHTMLElement("input", "changeUnitName");
+        let input_Unit_name_en = createHTMLElement("input", "changeUnitNameEN");
         input_Unit_name_en.type = "text";
         input_Unit_name_en.placeholder = "Name (english) : " + unitSelected.Unit_name.en;
         formChangeUnit.appendChild(input_Unit_name_en);
-        let input_Unit_name_fr = createHTMLElement("input", "changeUnitName");
+        let input_Unit_name_fr = createHTMLElement("input", "changeUnitNameFR");
         input_Unit_name_fr.type = "text";
         input_Unit_name_fr.placeholder = "Name (french) : " + unitSelected.Unit_name.fr;
         formChangeUnit.appendChild(input_Unit_name_fr);
@@ -375,7 +381,7 @@ function addEventOnAllButton(listUnit) {
       document.getElementById("formchangeUnit").addEventListener("submit", async (event) => {
         event.preventDefault();
         // fenetre de confirmation
-        const userConfirmed = await confirmwindows(`Confirmer la modification l'unité "${unitSelected.Unit_name}" ?`);
+        const userConfirmed = await confirmwindows(`Confirm unit modification "${unitSelected.Unit_name.en}" ?`);
         if (userConfirmed) {
           const now = new Date();
           if (now - timerThrottlebutton > 500) {
@@ -391,8 +397,8 @@ function addEventOnAllButton(listUnit) {
   document.getElementById("buttonNewclass").addEventListener("click", async (event) => {
     event.preventDefault();
     // fenetre de confirmation
-    if (document.getElementById("nameNewclass").value !== "") {
-      const userConfirmed = await confirmwindows(`Confirmer la modification la classe "${document.getElementById("nameNewclass").value}" ?`);
+    if (document.getElementById("nameNewclassEN").value !== "" && document.getElementById("nameNewclassFR").value !== "") {
+      const userConfirmed = await confirmwindows(`Confirm the addition of the weapon "${document.getElementById("nameNewclassEN").value}" ?`);
       if (userConfirmed) {
         const now = new Date();
         if (now - timerThrottlebutton > 500) {
@@ -400,25 +406,34 @@ function addEventOnAllButton(listUnit) {
           adminitrateBot("buttonNewclass");
         }
       }
+    } else {
+      alert("Please complete all fields to create the new weapon.");
     }
   });
 }
 
 // option et le name du button cliquer
 async function adminitrateBot(option) {
-  let dataToSend = {};
+  let dataToSend = {
+    newWeapon: {}
+  };
 
   if (option === "buttonNewclass") {
-    dataToSend.newWeapon = document.getElementById("nameNewclass").value;
+    dataToSend.newWeapon.en = document.getElementById("nameNewclassEN").value;
+    dataToSend.newWeapon.fr = document.getElementById("nameNewclassFR").value;
     sendData(dataToSend);
   } else {
     let formData = new FormData();
 
     // create Unit
     if (option === "buttonNewUnit") {
-      let createUnit = {};
-      const inputvalue_name = document.getElementById("nameNewUnit").value;
-      createUnit.Unit_name = removeHTMLTags(inputvalue_name);
+      let createUnit = {
+        Unit_name: {}
+      };
+      const inputvalue_name_en = document.getElementById("nameNewUnitEN").value;
+      createUnit.Unit_name.en = removeHTMLTags(inputvalue_name_en);
+      const inputvalue_name_fr = document.getElementById("nameNewUnitFR").value;
+      createUnit.Unit_name.fr = removeHTMLTags(inputvalue_name_fr);
       createUnit.Unit_influence = document.getElementById("influNewUnit").value;
       if (dataToSend.Unit_influence > 500) {
         alert("Impossible influence.");
@@ -431,7 +446,11 @@ async function adminitrateBot(option) {
       }
       createUnit.Unit_tier = document.getElementById("tierNewUnit").value;
       createUnit.Unit_type = document.getElementById("typeNewUnit").value;
-      createUnit.Unit_maitrise = checkedRadioValue_Unit_maitrise;
+      if (checkedRadioValue_Unit_maitrise) {
+        createUnit.Unit_maitrise = "1";
+      } else {
+        createUnit.Unit_maitrise = "0";
+      }
 
       dataToSend.createUnit = createUnit;
       formData.append("data", JSON.stringify(dataToSend));
@@ -469,21 +488,26 @@ async function adminitrateBot(option) {
 
     // change Unit
     if (option === "buttonChangeUnit") {
-      let changeUnit = {};
+      let changeUnit = {
+        Unit_name: {},
+        New_unit_name: {}
+      };
       // changeUnit.Unit_name = removeHTMLTags(document.getElementById('selectChangeUnit').value);
       const inputvalue_name = document.getElementById("selectChangeUnit").value;
-      changeUnit.Unit_name = removeHTMLTags(inputvalue_name);
+      changeUnit.Unit_name.fr = removeHTMLTags(inputvalue_name);
       // nouveau nom d'unité
-      changeUnit.New_unit_name = removeHTMLTags(document.getElementById("changeUnitName").value);
+      changeUnit.New_unit_name.en = removeHTMLTags(document.getElementById("changeUnitNameEN").value);
+      changeUnit.New_unit_name.fr = removeHTMLTags(document.getElementById("changeUnitNameFR").value);
+
       // influence unit
       changeUnit.Unit_influence = document.getElementById("changeUnitInfluence").value;
       if (changeUnit.Unit_influence > 500 || changeUnit.Unit_influence < 0) {
-        alert("Influence impossible.");
+        alert("Impossible influence.");
         return;
       }
       changeUnit.Unit_lvlMax = document.getElementById("changeUnitLvlMax").value;
       if (changeUnit.Unit_lvlMax > 50 || changeUnit.Unit_lvlMax < 0) {
-        alert("Level max d'unité impossible.");
+        alert("Max unit level impossible.");
         return;
       }
       changeUnit.Unit_tier = document.getElementById("changeUnitTier").value;
@@ -509,9 +533,9 @@ async function adminitrateBot(option) {
           window.location.href = "/AppAdmin";
         };
         reader.readAsDataURL(input_change_img.files[0]);
-      } else if (changeUnit.New_unit_name == "" && changeUnit.Unit_influence == "" && changeUnit.Unit_lvlMax == "" && changeUnit.Unit_tier == "" && !checkboxChangeUnitMaitrise.checked) {
+      } else if (changeUnit.New_unit_name.en == "" && changeUnit.New_unit_name.fr == "" && changeUnit.Unit_influence == "" && changeUnit.Unit_lvlMax == "" && changeUnit.Unit_tier == "" && !checkboxChangeUnitMaitrise.checked) {
         let divErrorChangeUnit = document.getElementById("divErrorChangeUnit");
-        divErrorChangeUnit.textContent = "Merci de compléter au moins un champs ou mettre une image pour mettre à jour l'unité " + changeUnit.Unit_name;
+        divErrorChangeUnit.textContent = "Please complete at least one field or upload an image to update the unit " + changeUnit.Unit_name;
         divErrorChangeUnit.style.display = "block";
       } else {
         // si send des data uniquement
@@ -539,6 +563,7 @@ function sendData(dataToSend) {
   // rechargement de page aprés modification
   window.location.href = "/AppAdmin";
 }
+
 function sendFormData(formData) {
   const currenthouse = localStorage.getItem("user_house");
 

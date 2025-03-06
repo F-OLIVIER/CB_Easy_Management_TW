@@ -1,4 +1,4 @@
-import { communBlock_notconnected, createHTMLElement } from "./useful.js";
+import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
 import { translate } from "./translate.js";
 
 export function accueil() {

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -269,7 +270,6 @@ func UpdateLanguage(r *http.Request, id_user string, database *sql.DB) {
 	stmt.Exec(user_receive.Language, id_user)
 }
 
-// FIXME:
 func UpdateAdministration(r *http.Request, database *sql.DB) {
 	var datajson data.AdministrateBot
 	err := json.NewDecoder(r.Body).Decode(&datajson)
@@ -277,7 +277,7 @@ func UpdateAdministration(r *http.Request, database *sql.DB) {
 
 	if datajson.NewWeapon.FR != "" { // ajout d'une nouvelle arme de héros
 		// insertion de la nouvelle arme dans la db
-		stmt, err := database.Prepare(`INSERT INTO ListGameCharacter(ClasseFR, ClasseEN) VALUES(?);`)
+		stmt, err := database.Prepare(`INSERT INTO ListGameCharacter(ClasseFR, ClasseEN) VALUES(?,?);`)
 		CheckErr("1- INSERT NewWeapon in UpdateAdministration ", err)
 		stmt.Exec(datajson.NewWeapon.FR, datajson.NewWeapon.EN)
 		message := data.SocketMessage{
@@ -301,7 +301,7 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) {
 			var formData data.AdministrateBot
 			err = json.Unmarshal([]byte(jsonData), &formData)
 			CheckErr("UploadInformationsBot: Erreur lors de la lecture des données JSON", err)
-			// fmt.Println("formData : ", formData)
+			fmt.Println("formData : ", formData)
 
 			file, header, err := r.FormFile("image")
 			if err == nil {
@@ -322,8 +322,7 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) {
 				}
 			}
 
-			fmt.Println("formData.ChangeUnit.Tier : ", formData.ChangeUnit.Tier)
-			if formData.ChangeUnit.LvlMax != "" || formData.ChangeUnit.Influence != "" || formData.ChangeUnit.Maitrise != "" || formData.ChangeUnit.Newunitname != "" || formData.ChangeUnit.Tier != "" { // Update des data d'une unit
+			if formData.ChangeUnit.LvlMax != "" || formData.ChangeUnit.Influence != "" || formData.ChangeUnit.Maitrise != "" || formData.ChangeUnit.Newunitname.EN != "" || formData.ChangeUnit.Newunitname.FR != "" || formData.ChangeUnit.Tier != "" { // Update des data d'une unit
 				updateDataUnit(formData.ChangeUnit, database)
 			}
 		} else {
@@ -335,30 +334,67 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) {
 }
 
 func createNewUnit(dataCreateUnit data.Unit, filepath string, database *sql.DB) {
-	// insertion de l'unité dans la table ListUnit
-	stmt, err := database.Prepare(`INSERT INTO ListUnit(Unit,InfuenceMax,LvlMax,TypeUnit,ForceUnit,Img) VALUES(?,?,?,?,?,?);`)
-	CheckErr("1- INSERT createNewUnit ", err)
-	stmt.Exec(dataCreateUnit.Name.FR, dataCreateUnit.Influence, dataCreateUnit.LvlMax, dataCreateUnit.Type, dataCreateUnit.Tier, filepath)
+	// Définir un délai d'attente pour éviter le verrouillage
+	_, err := database.Exec("PRAGMA busy_timeout = 5000;") // 5 secondes de timeout
+	CheckErr("PRAGMA busy_timeout", err)
 
-	// ajout de la colonne de l'unité dans la caserne
-	// nombre de colonne -1
-	nbColum := 0
-	stmtNbColum, err := database.Prepare(`SELECT count(*) FROM pragma_table_info('Caserne');`)
-	CheckErr("2- nbColum createNewUnit ", err)
-	stmtNbColum.QueryRow().Scan(&nbColum)
+	// Début de la transaction pour éviter les verrous concurrents
+	tx, err := database.Begin()
+	if err != nil {
+		log.Fatal("Erreur lors du démarrage de la transaction:", err)
+		return
+	}
+	defer tx.Commit() // Assurer que la transaction sera validée
+
+	// Insertion de l'unité dans la table ListUnit
+	stmt, err := tx.Prepare(`INSERT INTO ListUnit(UnitFR, UnitEN, InfuenceMax, LvlMax, Maitrise, TypeUnit, ForceUnit, Img) VALUES(?,?,?,?,?,?,?,?);`)
+	CheckErr("1- INSERT createNewUnit ", err)
+	defer stmt.Close()
+	_, err = stmt.Exec(dataCreateUnit.Name.FR, dataCreateUnit.Name.EN, dataCreateUnit.Influence, dataCreateUnit.LvlMax, dataCreateUnit.Maitrise, dataCreateUnit.Type, dataCreateUnit.Tier, filepath)
+	CheckErr("1- Exec createNewUnit ", err)
+
+	// Recherche d'une table Caserne existante
+	var tableName string
+	rows, err := tx.Query(`SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'Caserne%';`)
+	CheckErr("2- SELECT name tables Caserne ", err)
+
+	var nbColum int
+	// Lire la première ligne seulement
+	if rows.Next() {
+		err = rows.Scan(&tableName)
+		CheckErr("3- Scan nbColum createNewUnit", err)
+		// Nombre de colonne -1 dans la table "Caserne" principale (base pour l'indexation des unités)
+		queryNbColum := fmt.Sprintf("SELECT count(*) FROM pragma_table_info('%s');", tableName)
+		err = tx.QueryRow(queryNbColum).Scan(&nbColum)
+		CheckErr("3- nbColum createNewUnit ", err)
+	}
+	rows.Close()
 
 	if nbColum > 0 {
-		// ajout de la colonne dans la table Caserne
-		queryCaserne := fmt.Sprintf("ALTER TABLE Caserne ADD COLUMN %s INTEGER DEFAULT 0;", "Unit"+strconv.Itoa(nbColum-1))
-		stmtColumCaserne, err := database.Prepare(queryCaserne)
-		CheckErr("3- ALTER TABLE Caserne createNewUnit ", err)
-		stmtColumCaserne.Exec()
+		// Récupérer toutes les maisons dans la table Users
+		list_maison, err := tx.Query(`SELECT ID FROM Houses;`)
+		CheckErr("4- list_maison ", err)
+		defer list_maison.Close()
 
-		// ajout de la colonne dans la table CaserneMaitrise
-		queryCaserneMaitrise := fmt.Sprintf("ALTER TABLE CaserneMaitrise ADD COLUMN %s INTEGER DEFAULT 0;", "Unit"+strconv.Itoa(nbColum-1))
-		stmtColumCaserneMaitrise, err := database.Prepare(queryCaserneMaitrise)
-		CheckErr("3- ALTER TABLE CaserneMaitrise createNewUnit ", err)
-		stmtColumCaserneMaitrise.Exec()
+		// Préparer les requêtes pour l'ajout de colonnes
+		stmtColumCaserne := `ALTER TABLE Caserne%s ADD COLUMN %s INTEGER DEFAULT 0;`
+		stmtColumCaserneMaitrise := `ALTER TABLE CaserneMaitrise%s ADD COLUMN %s INTEGER DEFAULT 0;`
+
+		for list_maison.Next() {
+			var current_ID_House string
+			err = list_maison.Scan(&current_ID_House)
+			CheckErr("4- Scan list_maison ", err)
+
+			// Ajout de la colonne dans la table Caserne
+			queryCaserne := fmt.Sprintf(stmtColumCaserne, current_ID_House, "Unit"+strconv.Itoa(nbColum-1))
+			_, err = tx.Exec(queryCaserne)
+			CheckErr("5- ALTER TABLE Caserne createNewUnit ", err)
+
+			// Ajout de la colonne dans la table CaserneMaitrise
+			queryCaserneMaitrise := fmt.Sprintf(stmtColumCaserneMaitrise, current_ID_House, "Unit"+strconv.Itoa(nbColum-1))
+			_, err = tx.Exec(queryCaserneMaitrise)
+			CheckErr("5- ALTER TABLE CaserneMaitrise createNewUnit ", err)
+		}
 	}
 }
 
@@ -402,17 +438,21 @@ func updateDataUnit(dataCreateUnit data.Unit, database *sql.DB) {
 
 	fmt.Println("dataCreateUnit.Tier : ", dataCreateUnit.Tier)
 	if dataCreateUnit.Tier != "" {
-		fmt.Println("UPDATE ListUnit SET ForceUnit = ? WHERE UnitFR = ?;", dataCreateUnit.Tier, dataCreateUnit.Name.FR)
-		stmt, err := database.Prepare(`UPDATE ListUnit SET ForceUnit = ? WHERE Unit = ?;`)
+		stmt, err := database.Prepare(`UPDATE ListUnit SET ForceUnit = ? WHERE UnitFR = ?;`)
 		CheckErr("3- Update updateDataUnit ", err)
 		stmt.Exec(dataCreateUnit.Tier, dataCreateUnit.Name.FR)
 	}
 
 	// changement du nom de l'unit
-	if dataCreateUnit.Newunitname != "" {
+	if dataCreateUnit.Newunitname.EN != "" {
+		stmt, err := database.Prepare(`UPDATE ListUnit SET UnitEN = ? WHERE UnitFR = ?;`)
+		CheckErr("6- Update updateDataUnit ", err)
+		stmt.Exec(dataCreateUnit.Newunitname.EN, dataCreateUnit.Name.FR)
+	}
+	if dataCreateUnit.Newunitname.FR != "" {
 		stmt, err := database.Prepare(`UPDATE ListUnit SET UnitFR = ? WHERE UnitFR = ?;`)
 		CheckErr("6- Update updateDataUnit ", err)
-		stmt.Exec(dataCreateUnit.Newunitname, dataCreateUnit.Name.FR)
+		stmt.Exec(dataCreateUnit.Newunitname.FR, dataCreateUnit.Name.FR)
 	}
 }
 

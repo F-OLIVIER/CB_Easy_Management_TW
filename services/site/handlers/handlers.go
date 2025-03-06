@@ -281,8 +281,8 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						// --------------------------------------------------
 						// --------- Administrateur du site internet --------
 						// --------------------------------------------------
-						// case "/api/adminitrateBot":
-						// 	utils.UploadInformationsBot(r, database)
+						case "/api/adminitrateBot/":
+							utils.UploadInformationsBot(r, database)
 
 						case "/api/UpdateAdmin/":
 							utils.UpdateAdministration(r, database)
