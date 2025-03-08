@@ -13,7 +13,7 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
 export async function config_1_language(interaction) {
-  const translate = await loadTranslations('global');
+  const translate = await loadTranslations("global");
 
   const options = Object.values(translate.list_language).map((language) => ({
     label: language.name,
@@ -122,9 +122,7 @@ export async function config_8_name_house(interaction) {
   const modal = new ModalBuilder()
     .setTitle("Création d'un événement")
     .setCustomId("modalHouse_name")
-    .setComponents(
-      new ActionRowBuilder().setComponents(new TextInputBuilder().setCustomId("House_name").setLabel(translate.config.House_name).setStyle(TextInputStyle.Short).setRequired(true))
-    );
+    .setComponents(new ActionRowBuilder().setComponents(new TextInputBuilder().setCustomId("House_name").setLabel(translate.config.House_name).setStyle(TextInputStyle.Short).setRequired(true)));
   await interaction.showModal(modal);
 }
 
@@ -154,13 +152,13 @@ export async function config_finish(interaction) {
 
   // Mise à jour du cache
   interactionsCache.set(userId, houseData);
-  
+
   // Création de la maison dans la db
   await config_house_db(houseData, exist_id_house);
-  
+
   // Ajout des utilisateurs des groupes selectionné à la db
   await createUserOneDiscord(houseData.ID_Server);
-  
+
   const translate = await loadTranslations(houseData.Langage);
 
   // Réponse à l'utilisateur
@@ -177,7 +175,7 @@ export async function config_finish(interaction) {
   // Reponse à l'utilisateur
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate.config.Config_finish.join('\n'),
+    content: "<@" + userId + ">\n" + translate.config.Config_finish.join("\n"),
     flags: MessageFlags.Ephemeral,
     components: [buttons],
   });
@@ -190,7 +188,7 @@ export async function config_finish_yes(interaction) {
   // Message de présentation au utilisateurs
   const houseData = interactionsCache.get(userId);
   const translate = await loadTranslations(houseData.Langage);
-  msgChanDiscord(houseData.ID_Group_Users, houseData.ID_Chan_Users, translate.config.Welcome_msg.join('\n'));
+  msgChanDiscord(houseData.ID_Group_Users, houseData.ID_Chan_Users, translate.config.Welcome_msg.join("\n"));
 
   // Supression des bouttons
   await interaction.deleteReply();
@@ -307,7 +305,6 @@ async function config_house_db(houseData, exist_id_house) {
       await createCaserneTable(insertedID, db);
       await createGroupsTable(insertedID, db);
       logToFile(`Création de la maison ${houseData.House_name} (${houseData.ID_Server})`);
-
     } else {
       // Mise a jour des information de la maison
       const updateQuery_house = `UPDATE Houses SET
@@ -470,21 +467,21 @@ export async function get_houseData(ID_Server) {
     mode: sqlite3.OPEN_READONLY, // Mode lecture seule
   });
 
-  const selectQuery = `
-    SELECT ID, House_name, House_logo, Langage, ID_Server, ID_Group_Users, 
-           ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Allumage, ID_MessageGvG 
-    FROM Houses 
-    WHERE ID_Server = ?;
-  `;
-
   try {
+    const selectQuery = `
+      SELECT ID, House_name, House_logo, Langage, ID_Server, ID_Group_Users, 
+            ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Allumage, ID_MessageGvG 
+      FROM Houses 
+      WHERE ID_Server = ?;
+    `;
+
     const houseData = await db.get(selectQuery, [ID_Server]);
+    await db.close();
     return houseData || null; // Retourne null si aucune maison trouvée
   } catch (err) {
     logToFile(`Erreur lors de la récupération des données dans get_house_by_server_id :\n${err.message}`, "errors_bot.log");
-    throw err;
-  } finally {
     await db.close();
+    throw err;
   }
 }
 
@@ -495,16 +492,15 @@ export async function get_ID_House(ID_Server) {
     mode: sqlite3.OPEN_READONLY, // Mode lecture seule
   });
 
-  const selectQuery = `SELECT ID FROM Houses WHERE ID_Server = ?;`;
-
   try {
+    const selectQuery = `SELECT ID FROM Houses WHERE ID_Server = ?;`;
     const ID_House = await db.get(selectQuery, [ID_Server]);
+    await db.close();
     return ID_House?.ID || 0; // Retourne 0 si aucune maison trouvée
   } catch (err) {
     logToFile(`Erreur lors de la récupération des données dans get_house_by_server_id :\n${err.message}`, "errors_bot.log");
-    throw err;
-  } finally {
     await db.close();
+    throw err;
   }
 }
 
@@ -515,29 +511,29 @@ export async function list_ID_house() {
     mode: sqlite3.OPEN_READONLY, // Mode lecture seule
   });
 
-  const selectQuery = `SELECT ID_Server FROM Houses;`;
-
   try {
+    const selectQuery = `SELECT ID_Server FROM Houses;`;
     const rows = await db.all(selectQuery);
+    await db.close();
     return rows.map((row) => row.ID_Server);
   } catch (err) {
     logToFile(`Erreur lors de la récupération des ID_Houses (list_ID_house) :\n${err.message}`, "errors_bot.log");
-    throw err;
-  } finally {
     await db.close();
+    throw err;
   }
 }
 
 export async function deleteHouse(ID_Server) {
+  const houseData = await get_houseData(ID_Server);
+
+  if (!houseData) {
+    return;
+  }
+
   const db = await open({
     filename: adressdb,
     driver: sqlite3.Database,
   });
-
-  const houseData = await get_houseData(ID_Server);
-  if (!houseData) {
-    return;
-  }
 
   try {
     // Suppression des tables de la maison si elles existent
@@ -574,15 +570,14 @@ export async function houseExist(ID_Server) {
     mode: sqlite3.OPEN_READONLY, // Mode lecture seule
   });
 
-  const selectQuery = `SELECT ID FROM Houses WHERE ID_Server = ?;`;
-
   try {
+    const selectQuery = `SELECT ID FROM Houses WHERE ID_Server = ?;`;
     const result = await db.get(selectQuery, [ID_Server]);
+    await db.close();
     return result ? true : false; // Retourne true si une maison existe, sinon false
   } catch (err) {
     logToFile(`Erreur lors de la vérification de l'existence de la House :\n${err.message}`, "errors_bot.log");
-    return false; // En cas d'erreur, c'est que la maison n'existe pas
-  } finally {
     await db.close();
+    return false; // En cas d'erreur, c'est que la maison n'existe pas
   }
 }

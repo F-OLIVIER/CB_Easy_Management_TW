@@ -1,0 +1,306 @@
+{
+  "commun": {
+    "disconnected": "Se déconnecter",
+    "no_unit": "Unité non débloqué",
+    "listoption_maitrise": [
+      ["0", "Maîtrise non démarré", "red"],
+      ["1", "Maitrise en cours", "orange"],
+      ["2", "Maitrise compléte", "green"]
+    ]
+  },
+
+  "descriptionSections": [
+    {
+      "title": "Bot Discord",
+      "commands": [
+        [
+          "/config",
+          "<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>`"
+        ],
+        ["/visite", "Les commande sont expliqué par le bot"],
+        ["/site", "Affiche le lien du site internet associé au bot"],
+        ["/guide", "Affiche des informations d'aide sur Conqueror's Blade"],
+        ["/data", "Affiche les informations de l'utilisateur"],
+        ["/class", "Mettre à jour l'arme jouée avec votre héros"],
+        ["/level", "Mettre à jour le level de votre héros"],
+        ["/influence", "Mettre à jour l'influence de votre héros"],
+        ["/smarthone", "Génère un token de connexion pour l'application mobile"],
+        ["/reset_msg_gvg", "Reset manuel du message de réaction d'inscription GvG (gestionnaire uniquement)"],
+        ["/bot_activation", "Active ou désactive le message d'inscription au GvG (gestionnaire uniquement)"]
+      ],
+      "images": ["img/description/bot/slashcommand.png", "img/description/bot/message_gvg_on.png", "img/description/bot/message_gvg_off.png", "img/description/bot/commanddata.png"]
+    },
+    {
+      "title": "Liste des paramètres dont Discord Bot a besoin (commande /config)",
+      "commands": [
+        ["Nom de la maison", "Nom de la maison"],
+        ["Langue", "Langue dans lesquel le bot Discord enverra les messages sur Discord"],
+        ["Channel du message d'inscription au GvG", "Chan Discord ou les utilisateurs vont s'inscrire (message avec les boutons de réaction)."],
+        ["Channel utilisateur", "Chan Discord ou des messages d'information au utilisateur du bot s'afficheront (nouvelle unité ajoutée, etc.)."],
+        ["Channel de gestion", "Chan Discord ou des messages d'information d'administration s'afficheront (utilisateur qui quitte le Discord et se retrouve supprimer de la base de données)."],
+        ["Groupe utilisateur", "Groupe qui aura accès au site internet pour remplir leurs informations (caserne, lvl, etc.)."],
+        ["Groupe de gestion", "Groupe qui aura accès à de l'administration du bot Discord (ils ont automatiquement les droits de Groupe utilisateur)."]
+      ]
+    },
+    {
+      "title": "Site Internet",
+      "commands": [
+        ["Privé (utilisateur connecté)", "<span>Home (tableau de bord)</span><span>Fiche personnage</span><span>Caserne"],
+        ["Privé (groupe gestionnaire)", "<span>Création des groupes</span><span>Statistiques</span><span>Gestion des casernes utilisateur</span>"]
+      ],
+      "images": [
+        "img/description/site/dashboard1.png",
+        "img/description/site/dashboard2.png",
+        "img/description/site/charactercard.png",
+        "img/description/site/caserne.png",
+        "img/description/site/groupgvg1.png"
+      ]
+    },
+    {
+      "title": "Application Mobile",
+      "commands": [["Privé (utilisateur connecté)", "<span>Page de connexion</span><span>Page d'inscription au GvG</span><span>Fiche personnage</span><span>Caserne</span>"]],
+      "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
+    }
+  ],
+
+  "accueil": {
+    "description": "Easy Management GvG, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 3 applications interconnecté ensemble :</br>un bot Discord, ce site internet et une application mobile.",
+    "explain": "Description",
+    "adddiscord": "Ajouter à Discord"
+  },
+
+  "home": {
+    "houses": {
+      "1": "Ma Maison",
+      "2": "Mes Maisons",
+      "button": "Selectionner"
+    },
+    "characterChard": "Ma fiche personnage",
+    "caserne": "Ma caserne",
+    "zone_gestion": "Réservé aux gestionnaires",
+    "groupGvG": "Créer les groupes GvG",
+    "stat": "Statistique",
+    "caserne_other": "Consulter une caserne",
+    "zone_admin": "Réservé aux administrateurs",
+    "admin": "Page d'administration"
+  },
+
+  "characterCard": {
+    "info_user": {
+      "title": "Informations de mon héros",
+      "classe": {
+        "new": "Choisissez",
+        "get": "Classe actuel",
+        "set": "Changer de classe"
+      },
+      "level": {
+        "nodata": "Level jamais saisie",
+        "new": "Nouveau level",
+        "get": "Level actuel",
+        "set": "Changer de level"
+      },
+      "influence": {
+        "new": "Nouvelle influence",
+        "get": "Influence actuel",
+        "set": "Changer l'influence"
+      },
+      "button": "Mettre à jour mon personnage"
+    },
+
+    "info_GvG": {
+      "title": "Informations GvG",
+      "inscripted": {
+        "nodata": "⁉️ Vous n'éte pas inscrit pour la prochaine GvG",
+        "present": "✅ Inscrit présent pour la prochaine GvG",
+        "absent": "❌ Inscrit absent pour la prochaine GvG"
+      },
+      "button": {
+        "present": "M'inscrire présent",
+        "absent": "M'inscrire absent"
+      },
+      "nbGvG": "Nombre de gvg participé",
+      "lastGvG": {
+        "nodata": "Jamais participé",
+        "description": "Derniére gvg participé"
+      },
+      "noinscription": "Pas d'inscription pour les GvG actuellement"
+    },
+
+    "error": {
+      "err_select": "Tous les champs de mise à jour de votre héros sont vide !!!",
+      "err_lvl": "Ce level est impossible, veuillez corriger la valeur.",
+      "err_influ": "Cet influence est impossible, veuillez corriger la valeur."
+    }
+  },
+
+  "caserne": {
+    "consulcaserne": "Selectionner la caserne du joueur que vous souhaitez voir",
+    "select": "Choisissez",
+    "buttonconsul": "Mettre à jour la caserne",
+    "avertissement": "Pensez à sauvegarder votre caserne en cliquant sur le bouton \"Mettre à jour ma caserne\" en bas de page",
+    "infantry": "Infanterie",
+    "distant": "Distant",
+    "cavalry": "Cavalerie",
+    "button": "Mettre à jour ma caserne"
+  },
+
+  "stat": {
+    "filter": {
+      "title": "Filtrer par :",
+      "name": "Pseudo",
+      "class": "Classe joué",
+      "influ": "Influence",
+      "lvl": "Level",
+      "nbGvG": "Nb GvG",
+      "lastGvG": "Derniére GvG"
+    },
+
+    "title": {
+      "name": "Pseudo",
+      "class": "Classe joué",
+      "influ": "Influence",
+      "lvl": "Level",
+      "nbGvG": "GvG participé/total",
+      "lastGvG": "Dernière GvG participé"
+    }
+  },
+
+  "create_group": {
+    "legend": {
+      "title": "Légende :",
+      "username": "pseudo",
+      "influ": "influence <br> unités / joueur",
+      "unit1": "unité 1",
+      "unit2": "unité 2",
+      "unit3": "unité 3",
+      "unit4": "unité 4",
+      "namegroup": "Nom du groupe"
+    },
+    "select": "Choisissez",
+    "list_users": {
+      "title": "》 Liste des inscrits",
+      "listLegendplaced": ["✅ Joueur placé dans un groupe", "❌ Joueur NON placé dans un groupe"],
+      "username": "pseudo",
+      "influ": "influence joueur",
+      "class": "classe d'arme"
+    },
+    "who_have_unit": {
+      "title": "》 Qui à l'unité parmis les inscrits ?",
+      "who": "Choississez une unité pour connaitre la liste des joueurs qui ont cet unité",
+      "no_player": "Aucun joueurs n'a cet unité"
+    },
+    "create_group": {
+      "title": "》 Création des groupes GvG",
+      "listLegend": ["🔴 Unité non maitrisé", "🟡 Unité en cour de maitrise", "🟢 Unité maitrisé"],
+      "add_group": "➕ Ajouter un groupe",
+      "save_group": "💾 Sauvegarder les groupes",
+      "group_type": {
+        "title": "》 Groupes type",
+        "description": "Sauvegarder un groupe type va écraser le groupe type correspondant (attaque ou defense si celui-ci existe).</br>Lors du chargement d'un groupe type, les joueurs non inscrits ne seront pas affichés et les lignes resteront vides.",
+        "att": "Attaque",
+        "def": "Défense",
+        "save": "Sauvegarder le groupe en tant que groupe type",
+        "load": "Charger le groupe type"
+      },
+      "delete": "Supprimer le joueur",
+      "selectmenu": {
+        "title": "Option de gestion",
+        "t5inf": "T5 - Infanterie",
+        "t5dis": "T5 - Distant",
+        "t5cav": "T5 - Cavalerie",
+        "t4inf": "T4 - Infanterie",
+        "t4dis": "T4 - Distant",
+        "t4cav": "T4 - Cavalerie",
+        "t3inf": "T3 - Infanterie",
+        "t3dis": "T3 - Distant",
+        "t3cav": "T3 - Cavalerie",
+        "delete": "Supprimer l'unité",
+        "other": "Consulter un officier"
+      }
+    },
+    "preview": "Prévisualisations des groupes"
+  },
+
+  "view_group": {
+    "player": "Joueur",
+    "class": "classe joué",
+    "unit1": "unité 1",
+    "unit2": "unité 2",
+    "unit3": "unité 3",
+    "unit4": "unité 4",
+    "group": "Groupe",
+    "off": "Consulter un officier",
+    "download": "Télécharger l'image des groupes",
+    "back": "Revenir à l'édition des groupes"
+  },
+
+  "mention": {
+    "intro": "Cette politique de confidentialité explique comment nous collectons, utilisons, et protégeons vos informations lorsque vous utilisez l'une des 3 applications.</br>Les 3 applications sont :",
+    "listapp": ["Un bot Discord", "Ce site internet", "Une application mobile"],
+    "auth": {
+      "title": "Identification utilisé dans l'application",
+      "content": "Un système d'authentification non-personnelle (c'est-à-dire qui ne permet pas de vous identifier) est utilisé pour vous connecter et utiliser nos applications. Il est associé à votre identifiant unique Discord."
+    },
+    "collect": {
+      "title": "Informations collectées",
+      "content": "Nous ne collectons aucune information personnel, les informations collecté sont les suivantes :",
+      "list": [
+        "Informations personnelles : Aucune collecte d'information",
+        "Informations d'utilisation : Aucune collecte d'information",
+        "Informations de localisation : Aucune collecte d'information",
+        "Informations Discord : Votre identifiant, username, photo de profil et les roles discord",
+        "Informations de contenu du jeu Conqueror's Blade : les informations des unités (level, maitrise) de votre caserne IG (in game / en jeu) ainsi que de votre héros (level, classe joué, infuence) et de votre présence à la prochaine guerre de territoire"
+      ]
+    },
+    "cookie": {
+      "title": "Cookies",
+      "content": "Le site internet utilise uniquement un cookie de fonctionnement (Cookies strictement nécessaires).</br>Il n'y a aucun Cookies de performance, Cookies de fonctionnalité ou Cookies de ciblage marketing."
+    },
+    "use": {
+      "title": "Utilisation des informations",
+      "content": "Les informations collectées sont utilisées pour préparer les guerres de territoire (gestion des groupes par exemple)."
+    },
+    "rgpd": {
+      "title": "Protection des données",
+      "content": "Nous prenons la sécurité de vos données très au sérieux. Nous utilisons des mesures de sécurité standards pour protéger vos informations contre tout accès non autorisé, altération ou divulgation."
+    },
+    "share": {
+      "title": "Partage des informations",
+      "content": "Nous ne vendons ni ne partageons les informations avec aucun tiers."
+    },
+    "author": {
+      "title": "Créateur du site",
+      "content": "Le site internet a été créé et est maintenu par un particulier (OLIVIER Fabien).</br>Adresse : 76100 Rouen</br>Email: fabiendeveloppeur76@gmail.com"
+    },
+    "image_right": {
+      "title": "Avis sur les droits des contenus de Conqueror's Blade",
+      "content": "Les images, logos et autres contenus présents sur ce site appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces éléments et ils sont utilisés uniquement à des fins informatives ou illustratives.</br>Si vous êtes le détenteur des droits d’un contenu et souhaitez qu’il soit modifié ou supprimé, veuillez nous contacter à fabiendeveloppeur76@gmail.com. Nous nous engageons à prendre les mesures nécessaires dans les plus brefs délais."
+    },
+    "host": {
+      "title": "Hébergeur",
+      "content": "Le site internet ainsi que le bot Discord sont héberger chez SAS PulseHeberg.</br>Adresse: 9, Boulevard de Strasbourg, 83000 Toulon</br>Téléphone: +33 (0)4 22 14 13 60</br>Email: contact@pulseheberg.com</br>Site internet: <a href=\"https://pulseheberg.com\" target=\"_blank\">https://pulseheberg.com</a>"
+    }
+  },
+
+  "footer": {
+    "sections": [
+      {
+        "title": "À propos",
+        "content": "<p>Le meilleur systéme pour gérer vos GvG<br>sur Conqueror's Blade</p>"
+      },
+      {
+        "title": "Liens interne",
+        "content": "<ul><li><a href=\"/\">Accueil</a></li><li><a href=\"/description\">Comment sa marche ?</a></li><li><a href=\"/mentionlegale\">Mentions légales</a></li></ul>"
+      },
+      {
+        "title": "Liens externe",
+        "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Site Conqueror's Blade</a></li></ul>"
+      },
+      {
+        "title": "Contact",
+        "content": "<p>fabiendeveloppeur76@gmail.com</p>"
+      }
+    ],
+    "bottom": "<p>Ce site contient des images et des informations sur le jeu Conqueror's Blade. Tous les droits relatifs à ces éléments appartiennent à leurs propriétaires respectifs.</br>Nous ne revendiquons aucun droit sur ces contenus, qui sont utilisés uniquement à des fins informatives et illustratives.</p><p>&copy; 2025 OLIVIER Fabien.</p>"
+  }
+}

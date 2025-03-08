@@ -1,12 +1,14 @@
+import { loadTranslate } from "./translate.js";
 import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
-import { translate } from "./translate.js";
 
 let currentSectionIndex = null;
 let currentImageIndex = null;
 
-export function description() {
+export async function description() {
   const language = localStorage.getItem("selectedLang") || "en";
   document.getElementById("lang-select").value = language;
+
+  const translate = await loadTranslate(language);
 
   communBlock_notconnected();
 
@@ -14,7 +16,7 @@ export function description() {
   Container.innerHTML = "";
   let containerDescription = createHTMLElement("div", "containerDescription");
 
-  translate[language].descriptionSections.forEach((section, index) => {
+  translate.descriptionSections.forEach((section, index) => {
     let sectionDiv = createHTMLElement("div", "section");
 
     let title = document.createElement("h2");
@@ -56,17 +58,17 @@ export function description() {
       img.src = section.images[0];
       img.className = "carouselImage";
       img.dataset.index = 0;
-      img.onclick = () => openImageModal(img.src, index, 0);
+      img.onclick = () => openImageModal(img.src, index, 0, translate);
 
       let prevButton = document.createElement("button");
       prevButton.textContent = "◀";
       prevButton.className = "carouselButton";
-      prevButton.onclick = () => changeImage(index, -1, language);
+      prevButton.onclick = () => changeImage(index, -1, translate);
 
       let nextButton = document.createElement("button");
       nextButton.textContent = "▶";
       nextButton.className = "carouselButton";
-      nextButton.onclick = () => changeImage(index, 1, language);
+      nextButton.onclick = () => changeImage(index, 1, translate);
 
       carousel.appendChild(img);
       carouselContainer.appendChild(prevButton);
@@ -97,11 +99,11 @@ export function description() {
   lang_select("/description");
 }
 
-function changeImage(sectionIndex, direction, language) {
+function changeImage(sectionIndex, direction, translate) {
   let carousel = document.getElementById(`carousel-${sectionIndex}`);
   let img = carousel.querySelector("img");
 
-  let section = translate[language].descriptionSections[sectionIndex]; // Utilisation directe
+  let section = translate.descriptionSections[sectionIndex]; // Utilisation directe
 
   let currentIndex = parseInt(img.dataset.index);
   let newIndex = (currentIndex + direction + section.images.length) % section.images.length;
@@ -110,7 +112,7 @@ function changeImage(sectionIndex, direction, language) {
   img.dataset.index = newIndex;
 }
 
-function openImageModal(imageSrc, sectionIndex, imageIndex) {
+function openImageModal(imageSrc, sectionIndex, imageIndex, translate) {
   let modal = document.getElementById("imageModal");
   let modalImage = document.getElementById("modalImage");
 
@@ -135,16 +137,16 @@ function openImageModal(imageSrc, sectionIndex, imageIndex) {
   // Navigation avec les flèches
   modal.querySelector(".modal-prev").onclick = (event) => {
     event.stopPropagation(); // Empêche la fermeture en cliquant sur les flèches
-    changeModalImage(-1, language);
+    changeModalImage(-1, translate);
   };
   modal.querySelector(".modal-next").onclick = (event) => {
     event.stopPropagation(); // Empêche la fermeture en cliquant sur les flèches
-    changeModalImage(1, language);
+    changeModalImage(1, translate);
   };
 }
 
-function changeModalImage(direction, language) {
-  let section = translate[language].descriptionSections[currentSectionIndex];
+function changeModalImage(direction, translate) {
+  let section = translate.descriptionSections[currentSectionIndex];
   currentImageIndex = (currentImageIndex + direction + section.images.length) % section.images.length;
 
   document.getElementById("modalImage").src = section.images[currentImageIndex];

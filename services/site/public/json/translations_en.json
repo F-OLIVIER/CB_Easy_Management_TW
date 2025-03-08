@@ -1,0 +1,303 @@
+{
+    "commun": {
+      "disconnected": "Disconnecting",
+      "no_unit": "Unit not unlocked",
+      "listoption_maitrise": [
+        ["0", "Mastery not started", "red"],
+        ["1", "Mastery in progress", "orange"],
+        ["2", "Complete mastery", "green"]
+      ]
+    },
+
+    "descriptionSections": [
+      {
+        "title": "Discord Bot",
+        "commands": [
+            ["/config","<span>Used to configure the bot for your server</span><span>• If the bot has never been configured: all users can use this command</span><span>• If the bot has an existing setting for the server, only members of the management group or the owner of the Discord server can change the setting</span>"],
+          ["/visite", "The commands are explained by the bot"],
+          ["/site", "Displays the link to the website associated with the bot"],
+          ["/guide", "Displays help information about Conqueror's Blade"],
+          ["/data", "Displays user information"],
+          ["/class", "Update the weapon played with by your hero"],
+          ["/level", "Update your hero's level"],
+          ["/influence", "Update your hero's influence"],
+          ["/smarthone", "Generates a connection token for the mobile application"],
+          ["/reset_msg_gvg", "Manual reset of GvG registration reaction message (manager only)"],
+          ["/bot_activation", "Activate or deactivate the GvG registration message (manager only)"]
+        ],
+        "images": ["img/description/bot/slashcommand.png", "img/description/bot/message_gvg_on.png", "img/description/bot/message_gvg_off.png", "img/description/bot/commanddata.png"]
+      },
+      {
+        "title": "List of parameter Discord Bot need (command /config)",
+        "commands": [
+          ["House name", "House name"],
+          ["Language", "Language in which the Discord bot will send messages on Discord"],
+          ["GvG registration message channel", "Chan Discord where users will register (message with reaction buttons)."],
+          ["User channel", "Chan Discord or information messages to the bot user will be displayed (new unit added, etc.)."],
+          ["User manager", "Chan Discord or administration information messages will be displayed (user leaves Discord and is deleted from the database)."],
+          ["User group", "Group who will have access to the website to fill in their details (barrack, lvl, etc.)."],
+          ["User manager", "Group who will have access to the Discord bot administration."]
+        ]
+      },
+      {
+        "title": "Website",
+        "commands": [
+          ["Private (user connected)", "<span>Home (dashboard)</span><span>Character card</span><span>Barracks"],
+          ["Private (manager group)", "<span>Creating groups</span><span>Statistics</span><span>Managing user barracks</span>"]
+        ],
+        "images": [
+          "img/description/site/dashboard1.png",
+          "img/description/site/dashboard2.png",
+          "img/description/site/charactercard.png",
+          "img/description/site/caserne.png",
+          "img/description/site/groupgvg1.png"
+        ]
+      },
+      {
+        "title": "Mobile Application",
+        "commands": [["Private (user connected)", "<span>Login page</span><span>GvG registration page</span><span>Character card</span><span>Barracks</span>"]],
+        "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
+      }
+    ],
+
+    "accueil": {
+      "description": "What is Easy Management GvG?</br>It's a territory war management system for the Conqueror's Blade game.</br>This system is made up of 3 interconnected applications:</br>un bot Discord, ce site internet et une application mobile.",
+      "explain": "Description",
+      "adddiscord": "Add to Discord"
+    },
+
+    "home": {
+      "houses": {
+        "1": "My house",
+        "2": "My houses",
+        "button": "Select"
+      },
+      "characterChard": "My character card",
+      "caserne": "My barrack",
+      "zone_gestion": "Managers only",
+      "groupGvG": "Create GvG groups",
+      "stat": "Statistics",
+      "caserne_other": "Consult a barracks",
+      "zone_admin": "Administrators only",
+      "admin": "Administration page"
+    },
+
+    "characterCard": {
+      "info_user": {
+        "title": "My hero's details",
+        "classe": {
+          "new": "Choose",
+          "get": "Current class",
+          "set": "Changing class"
+        },
+        "level": {
+          "nodata": "Level never entered",
+          "new": "New level",
+          "get": "Current level",
+          "set": "Changing level"
+        },
+        "influence": {
+          "new": "New influence",
+          "get": "Current influence",
+          "set": "Changing influence"
+        },
+        "button": "Update my character"
+      },
+
+      "info_GvG": {
+        "title": "GvG information",
+        "inscripted": {
+          "nodata": "⁉️ You are not registered for the next GvG",
+          "present": "✅ Present from next GvG",
+          "absent": "❌ Absent from next GvG"
+        },
+        "button": {
+          "present": "Register me present",
+          "absent": "Register me absent"
+        },
+        "nbGvG": "Number of gvg participating",
+        "lastGvG": {
+          "nodata": "Never participated",
+          "description": "Last gvg participated"
+        },
+        "noinscription": "No registration for GvGs at the moment"
+      },
+
+      "error": {
+        "err_select": "All the update fields of your hero are empty !!!",
+        "err_lvl": "This level is not possible, please correct the value.",
+        "err_influ": "This influence is impossible, please correct the value."
+      }
+    },
+
+    "caserne": {
+      "consulcaserne": "Select the barrack of the player you wish to see",
+      "select": "Select",
+      "buttonconsul": "Updating the barrack",
+      "avertissement": "Remember to save your fire station by clicking on the \"Updating my barrack\" button at the bottom of the page.",
+      "infantry": "Infantry",
+      "distant": "Distant",
+      "cavalry": "Cavalry",
+      "button": "Updating my barrack"
+    },
+
+    "stat": {
+      "filter": {
+        "title": "Filter by :",
+        "name": "Username",
+        "class": "Class played",
+        "influ": "Influence",
+        "lvl": "Level",
+        "nbGvG": "GvG number",
+        "lastGvG": "Latest GvG"
+      },
+
+      "title": {
+        "name": "Username",
+        "class": "Class played",
+        "influ": "Influence",
+        "lvl": "Level",
+        "nbGvG": "GvG participated/total",
+        "lastGvG": "Last GvG participated"
+      }
+    },
+
+    "create_group": {
+      "legend": {
+        "title": "Legend :",
+        "username": "username",
+        "influ": "influence <br> units / player",
+        "unit1": "unit 1",
+        "unit2": "unit 2",
+        "unit3": "unit 3",
+        "unit4": "unit 4",
+        "namegroup": "Group name"
+      },
+      "select": "Select",
+      "list_users": {
+        "title": "》 List of registered users",
+        "listLegendplaced": ["✅ Player in a group", "❌ Player NOT in a group"],
+        "username": "username",
+        "influ": "player influence",
+        "class": "weapons class"
+      },
+      "who_have_unit": {
+        "title": "》 Who's registered for the unit ?",
+        "who": "Choose a unit to see the list of players who have this unit",
+        "no_player": "No players have this unit"
+      },
+      "create_group": {
+        "title": "》 Creating GvG groups",
+        "listLegend": ["🔴 Unit not mastered", "🟡 Unit being mastered", "🟢 Unit mastered"],
+        "add_group": "➕ Add a new group",
+        "save_group": "💾 Save groups",
+        "group_type": {
+          "title": "》 Groups type",
+          "description": "Save will overwrite the corresponding test group.</br>When a sample group is loaded, unregistered players will not be displayed and the rows will remain empty.",
+          "att": "Attack",
+          "def": "Defence",
+          "save": "Save the type group as a type",
+          "load": "Load type group"
+        },
+        "delete": "Supprimer le joueur",
+        "selectmenu": {
+          "title": "Option de gestion",
+          "t5inf": "T5 - Infantry",
+          "t5dis": "T5 - Distant",
+          "t5cav": "T5 - Cavalry",
+          "t4inf": "T4 - Infantry",
+          "t4dis": "T4 - Distant",
+          "t4cav": "T4 - Cavalry",
+          "t3inf": "T3 - Infantry",
+          "t3dis": "T3 - Distant",
+          "t3cav": "T3 - Cavalry",
+          "delete": "Delete unit",
+          "other": "Consult an officer"
+        }
+      },
+      "preview": "Groups previews"
+    },
+
+    "view_group": {
+      "player": "player",
+      "class": "weapon play",
+      "unit1": "unit 1",
+      "unit2": "unit 2",
+      "unit3": "unit 3",
+      "unit4": "unit 4",
+      "group": "Group",
+      "off": "Consult an officer",
+      "download": "Download the groups image",
+      "back": "Back to editing groups"
+    },
+
+    "mention": {
+      "intro": "Cette politique de confidentialité explique comment nous collectons, utilisons, et protégeons vos informations lorsque vous utilisez l'une des 3 applications.</br>Les 3 applications sont :",
+      "listapp": ["Un bot Discord", "Ce site internet", "Une application mobile"],
+      "auth": {
+        "title": "Identification utilisé dans l'application",
+        "content": "Un système d'authentification non-personnelle (c'est-à-dire qui ne permet pas de vous identifier) est utilisé pour vous connecter et utiliser nos applications. Il est associé à votre identifiant unique Discord."
+      },
+      "collect": {
+        "title": "Informations collectées",
+        "content": "Nous ne collectons aucune information personnel, les informations collecté sont les suivantes :",
+        "list": [
+          "Informations personnelles : Aucune collecte d'information",
+          "Informations d'utilisation : Aucune collecte d'information",
+          "Informations de localisation : Aucune collecte d'information",
+          "Informations Discord : Votre identifiant, username, photo de profil et les roles discord",
+          "Informations de contenu du jeu Conqueror's Blade : les informations des unités (level, maitrise) de votre caserne IG (in game / en jeu) ainsi que de votre héros (level, classe joué, infuence) et de votre présence à la prochaine guerre de territoire"
+        ]
+      },
+      "cookie": {
+        "title": "Cookies",
+        "content": "Le site internet utilise uniquement un cookie de fonctionnement (Cookies strictement nécessaires).</br>Il n'y a aucun Cookies de performance, Cookies de fonctionnalité ou Cookies de ciblage marketing."
+      },
+      "use": {
+        "title": "Utilisation des informations",
+        "content": "Les informations collectées sont utilisées pour préparer les guerres de territoire (gestion des groupes par exemple)."
+      },
+      "rgpd": {
+        "title": "Protection des données",
+        "content": "Nous prenons la sécurité de vos données très au sérieux. Nous utilisons des mesures de sécurité standards pour protéger vos informations contre tout accès non autorisé, altération ou divulgation."
+      },
+      "share": {
+        "title": "Partage des informations",
+        "content": "Nous ne vendons ni ne partageons les informations avec aucun tiers."
+      },
+      "author": {
+        "title": "Créateur du site",
+        "content": "Le site internet a été créé et est maintenu par un particulier (OLIVIER Fabien).</br>Adresse : 76100 Rouen</br>Email: fabiendeveloppeur76@gmail.com"
+      },
+      "image_right": {
+        "title": "Avis sur les droits des contenus de Conqueror's Blade",
+        "content": "Les images, logos et autres contenus présents sur ce site appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces éléments et ils sont utilisés uniquement à des fins informatives ou illustratives.</br>Si vous êtes le détenteur des droits d’un contenu et souhaitez qu’il soit modifié ou supprimé, veuillez nous contacter à fabiendeveloppeur76@gmail.com. Nous nous engageons à prendre les mesures nécessaires dans les plus brefs délais."
+      },
+      "host": {
+        "title": "Hébergeur",
+        "content": "Le site internet ainsi que le bot Discord sont héberger chez SAS PulseHeberg.</br>Adresse: 9, Boulevard de Strasbourg, 83000 Toulon</br>Téléphone: +33 (0)4 22 14 13 60</br>Email: contact@pulseheberg.com</br>Site internet: <a href=\"https://pulseheberg.com\" target=\"_blank\">https://pulseheberg.com</a>"
+      }
+    },
+
+    "footer": {
+      "sections": [
+        {
+          "title": "About us",
+          "content": "<p>The best system for managing your GvG<br>on Conqueror's Blade</p>"
+        },
+        {
+          "title": "Internal links",
+          "content": "<ul><li><a href=\"/\">Home</a></li><li><a href=\"/description\">How it works</a></li><li><a href=\"/mentionlegale\">Legal information</a></li></ul>"
+        },
+        {
+          "title": "External links",
+          "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Website Conqueror's Blade</a></li></ul>"
+        },
+        {
+          "title": "Contact",
+          "content": "<p>fabiendeveloppeur76@gmail.com</p>"
+        }
+      ],
+      "bottom": "<p>This site contains images and information about the game Conqueror's Blade. All rights to these elements belong to their respective owners.</br>We do not claim any rights over these contents, which are used for informational and illustrative purposes only.</p><p>&copy; 2025 OLIVIER Fabien.</p>"
+    }
+  }

@@ -275,13 +275,22 @@ func UpdateAdministration(r *http.Request, database *sql.DB) {
 	err := json.NewDecoder(r.Body).Decode(&datajson)
 	CheckErr("Erreur de décodage JSON SaveCreateGroup", err)
 
-	if datajson.NewWeapon.FR != "" { // ajout d'une nouvelle arme de héros
+	if !datajson.Informationdiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" { // ajout d'une nouvelle arme de héros
 		// insertion de la nouvelle arme dans la db
 		stmt, err := database.Prepare(`INSERT INTO ListGameCharacter(ClasseFR, ClasseEN) VALUES(?,?);`)
 		CheckErr("1- INSERT NewWeapon in UpdateAdministration ", err)
 		stmt.Exec(datajson.NewWeapon.FR, datajson.NewWeapon.EN)
 		message := data.SocketMessage{
 			Type: "newclass",
+			Content: map[string]string{
+				"fr": datajson.NewWeapon.FR,
+				"en": datajson.NewWeapon.EN,
+			},
+		}
+		SendMessage(message)
+	} else if datajson.Informationdiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" {
+		message := data.SocketMessage{
+			Type: "informationdiscord",
 			Content: map[string]string{
 				"fr": datajson.NewWeapon.FR,
 				"en": datajson.NewWeapon.EN,

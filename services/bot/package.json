@@ -1,5 +1,5 @@
 {
-  "name": "Plateforme CB_Easy_Management_GvG",
+  "name": "plateforme_cb_easy_management_gvg",
   "version": "3.0.0",
   "description": "Bot Discord pour le jeux Conqueror's Blade",
   "type": "module",
@@ -8,13 +8,13 @@
     "start": "node ./Main.js"
   },
   "dependencies": {
-    "cron": "^4.0.0",
+    "cron": "^4.1.0",
     "date-fns": "^4.1.0",
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
     "moment-timezone": "^0.5.47",
-    "sqlite3": "^5.1.7",
     "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "uuid": "^11.1.0",
     "ws": "^8.18.1"
   },
@@ -23,6 +23,6 @@
     "npm": "^11.x.x"
   },
   "license": "MIT",
-  "author": "F. OLIVIER",
+  "author": "OLIVIER Fabien",
   "main": "Main.js"
 }

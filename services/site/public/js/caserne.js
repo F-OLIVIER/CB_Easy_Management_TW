@@ -1,123 +1,125 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
-import { translate } from "./translate.js";
 import { adressAPI } from "./config.js";
+import { loadTranslate } from "./translate.js";
 
 export async function caserne() {
   const currenthouse = localStorage.getItem("user_house");
   if ((currenthouse == "") | (currenthouse == null) | (currenthouse == undefined)) {
     window.location.href = "/home";
   } else {
-    containercaserne(await fetchServer("caserne/?house=" + currenthouse));
+    const data = await fetchServer("caserne/?house=" + currenthouse);
+    if (data.Gestion.Logged) {
+      const translate = await loadTranslate(data.UserInfo.Language);
+      containercaserne(data, translate);
+    } else {
+      fetchlogout();
+    }
   }
 }
 
 let timerThrottlebutton = 0;
-function containercaserne(data) {
-  if (data.Gestion.Logged) {
-    communBlock(data);
+function containercaserne(data, translate) {
+  communBlock(data, translate);
 
-    let Container = document.getElementById("Container");
+  let Container = document.getElementById("Container");
 
-    let avertissementsave = createHTMLElement("div", "avertissementsavecaserne");
-    avertissementsave.textContent = translate[data.UserInfo.Language].caserne.avertissement;
-    Container.appendChild(avertissementsave);
+  let avertissementsave = createHTMLElement("div", "avertissementsavecaserne");
+  avertissementsave.textContent = translate.caserne.avertissement;
+  Container.appendChild(avertissementsave);
 
-    let caserne = createHTMLElement("div", "caserne");
+  let caserne = createHTMLElement("div", "caserne");
 
-    let divInfanterie = createHTMLElement("div", "divInfanterie");
-    let TitleDivInfanterie = document.createElement("div");
-    TitleDivInfanterie.id = "titleInfanterie";
-    TitleDivInfanterie.classList.add("titlelistUnit");
-    TitleDivInfanterie.textContent = "》 " + translate[data.UserInfo.Language].caserne.infantry;
-    let listUnitInfanterie = document.createElement("div");
-    listUnitInfanterie.classList.add("listUnit");
-    listUnitInfanterie.style.display = "none";
+  let divInfanterie = createHTMLElement("div", "divInfanterie");
+  let TitleDivInfanterie = document.createElement("div");
+  TitleDivInfanterie.id = "titleInfanterie";
+  TitleDivInfanterie.classList.add("titlelistUnit");
+  TitleDivInfanterie.textContent = "》 " + translate.caserne.infantry;
+  let listUnitInfanterie = document.createElement("div");
+  listUnitInfanterie.classList.add("listUnit");
+  listUnitInfanterie.style.display = "none";
 
-    let divDistant = createHTMLElement("div", "divDistant");
-    let TitleDivDistant = document.createElement("div");
-    TitleDivDistant.id = "titleDistant";
-    TitleDivDistant.classList.add("titlelistUnit");
-    TitleDivDistant.textContent = "》 " + translate[data.UserInfo.Language].caserne.distant;
-    let listUnitDistant = document.createElement("div");
-    listUnitDistant.classList.add("listUnit");
-    listUnitDistant.style.display = "none";
+  let divDistant = createHTMLElement("div", "divDistant");
+  let TitleDivDistant = document.createElement("div");
+  TitleDivDistant.id = "titleDistant";
+  TitleDivDistant.classList.add("titlelistUnit");
+  TitleDivDistant.textContent = "》 " + translate.caserne.distant;
+  let listUnitDistant = document.createElement("div");
+  listUnitDistant.classList.add("listUnit");
+  listUnitDistant.style.display = "none";
 
-    let divCav = createHTMLElement("div", "divCav");
-    let TitleDivCav = document.createElement("div");
-    TitleDivCav.id = "titleCav";
-    TitleDivCav.classList.add("titlelistUnit");
-    TitleDivCav.textContent = "》 " + translate[data.UserInfo.Language].caserne.cavalry;
-    let listUnitCav = document.createElement("div");
-    listUnitCav.classList.add("listUnit");
-    listUnitCav.style.display = "none";
+  let divCav = createHTMLElement("div", "divCav");
+  let TitleDivCav = document.createElement("div");
+  TitleDivCav.id = "titleCav";
+  TitleDivCav.classList.add("titlelistUnit");
+  TitleDivCav.textContent = "》 " + translate.caserne.cavalry;
+  let listUnitCav = document.createElement("div");
+  listUnitCav.classList.add("listUnit");
+  listUnitCav.style.display = "none";
 
-    // ajout des unité dans un certain ordre
-    addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T5");
-    addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T4");
-    addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T3");
+  // ajout des unité dans un certain ordre
+  addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T5");
+  addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T4");
+  addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T3");
 
-    divInfanterie.appendChild(TitleDivInfanterie);
-    divInfanterie.appendChild(listUnitInfanterie);
-    caserne.appendChild(divInfanterie);
-    TitleDivInfanterie.addEventListener("click", function () {
-      const now = new Date();
-      if (now - timerThrottlebutton > 500) {
-        timerThrottlebutton = now;
-        if (listUnitInfanterie.style.display === "none") {
-          TitleDivInfanterie.textContent = "︾ " + translate[data.UserInfo.Language].caserne.infantry;
-          listUnitInfanterie.style.display = "flex";
-        } else {
-          TitleDivInfanterie.textContent = "》 " + translate[data.UserInfo.Language].caserne.infantry;
-          listUnitInfanterie.style.display = "none";
-        }
+  divInfanterie.appendChild(TitleDivInfanterie);
+  divInfanterie.appendChild(listUnitInfanterie);
+  caserne.appendChild(divInfanterie);
+  TitleDivInfanterie.addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (listUnitInfanterie.style.display === "none") {
+        TitleDivInfanterie.textContent = "︾ " + translate.caserne.infantry;
+        listUnitInfanterie.style.display = "flex";
+      } else {
+        TitleDivInfanterie.textContent = "》 " + translate.caserne.infantry;
+        listUnitInfanterie.style.display = "none";
       }
-    });
+    }
+  });
 
-    divDistant.appendChild(TitleDivDistant);
-    divDistant.appendChild(listUnitDistant);
-    caserne.appendChild(divDistant);
-    TitleDivDistant.addEventListener("click", function () {
-      const now = new Date();
-      if (now - timerThrottlebutton > 500) {
-        timerThrottlebutton = now;
-        if (listUnitDistant.style.display === "none") {
-          TitleDivDistant.textContent = "︾ " + translate[data.UserInfo.Language].caserne.distant;
-          listUnitDistant.style.display = "flex";
-        } else {
-          TitleDivDistant.textContent = "》 " + translate[data.UserInfo.Language].caserne.distant;
-          listUnitDistant.style.display = "none";
-        }
+  divDistant.appendChild(TitleDivDistant);
+  divDistant.appendChild(listUnitDistant);
+  caserne.appendChild(divDistant);
+  TitleDivDistant.addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (listUnitDistant.style.display === "none") {
+        TitleDivDistant.textContent = "︾ " + translate.caserne.distant;
+        listUnitDistant.style.display = "flex";
+      } else {
+        TitleDivDistant.textContent = "》 " + translate.caserne.distant;
+        listUnitDistant.style.display = "none";
       }
-    });
+    }
+  });
 
-    divCav.appendChild(TitleDivCav);
-    divCav.appendChild(listUnitCav);
-    caserne.appendChild(divCav);
-    TitleDivCav.addEventListener("click", function () {
-      const now = new Date();
-      if (now - timerThrottlebutton > 500) {
-        timerThrottlebutton = now;
-        if (listUnitCav.style.display === "none") {
-          TitleDivCav.textContent = "︾ " + translate[data.UserInfo.Language].caserne.cavalry;
-          listUnitCav.style.display = "flex";
-        } else {
-          TitleDivCav.textContent = "》 " + translate[data.UserInfo.Language].caserne.cavalry;
-          listUnitCav.style.display = "none";
-        }
+  divCav.appendChild(TitleDivCav);
+  divCav.appendChild(listUnitCav);
+  caserne.appendChild(divCav);
+  TitleDivCav.addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (listUnitCav.style.display === "none") {
+        TitleDivCav.textContent = "︾ " + translate.caserne.cavalry;
+        listUnitCav.style.display = "flex";
+      } else {
+        TitleDivCav.textContent = "》 " + translate.caserne.cavalry;
+        listUnitCav.style.display = "none";
       }
-    });
+    }
+  });
 
-    let buttonMAJ = document.createElement("button");
-    buttonMAJ.textContent = translate[data.UserInfo.Language].caserne.button;
-    buttonMAJ.id = "MAJCaserne";
-    buttonMAJ.className = "MAJCaserne";
-    caserne.appendChild(buttonMAJ);
-    Container.appendChild(caserne);
+  let buttonMAJ = document.createElement("button");
+  buttonMAJ.textContent = translate.caserne.button;
+  buttonMAJ.id = "MAJCaserne";
+  buttonMAJ.className = "MAJCaserne";
+  caserne.appendChild(buttonMAJ);
+  Container.appendChild(caserne);
 
-    MAJCaserne(data.ListUnit.length);
-  } else {
-    fetchlogout();
-  }
+  MAJCaserne(data.ListUnit.length);
 }
 
 function MAJCaserne(nbunit) {

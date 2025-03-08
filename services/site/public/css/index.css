@@ -370,6 +370,7 @@
 
 .house {
   width: 100%;
+  max-width: 500px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -1036,7 +1037,7 @@
   width: 100%;
   flex-direction: column;
   justify-content: center;
-  background-color: #33fae9;
+  background-color: var(--main-background-color);
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
   border-radius: 20px;
 }
@@ -1051,9 +1052,10 @@
 .divCharger {
   display: flex;
   flex-direction: column;
-  background-color: rgb(0, 0, 0, 0.2);
+  background-color: var(--main-background-color);
   margin: 10px;
   border-radius: 25px;
+  border: 2px solid white;
 }
 
 .saveGroupType,
@@ -1199,7 +1201,8 @@
 
 .divNewUnit,
 .divChangeUnit,
-.divNewclass {
+.divNewclass,
+.divinformationDiscord {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -1215,20 +1218,23 @@
 }
 
 .divChangeUnit,
-.divNewUnit {
+.divNewUnit,
+.divNewclass {
   margin-bottom: 50px;
 }
 
 .titleNewUnit,
 .titleChangeUnit,
-.titleNewclass {
+.titleNewclass,
+.titleinformationDiscord {
   width: 100%;
   margin-bottom: 10px;
 }
 
 .newUnit,
 .formchangeUnit,
-.formNewclass {
+.formNewclass,
+.forminformationDiscord {
   width: 95%;
   display: flex;
   flex-direction: column;
@@ -1239,7 +1245,8 @@
 .divNewUnit input,
 .divChangeUnit select,
 .divChangeUnit input,
-.formNewclass input {
+.formNewclass input,
+.forminformationDiscord textarea {
   font-size: 16px;
   text-align: center;
   border: 2px solid white;

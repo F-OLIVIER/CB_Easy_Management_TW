@@ -1,11 +1,13 @@
 import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
-import { translate } from "./translate.js";
+import { loadTranslate } from "./translate.js";
 
-export function accueil() {
+export async function accueil() {
   const language = localStorage.getItem("selectedLang") || "en";
   document.getElementById("lang-select").value = language;
 
-  communBlock_notconnected();
+  const translate = await loadTranslate(language);
+
+  communBlock_notconnected(translate);
   let Container = document.getElementById("Container");
   Container.innerHTML = "";
   let containerAccueil = createHTMLElement("div", "containerAccueil");
@@ -15,7 +17,7 @@ export function accueil() {
 
   // Texte entete
   let text = createHTMLElement("p", "text");
-  text.innerHTML = translate[language].accueil.description;
+  text.innerHTML = translate.accueil.description;
   zone.appendChild(text);
 
   let listbutton = createHTMLElement("div", "listbuttonaccueil");
@@ -25,7 +27,7 @@ export function accueil() {
   buttondescription.id = "buttondescription";
   buttondescription.classList = "no-style-link ";
   buttondescription.href = "/description";
-  buttondescription.textContent = translate[language].accueil.explain;
+  buttondescription.textContent = translate.accueil.explain;
   listbutton.appendChild(buttondescription);
 
   // Lien d'invitation du bot discord
@@ -38,7 +40,7 @@ export function accueil() {
   imginvitebot.src = "img/Logo_Discord.webp";
   buttoninvitebot.appendChild(imginvitebot);
   let textinvitebot = document.createElement("span");
-  textinvitebot.textContent = translate[language].accueil.adddiscord;
+  textinvitebot.textContent = translate.accueil.adddiscord;
   buttoninvitebot.appendChild(textinvitebot);
   listbutton.appendChild(buttoninvitebot);
 

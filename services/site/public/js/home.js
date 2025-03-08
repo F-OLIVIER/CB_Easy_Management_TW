@@ -1,79 +1,87 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
-import { translate } from "./translate.js";
+import { loadTranslate } from "./translate.js";
 
 export async function home() {
   const currenthouse = localStorage.getItem("user_house");
-  containerhome(await fetchServer("home/?house=" + currenthouse));
-}
-
-function containerhome(data) {
+  const data = await fetchServer("home/?house=" + currenthouse);
   if (data.Gestion.Logged) {
-    communBlock(data);
-    // House data dans le stockage
-    if (data.House.length == 1) {
-      localStorage.setItem("user_house", data.House[0].Discord);
+    // set du language
+    let language = localStorage.getItem("selectedLang") || "en";
+    if (data.UserInfo.Language) {
+      language = data.UserInfo.Language;
     }
-    const house_selected = localStorage.getItem("user_house");
-
-    let Container = document.getElementById("Container");
-    Container.innerHTML = "";
-
-    // Liste des maisons du joueurs
-    let containerhouses = createHTMLElement("div", "containerhouses");
-    let titlehouses = document.createElement("h1");
-    if (data.House.length == 1) {
-      titlehouses.textContent = translate[data.UserInfo.Language].home.houses[1];
-    } else {
-      titlehouses.textContent = translate[data.UserInfo.Language].home.houses[2];
-    }
-    containerhouses.appendChild(titlehouses);
-
-    let listhouse = createHTMLElement("div", "listhouse");
-
-    for (let index = 0; index < data.House.length; index++) {
-      const current_house = data.House[index];
-      let house = createHTMLElement("div", "house");
-
-      // Image house
-      let imghouse = document.createElement("img");
-      imghouse.src = current_house.House_logo;
-      house.appendChild(imghouse);
-
-      // Zone textuel
-      let zonetexthouse = createHTMLElement("div", "zonetexthouse");
-      // Name house
-      let namehouse = document.createElement("h2");
-      namehouse.textContent = current_house.House_name;
-      zonetexthouse.appendChild(namehouse);
-
-      // Bouton de selection
-      if (data.House.length > 1 && house_selected !== current_house.Discord) {
-        let buttonselecthouse = createHTMLElement("button", "buttonselecthouse");
-        buttonselecthouse.textContent = translate[data.UserInfo.Language].home.houses.button;
-        zonetexthouse.appendChild(buttonselecthouse);
-
-        // Ajout de l'event listener
-        buttonselecthouse.addEventListener("click", () => {
-          localStorage.setItem("user_house", current_house.Discord);
-          containerhome(data);
-        });
-      }
-
-      house.appendChild(zonetexthouse);
-      listhouse.appendChild(house);
-      containerhouses.appendChild(listhouse);
-    }
-    Container.appendChild(containerhouses);
-
-    if (data.House.length > 0 && house_selected !== null) {
-      listLink(Container, data);
-    }
+    const translate = await loadTranslate(language);
+    containerhome(data, translate);
   } else {
     fetchlogout();
   }
 }
 
-function listLink(Container, data) {
+function containerhome(data, translate) {
+  communBlock(data);
+
+  // House data dans le stockage
+  if (data.House.length == 1) {
+    localStorage.setItem("user_house", data.House[0].Discord);
+  }
+  const house_selected = localStorage.getItem("user_house");
+
+  let Container = document.getElementById("Container");
+  Container.innerHTML = "";
+
+  // Liste des maisons du joueurs
+  let containerhouses = createHTMLElement("div", "containerhouses");
+  let titlehouses = document.createElement("h1");
+  if (data.House.length == 1) {
+    titlehouses.textContent = translate.home.houses[1];
+  } else {
+    titlehouses.textContent = translate.home.houses[2];
+  }
+  containerhouses.appendChild(titlehouses);
+
+  let listhouse = createHTMLElement("div", "listhouse");
+
+  for (let index = 0; index < data.House.length; index++) {
+    const current_house = data.House[index];
+    let house = createHTMLElement("div", "house");
+
+    // Image house
+    let imghouse = document.createElement("img");
+    imghouse.src = current_house.House_logo;
+    house.appendChild(imghouse);
+
+    // Zone textuel
+    let zonetexthouse = createHTMLElement("div", "zonetexthouse");
+    // Name house
+    let namehouse = document.createElement("h2");
+    namehouse.textContent = current_house.House_name;
+    zonetexthouse.appendChild(namehouse);
+
+    // Bouton de selection
+    if (data.House.length > 1 && house_selected !== current_house.Discord) {
+      let buttonselecthouse = createHTMLElement("button", "buttonselecthouse");
+      buttonselecthouse.textContent = translate.home.houses.button;
+      zonetexthouse.appendChild(buttonselecthouse);
+
+      // Ajout de l'event listener
+      buttonselecthouse.addEventListener("click", () => {
+        localStorage.setItem("user_house", current_house.Discord);
+        containerhome(data);
+      });
+    }
+
+    house.appendChild(zonetexthouse);
+    listhouse.appendChild(house);
+    containerhouses.appendChild(listhouse);
+  }
+  Container.appendChild(containerhouses);
+
+  if (data.House.length > 0 && house_selected !== null) {
+    listLink(Container, data, translate);
+  }
+}
+
+function listLink(Container, data, translate) {
   if (document.getElementById("subContainer")) {
     document.getElementById("subContainer").remove();
   }
@@ -90,7 +98,7 @@ function listLink(Container, data) {
   linkCharacterCard.appendChild(imgCharacterCard);
   // Button fiche personnage
   let buttoncharacterCard = createHTMLElement("div", "buttoncharacterCard");
-  buttoncharacterCard.textContent = translate[data.UserInfo.Language].home.characterChard;
+  buttoncharacterCard.textContent = translate.home.characterChard;
   linkCharacterCard.appendChild(buttoncharacterCard);
   subcontainerUser.appendChild(linkCharacterCard);
 
@@ -103,7 +111,7 @@ function listLink(Container, data) {
   linkCaserne.appendChild(imgcaserne);
   // Button caserne
   let buttonCaserne = createHTMLElement("div", "buttonCaserne");
-  buttonCaserne.textContent = translate[data.UserInfo.Language].home.caserne;
+  buttonCaserne.textContent = translate.home.caserne;
   linkCaserne.appendChild(buttonCaserne);
   subcontainerUser.appendChild(linkCaserne);
 
@@ -113,7 +121,7 @@ function listLink(Container, data) {
     // si officier, affichage bouton création des groupes et bouton administration
     let subcontainerOfficier = createHTMLElement("div", "subcontainerOfficier");
     let titlesubcontainerOfficier = createHTMLElement("div", "titlesubcontainerOfficier");
-    titlesubcontainerOfficier.textContent = translate[data.UserInfo.Language].home.zone_gestion;
+    titlesubcontainerOfficier.textContent = translate.home.zone_gestion;
     subcontainerOfficier.appendChild(titlesubcontainerOfficier);
 
     // page création des groupes gvg
@@ -121,7 +129,7 @@ function listLink(Container, data) {
     linkCreateGroup.href = "/creategroup";
     let buttonCreateGroup = createHTMLElement("div", "buttonCreateGroup");
     buttonCreateGroup.href = "/creategroup";
-    buttonCreateGroup.textContent = translate[data.UserInfo.Language].home.groupGvG;
+    buttonCreateGroup.textContent = translate.home.groupGvG;
     linkCreateGroup.appendChild(buttonCreateGroup);
     subcontainerOfficier.appendChild(linkCreateGroup);
 
@@ -129,7 +137,7 @@ function listLink(Container, data) {
     let linkStat = createHTMLElement("a", "no-style-link");
     linkStat.href = "/stat";
     let buttonStat = createHTMLElement("div", "buttonStat");
-    buttonStat.textContent = translate[data.UserInfo.Language].home.stat;
+    buttonStat.textContent = translate.home.stat;
     linkStat.appendChild(buttonStat);
     subcontainerOfficier.appendChild(linkStat);
 
@@ -137,7 +145,7 @@ function listLink(Container, data) {
     let linkconsulcaserne = createHTMLElement("a", "no-style-link");
     linkconsulcaserne.href = "/consulcaserne";
     let buttonconsulcaserne = createHTMLElement("div", "buttonconsulcaserne");
-    buttonconsulcaserne.textContent = translate[data.UserInfo.Language].home.caserne_other;
+    buttonconsulcaserne.textContent = translate.home.caserne_other;
     linkconsulcaserne.appendChild(buttonconsulcaserne);
     subcontainerOfficier.appendChild(linkconsulcaserne);
 
@@ -147,7 +155,7 @@ function listLink(Container, data) {
   if (data.Gestion.Admin) {
     let subcontainerAdmin = createHTMLElement("div", "subcontainerAdmin");
     let titlesubcontainerAdmin = createHTMLElement("div", "titlesubcontainerAdmin");
-    titlesubcontainerAdmin.textContent = translate[data.UserInfo.Language].home.zone_admin;
+    titlesubcontainerAdmin.textContent = translate.home.zone_admin;
     subcontainerAdmin.appendChild(titlesubcontainerAdmin);
 
     // page d'administration
@@ -155,7 +163,7 @@ function listLink(Container, data) {
     linkAppAdmin.href = "/AppAdmin";
     let buttonAppAdmin = createHTMLElement("div", "buttonAppAdmin");
     buttonAppAdmin.href = "/AppAdmin";
-    buttonAppAdmin.textContent = translate[data.UserInfo.Language].home.admin;
+    buttonAppAdmin.textContent = translate.home.admin;
     linkAppAdmin.appendChild(buttonAppAdmin);
 
     subcontainerAdmin.appendChild(linkAppAdmin);

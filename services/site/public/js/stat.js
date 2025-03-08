@@ -1,128 +1,131 @@
-import { translate } from "./translate.js";
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
+import { loadTranslate } from "./translate.js";
 
 export async function stat() {
   const currenthouse = localStorage.getItem("user_house");
   if ((currenthouse == "") | (currenthouse == null) | (currenthouse == undefined)) {
     window.location.href = "/home";
   } else {
-    containerstat(await fetchServer("statGvG/?house=" + currenthouse));
+    const data = await fetchServer("statGvG/?house=" + currenthouse);
+    if (data.Gestion.Logged && data.Gestion.Officier) {
+      const translate = await loadTranslate(data.UserInfo.Language);
+      containerstat(data, translate);
+    } else {
+      fetchlogout();
+    }
   }
 }
 
-function containerstat(data) {
-  if (data.Gestion.Logged && data.Gestion.Officier) {
-    communBlock(data);
+function containerstat(data, translate) {
+  communBlock(data, translate);
 
-    let subContainerStat = createHTMLElement("div", "subContainerStat");
+  let subContainerStat = createHTMLElement("div", "subContainerStat");
 
-    let ListFilter = [
-      ["sortuserbyname", "statname"],
-      ["sortuserbyinflu", "statinfluence"],
-      ["sortuserbylevel", "statlvl"],
-      ["sortuserbyclass", "statclass"],
-      ["sortuserbynbgvg", "statnbgvg"],
-      ["sortuserbylastGvG", "statlastgvg"],
-    ];
-    let filter = createHTMLElement("div", "statfilter");
-    // Titre
-    let titlefilter = document.createElement("div");
-    titlefilter.className = "titlefilter";
-    titlefilter.textContent = translate[data.UserInfo.Language].stat.filter.title;
-    filter.appendChild(titlefilter);
-    let buttonFilter = document.createElement("div");
-    buttonFilter.className = "buttonFilter";
-    let divline1 = document.createElement("div");
-    divline1.className = "linefilter";
-    let divline2 = document.createElement("div");
-    divline2.className = "linefilter";
+  let ListFilter = [
+    ["sortuserbyname", "statname"],
+    ["sortuserbyinflu", "statinfluence"],
+    ["sortuserbylevel", "statlvl"],
+    ["sortuserbyclass", "statclass"],
+    ["sortuserbynbgvg", "statnbgvg"],
+    ["sortuserbylastGvG", "statlastgvg"],
+  ];
+  let filter = createHTMLElement("div", "statfilter");
+  // Titre
+  let titlefilter = document.createElement("div");
+  titlefilter.className = "titlefilter";
+  titlefilter.textContent = translate.stat.filter.title;
+  filter.appendChild(titlefilter);
+  let buttonFilter = document.createElement("div");
+  buttonFilter.className = "buttonFilter";
+  let divline1 = document.createElement("div");
+  divline1.className = "linefilter";
+  let divline2 = document.createElement("div");
+  divline2.className = "linefilter";
 
-    // filtre par name
-    let sortuserbyname = document.createElement("button");
-    sortuserbyname.id = "sortuserbyname";
-    sortuserbyname.value = 0;
-    sortuserbyname.textContent = translate[data.UserInfo.Language].stat.filter.name;
-    divline1.appendChild(sortuserbyname);
-    // filtre par influence
-    let sortuserbyinflu = document.createElement("button");
-    sortuserbyinflu.id = "sortuserbyinflu";
-    sortuserbyinflu.value = 0;
-    sortuserbyinflu.textContent = translate[data.UserInfo.Language].stat.filter.influ;
-    divline1.appendChild(sortuserbyinflu);
-    // filtre par level
-    let sortuserbylevel = document.createElement("button");
-    sortuserbylevel.id = "sortuserbylevel";
-    sortuserbylevel.value = 0;
-    sortuserbylevel.textContent = translate[data.UserInfo.Language].stat.filter.lvl;
-    divline1.appendChild(sortuserbylevel);
-    // filtre par classe d'arme
-    let sortuserbyclass = document.createElement("button");
-    sortuserbyclass.id = "sortuserbyclass";
-    sortuserbyclass.value = 0;
-    sortuserbyclass.textContent = translate[data.UserInfo.Language].stat.filter.class;
-    divline2.appendChild(sortuserbyclass);
-    // filtre par classe d'arme
-    let sortuserbynbgvg = document.createElement("button");
-    sortuserbynbgvg.id = "sortuserbynbgvg";
-    sortuserbynbgvg.value = 0;
-    sortuserbynbgvg.textContent = translate[data.UserInfo.Language].stat.filter.nbGvG;
-    divline2.appendChild(sortuserbynbgvg);
-    // filtre par Derniére GvG
-    let sortuserbylastGvG = document.createElement("button");
-    sortuserbylastGvG.id = "sortuserbylastGvG";
-    sortuserbylastGvG.value = 0;
-    sortuserbylastGvG.textContent = translate[data.UserInfo.Language].stat.filter.lastGvG;
-    divline2.appendChild(sortuserbylastGvG);
+  // filtre par name
+  let sortuserbyname = document.createElement("button");
+  sortuserbyname.id = "sortuserbyname";
+  sortuserbyname.value = 0;
+  sortuserbyname.textContent = translate.stat.filter.name;
+  divline1.appendChild(sortuserbyname);
+  // filtre par influence
+  let sortuserbyinflu = document.createElement("button");
+  sortuserbyinflu.id = "sortuserbyinflu";
+  sortuserbyinflu.value = 0;
+  sortuserbyinflu.textContent = translate.stat.filter.influ;
+  divline1.appendChild(sortuserbyinflu);
+  // filtre par level
+  let sortuserbylevel = document.createElement("button");
+  sortuserbylevel.id = "sortuserbylevel";
+  sortuserbylevel.value = 0;
+  sortuserbylevel.textContent = translate.stat.filter.lvl;
+  divline1.appendChild(sortuserbylevel);
+  // filtre par classe d'arme
+  let sortuserbyclass = document.createElement("button");
+  sortuserbyclass.id = "sortuserbyclass";
+  sortuserbyclass.value = 0;
+  sortuserbyclass.textContent = translate.stat.filter.class;
+  divline2.appendChild(sortuserbyclass);
+  // filtre par classe d'arme
+  let sortuserbynbgvg = document.createElement("button");
+  sortuserbynbgvg.id = "sortuserbynbgvg";
+  sortuserbynbgvg.value = 0;
+  sortuserbynbgvg.textContent = translate.stat.filter.nbGvG;
+  divline2.appendChild(sortuserbynbgvg);
+  // filtre par Derniére GvG
+  let sortuserbylastGvG = document.createElement("button");
+  sortuserbylastGvG.id = "sortuserbylastGvG";
+  sortuserbylastGvG.value = 0;
+  sortuserbylastGvG.textContent = translate.stat.filter.lastGvG;
+  divline2.appendChild(sortuserbylastGvG);
 
-    buttonFilter.appendChild(divline1);
-    buttonFilter.appendChild(divline2);
-    filter.appendChild(buttonFilter);
-    subContainerStat.appendChild(filter);
+  buttonFilter.appendChild(divline1);
+  buttonFilter.appendChild(divline2);
+  filter.appendChild(buttonFilter);
+  subContainerStat.appendChild(filter);
 
-    // création des en-tête
-    let titledivstat = document.createElement("div");
-    titledivstat.classList.add("divTitleStat");
-    titledivstat.classList.add("statuser");
+  // création des en-tête
+  let titledivstat = document.createElement("div");
+  titledivstat.classList.add("divTitleStat");
+  titledivstat.classList.add("statuser");
 
-    let titleconnected = createHTMLElement("div", "statconnected");
-    titleconnected.textContent = "";
-    titledivstat.appendChild(titleconnected);
+  let titleconnected = createHTMLElement("div", "statconnected");
+  titleconnected.textContent = "";
+  titledivstat.appendChild(titleconnected);
 
-    let titlename = createHTMLElement("div", "statname");
-    titlename.textContent = translate[data.UserInfo.Language].stat.title.name;
-    titledivstat.appendChild(titlename);
+  let titlename = createHTMLElement("div", "statname");
+  titlename.textContent = translate.stat.title.name;
+  titledivstat.appendChild(titlename);
 
-    let titleclass = createHTMLElement("div", "statclass");
-    titleclass.textContent = translate[data.UserInfo.Language].stat.title.class;
-    titledivstat.appendChild(titleclass);
+  let titleclass = createHTMLElement("div", "statclass");
+  titleclass.textContent = translate.stat.title.class;
+  titledivstat.appendChild(titleclass);
 
-    let titleinfluenceplayer = createHTMLElement("div", "statinfluence");
-    titleinfluenceplayer.textContent = translate[data.UserInfo.Language].stat.title.influ;
-    titledivstat.appendChild(titleinfluenceplayer);
+  let titleinfluenceplayer = createHTMLElement("div", "statinfluence");
+  titleinfluenceplayer.textContent = translate.stat.title.influ;
+  titledivstat.appendChild(titleinfluenceplayer);
 
-    let titlelvlplayer = createHTMLElement("div", "statlvl");
-    titlelvlplayer.textContent = translate[data.UserInfo.Language].stat.title.lvl;
-    titledivstat.appendChild(titlelvlplayer);
+  let titlelvlplayer = createHTMLElement("div", "statlvl");
+  titlelvlplayer.textContent = translate.stat.title.lvl;
+  titledivstat.appendChild(titlelvlplayer);
 
-    let titlenbGvGparticiped = createHTMLElement("div", "statnbgvg");
-    titlenbGvGparticiped.textContent = translate[data.UserInfo.Language].stat.title.nbGvG;
-    titledivstat.appendChild(titlenbGvGparticiped);
+  let titlenbGvGparticiped = createHTMLElement("div", "statnbgvg");
+  titlenbGvGparticiped.textContent = translate.stat.title.nbGvG;
+  titledivstat.appendChild(titlenbGvGparticiped);
 
-    let titlelastGvGparticiped = createHTMLElement("div", "statlastgvg");
-    titlelastGvGparticiped.textContent = translate[data.UserInfo.Language].stat.title.lastGvG;
-    titledivstat.appendChild(titlelastGvGparticiped);
+  let titlelastGvGparticiped = createHTMLElement("div", "statlastgvg");
+  titlelastGvGparticiped.textContent = translate.stat.title.lastGvG;
+  titledivstat.appendChild(titlelastGvGparticiped);
 
-    subContainerStat.appendChild(titledivstat);
-    let subContainerStatForSort = createHTMLElement("div", "subContainerStatForSort");
-    subContainerStat.appendChild(subContainerStatForSort);
-    DisplayUsers(data.ListInscripted, data.UserInfo.Language, subContainerStatForSort);
+  subContainerStat.appendChild(titledivstat);
+  let subContainerStatForSort = createHTMLElement("div", "subContainerStatForSort");
+  subContainerStat.appendChild(subContainerStatForSort);
+  // Insere la liste des joueurs
+  DisplayUsers(data.ListInscripted, data.UserInfo.Language, subContainerStatForSort);
 
-    document.getElementById("Container").appendChild(subContainerStat);
+  document.getElementById("Container").appendChild(subContainerStat);
 
-    createFilterEventlistener(ListFilter);
-  } else {
-    fetchlogout();
-  }
+  createFilterEventlistener(ListFilter);
 }
 
 function DisplayUsers(data, Language, div) {
@@ -157,67 +160,6 @@ function DisplayUsers(data, Language, div) {
     lastGvGparticiped.textContent = currentUser.DateLastGvGParticiped;
     statuser.appendChild(lastGvGparticiped);
     divstat.appendChild(statuser);
-
-    if (currentUser.ListDateGvG) {
-      divstat.classList.add("divstatwitchinfo");
-
-      const statinfo = createHTMLElement("div", "statinfo");
-      const titlelistGvG = document.createElement("div");
-      titlelistGvG.classList = "titlelistGvGstat";
-      titlelistGvG.textContent = "Liste des GvG ou " + currentUser.Username + " s'était inscrit present";
-      statinfo.appendChild(titlelistGvG);
-
-      let listGvGValid = "";
-      let listGvGNotValid = "";
-      for (let j = currentUser.ListDateGvG.length - 1; j >= 0; j--) {
-        const currentDate = currentUser.ListDateGvG[j];
-        if (currentDate[0] == "0") {
-          if (listGvGNotValid !== "") {
-            listGvGNotValid += " - ";
-          }
-          listGvGNotValid += currentDate[1];
-        } else {
-          if (listGvGValid !== "") {
-            listGvGValid += " - ";
-          }
-          listGvGValid += currentDate[1];
-        }
-      }
-
-      const titlecontentlistGvGValid = document.createElement("div");
-      titlecontentlistGvGValid.textContent = "GvG ou " + currentUser.Username + " etait present sur Discord (présence vérifiés par le bot) : ";
-      titlecontentlistGvGValid.classList = "titlepresencediscord";
-      statinfo.appendChild(titlecontentlistGvGValid);
-      const contentlistGvGValid = document.createElement("div");
-      contentlistGvGValid.classList = "presencediscord";
-      contentlistGvGValid.textContent = listGvGValid;
-      statinfo.appendChild(contentlistGvGValid);
-      const titlecontentlistGvGNotValid = document.createElement("div");
-      titlecontentlistGvGNotValid.classList = "titlepresencediscord";
-      titlecontentlistGvGNotValid.textContent = "GvG ou " + currentUser.Username + " etait absent du Discord (absence vérifiés par le bot) : ";
-      statinfo.appendChild(titlecontentlistGvGNotValid);
-      const contentlistGvGNotValid = document.createElement("div");
-      contentlistGvGNotValid.classList = "presencediscord";
-      contentlistGvGNotValid.textContent = listGvGNotValid;
-      statinfo.appendChild(contentlistGvGNotValid);
-      statinfo.style.display = "hidden";
-      divstat.appendChild(statinfo);
-
-      // statuser.addEventListener("click", function () {
-      //     if (statinfo.style.display === 'none') {
-      //         statinfo.style.display = 'block';
-      //     } else {
-      //         statinfo.style.display = 'none';
-      //     }
-      // });
-      statuser.addEventListener("click", function () {
-        if (statinfo.classList.contains("show")) {
-          statinfo.classList.remove("show");
-        } else {
-          statinfo.classList.add("show");
-        }
-      });
-    }
 
     div.appendChild(divstat);
   }

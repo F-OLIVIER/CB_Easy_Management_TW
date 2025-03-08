@@ -86,6 +86,12 @@ func main() {
 		imgHandler.ServeHTTP(w, r)
 	})
 
+	jsonHandler := http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json/")))
+	http.HandleFunc("/json/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age=31536000, only-if-cached")
+		jsonHandler.ServeHTTP(w, r)
+	})
+
 	fmt.Println("Server started at : http://" + data.SITE_DOMAIN + ":" + data.PORT)
 
 	// Mise en écoute du serveur HTTP

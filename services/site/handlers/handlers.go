@@ -149,15 +149,21 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 				id_Server := r.URL.Query().Get("house")
 
 				id_House := ""
-				for _, values := range list_houses {
-					if values.ID_Server == id_Server {
-						id_House = values.ID
-						break
+				var currentUser data.ScearchUserInfo
+				if id_Server == "null" {
+					// Si pas de maison set par l'utilisateur la 1er de la liste est prise
+					id_House = list_houses[0].ID
+				} else {
+					// Recherche de la maison set par l'utilisateur
+					for _, values := range list_houses {
+						if values.ID_Server == id_Server {
+							id_House = values.ID
+							break
+						}
 					}
 				}
 
 				// Assemblage des informations pour ne récupérer que les informations du couple utilisteur/house
-				var currentUser data.ScearchUserInfo
 				for _, values := range users {
 					if values.ID_House == id_House {
 						currentUser = values

@@ -3,11 +3,14 @@ package utils
 import (
 	data "botgvg/internal"
 	"encoding/json"
+	"fmt"
 
 	"github.com/gorilla/websocket"
 )
 
 func SendMessage(msg data.SocketMessage) error {
+	fmt.Println("msg socket :\n", msg)
+
 	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:8081", nil)
 	if err != nil {
 		return err

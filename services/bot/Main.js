@@ -8,7 +8,7 @@ import { cronResetMsgReaction } from "./Cronjob.js";
 import { client } from "./Constant.js";
 import { ListAdmin } from "./config.js";
 import { logToFile } from "./log.js";
-// import { socket } from "./socket.js";
+import { socket } from "./socket.js";
 
 // Module nodejs et npm
 import { MessageFlags, PermissionsBitField } from "discord.js";
@@ -34,13 +34,13 @@ client.on("ready", async () => {
   console.log(`╭─────────────────────────────────────────────────╮
 │         Bot starting up, please wait ...        │
 │─────────────────────────────────────────────────│`);
-  await createCommands();
+  // await createCommands();
   console.log("│ • Create db user in process                     │");
   await checkAllUser();
   console.log("│ • Initializing automatic function               │");
   TaskHandle();
-  // console.log("│ • Initializing golang communication             │");
-  // socket();
+  console.log("│ • Initializing golang communication             │");
+  socket();
   console.log(`│─────────────────────────────────────────────────│
 │               Start-up completed                │
 │                   Bot ready !                   │

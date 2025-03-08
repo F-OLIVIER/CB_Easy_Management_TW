@@ -1,13 +1,19 @@
-import { adressAPI } from "./config.js";
-import { translate } from "./translate.js";
 import { communBlock, createHTMLElement, fetchServer, fetchlogout, removeHTMLTags } from "./useful.js";
+import { loadTranslate } from "./translate.js";
+import { adressAPI } from "./config.js";
 
 export async function creategroup() {
   const currenthouse = localStorage.getItem("user_house");
   if ((currenthouse == "") | (currenthouse == null) | (currenthouse == undefined)) {
     window.location.href = "/home";
   } else {
-    containercreategroup(await fetchServer("creategroup/?house=" + currenthouse));
+    const data = await fetchServer("creategroup/?house=" + currenthouse);
+    if (data.Gestion.Logged && data.Gestion.Officier) {
+      const translate = await loadTranslate(data.UserInfo.Language);
+      containercreategroup(data, translate);
+    } else {
+      fetchlogout();
+    }
   }
 }
 
@@ -15,214 +21,210 @@ let groupNumber = 1;
 let listUserSelect = [];
 let timerThrottlebutton = 0;
 let eventListenersMap = new Map();
-export async function containercreategroup(data) {
-  if (data.Gestion.Logged && data.Gestion.Officier) {
-    communBlock(data);
+export async function containercreategroup(data, translate) {
+  communBlock(data, translate);
 
-    let Container = document.getElementById("Container");
-    let containerGroupe = await createHTMLElement("div", "containerGroupe");
+  let Container = document.getElementById("Container");
+  let containerGroupe = await createHTMLElement("div", "containerGroupe");
 
-    // affichage de la liste des inscrits
-    let divlistInscripted = await listInscripted(data.ListInscripted, data.UserInfo.Language);
-    containerGroupe.appendChild(divlistInscripted);
+  // affichage de la liste des inscrits
+  let divlistInscripted = await listInscripted(data.ListInscripted, translate, data.UserInfo.Language);
+  containerGroupe.appendChild(divlistInscripted);
 
-    // afficher l'encart de selection d'une unit et savoir qui là
-    let divwhohaveunit = await whohaveunit(data);
-    containerGroupe.appendChild(divwhohaveunit);
+  // afficher l'encart de selection d'une unit et savoir qui là
+  let divwhohaveunit = await whohaveunit(data, translate);
+  containerGroupe.appendChild(divwhohaveunit);
 
-    let divcreategroup = await createHTMLElement("div", "divcreategroup");
-    divcreategroup.style.display = "none";
+  let divcreategroup = await createHTMLElement("div", "divcreategroup");
+  divcreategroup.style.display = "none";
 
-    // Boutton pour afficher l'encart de création des groupes
-    let buttonDisplaycreategroup = await createHTMLElement("div", "buttonDisplaycreategroup");
-    buttonDisplaycreategroup.textContent = translate[data.UserInfo.Language].create_group.create_group.title;
-    containerGroupe.appendChild(buttonDisplaycreategroup);
+  // Boutton pour afficher l'encart de création des groupes
+  let buttonDisplaycreategroup = await createHTMLElement("div", "buttonDisplaycreategroup");
+  buttonDisplaycreategroup.textContent = translate.create_group.create_group.title;
+  containerGroupe.appendChild(buttonDisplaycreategroup);
 
-    // div de la création des groupes GvG
-    let creategroup = await createHTMLElement("div", "creategroup");
+  // div de la création des groupes GvG
+  let creategroup = await createHTMLElement("div", "creategroup");
 
-    // légende
-    const listLegend = translate[data.UserInfo.Language].create_group.create_group.listLegend;
-    let legend = await createLegend(listLegend, "legendMaitrise");
-    legend.prepend(translate[data.UserInfo.Language].create_group.legend.title);
+  // légende
+  const listLegend = translate.create_group.create_group.listLegend;
+  let legend = await createLegend(listLegend, "legendMaitrise");
+  legend.prepend(translate.create_group.legend.title);
 
-    creategroup.appendChild(legend);
-    // en-tête
-    creategroup.appendChild(entete(data.UserInfo.Language));
-    // div de création des groupes
-    divcreategroup.appendChild(creategroup);
-    containerGroupe.appendChild(divcreategroup);
-    Container.appendChild(containerGroupe);
+  creategroup.appendChild(legend);
+  // en-tête
+  creategroup.appendChild(entete(translate));
+  // div de création des groupes
+  divcreategroup.appendChild(creategroup);
+  containerGroupe.appendChild(divcreategroup);
+  Container.appendChild(containerGroupe);
 
-    // Création des groupes déja existant
-    if (data.GroupGvG != null) {
-      let groupNumberMax = 0;
+  // Création des groupes déja existant
+  if (data.GroupGvG != null) {
+    let groupNumberMax = 0;
 
-      for (let i = 0; i < data.GroupGvG.length; i++) {
-        if (data.GroupGvG[i].GroupNumber > groupNumberMax) {
-          groupNumberMax = data.GroupGvG[i].GroupNumber;
-        }
+    for (let i = 0; i < data.GroupGvG.length; i++) {
+      if (data.GroupGvG[i].GroupNumber > groupNumberMax) {
+        groupNumberMax = data.GroupGvG[i].GroupNumber;
       }
-
-      for (let i = 0; i < groupNumberMax; i++) {
-        const currentGroupe = usersInGroup(data.GroupGvG);
-        await createExistGroupe(data, currentGroupe);
-        groupNumber += 1;
-      }
-      MAJlistUserSelect();
     }
 
-    // Boutton pour ajouter un groupe (5 joueurs)
-    let buttonAddGroup = await createHTMLElement("div", "buttonAddGroup");
-    buttonAddGroup.textContent = translate[data.UserInfo.Language].create_group.create_group.add_group;
-    divcreategroup.appendChild(buttonAddGroup);
-    buttonAddGroup.addEventListener("click", function () {
+    for (let i = 0; i < groupNumberMax; i++) {
+      const currentGroupe = usersInGroup(data.GroupGvG);
+      await createExistGroupe(data, currentGroupe, translate);
+      groupNumber += 1;
+    }
+    MAJlistUserSelect();
+  }
+
+  // Boutton pour ajouter un groupe (5 joueurs)
+  let buttonAddGroup = await createHTMLElement("div", "buttonAddGroup");
+  buttonAddGroup.textContent = translate.create_group.create_group.add_group;
+  divcreategroup.appendChild(buttonAddGroup);
+  buttonAddGroup.addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 1000) {
+      timerThrottlebutton = now;
+      createOneGroupe(data, translate);
+      groupNumber += 1;
+    }
+  });
+
+  // Boutton pour sauvegarder les groupes
+  let buttonSaveGroup = await createHTMLElement("div", "buttonSaveGroup");
+  buttonSaveGroup.textContent = translate.create_group.create_group.save_group;
+  divcreategroup.appendChild(buttonSaveGroup);
+  buttonSaveGroup.addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 1000) {
+      timerThrottlebutton = now;
+      saveGroup("current");
+      window.location.href = "/creategroup";
+    }
+  });
+
+  // Boutton pour les groupes
+  let buttonGroupType = await createHTMLElement("div", "buttonGroupType");
+  buttonGroupType.textContent = translate.create_group.create_group.group_type.title;
+  divcreategroup.appendChild(buttonGroupType);
+  buttonGroupType.addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (document.getElementById("divGroupType").style.display === "none") {
+        document.getElementById("divGroupType").style.display = "flex";
+      } else {
+        document.getElementById("divGroupType").style.display = "none";
+      }
+    }
+  });
+  // Contenu pour les groupes
+  divcreategroup.appendChild(await groupType(translate));
+
+  // événements du boutton d'affichage des inscrits
+  document.getElementById("buttonDisplayInscripted").addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (document.getElementById("divinscripted").style.display === "none") {
+        document.getElementById("legendInscripted").style.display = "flex";
+        document.getElementById("divinscripted").style.display = "block";
+      } else {
+        document.getElementById("legendInscripted").style.display = "none";
+        document.getElementById("divinscripted").style.display = "none";
+      }
+    }
+  });
+
+  // événements du boutton pour afficher "qui à l'unité ?"
+  document.getElementById("buttonDisplaywhohaveunit").addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (document.getElementById("whohaveunit").style.display === "none") {
+        document.getElementById("whohaveunit").style.display = "block";
+      } else {
+        document.getElementById("whohaveunit").style.display = "none";
+      }
+    }
+  });
+
+  // événements du boutton pour afficher la création des groupes
+  document.getElementById("buttonDisplaycreategroup").addEventListener("click", function () {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+      if (document.getElementById("divcreategroup").style.display === "none") {
+        document.getElementById("divcreategroup").style.display = "block";
+      } else {
+        document.getElementById("divcreategroup").style.display = "none";
+      }
+    }
+  });
+
+  // création de la liste des évents des groupes type
+  const listEventsaveGroupType = [
+    ["buttonSaveGroupTypeAtt", "SaveGroupTypeAtt"],
+    ["buttonSaveGroupTypeDef", "SaveGroupTypeDef"],
+  ];
+  listEventsaveGroupType.forEach((nameButton) => {
+    document.getElementById(nameButton[0]).addEventListener("click", function () {
       const now = new Date();
       if (now - timerThrottlebutton > 1000) {
         timerThrottlebutton = now;
-        createOneGroupe(data);
-        groupNumber += 1;
+        saveGroup(nameButton[1]);
       }
     });
-
-    // Boutton pour sauvegarder les groupes
-    let buttonSaveGroup = await createHTMLElement("div", "buttonSaveGroup");
-    buttonSaveGroup.textContent = translate[data.UserInfo.Language].create_group.create_group.save_group;
-    divcreategroup.appendChild(buttonSaveGroup);
-    buttonSaveGroup.addEventListener("click", function () {
+  });
+  const listEventChargerGroupType = [
+    ["buttonChargerGroupTypeAtt", "chargergrouptypeatt"],
+    ["buttonChargerGroupTypeDef", "chargergrouptypedef"],
+  ];
+  listEventChargerGroupType.forEach((nameButton) => {
+    document.getElementById(nameButton[0]).addEventListener("click", async function () {
       const now = new Date();
       if (now - timerThrottlebutton > 1000) {
         timerThrottlebutton = now;
-        saveGroup("current");
-        window.location.href = "/creategroup";
+        window.location.href = "/" + nameButton[1];
       }
     });
+  });
 
-    // Boutton pour les groupes
-    let buttonGroupType = await createHTMLElement("div", "buttonGroupType");
-    buttonGroupType.textContent = translate[data.UserInfo.Language].create_group.create_group.group_type.title;
-    divcreategroup.appendChild(buttonGroupType);
-    buttonGroupType.addEventListener("click", function () {
+  // Boutton pour voir les groupes de façon non modifiable
+  if (data.GroupGvG != null) {
+    let buttonViewGroup = await createHTMLElement("div", "buttonViewGroup");
+    buttonViewGroup.textContent = translate.create_group.preview;
+    containerGroupe.appendChild(buttonViewGroup);
+    buttonViewGroup.addEventListener("click", function () {
       const now = new Date();
       if (now - timerThrottlebutton > 500) {
         timerThrottlebutton = now;
-        if (document.getElementById("divGroupType").style.display === "none") {
-          document.getElementById("divGroupType").style.display = "flex";
-        } else {
-          document.getElementById("divGroupType").style.display = "none";
-        }
+        // saveGroup('current');
+        window.location.href = "/viewGroup";
       }
     });
-    // Contenu pour les groupes
-    divcreategroup.appendChild(await groupType(data.UserInfo.Language));
-
-    // événements du boutton d'affichage des inscrits
-    document.getElementById("buttonDisplayInscripted").addEventListener("click", function () {
-      const now = new Date();
-      if (now - timerThrottlebutton > 500) {
-        timerThrottlebutton = now;
-        if (document.getElementById("divinscripted").style.display === "none") {
-          document.getElementById("legendInscripted").style.display = "flex";
-          document.getElementById("divinscripted").style.display = "block";
-        } else {
-          document.getElementById("legendInscripted").style.display = "none";
-          document.getElementById("divinscripted").style.display = "none";
-        }
-      }
-    });
-
-    // événements du boutton pour afficher "qui à l'unité ?"
-    document.getElementById("buttonDisplaywhohaveunit").addEventListener("click", function () {
-      const now = new Date();
-      if (now - timerThrottlebutton > 500) {
-        timerThrottlebutton = now;
-        if (document.getElementById("whohaveunit").style.display === "none") {
-          document.getElementById("whohaveunit").style.display = "block";
-        } else {
-          document.getElementById("whohaveunit").style.display = "none";
-        }
-      }
-    });
-
-    // événements du boutton pour afficher la création des groupes
-    document.getElementById("buttonDisplaycreategroup").addEventListener("click", function () {
-      const now = new Date();
-      if (now - timerThrottlebutton > 500) {
-        timerThrottlebutton = now;
-        if (document.getElementById("divcreategroup").style.display === "none") {
-          document.getElementById("divcreategroup").style.display = "block";
-        } else {
-          document.getElementById("divcreategroup").style.display = "none";
-        }
-      }
-    });
-
-    // création de la liste des évents des groupes type
-    const listEventsaveGroupType = [
-      ["buttonSaveGroupTypeAtt", "SaveGroupTypeAtt"],
-      ["buttonSaveGroupTypeDef", "SaveGroupTypeDef"],
-    ];
-    listEventsaveGroupType.forEach((nameButton) => {
-      document.getElementById(nameButton[0]).addEventListener("click", function () {
-        const now = new Date();
-        if (now - timerThrottlebutton > 1000) {
-          timerThrottlebutton = now;
-          saveGroup(nameButton[1]);
-        }
-      });
-    });
-    const listEventChargerGroupType = [
-      ["buttonChargerGroupTypeAtt", "chargergrouptypeatt"],
-      ["buttonChargerGroupTypeDef", "chargergrouptypedef"],
-    ];
-    listEventChargerGroupType.forEach((nameButton) => {
-      document.getElementById(nameButton[0]).addEventListener("click", async function () {
-        const now = new Date();
-        if (now - timerThrottlebutton > 1000) {
-          timerThrottlebutton = now;
-          window.location.href = "/" + nameButton[1];
-        }
-      });
-    });
-
-    // Boutton pour voir les groupes de façon non modifiable
-    if (data.GroupGvG != null) {
-      let buttonViewGroup = await createHTMLElement("div", "buttonViewGroup");
-      buttonViewGroup.textContent = translate[data.UserInfo.Language].create_group.preview;
-      containerGroupe.appendChild(buttonViewGroup);
-      buttonViewGroup.addEventListener("click", function () {
-        const now = new Date();
-        if (now - timerThrottlebutton > 500) {
-          timerThrottlebutton = now;
-          // saveGroup('current');
-          window.location.href = "/viewGroup";
-        }
-      });
-    }
-  } else {
-    fetchlogout();
   }
 }
 
 // --------------------------------------------------------
 // ------------- Partie "Liste des Inscrits" --------------
 // --------------------------------------------------------
-async function listInscripted(data, Language) {
+async function listInscripted(data, translate, Language) {
   let divlistInscripted = await createHTMLElement("div", "listInscripted");
 
   // Boutton pour afficher la liste des inscrits
   let buttonDisplayInscripted = await createHTMLElement("div", "buttonDisplayInscripted");
   buttonDisplayInscripted.id = "buttonDisplayInscripted";
-  buttonDisplayInscripted.textContent = translate[Language].create_group.list_users.title;
+  buttonDisplayInscripted.textContent = translate.create_group.list_users.title;
   divlistInscripted.appendChild(buttonDisplayInscripted);
 
   // légende
-  const listLegendplaced = translate[Language].create_group.list_users.listLegendplaced;
+  const listLegendplaced = translate.create_group.list_users.listLegendplaced;
   let divlegend = await createHTMLElement("div", "legendInscripted");
   divlegend.style.display = "none";
   let divlistlegend = await createHTMLElement("div", "divlistlegend");
   let titlelegend = document.createElement("div");
-  titlelegend.textContent = translate[Language].create_group.legend.title;
+  titlelegend.textContent = translate.create_group.legend.title;
   divlistlegend.appendChild(titlelegend);
   let Legendplaced = await createLegend(listLegendplaced, "legendplaced");
   divlistlegend.appendChild(Legendplaced);
@@ -245,15 +247,15 @@ async function listInscripted(data, Language) {
   titledivuser.appendChild(titledivconnected);
 
   let titlename = await createHTMLElement("div", "inscriptedname");
-  titlename.textContent = translate[Language].create_group.list_users.username;
+  titlename.textContent = translate.create_group.list_users.username;
   titledivuser.appendChild(titlename);
 
   let titleinfluence = await createHTMLElement("div", "inscriptedinfluence");
-  titleinfluence.innerHTML = translate[Language].create_group.list_users.influ;
+  titleinfluence.innerHTML = translate.create_group.list_users.influ;
   titledivuser.appendChild(titleinfluence);
 
   let titleclass = await createHTMLElement("div", "inscriptedclass");
-  titleclass.innerHTML = translate[Language].create_group.list_users.class;
+  titleclass.innerHTML = translate.create_group.list_users.class;
   titledivuser.appendChild(titleclass);
   divinscripted.appendChild(titledivuser);
 
@@ -292,20 +294,20 @@ async function listInscripted(data, Language) {
 // --------------------------------------------------------
 // -------------- Partie "Qui a l'unité ?" ----------------
 // --------------------------------------------------------
-async function whohaveunit(data) {
+async function whohaveunit(data, translate) {
   let divwhohaveunit = await createHTMLElement("div", "divwhohaveunit");
 
   // Boutton pour afficher la liste des inscrits
   let buttonDisplaywhohaveunit = await createHTMLElement("div", "buttonDisplaywhohaveunit");
   buttonDisplaywhohaveunit.id = "buttonDisplaywhohaveunit";
-  buttonDisplaywhohaveunit.textContent = translate[data.UserInfo.Language].create_group.who_have_unit.title;
+  buttonDisplaywhohaveunit.textContent = translate.create_group.who_have_unit.title;
   divwhohaveunit.appendChild(buttonDisplaywhohaveunit);
 
   let whohaveunit = await createHTMLElement("div", "whohaveunit");
   let selectwhohaveunit = createHTMLElement("select", "selectwhohaveunit");
   let defaultwhohaveunit = document.createElement("option");
   defaultwhohaveunit.value = "";
-  defaultwhohaveunit.text = translate[data.UserInfo.Language].create_group.select;
+  defaultwhohaveunit.text = translate.create_group.select;
   selectwhohaveunit.appendChild(defaultwhohaveunit);
   for (let i = 0; i < data.ListUnit.length; i++) {
     const currentUnit = data.ListUnit[i];
@@ -317,7 +319,7 @@ async function whohaveunit(data) {
   whohaveunit.appendChild(selectwhohaveunit);
 
   let listplayerwhohaveunit = await createHTMLElement("div", "listplayerwhohaveunit");
-  listplayerwhohaveunit.textContent = translate[data.UserInfo.Language].create_group.who_have_unit.who;
+  listplayerwhohaveunit.textContent = translate.create_group.who_have_unit.who;
   whohaveunit.appendChild(listplayerwhohaveunit);
 
   divwhohaveunit.appendChild(whohaveunit);
@@ -351,12 +353,12 @@ async function whohaveunit(data) {
         }
 
         if (listplayer.length === 0) {
-          listplayerwhohaveunit.textContent = translate[data.UserInfo.Language].create_group.who_have_unit.no_player;
+          listplayerwhohaveunit.textContent = translate.create_group.who_have_unit.no_player;
         } else {
           listplayerwhohaveunit.textContent = listplayer.join(" - ");
         }
       } else {
-        listplayerwhohaveunit.textContent = translate[data.UserInfo.Language].create_group.who_have_unit.who;
+        listplayerwhohaveunit.textContent = translate.create_group.who_have_unit.who;
       }
     }
   });
@@ -369,13 +371,13 @@ async function whohaveunit(data) {
 // --------------------------------------------------------
 // ***************** Option "exist group" *****************
 
-async function createExistGroupe(data, userIngroup) {
+async function createExistGroupe(data, userIngroup, translate) {
   const creategroup = document.getElementById("creategroup");
   const groupName = "group" + groupNumber;
   let divGroup = document.createElement("div");
   divGroup.classList.add("divgroup");
   divGroup.classList.add(groupName);
-  divGroup.appendChild(namegroup(data, groupNumber));
+  divGroup.appendChild(namegroup(data, groupNumber, translate));
 
   for (let i = 0; i < 5; i++) {
     let currentUser = {
@@ -411,13 +413,13 @@ async function createExistGroupe(data, userIngroup) {
     name.appendChild(defaultoption);
     if (currentUser.Username === "") {
       defaultoption.value = "";
-      defaultoption.text = translate[data.UserInfo.Language].create_group.select;
+      defaultoption.text = translate.create_group.select;
     } else {
       defaultoption.value = currentUser.Username;
       defaultoption.text = currentUser.Username;
       let option = document.createElement("option");
       option.value = "";
-      option.text = translate[data.UserInfo.Language].create_group.create_group.delete;
+      option.text = translate.create_group.create_group.delete;
       name.appendChild(option);
     }
 
@@ -472,16 +474,16 @@ async function createExistGroupe(data, userIngroup) {
       influenceplayer.textContent = infoUsersave.Influence;
 
       // Unité 1
-      selectunit1 = await createSelectUnit(1, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language);
+      selectunit1 = await createSelectUnit(1, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
       await unit1.replaceWith(selectunit1);
       // Unité 2
-      selectunit2 = await createSelectUnit(2, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language);
+      selectunit2 = await createSelectUnit(2, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
       await unit2.replaceWith(selectunit2);
       // Unité 3
-      selectunit3 = await createSelectUnit(3, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language);
+      selectunit3 = await createSelectUnit(3, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
       await unit3.replaceWith(selectunit3);
       // Unité 4
-      selectunit4 = await createSelectUnit(4, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language);
+      selectunit4 = await createSelectUnit(4, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
       await unit4.replaceWith(selectunit4);
 
       await createEventSelectUnit(name, influenceplayer, intermediairy, influenceUnit, selectunit1, selectunit2, selectunit3, selectunit4, infoUsersave, usernameSansEspaces, data.UserInfo.Language);
@@ -570,7 +572,7 @@ async function createExistGroupe(data, userIngroup) {
       });
     } else {
       // utilisateur non present
-      createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4);
+      createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate);
     }
     divGroup.appendChild(divuser);
   }
@@ -595,7 +597,7 @@ async function createExistGroupe(data, userIngroup) {
 
 // optionUser 0 = nouvelle utilisateur
 // optionUser 1 = utilisateur deja present dans la sauvegarde
-function createSelectUnit(numberUnit, caserne, currentUser, usernameSansEspaces, optionUser, Language) {
+function createSelectUnit(numberUnit, caserne, currentUser, usernameSansEspaces, optionUser, Language, translate) {
   let nameUnit = "";
   if (numberUnit === 1) {
     nameUnit = currentUser.Unit1;
@@ -623,28 +625,28 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language) {
 
   // groupe pour l'affichage des selects
   let optgroupOther = document.createElement("optgroup");
-  optgroupOther.label = translate[Language].create_group.create_group.selectmenu.title;
+  optgroupOther.label = translate.create_group.create_group.selectmenu.title;
 
   let optgroupT5Infanterie = document.createElement("optgroup");
-  optgroupT5Infanterie.label = translate[Language].create_group.create_group.selectmenu.t5inf;
+  optgroupT5Infanterie.label = translate.create_group.create_group.selectmenu.t5inf;
   let optgroupT5Distant = document.createElement("optgroup");
-  optgroupT5Distant.label = translate[Language].create_group.create_group.selectmenu.t5dis;
+  optgroupT5Distant.label = translate.create_group.create_group.selectmenu.t5dis;
   let optgroupT5Cav = document.createElement("optgroup");
-  optgroupT5Cav.label = translate[Language].create_group.create_group.selectmenu.t5cav;
+  optgroupT5Cav.label = translate.create_group.create_group.selectmenu.t5cav;
 
   let optgroupT4Infanterie = document.createElement("optgroup");
-  optgroupT4Infanterie.label = translate[Language].create_group.create_group.selectmenu.t4inf;
+  optgroupT4Infanterie.label = translate.create_group.create_group.selectmenu.t4inf;
   let optgroupT4Distant = document.createElement("optgroup");
-  optgroupT4Distant.label = translate[Language].create_group.create_group.selectmenu.t4dis;
+  optgroupT4Distant.label = translate.create_group.create_group.selectmenu.t4dis;
   let optgroupT4Cav = document.createElement("optgroup");
-  optgroupT4Cav.label = translate[Language].create_group.create_group.selectmenu.t4cav;
+  optgroupT4Cav.label = translate.create_group.create_group.selectmenu.t4cav;
 
   let optgroupT3Infanterie = document.createElement("optgroup");
-  optgroupT3Infanterie.label = translate[Language].create_group.create_group.selectmenu.t3inf;
+  optgroupT3Infanterie.label = translate.create_group.create_group.selectmenu.t3inf;
   let optgroupT3Distant = document.createElement("optgroup");
-  optgroupT3Distant.label = translate[Language].create_group.create_group.selectmenu.t3dis;
+  optgroupT3Distant.label = translate.create_group.create_group.selectmenu.t3dis;
   let optgroupT3Cav = document.createElement("optgroup");
-  optgroupT3Cav.label = translate[Language].create_group.create_group.selectmenu.t3cav;
+  optgroupT3Cav.label = translate.create_group.create_group.selectmenu.t3cav;
 
   // Légende : 🔴 Unité non maitrisé, 🟡 Unité en cour de maitrise, 🟢 Unité maitrisé
   if (caserne !== null && caserne.length !== undefined) {
@@ -702,20 +704,20 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language) {
         }
       }
 
-      if (nameUnit === translate[Language].create_group.create_group.selectmenu.other) {
+      if (nameUnit === translate.create_group.create_group.selectmenu.other) {
         Consulterunofficier = true;
       }
     }
   }
 
   if (Consulterunofficier) {
-    defaultoptionUnit.value = translate[Language].create_group.create_group.selectmenu.other;
-    defaultoptionUnit.text = translate[Language].create_group.create_group.selectmenu.other;
+    defaultoptionUnit.value = translate.create_group.create_group.selectmenu.other;
+    defaultoptionUnit.text = translate.create_group.create_group.selectmenu.other;
     defaultoptionUnit.style.color = "red";
   } else {
     let officieroptionUnit = document.createElement("option");
-    officieroptionUnit.value = translate[Language].create_group.create_group.selectmenu.other;
-    officieroptionUnit.text = translate[Language].create_group.create_group.selectmenu.other;
+    officieroptionUnit.value = translate.create_group.create_group.selectmenu.other;
+    officieroptionUnit.text = translate.create_group.create_group.selectmenu.other;
     officieroptionUnit.style.color = "red";
     optgroupOther.appendChild(officieroptionUnit);
   }
@@ -723,11 +725,11 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language) {
   if (nameUnit !== "" && optionUser == 1) {
     let option = document.createElement("option");
     option.value = "";
-    option.text = translate[Language].create_group.create_group.selectmenu.delete;
+    option.text = translate.create_group.create_group.selectmenu.delete;
     optgroupOther.appendChild(option);
   } else {
     defaultoptionUnit.value = "";
-    defaultoptionUnit.text = translate[Language].create_group.select;
+    defaultoptionUnit.text = translate.create_group.select;
   }
 
   selectunit.appendChild(optgroupOther);
@@ -756,13 +758,13 @@ function compareUnitNames(a, b) {
 }
 
 // *************** Option "not exist group" ***************
-function createOneGroupe(data) {
+function createOneGroupe(data, translate) {
   const creategroup = document.getElementById("creategroup");
   const groupName = "group" + groupNumber;
   let divGroup = document.createElement("div");
   divGroup.classList.add("divgroup");
   divGroup.classList.add(groupName);
-  divGroup.appendChild(namegroup(data, groupNumber));
+  divGroup.appendChild(namegroup(data, groupNumber, translate));
 
   for (let i = 0; i < 5; i++) {
     let divuser = document.createElement("div");
@@ -776,7 +778,7 @@ function createOneGroupe(data) {
     let name = createHTMLElement("select", "username");
     let defaultoption = document.createElement("option");
     defaultoption.value = "";
-    defaultoption.text = translate[data.UserInfo.Language].create_group.select;
+    defaultoption.text = translate.create_group.select;
     name.appendChild(defaultoption);
     if (data.ListInscripted != null) {
       for (let j = 0; j < data.ListInscripted.length; j++) {
@@ -804,7 +806,7 @@ function createOneGroupe(data) {
     let unit4 = createHTMLElement("div", "unit4");
     divuser.appendChild(unit4);
 
-    createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4);
+    createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate);
     divGroup.appendChild(divuser);
   }
   creategroup.appendChild(divGroup);
@@ -824,48 +826,48 @@ function createLegend(listLegend, name) {
   return legend;
 }
 
-function entete(language) {
+function entete(translate) {
   let titledivuser = document.createElement("div");
   titledivuser.classList.add("titledivuser");
   titledivuser.classList.add("divuser");
 
   let titlename = createHTMLElement("div", "titlename");
-  titlename.textContent = translate[language].create_group.legend.username;
+  titlename.textContent = translate.create_group.legend.username;
   titledivuser.appendChild(titlename);
 
   let titleinfluence = createHTMLElement("div", "titleinfluence");
-  titleinfluence.innerHTML = translate[language].create_group.legend.influ;
+  titleinfluence.innerHTML = translate.create_group.legend.influ;
   titledivuser.appendChild(titleinfluence);
 
   let divnameunit = createHTMLElement("div", "divnameunit");
 
   let titleunit1 = document.createElement("div");
-  titleunit1.textContent = translate[language].create_group.legend.unit1;
+  titleunit1.textContent = translate.create_group.legend.unit1;
   divnameunit.appendChild(titleunit1);
 
   let titleunit2 = document.createElement("div");
-  titleunit2.textContent = translate[language].create_group.legend.unit2;
+  titleunit2.textContent = translate.create_group.legend.unit2;
   divnameunit.appendChild(titleunit2);
 
   let titleunit3 = document.createElement("div");
-  titleunit3.textContent = translate[language].create_group.legend.unit3;
+  titleunit3.textContent = translate.create_group.legend.unit3;
   divnameunit.appendChild(titleunit3);
 
   let titleunit4 = document.createElement("div");
-  titleunit4.textContent = translate[language].create_group.legend.unit4;
+  titleunit4.textContent = translate.create_group.legend.unit4;
   divnameunit.appendChild(titleunit4);
   titledivuser.appendChild(divnameunit);
 
   return titledivuser;
 }
 
-function namegroup(data, groupNumber) {
+function namegroup(data, groupNumber, translate) {
   const divnameUserGroup = createHTMLElement("div", "divnamegroup" + groupNumber);
   divnameUserGroup.classList.add("divnamegroup");
 
   const nameUserGroup = createHTMLElement("div", "namegroup" + groupNumber);
   nameUserGroup.classList.add("namegroup");
-  nameUserGroup.textContent = translate[data.UserInfo.Language].create_group.legend.namegroup + " :";
+  nameUserGroup.textContent = translate.create_group.legend.namegroup + " :";
   divnameUserGroup.appendChild(nameUserGroup);
 
   const inputnameUserGroup = createHTMLElement("input", "inputnamegroup" + groupNumber);
@@ -873,7 +875,7 @@ function namegroup(data, groupNumber) {
   if (data.NameGroupGvG[groupNumber]) {
     inputnameUserGroup.placeholder = data.NameGroupGvG[groupNumber];
   } else {
-    inputnameUserGroup.placeholder = translate[data.UserInfo.Language].create_group.legend.namegroup;
+    inputnameUserGroup.placeholder = translate.create_group.legend.namegroup;
   }
   divnameUserGroup.appendChild(inputnameUserGroup);
 
@@ -936,7 +938,7 @@ function saveGroup(optiontype) {
 // --------------------------------------------------------
 // ------------ Fonction create eventlistener -------------
 // --------------------------------------------------------
-function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4) {
+function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate) {
   let selectunit1;
   let selectunit2;
   let selectunit3;
@@ -986,22 +988,22 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
 
           // Unité 1
           if (selectunit1 === undefined) {
-            selectunit1 = await createSelectUnit(1, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language);
+            selectunit1 = await createSelectUnit(1, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
             unit1.replaceWith(selectunit1);
           }
           // Unité 2
           if (selectunit2 === undefined) {
-            selectunit2 = await createSelectUnit(2, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language);
+            selectunit2 = await createSelectUnit(2, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
             unit2.replaceWith(selectunit2);
           }
           // Unité 3
           if (selectunit3 === undefined) {
-            selectunit3 = await createSelectUnit(3, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language);
+            selectunit3 = await createSelectUnit(3, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
             unit3.replaceWith(selectunit3);
           }
           // Unité 4
           if (selectunit4 === undefined) {
-            selectunit4 = await createSelectUnit(4, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language);
+            selectunit4 = await createSelectUnit(4, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
             unit4.replaceWith(selectunit4);
           }
 
@@ -1294,27 +1296,27 @@ function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectuni
   selectunit4.id = "unit4" + usernameSansEspaces;
 }
 
-function groupType(language) {
+function groupType(translate) {
   let groupType = createHTMLElement("div", "divGroupType");
   groupType.style.display = "none";
 
   // Avertissement
   let information = document.createElement("p");
-  information.innerHTML = translate[language].create_group.create_group.group_type.description;
+  information.innerHTML = translate.create_group.create_group.group_type.description;
   groupType.appendChild(information);
 
   // Sauvegarde
   let divSave = createHTMLElement("div", "divSave");
   let titlesaveGroupType = document.createElement("h2");
-  titlesaveGroupType.textContent = translate[language].create_group.create_group.group_type.save;
+  titlesaveGroupType.textContent = translate.create_group.create_group.group_type.save;
   divSave.appendChild(titlesaveGroupType);
   let saveGroupType = createHTMLElement("div", "saveGroupType");
   let buttonSaveGroupTypeAtt = createHTMLElement("div", "buttonSaveGroupTypeAtt");
-  buttonSaveGroupTypeAtt.textContent = translate[language].create_group.create_group.group_type.att;
+  buttonSaveGroupTypeAtt.textContent = translate.create_group.create_group.group_type.att;
   saveGroupType.appendChild(buttonSaveGroupTypeAtt);
 
   let buttonSaveGroupTypeDef = createHTMLElement("div", "buttonSaveGroupTypeDef");
-  buttonSaveGroupTypeDef.textContent = translate[language].create_group.create_group.group_type.def;
+  buttonSaveGroupTypeDef.textContent = translate.create_group.create_group.group_type.def;
   saveGroupType.appendChild(buttonSaveGroupTypeDef);
   divSave.appendChild(saveGroupType);
   groupType.appendChild(divSave);
@@ -1322,15 +1324,15 @@ function groupType(language) {
   // Chargement
   let divCharger = createHTMLElement("div", "divCharger");
   let titlechargerGroupType = document.createElement("h2");
-  titlechargerGroupType.textContent = translate[language].create_group.create_group.group_type.load;
+  titlechargerGroupType.textContent = translate.create_group.create_group.group_type.load;
   divCharger.appendChild(titlechargerGroupType);
   let chargerGroupType = createHTMLElement("div", "chargerGroupType");
   let buttonChargerGroupTypeAtt = createHTMLElement("div", "buttonChargerGroupTypeAtt");
-  buttonChargerGroupTypeAtt.textContent = translate[language].create_group.create_group.group_type.att;
+  buttonChargerGroupTypeAtt.textContent = translate.create_group.create_group.group_type.att;
   chargerGroupType.appendChild(buttonChargerGroupTypeAtt);
 
   let buttonChargerGroupTypeDef = createHTMLElement("div", "buttonChargerGroupTypeDef");
-  buttonChargerGroupTypeDef.textContent = translate[language].create_group.create_group.group_type.def;
+  buttonChargerGroupTypeDef.textContent = translate.create_group.create_group.group_type.def;
   chargerGroupType.appendChild(buttonChargerGroupTypeDef);
   divCharger.appendChild(chargerGroupType);
   groupType.appendChild(divCharger);

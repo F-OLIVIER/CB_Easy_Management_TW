@@ -3,26 +3,26 @@
   "no": "no",
 
   "help": [
-    "Bonjour brave héros,",
-    "Je suis **Easy Management GvG**.",
-    "Mon rôle principal est de gérer les inscriptions aux guerres de territoire (GvG) pour le jeu **Conqueror's Blade**.",
-    "Pour **s'inscrire au GvG**, il suffit de répondre \"présent\" ou \"absent\" sur le message dédié au GvG. Je me charge de le changer après chaque guerre de territoire.",
+    "Hello, brave hero",
+    "I am Easy Management GvG",
+    "My main role is to manage sign-ups for territory wars (GvG) in the game Conqueror's Blade.",
+    "To sign up for GvG, simply reply \"présent\" or \"absent\" to the dedicated GvG message. I will update it after each territory war.",
     "",
-    "**Voici la liste des commandes utilisateur**",
-    "* `/level` permet de mettre à jour le niveau de ton héros.",
-    "* `/influence` permet de mettre à jour l'influence de ton héros.",
-    "* `/class` permet de mettre à jour l'arme jouée de ton héros.",
-    "* `/data` permet de voir les informations te concernant.",
-    "* `/guide` permet d'avoir une liste de guides et tutoriels de Conqueror's Blade.",
-    "* `/site` permet d'afficher le lien du site internet associé.",
-    "* `/smartphone` permet de générer un token à usage unique pour se connecter à l'application téléphone.",
+    "**Here is the list of user commands**",
+    "* `/level` updates your hero's level.",
+    "* `/influence` updates your hero's influence.",
+    "* `/class` updates the weapon your hero plays.",
+    "* `/data`  displays your personal information.",
+    "* `/guide` provides a list of guides and tutorials for Conqueror's Blade.",
+    "* `/site`  displays the link to the associated website.",
+    "* `/smartphone`  generates a one-time-use token to log in to the mobile app.",
     "",
-    "**Voici la liste des commandes réservées aux gestionnaires**",
-    "* `/config` permet de configurer la maison.",
-    "* `/bot_activation` permet d'activer (option `on`) ou de désactiver (option `off`) le message d'inscription au GvG afin d'éviter des pings inutiles.",
-    "* `/reset_msg_gvg` permet, en cas de bug du reset du message d'inscription au GvG, de le faire manuellement.",
+    "**Here is the list of commands reserved for managers**",
+    "* `/config` allows you to configure the house.",
+    "* `/bot_activation` enables (on option) or disables (off option) the GvG sign-up message to avoid unnecessary pings.",
+    "* `/reset_msg_gvg` allows you to manually reset the GvG sign-up message in case of a reset bug.",
     "",
-    "Que la gloire soit dans ton sillage !"
+    "May glory be in your wake!"
   ],
 
   "config": {
@@ -67,31 +67,30 @@
     }
   },
 
-  "visite": {},
   "information": {
     "UserJoinGroup": {
       "1": "User",
       "2": "has just been added to the group"
     },
-    "UserLeaveDiscord": "abandonne le combat, il/elle viens de quitter le Discord.\nGrrrr, je vais encore faire plein de rature sur le registre !!!",
-    "UserLeaveGroupDiscord": "à été retiré des groupes Discord autorisé.",
-    "lvl": "Votre nouveau level de héros est",
-    "influ": "Votre nouvelle influence de héros est de",
+    "UserLeaveDiscord": "abandons the fight, they just left the Discord.\nGrrrr, I'll have to make a lot of corrections in the register again!!!",
+    "UserLeaveGroupDiscord": "has been removed from the authorized Discord groups.",
+    "lvl": "Your new hero level is",
+    "influ": "Your new hero influence is",
     "class": {
-      "select": "Choisissez votre arme",
-      "confirm": "Votre arme à bien été mis à jour",
-      "err": "Erreur lors de la mise à jour de votre arme",
-      "delay": "Delais de réponse dépassé"
+      "select": "Choose your weapon",
+      "confirm": "Your weapon has been successfully updated",
+      "err": "Error updating your weapon",
+      "delay": "Response time exceeded"
     },
     "smartphone": {
-      "err": "Vous ne faites pas partie de la maison sur le jeu Conqueror's Blade !!!",
+      "err": "You are not part of the house in the game Conqueror's Blade!!!",
       "ok": {
         "description": [
-          ":information_source: Votre Token (à usage unique) vous permet de vous connecter à l'application mobile, afin de pouvoir le copier facilement, il vous est envoyé dans un autre message (ci-dessous).",
-          ":warning: Ce Token est associé à votre compte, ne le donner à personne sous aucun prétexte."
+          ":information_source: Your Token (one-time use) allows you to log in to the mobile app. To copy it easily, it is sent to you in another message (below).",
+          ":warning: This Token is linked to your account. Do not share it with anyone under any circumstances."
         ],
-        "link_android": "Lien de l'application Android (Google Play Store)",
-        "link_ios": "Lien de l'application iOS (Apple Store)"
+        "link_android": "Android app link (Google Play Store)",
+        "link_ios": "iOS app link (Apple Store)"
       }
     }
   },
@@ -102,34 +101,45 @@
   },
 
   "EmbedData": {
-    "nodata": "",
-    "description_lvl": "",
-    "lvl": "",
-    "description_classe": "",
-    "classe": "",
-    "description_influence": "",
-    "description_inscription_GvG": "",
-    "present": "",
-    "noinscrit": "",
-    "absent": "",
-    "never": "",
-    "player": "",
-    "stat": "",
-    "partiped_GvG": "",
-    "last_GvG": "",
-    "nolastGvG": "",
-    "pourcent_GvG": ""
+    "nodata": "No data",
+    "description_lvl": "Hero level",
+    "lvl": "undefined\nuse /level to define it",
+    "description_classe": "Class played in GvG",
+    "classe": "undefined\nuse /class to define it",
+    "description_influence": "Your hero's influence (700 + armour)",
+    "description_inscription_GvG": "GvG registration",
+    "present": "Registered present",
+    "noinscrit": "Not registered",
+    "absent": "Registered absent",
+    "never": "Never registered",
+    "player": "Player",
+    "stat": "GvG statistics",
+    "partiped_GvG": "GvG participated",
+    "last_GvG": "Last gvg participated",
+    "nolastGvG": "Never",
+    "pourcent_GvG": "Presence"
   },
 
   "EmbedGvG": {
-    "button_present": "",
-    "button_absent": "",
-    "description": "",
-    "description_nogvg": "",
+    "button_present": "Present",
+    "button_absent": "Absent",
+    "description": "Please let us know if you will be attending the next GvG.",
+    "description_nogvg": "The next GvG will be a training GvG (also known as a drill), so registrations are not required.",
 
-    "date": "",
-    "nbpresent": "",
-    "nbabsent": "",
-    "noinscrit": ""
+    "date": "Next GvG date",
+    "nbpresent": "Present",
+    "nbabsent": "Absent",
+    "noinscrit": "None"
+  },
+
+  "socket": {
+    "newunit": {
+      "1": "The",
+      "2": "unit has been added."
+    },
+    "newclass": {
+      "1": "The",
+      "2": "weapon has been added."
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { adressAPI, cookieName, domain, LINK_DISCORD } from "./config.js";
-import { translate } from "./translate.js";
+import { loadTranslate } from "./translate.js";
 
 export async function fetchServer(option) {
   try {
@@ -51,9 +51,12 @@ export function connected_lang_select() {
   });
 }
 
-export function communBlock_notconnected() {
-  const language = localStorage.getItem("selectedLang") || "en";
-  createFooter(language);
+export async function communBlock_notconnected(translate = "") {
+  if (translate == "") {
+    const language = localStorage.getItem("selectedLang") || "en";
+    translate = await loadTranslate(language);
+  }
+  createFooter(translate);
 
   let headerdivuser = document.getElementById("headerdivuser");
   headerdivuser.innerHTML = ``;
@@ -70,11 +73,17 @@ export function communBlock_notconnected() {
   headerdivuser.appendChild(loginButton);
 }
 
-export function communBlock(data) {
-  const language = data.UserInfo.Language;
+export async function communBlock(data, translate = "") {
+  let language = localStorage.getItem("selectedLang") || "en";
+  if (data.UserInfo.Language) {
+    language = data.UserInfo.Language;
+  }
   document.getElementById("lang-select").value = language;
+  if (translate == "") {
+    translate = await loadTranslate(language);
+  }
 
-  createFooter(language);
+  createFooter(translate);
   connected_lang_select();
 
   let linkhome = document.getElementById("logoheader");
@@ -99,7 +108,7 @@ export function communBlock(data) {
 
   let button = createHTMLElement("button", "DisconnectButton");
   button.type = "submit";
-  button.textContent = translate[language].commun.disconnected;
+  button.textContent = translate.commun.disconnected;
   disconnect.appendChild(button);
 
   DisconnectedButton();
@@ -194,7 +203,7 @@ export async function confirmwindows(message) {
   });
 }
 
-function createFooter(language = "en") {
+function createFooter(translate) {
   // Créer l'élément footer
   const footer = document.createElement("footer");
   footer.id = "footer";
@@ -203,7 +212,7 @@ function createFooter(language = "en") {
   const footerContainer = document.createElement("div");
   footerContainer.className = "footer-container";
 
-  translate[language].footer.sections.forEach((section) => {
+  translate.footer.sections.forEach((section) => {
     const footerSection = document.createElement("div");
     footerSection.className = "footer-section";
 
@@ -218,7 +227,7 @@ function createFooter(language = "en") {
   // Créer la partie inférieure du footer
   const footerBottom = document.createElement("div");
   footerBottom.className = "footer-bottom";
-  footerBottom.innerHTML = translate[language].footer.bottom;
+  footerBottom.innerHTML = translate.footer.bottom;
 
   // Ajouter les éléments au footer
   footer.appendChild(footerContainer);

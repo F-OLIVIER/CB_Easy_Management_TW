@@ -130,5 +130,16 @@
     "nbpresent": "Présent(s)",
     "nbabsent": "Absent(s)",
     "noinscrit": "Aucun"
+  },
+
+  "socket": {
+    "newunit": {
+      "1": "L'unité",
+      "2": "a été ajoutée."
+    },
+    "newclass": {
+      "1": "L'arme",
+      "2": "a été ajoutée."
+    }
   }
 }

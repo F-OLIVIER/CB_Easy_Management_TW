@@ -128,11 +128,12 @@ type GestionAdministrateBot struct {
 }
 
 type AdministrateBot struct {
-	Allumage   string       `json:"Allumage"`
-	NewWeapon  ListLanguage `json:"newWeapon"`
-	CreateUnit Unit         `json:"createUnit"`
-	ChangeUnit Unit         `json:"changeUnit"`
-	Resetnbgvg bool         `json:"resetnbgvg"`
+	Allumage           string       `json:"Allumage"`
+	NewWeapon          ListLanguage `json:"newWeapon"`
+	CreateUnit         Unit         `json:"createUnit"`
+	ChangeUnit         Unit         `json:"changeUnit"`
+	Resetnbgvg         bool         `json:"resetnbgvg"`
+	Informationdiscord bool         `json:"Informationdiscord"`
 }
 
 type Screen struct {
