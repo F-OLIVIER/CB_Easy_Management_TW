@@ -528,7 +528,7 @@ async function createExistGroupe(data, userIngroup, translate) {
           optionSelectUsername();
 
           // mise à jour des balises select avec les nouvelles unités
-          updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected);
+          updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected, translate);
 
           if (selectunit1 != undefined) {
             selectunit1.style.visibility = "visible";
@@ -612,13 +612,13 @@ function createSelectUnit(numberUnit, caserne, currentUser, usernameSansEspaces,
   const selectunit = createHTMLElement("select", "unit" + numberUnit + usernameSansEspaces);
   selectunit.name = "unit" + numberUnit + usernameSansEspaces;
   if (nameUnit !== undefined) {
-    insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language);
+    insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language, translate);
   }
 
   return selectunit;
 }
 
-function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language) {
+function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language, translate) {
   let Consulterunofficier = false;
   const defaultoptionUnit = document.createElement("option");
   selectunit.appendChild(defaultoptionUnit);
@@ -678,27 +678,27 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language) {
         option.text = textoption;
         if (unit.Unit_tier === "T5") {
           // "Infanterie" "Distant" "Cavalerie"
-          if (unit.Unit_type === "Infanterie") {
+          if (unit.Unit_type.fr === "Infanterie") {
             optgroupT5Infanterie.appendChild(option);
-          } else if (unit.Unit_type === "Distant") {
+          } else if (unit.Unit_type.fr === "Distant") {
             optgroupT5Distant.appendChild(option);
-          } else if (unit.Unit_type === "Cavalerie") {
+          } else if (unit.Unit_type.fr === "Cavalerie") {
             optgroupT5Cav.appendChild(option);
           }
         } else if (unit.Unit_tier === "T4") {
-          if (unit.Unit_type === "Infanterie") {
+          if (unit.Unit_type.fr === "Infanterie") {
             optgroupT4Infanterie.appendChild(option);
-          } else if (unit.Unit_type === "Distant") {
+          } else if (unit.Unit_type.fr === "Distant") {
             optgroupT4Distant.appendChild(option);
-          } else if (unit.Unit_type === "Cavalerie") {
+          } else if (unit.Unit_type.fr === "Cavalerie") {
             optgroupT4Cav.appendChild(option);
           }
         } else if (unit.Unit_tier === "T3") {
-          if (unit.Unit_type === "Infanterie") {
+          if (unit.Unit_type.fr === "Infanterie") {
             optgroupT3Infanterie.appendChild(option);
-          } else if (unit.Unit_type === "Distant") {
+          } else if (unit.Unit_type.fr === "Distant") {
             optgroupT3Distant.appendChild(option);
-          } else if (unit.Unit_type === "Cavalerie") {
+          } else if (unit.Unit_type.fr === "Cavalerie") {
             optgroupT3Cav.appendChild(option);
           }
         }
@@ -1009,7 +1009,7 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
 
           if (userSelected !== "") {
             // mise à jour des balises select avec les nouvelles unités
-            updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected);
+            updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected, translate);
             selectunit1.value = "";
             selectunit1.style.visibility = "visible";
             selectunit2.style.visibility = "visible";
@@ -1152,16 +1152,16 @@ function changeInfluUnit(UserCaserne, username, Language) {
   let unitValues = [];
   for (let i = 1; i <= 4; i++) {
     let unitElement = document.getElementById("unit" + i + username);
-    let unit = unitElement ? unitElement.value : null;
+    let unit = unitElement ? unitElement.value : "";
     unitValues.push(unit);
   }
 
   let newValue = 0;
-  if (UserCaserne !== null && UserCaserne.length !== undefined) {
+  if (Array.isArray(UserCaserne) && UserCaserne.length > 0) {
     for (let j = 0; j < UserCaserne.length; j++) {
-      const unit = UserCaserne[j];
-      if (unitValues.includes(unit.Unit_name[Language])) {
-        newValue += parseInt(unit.Unit_influence, 10);
+      const current_unit = UserCaserne[j];
+      if (current_unit.Unit_name[Language] != "" && unitValues.includes(current_unit.Unit_name[Language])) {
+        newValue += parseInt(current_unit.Unit_influence, 10) || 0;
       }
     }
   }
@@ -1169,7 +1169,7 @@ function changeInfluUnit(UserCaserne, username, Language) {
   let divInfluenceUnit = document.getElementById("influUnit" + username);
   divInfluenceUnit.textContent = newValue;
   const divInfluenceplayer = document.getElementById("influPlayer" + username);
-  const influenceplayer = parseInt(divInfluenceplayer.textContent, 10);
+  const influenceplayer = parseInt(divInfluenceplayer.textContent, 10) || 700;
   if (influenceplayer < newValue) {
     divInfluenceUnit.style.color = "red";
   } else {
@@ -1275,7 +1275,7 @@ function optionSelectUsername() {
 }
 
 // mise à jour des balises select avec les nouvelles unités
-function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected) {
+function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected, translate) {
   let infoUsersave = {};
   for (let j = 0; j < data.ListInscripted.length; j++) {
     let userInscripted = data.ListInscripted[j];
@@ -1286,13 +1286,13 @@ function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectuni
   }
 
   const usernameSansEspaces = infoUsersave.Username.replace(/\s/g, "");
-  insertSelectUnit(selectunit1, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language);
+  insertSelectUnit(selectunit1, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
   selectunit1.id = "unit1" + usernameSansEspaces;
-  insertSelectUnit(selectunit2, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language);
+  insertSelectUnit(selectunit2, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
   selectunit2.id = "unit2" + usernameSansEspaces;
-  insertSelectUnit(selectunit3, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language);
+  insertSelectUnit(selectunit3, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
   selectunit3.id = "unit3" + usernameSansEspaces;
-  insertSelectUnit(selectunit4, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language);
+  insertSelectUnit(selectunit4, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
   selectunit4.id = "unit4" + usernameSansEspaces;
 }
 

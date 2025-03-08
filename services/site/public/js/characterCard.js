@@ -36,7 +36,7 @@ function containerCharacterCard(data, translate) {
 
   // class
   let classeplay = document.createElement("div");
-  classeplay.textContent = translate.characterCard.info_user.classe.get + " : " + data.UserInfo.GameCharacter;
+  classeplay.textContent = translate.characterCard.info_user.classe.get + " : " + data.UserInfo.GameCharacter[data.UserInfo.Language];
   personnage.appendChild(classeplay);
   let changeClass = createHTMLElement("div", "changeInfo");
   let titlechangeClass = document.createElement("div");
@@ -49,8 +49,8 @@ function containerCharacterCard(data, translate) {
   selectchangeClass.appendChild(defaultOption);
   for (let i = 0; i < data.Gestion.ListClass.length; i++) {
     let option = document.createElement("option");
-    option.value = data.Gestion.ListClass[i];
-    option.text = data.Gestion.ListClass[i];
+    option.value = data.Gestion.ListClass[i].fr;
+    option.text = data.Gestion.ListClass[i][data.UserInfo.Language];
     selectchangeClass.appendChild(option);
   }
 

@@ -11,13 +11,26 @@ import (
 )
 
 func ListAllUnit(database *sql.DB) (ListUnit []data.Unit) {
-	listUnit, err := database.Prepare("SELECT ID, UnitFR, UnitEN, InfuenceMax, LvlMax, Maitrise, TypeUnit, ForceUnit, Img FROM ListUnit")
+	listUnit, err := database.Prepare(`
+		SELECT ListUnit.ID, 
+			ListUnit.UnitFR, 
+			ListUnit.UnitEN, 
+			ListUnit.InfuenceMax, 
+			ListUnit.LvlMax, 
+			ListUnit.Maitrise, 
+			ListUnit.ForceUnit, 
+			ListUnit.Img,
+			ListTypeUnit.TypeFR, 
+			ListTypeUnit.TypeEN 
+		FROM ListUnit
+		INNER JOIN ListTypeUnit ON ListUnit.TypeUnit = ListTypeUnit.ID;`)
 	CheckErr("1- Requete DB fonction Caserne", err)
 	rows, err := listUnit.Query()
 	CheckErr("2- Requete DB fonction Caserne", err)
 	for rows.Next() {
+		defer rows.Close()
 		var unit data.Unit
-		err = rows.Scan(&unit.ID, &unit.Name.FR, &unit.Name.EN, &unit.Influence, &unit.LvlMax, &unit.Maitrise, &unit.Type, &unit.Tier, &unit.Img)
+		err = rows.Scan(&unit.ID, &unit.Name.FR, &unit.Name.EN, &unit.Influence, &unit.LvlMax, &unit.Maitrise, &unit.Tier, &unit.Img, &unit.Type.FR, &unit.Type.EN)
 		CheckErr("3- Requete DB fonction Caserne", err)
 		ListUnit = append(ListUnit, unit)
 	}

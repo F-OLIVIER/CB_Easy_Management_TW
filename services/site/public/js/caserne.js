@@ -232,11 +232,11 @@ function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier) {
         unit.appendChild(selecctMaitrise);
       }
 
-      if (Currentunit.Unit_type === "Infanterie") {
+      if (Currentunit.Unit_type.fr === "Infanterie") {
         listUnitInfanterie.appendChild(unit);
-      } else if (Currentunit.Unit_type === "Distant") {
+      } else if (Currentunit.Unit_type.fr === "Distant") {
         listUnitDistant.appendChild(unit);
-      } else if (Currentunit.Unit_type === "Cavalerie") {
+      } else if (Currentunit.Unit_type.fr === "Cavalerie") {
         listUnitCav.appendChild(unit);
       }
     }

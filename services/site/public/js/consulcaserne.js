@@ -53,14 +53,11 @@ function containerconsulcaserne(data, translate) {
     caserne.innerHTML = "";
 
     let userSelected = document.getElementById("selectusertosee").value;
-    console.log("userSelected : ", userSelected);
 
     for (let i = 0; i < data.ListInscripted.length; i++) {
       const currentUser = data.ListInscripted[i];
 
       if (currentUser.ID == userSelected) {
-        console.log("currentUser : ", currentUser);
-
         let divInfanterie = createHTMLElement("div", "divInfanterie");
         let TitleDivInfanterie = document.createElement("div");
         TitleDivInfanterie.id = "titleInfanterie";
@@ -258,11 +255,11 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
         unit.appendChild(selecctMaitrise);
       }
 
-      if (Currentunit.Unit_type === "Infanterie") {
+      if (Currentunit.Unit_type.fr === "Infanterie") {
         listUnitInfanterie.appendChild(unit);
-      } else if (Currentunit.Unit_type === "Distant") {
+      } else if (Currentunit.Unit_type.fr === "Distant") {
         listUnitDistant.appendChild(unit);
-      } else if (Currentunit.Unit_type === "Cavalerie") {
+      } else if (Currentunit.Unit_type.fr === "Cavalerie") {
         listUnitCav.appendChild(unit);
       }
     }

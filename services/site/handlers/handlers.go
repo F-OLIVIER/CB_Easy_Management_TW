@@ -119,7 +119,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ApiHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("r.URL.Path in ApiHandler : ", r.URL.Path)
+	// fmt.Println("r.URL.Path in ApiHandler : ", r.URL.Path)
 
 	if tb.Request(1) {
 		var sendHTML *data.SendHTML

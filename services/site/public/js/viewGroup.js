@@ -8,7 +8,7 @@ export async function viewgroup() {
   } else {
     const data = await fetchServer("creategroup/?house=" + currenthouse);
     if (data.Gestion.Logged && data.Gestion.Officier) {
-      const translate = await loadTranslate(language);
+      const translate = await loadTranslate(data.UserInfo.Language);
       containerviewGroup(data, translate);
     } else {
       fetchlogout();
