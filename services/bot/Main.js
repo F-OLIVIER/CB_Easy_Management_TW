@@ -34,7 +34,7 @@ client.on("ready", async () => {
   console.log(`╭─────────────────────────────────────────────────╮
 │         Bot starting up, please wait ...        │
 │─────────────────────────────────────────────────│`);
-  // await createCommands();
+  await createCommands();
   console.log("│ • Create db user in process                     │");
   await checkAllUser();
   console.log("│ • Initializing automatic function               │");
