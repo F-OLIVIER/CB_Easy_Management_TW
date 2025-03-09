@@ -41,7 +41,7 @@ Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose p
             <td><img src="./img/site_charactercard.png"></td>
         </tr>
         <tr>
-            <td><img src="./img/site_caserne.png"></td>
+            <td colspan="2"><img src="./img/site_caserne.png"></td>
         </tr>    
     </tbody>
 </table>
