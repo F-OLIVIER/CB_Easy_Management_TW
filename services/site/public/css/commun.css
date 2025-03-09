@@ -233,6 +233,80 @@ button:hover {
 }
 
 /* -------------------------------------------- */
+/* --------------- notification --------------- */
+/* -------------------------------------------- */
+#notification-container {
+  position: fixed;
+  top: 105px;
+  left: calc(50% - 150px);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.notification {
+  padding: 15px;
+  padding-right: 40px;
+  border-radius: 5px;
+  font-size: 16px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 1;
+  animation: fade-in 0.5s ease-in-out;
+
+  /* Ajout de la position relative pour permettre au bouton de se positionner */
+  position: relative;
+}
+
+.notification.success {
+  background-color: #4caf50;
+}
+
+.notification.error {
+  background-color: #f44336;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 10px;
+
+  /* Positionnement en haut à droite de la notification */
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  /* Style circulaire */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white; 
+  color: black;
+  font-size: 18px;
+  text-align: center;
+  line-height: 30px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------------------------------- */
 /* ------------------ Footer ------------------ */
 /* -------------------------------------------- */
 

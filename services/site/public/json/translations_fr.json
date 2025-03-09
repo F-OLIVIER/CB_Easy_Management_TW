@@ -9,14 +9,22 @@
     ]
   },
 
+  "descriptionIntro": {
+    "title": "Principe de fonctionnement",
+    "content": [
+      "Imaginez, vous inviter un bot Discord pour le jeu Conqueror's Blade. Vous lui appliquez une configuration et cette configuration configure automatiquement un site internet et d'une application mobile.",
+      "",
+      "Avec ces 3 applications, vos utilisateurs ont le choix de remplir leurs informations de caserne via le site internet ou l'application mobile et leurs informations de héros ainsi que leur présence aux guerres de territoires via le Bot Discord, le site internet ou l'application mobile. Un système multi-plateforme pour vos utilisateurs.",
+      "",
+      "Et vous, en tant que gestionnaire des guerres de territoire, qui gagnez vous ?",
+      "Vous pouvez préparer les guerres de territoire de façon simplifié et optimisé les groupes via le site internet."
+    ]
+  },
   "descriptionSections": [
     {
       "title": "Bot Discord",
       "commands": [
-        [
-          "/config",
-          "<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>`"
-        ],
+        ["/config","<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>`"],
         ["/visite", "Les commande sont expliqué par le bot"],
         ["/site", "Affiche le lien du site internet associé au bot"],
         ["/guide", "Affiche des informations d'aide sur Conqueror's Blade"],
@@ -65,7 +73,7 @@
 
   "accueil": {
     "description": "Easy Management GvG, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 3 applications interconnecté ensemble :</br>un bot Discord, ce site internet et une application mobile.",
-    "explain": "Description",
+    "explain": "ℹ️ Comment sa marche ?",
     "adddiscord": "Ajouter à Discord"
   },
 
@@ -138,9 +146,6 @@
     "select": "Choisissez",
     "buttonconsul": "Mettre à jour la caserne",
     "avertissement": "Pensez à sauvegarder votre caserne en cliquant sur le bouton \"Mettre à jour ma caserne\" en bas de page",
-    "infantry": "Infanterie",
-    "distant": "Distant",
-    "cavalry": "Cavalerie",
     "button": "Mettre à jour ma caserne"
   },
 
@@ -205,15 +210,9 @@
       "delete": "Supprimer le joueur",
       "selectmenu": {
         "title": "Option de gestion",
-        "t5inf": "T5 - Infanterie",
-        "t5dis": "T5 - Distant",
-        "t5cav": "T5 - Cavalerie",
-        "t4inf": "T4 - Infanterie",
-        "t4dis": "T4 - Distant",
-        "t4cav": "T4 - Cavalerie",
-        "t3inf": "T3 - Infanterie",
-        "t3dis": "T3 - Distant",
-        "t3cav": "T3 - Cavalerie",
+        "t5": "T5",
+        "t4": "T4",
+        "t3": "T3",
         "delete": "Supprimer l'unité",
         "other": "Consulter un officier"
       }
@@ -258,7 +257,11 @@
     },
     "use": {
       "title": "Utilisation des informations",
-      "content": "Les informations collectées sont utilisées pour préparer les guerres de territoire (gestion des groupes par exemple)."
+      "content": "Les informations collectées sont mises à disposition des utilisateurs du groupe gestionnaire afin de leur permettre de préparer les guerres de territoire. Aucune autre utilisation n'en est fait."
+    },
+    "storage": {
+      "title": "Stockage des données",
+      "content": "Les données sont stockées tant que vous été dans un groupe associé au bot Discord, si vous été retirer des groupes associé au bot Discord, toutes vos données sont supprimer de notre base de données.</br>De même, si le bot Discord et retirer d'un discord (expulsé ou ban), l'ensemble des données concernant la maison, le discord ainsi que les joueurs dans les groupes associé sont supprimer de notre base de données."
     },
     "rgpd": {
       "title": "Protection des données",
@@ -286,7 +289,7 @@
     "sections": [
       {
         "title": "À propos",
-        "content": "<p>Le meilleur systéme pour gérer vos GvG<br>sur Conqueror's Blade</p>"
+        "content": "<p>Le meilleur systéme pour gérer vos GvG sur Conqueror's Blade</p>"
       },
       {
         "title": "Liens interne",
@@ -294,13 +297,13 @@
       },
       {
         "title": "Liens externe",
-        "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Site Conqueror's Blade</a></li></ul>"
+        "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Jeu Conqueror's Blade</a></li></ul>"
       },
       {
         "title": "Contact",
         "content": "<p>fabiendeveloppeur76@gmail.com</p>"
       }
     ],
-    "bottom": "<p>Ce site contient des images et des informations sur le jeu Conqueror's Blade. Tous les droits relatifs à ces éléments appartiennent à leurs propriétaires respectifs.</br>Nous ne revendiquons aucun droit sur ces contenus, qui sont utilisés uniquement à des fins informatives et illustratives.</p><p>&copy; 2025 OLIVIER Fabien.</p>"
+    "bottom": "<p>Ce site contient des images et des informations sur le jeu Conqueror's Blade. Tous les droits relatifs à ces éléments appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces contenus, qui sont utilisés uniquement à des fins informatives et illustratives.</p><p>&copy; 2025 OLIVIER Fabien.</p>"
   }
 }

@@ -1,6 +1,7 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
 import { adressAPI } from "./config.js";
 import { loadTranslate } from "./translate.js";
+import { showNotification } from "./notification.js";
 
 export async function caserne() {
   const currenthouse = localStorage.getItem("user_house");
@@ -19,9 +20,12 @@ export async function caserne() {
 
 let timerThrottlebutton = 0;
 function containercaserne(data, translate) {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   communBlock(data, translate);
 
   let Container = document.getElementById("Container");
+  Container.innerHTML = ``;
 
   let avertissementsave = createHTMLElement("div", "avertissementsavecaserne");
   avertissementsave.textContent = translate.caserne.avertissement;
@@ -33,7 +37,7 @@ function containercaserne(data, translate) {
   let TitleDivInfanterie = document.createElement("div");
   TitleDivInfanterie.id = "titleInfanterie";
   TitleDivInfanterie.classList.add("titlelistUnit");
-  TitleDivInfanterie.textContent = "》 " + translate.caserne.infantry;
+  TitleDivInfanterie.textContent = "》 " + data.Gestion.ListUnitType[0][data.UserInfo.Language];
   let listUnitInfanterie = document.createElement("div");
   listUnitInfanterie.classList.add("listUnit");
   listUnitInfanterie.style.display = "none";
@@ -42,7 +46,7 @@ function containercaserne(data, translate) {
   let TitleDivDistant = document.createElement("div");
   TitleDivDistant.id = "titleDistant";
   TitleDivDistant.classList.add("titlelistUnit");
-  TitleDivDistant.textContent = "》 " + translate.caserne.distant;
+  TitleDivDistant.textContent = "》 " + data.Gestion.ListUnitType[1][data.UserInfo.Language];
   let listUnitDistant = document.createElement("div");
   listUnitDistant.classList.add("listUnit");
   listUnitDistant.style.display = "none";
@@ -51,7 +55,7 @@ function containercaserne(data, translate) {
   let TitleDivCav = document.createElement("div");
   TitleDivCav.id = "titleCav";
   TitleDivCav.classList.add("titlelistUnit");
-  TitleDivCav.textContent = "》 " + translate.caserne.cavalry;
+  TitleDivCav.textContent = "》 " + data.Gestion.ListUnitType[2][data.UserInfo.Language];
   let listUnitCav = document.createElement("div");
   listUnitCav.classList.add("listUnit");
   listUnitCav.style.display = "none";
@@ -69,10 +73,8 @@ function containercaserne(data, translate) {
     if (now - timerThrottlebutton > 500) {
       timerThrottlebutton = now;
       if (listUnitInfanterie.style.display === "none") {
-        TitleDivInfanterie.textContent = "︾ " + translate.caserne.infantry;
         listUnitInfanterie.style.display = "flex";
       } else {
-        TitleDivInfanterie.textContent = "》 " + translate.caserne.infantry;
         listUnitInfanterie.style.display = "none";
       }
     }
@@ -86,10 +88,8 @@ function containercaserne(data, translate) {
     if (now - timerThrottlebutton > 500) {
       timerThrottlebutton = now;
       if (listUnitDistant.style.display === "none") {
-        TitleDivDistant.textContent = "︾ " + translate.caserne.distant;
         listUnitDistant.style.display = "flex";
       } else {
-        TitleDivDistant.textContent = "》 " + translate.caserne.distant;
         listUnitDistant.style.display = "none";
       }
     }
@@ -103,10 +103,8 @@ function containercaserne(data, translate) {
     if (now - timerThrottlebutton > 500) {
       timerThrottlebutton = now;
       if (listUnitCav.style.display === "none") {
-        TitleDivCav.textContent = "︾ " + translate.caserne.cavalry;
         listUnitCav.style.display = "flex";
       } else {
-        TitleDivCav.textContent = "》 " + translate.caserne.cavalry;
         listUnitCav.style.display = "none";
       }
     }
@@ -120,6 +118,10 @@ function containercaserne(data, translate) {
   Container.appendChild(caserne);
 
   MAJCaserne(data.ListUnit.length);
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type)
+  }
 }
 
 function MAJCaserne(nbunit) {
@@ -243,7 +245,7 @@ function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier) {
   }
 }
 
-function sendDataMAJCaserne(nbunit) {
+async function sendDataMAJCaserne(nbunit) {
   // récupération de toutes les valeurs
   let listNewLvlUnitCaserne = [];
   for (let i = 0; i < nbunit; i++) {
@@ -266,7 +268,7 @@ function sendDataMAJCaserne(nbunit) {
 
   const currenthouse = localStorage.getItem("user_house");
 
-  fetch(adressAPI + "majcaserne/?house=" + currenthouse, {
+  const update = await fetch(adressAPI + "majcaserne/?house=" + currenthouse, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -279,15 +281,14 @@ function sendDataMAJCaserne(nbunit) {
       }
       return response.json();
     })
-    .then((data) => {
-      if (typeof data === "object") {
-        console.log("Data received (Register):", data);
-        location.reload();
-      } else {
-        throw new Error("Réponse invalide du serveur (non-JSON)");
-      }
-    })
     .catch((error) => {
       console.error("Erreur lors de la récupération des données:", error);
     });
+
+  if (update.Gestion.Logged) {
+    const translate = await loadTranslate(update.UserInfo.Language);
+    containercaserne(update, translate);
+  } else {
+    fetchlogout();
+  }
 }

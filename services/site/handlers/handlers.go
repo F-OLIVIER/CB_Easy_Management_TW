@@ -56,41 +56,25 @@ func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {
 						Gestion: *gestion,
 					}
 				} else { // Connection failed
-					gestion := &data.Gestion{
-						Logged:   false,
-						Redirect: "/",
-					}
+
 					sendHTML = &data.SendHTML{
-						Gestion: *gestion,
+						Gestion: data.Gestion{
+							Logged:   false,
+							Redirect: "/",
+							Notification: data.Notif{
+								Notif: true,
+								Type:  "error",
+								Content: data.ListLanguage{
+									FR: "Vous n'existez pas dans la base de données. Configurez votre Discord avant de vous connecter ici.",
+									EN: "You do not exist in the database. Set up your Discord before logging in here.",
+								},
+							},
+						},
 					}
 				}
 
-			// case "/api/discordapp":
-			// 	database, err := sql.Open("sqlite3", data.ADRESS_DB)
-			// 	utils.CheckErr("open db in DiscordApiHandler discord", err)
-			// 	defer database.Close()
-
-			// 	validuser, uuidApp := appmobile.CheckUserApp(w, r, database)
-
-			// 	if validuser { // user connects
-			// 		gestion := &data.Gestion{
-			// 			Logged:  true,
-			// 			CodeApp: uuidApp,
-			// 		}
-			// 		sendHTML = &data.SendHTML{
-			// 			Gestion: *gestion,
-			// 		}
-			// 	} else { // Connection failed
-			// 		gestion := &data.Gestion{
-			// 			Logged:  false,
-			// 			CodeApp: "",
-			// 		}
-			// 		sendHTML = &data.SendHTML{
-			// 			Gestion: *gestion,
-			// 		}
-			// 	}
-
 			default:
+
 				gestion := &data.Gestion{
 					Logged:   false,
 					Redirect: "/",
@@ -209,21 +193,26 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 					// --------------------------------------------------
 					case "/api/caserne/":
 						sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+						gestion.ListUnitType = utils.ListUnitType(database)
 
 					case "/api/majcaserne/":
 						if r.Method == "POST" {
-							utils.MAJCaserne(r, currentUser.User_id, id_House, database)
-							gestion.Redirect = "/caserne"
+							_ = utils.MAJCaserne(r, currentUser.User_id, id_House, database)
+
+							gestion.Notification = data.Notif{
+								Notif: true,
+								Type:  "success",
+								Content: data.ListLanguage{
+									FR: "Votre caserne a bien été mise à jour.",
+									EN: "Your barracks have been successfully updated.",
+								},
+							}
+
+							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+							gestion.ListUnitType = utils.ListUnitType(database)
 						} else {
 							return
 						}
-
-					// --------------------------------------------------
-					// ----------------- ???? ---------------
-					// --------------------------------------------------
-					case "/api/CheckAppAdmin/":
-						sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
-						sendHTML.ListInscripted = utils.SendStatGvG(database)
 
 					case "/api/home/":
 						// Rien à ajouter
@@ -242,6 +231,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupGvG"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
+							gestion.ListUnitType = utils.ListUnitType(database)
 
 						case "/api/saveGroupInDB/":
 							utils.SaveCreateGroup(r, id_House, database)
@@ -268,11 +258,24 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						case "/api/consulcaserne/":
 							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							sendHTML.ListInscripted = utils.AllCaserne(id_House, database)
+							gestion.ListUnitType = utils.ListUnitType(database)
 
 						case "/api/majspecificcaserne/":
 							if r.Method == "POST" {
-								utils.MAJCaserne(r, "0", id_House, database)
-								gestion.Redirect = "/consulcaserne"
+								usermaj := utils.MAJCaserne(r, "0", id_House, database)
+
+								gestion.Notification = data.Notif{
+									Notif: true,
+									Type:  "success",
+									Content: data.ListLanguage{
+										FR: "La caserne de " + usermaj + " a bien été mise à jour.",
+										EN: "The barracks of " + usermaj + " have been successfully updated.",
+									},
+								}
+
+								sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+								sendHTML.ListInscripted = utils.AllCaserne(id_House, database)
+								gestion.ListUnitType = utils.ListUnitType(database)
 							} else {
 								return
 							}
@@ -287,15 +290,24 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						// --------------------------------------------------
 						// --------- Administrateur du site internet --------
 						// --------------------------------------------------
+						case "/api/CheckAppAdmin/":
+							// Ne rien fair, commum a toutes les page admin
+
 						case "/api/adminitrateBot/":
-							utils.UploadInformationsBot(r, database)
+							notif := utils.UploadInformationsBot(r, database)
+							gestion.Notification = notif
 
 						case "/api/UpdateAdmin/":
-							utils.UpdateAdministration(r, database)
+							notif := utils.UpdateAdministration(r, database)
+							gestion.Notification = notif
 
 						default:
 							// Ne rien faire
 						}
+
+						sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+						sendHTML.ListInscripted = utils.SendStatGvG(database)
+						gestion.ListUnitType = utils.ListUnitType(database)
 					}
 				}
 				sendHTML.Gestion = *gestion

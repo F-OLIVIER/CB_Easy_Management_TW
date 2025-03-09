@@ -16,6 +16,24 @@ export async function description() {
   Container.innerHTML = "";
   let containerDescription = createHTMLElement("div", "containerDescription");
 
+  let sectionDiv = createHTMLElement("div", "sectionIntro");
+  let title = document.createElement("h2");
+  title.textContent = translate.descriptionIntro.title;
+  title.className = "descriptionIntroTitle";
+  sectionDiv.appendChild(title);
+
+  translate.descriptionIntro.content.forEach(line => {
+    if (line.trim() === "") {
+        sectionDiv.appendChild(document.createElement("br"));
+    } else {
+        let content = document.createElement("div");
+        content.textContent = line;
+        content.className = "descriptionIntroContent";
+        sectionDiv.appendChild(content);
+    }
+});
+  containerDescription.appendChild(sectionDiv);
+
   translate.descriptionSections.forEach((section, index) => {
     let sectionDiv = createHTMLElement("div", "section");
 

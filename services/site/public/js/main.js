@@ -18,7 +18,7 @@ switch (path) {
     if (document.cookie.split(";").some((item) => item.trim().startsWith(cookieName + "="))) {
       window.location.href = "/home";
     } else {
-      accueil();
+      accueil({});
     }
     break;
 

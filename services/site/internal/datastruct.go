@@ -49,16 +49,23 @@ type ScearchUserInfo struct {
 }
 
 type Gestion struct {
-	Logged      bool   `json:"Logged"`
-	MsgErr      string `json:"MsgErr"`
-	Redirect    string `json:"Redirect"`
-	Officier    bool   `json:"Officier"`
-	Admin       bool   `json:"Admin"`
-	BotActivate bool   `json:"BotActivate"`
-	ListClass   []ListLanguage
+	Logged       bool   `json:"Logged"`
+	MsgErr       string `json:"MsgErr"`
+	Notification Notif
+	Redirect     string `json:"Redirect"`
+	Officier     bool   `json:"Officier"`
+	Admin        bool   `json:"Admin"`
+	BotActivate  bool   `json:"BotActivate"`
+	ListClass    []ListLanguage
+	ListUnitType []ListLanguage `json:"ListUnitType"`
 
 	CodeApp string `json:"CodeApp"`
 	Valid   bool   `json:"Valid"`
+}
+type Notif struct {
+	Notif   bool         `json:"Notif"`
+	Type    string       `json:"Type"`
+	Content ListLanguage `json:"content"`
 }
 
 type Unit struct {

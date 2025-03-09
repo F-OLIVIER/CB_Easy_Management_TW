@@ -73,6 +73,14 @@ export async function mention() {
   usageParagraph.textContent = translate.mention.use.content;
   contentDiv.appendChild(usageParagraph);
 
+  const storageTitle = document.createElement("h2");
+  storageTitle.textContent = translate.mention.storage.title;
+  contentDiv.appendChild(storageTitle);
+
+  const storageParagraph = document.createElement("p");
+  storageParagraph.innerHTML = translate.mention.storage.content;
+  contentDiv.appendChild(storageParagraph);
+
   const protectionTitle = document.createElement("h2");
   protectionTitle.textContent = translate.mention.rgpd.title;
   contentDiv.appendChild(protectionTitle);
@@ -115,4 +123,6 @@ export async function mention() {
 
   // Ajoutez le contenu au conteneur principal
   container.appendChild(contentDiv);
+
+    lang_select("/description");
 }

@@ -79,15 +79,23 @@
   gap: 20px;
 }
 
+.sectionIntro,
 .section {
   font-size: x-large;
   display: flex;
   flex-direction: column;
-  align-items: center;
   background-color: var(--main-background-color);
   border-radius: 15px;
-  padding: 20px;
+  padding: 0px 20px 40px 20px;
   border: 1px solid white;
+}
+
+.descriptionIntroContent {
+  text-align: left;
+}
+
+.section {
+  align-items: center;
 }
 
 .commandTable {

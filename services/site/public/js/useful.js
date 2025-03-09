@@ -15,7 +15,7 @@ export async function fetchServer(option) {
     }
 
     const data = await response.json();
-    console.log("Data received (" + option + "):", data);
+    // console.log("Data received (" + option + "):", data);
     return data;
   } catch (error) {
     console.error("Data recovery error:", error);
@@ -46,7 +46,6 @@ export function connected_lang_select() {
       }),
     });
 
-    // window.location.href = window.location.pathname;
     window.location.reload();
   });
 }
@@ -112,23 +111,6 @@ export async function communBlock(data, translate = "") {
   disconnect.appendChild(button);
 
   DisconnectedButton();
-}
-
-export function msgError(data) {
-  let divError = document.getElementById("error");
-  if (data.MsgErr !== "") {
-    divError.innerHTML = data.MsgErr;
-    divError.style.display = "block";
-  } else {
-    divError.style.display = "none";
-  }
-}
-
-export function notFound() {
-  let divError = document.getElementById("error");
-  divError.textContent = "Erreur 404 : Page not Found";
-  divError.style.color = "red";
-  divError.style.display = "block";
 }
 
 let timerThrottlebutton = 0;

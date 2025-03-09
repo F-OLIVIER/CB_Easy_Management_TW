@@ -474,16 +474,16 @@ async function createExistGroupe(data, userIngroup, translate) {
       influenceplayer.textContent = infoUsersave.Influence;
 
       // Unité 1
-      selectunit1 = await createSelectUnit(1, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
+      selectunit1 = await createSelectUnit(1, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
       await unit1.replaceWith(selectunit1);
       // Unité 2
-      selectunit2 = await createSelectUnit(2, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
+      selectunit2 = await createSelectUnit(2, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
       await unit2.replaceWith(selectunit2);
       // Unité 3
-      selectunit3 = await createSelectUnit(3, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
+      selectunit3 = await createSelectUnit(3, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
       await unit3.replaceWith(selectunit3);
       // Unité 4
-      selectunit4 = await createSelectUnit(4, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.UserInfo.Language, translate);
+      selectunit4 = await createSelectUnit(4, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
       await unit4.replaceWith(selectunit4);
 
       await createEventSelectUnit(name, influenceplayer, intermediairy, influenceUnit, selectunit1, selectunit2, selectunit3, selectunit4, infoUsersave, usernameSansEspaces, data.UserInfo.Language);
@@ -597,7 +597,7 @@ async function createExistGroupe(data, userIngroup, translate) {
 
 // optionUser 0 = nouvelle utilisateur
 // optionUser 1 = utilisateur deja present dans la sauvegarde
-function createSelectUnit(numberUnit, caserne, currentUser, usernameSansEspaces, optionUser, Language, translate) {
+function createSelectUnit(numberUnit, caserne, currentUser, usernameSansEspaces, optionUser, ListUnitType, Language, translate) {
   let nameUnit = "";
   if (numberUnit === 1) {
     nameUnit = currentUser.Unit1;
@@ -612,13 +612,13 @@ function createSelectUnit(numberUnit, caserne, currentUser, usernameSansEspaces,
   const selectunit = createHTMLElement("select", "unit" + numberUnit + usernameSansEspaces);
   selectunit.name = "unit" + numberUnit + usernameSansEspaces;
   if (nameUnit !== undefined) {
-    insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language, translate);
+    insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitType, Language, translate);
   }
 
   return selectunit;
 }
 
-function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language, translate) {
+function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitType, Language, translate) {
   let Consulterunofficier = false;
   const defaultoptionUnit = document.createElement("option");
   selectunit.appendChild(defaultoptionUnit);
@@ -628,25 +628,25 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, Language, t
   optgroupOther.label = translate.create_group.create_group.selectmenu.title;
 
   let optgroupT5Infanterie = document.createElement("optgroup");
-  optgroupT5Infanterie.label = translate.create_group.create_group.selectmenu.t5inf;
+  optgroupT5Infanterie.label = `${translate.create_group.create_group.selectmenu.t5} - ${ListUnitType[0][Language]}`;
   let optgroupT5Distant = document.createElement("optgroup");
-  optgroupT5Distant.label = translate.create_group.create_group.selectmenu.t5dis;
+  optgroupT5Distant.label = `${translate.create_group.create_group.selectmenu.t5} - ${ListUnitType[1][Language]}`;
   let optgroupT5Cav = document.createElement("optgroup");
-  optgroupT5Cav.label = translate.create_group.create_group.selectmenu.t5cav;
+  optgroupT5Cav.label = `${translate.create_group.create_group.selectmenu.t5} - ${ListUnitType[2][Language]}`;
 
   let optgroupT4Infanterie = document.createElement("optgroup");
-  optgroupT4Infanterie.label = translate.create_group.create_group.selectmenu.t4inf;
+  optgroupT4Infanterie.label = `${translate.create_group.create_group.selectmenu.t4} - ${ListUnitType[0][Language]}`;
   let optgroupT4Distant = document.createElement("optgroup");
-  optgroupT4Distant.label = translate.create_group.create_group.selectmenu.t4dis;
+  optgroupT4Distant.label = `${translate.create_group.create_group.selectmenu.t4} - ${ListUnitType[1][Language]}`;
   let optgroupT4Cav = document.createElement("optgroup");
-  optgroupT4Cav.label = translate.create_group.create_group.selectmenu.t4cav;
+  optgroupT4Cav.label = `${translate.create_group.create_group.selectmenu.t4} - ${ListUnitType[2][Language]}`;
 
   let optgroupT3Infanterie = document.createElement("optgroup");
-  optgroupT3Infanterie.label = translate.create_group.create_group.selectmenu.t3inf;
+  optgroupT3Infanterie.label = `${translate.create_group.create_group.selectmenu.t3} - ${ListUnitType[0][Language]}`;
   let optgroupT3Distant = document.createElement("optgroup");
-  optgroupT3Distant.label = translate.create_group.create_group.selectmenu.t3dis;
+  optgroupT3Distant.label = `${translate.create_group.create_group.selectmenu.t3} - ${ListUnitType[1][Language]}`;
   let optgroupT3Cav = document.createElement("optgroup");
-  optgroupT3Cav.label = translate.create_group.create_group.selectmenu.t3cav;
+  optgroupT3Cav.label = `${translate.create_group.create_group.selectmenu.t3} - ${ListUnitType[2][Language]}`;
 
   // Légende : 🔴 Unité non maitrisé, 🟡 Unité en cour de maitrise, 🟢 Unité maitrisé
   if (caserne !== null && caserne.length !== undefined) {
@@ -988,22 +988,22 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
 
           // Unité 1
           if (selectunit1 === undefined) {
-            selectunit1 = await createSelectUnit(1, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
+            selectunit1 = await createSelectUnit(1, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
             unit1.replaceWith(selectunit1);
           }
           // Unité 2
           if (selectunit2 === undefined) {
-            selectunit2 = await createSelectUnit(2, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
+            selectunit2 = await createSelectUnit(2, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
             unit2.replaceWith(selectunit2);
           }
           // Unité 3
           if (selectunit3 === undefined) {
-            selectunit3 = await createSelectUnit(3, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
+            selectunit3 = await createSelectUnit(3, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
             unit3.replaceWith(selectunit3);
           }
           // Unité 4
           if (selectunit4 === undefined) {
-            selectunit4 = await createSelectUnit(4, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.UserInfo.Language, translate);
+            selectunit4 = await createSelectUnit(4, userInscripted.UserCaserne, userInscripted, usernameSansEspaces, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
             unit4.replaceWith(selectunit4);
           }
 
@@ -1286,13 +1286,13 @@ function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectuni
   }
 
   const usernameSansEspaces = infoUsersave.Username.replace(/\s/g, "");
-  insertSelectUnit(selectunit1, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
+  insertSelectUnit(selectunit1, infoUsersave.UserCaserne, "", 0,data.Gestion.ListUnitType, data.UserInfo.Language, translate);
   selectunit1.id = "unit1" + usernameSansEspaces;
-  insertSelectUnit(selectunit2, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
+  insertSelectUnit(selectunit2, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
   selectunit2.id = "unit2" + usernameSansEspaces;
-  insertSelectUnit(selectunit3, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
+  insertSelectUnit(selectunit3, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
   selectunit3.id = "unit3" + usernameSansEspaces;
-  insertSelectUnit(selectunit4, infoUsersave.UserCaserne, "", 0, data.UserInfo.Language, translate);
+  insertSelectUnit(selectunit4, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
   selectunit4.id = "unit4" + usernameSansEspaces;
 }
 

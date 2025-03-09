@@ -37,6 +37,21 @@ func ListAllUnit(database *sql.DB) (ListUnit []data.Unit) {
 	return ListUnit
 }
 
+func ListUnitType(database *sql.DB) (listUnitType []data.ListLanguage) {
+	list, err := database.Prepare("SELECT TypeFR, TypeEN FROM ListTypeUnit")
+	CheckErr("1- Requete DB fonction ListUnitType", err)
+	rows, err := list.Query()
+	CheckErr("2- Requete DB fonction ListUnitType", err)
+	for rows.Next() {
+		var current_type data.ListLanguage
+		err := rows.Scan(&current_type.FR, &current_type.EN)
+		CheckErr("Erreur lors du scan des résultats (ListUnitType)", err)
+		listUnitType = append(listUnitType, current_type)
+	}
+
+	return listUnitType
+}
+
 func CaserneUser(userID, id_house string, database *sql.DB) (ListUnit []data.Unit) {
 	ListUnit = ListAllUnit(database)
 
@@ -129,13 +144,14 @@ func CaserneUser(userID, id_house string, database *sql.DB) (ListUnit []data.Uni
 	return ListUnit
 }
 
-func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) {
+func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (usermaj string) {
 	var newCaserne data.ChangeUnitCaserne
 	err := json.NewDecoder(r.Body).Decode(&newCaserne)
 	CheckErr("Erreur de décodage JSON MAJCaserne", err)
 
 	if userID == "0" {
 		userID = newCaserne.Userid
+		usermaj = SpecificUserInfo(userID, database)
 	}
 
 	var setConditionslevel, setConditionsmaitrise []string // Liste des colonnes à set
@@ -187,6 +203,8 @@ func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) {
 		updateMaitrise = append(updateMaitrise, userID)
 		stmtMaitrise.Exec(updateMaitrise...)
 	}
+
+	return usermaj
 }
 
 func Checkbeforeupdatecaserne(userID, id_House string, database *sql.DB) {

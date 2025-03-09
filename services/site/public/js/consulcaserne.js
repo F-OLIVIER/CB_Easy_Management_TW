@@ -1,6 +1,7 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
 import { loadTranslate } from "./translate.js";
 import { adressAPI } from "./config.js";
+import { showNotification } from "./notification.js";
 
 export async function consulcaserne() {
   const currenthouse = localStorage.getItem("user_house");
@@ -8,7 +9,7 @@ export async function consulcaserne() {
     window.location.href = "/home";
   } else {
     const data = await fetchServer("consulcaserne/?house=" + currenthouse);
-    if (data.Gestion.Officier) {
+    if (data.Gestion.Logged && data.Gestion.Officier) {
       const translate = await loadTranslate(data.UserInfo.Language);
 
       containerconsulcaserne(data, translate);
@@ -20,9 +21,12 @@ export async function consulcaserne() {
 
 let timerThrottlebutton = 0;
 function containerconsulcaserne(data, translate) {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   communBlock(data, translate);
 
   let Container = document.getElementById("Container");
+  Container.innerHTML = ``;
   let entetecaserne = createHTMLElement("div", "caserne");
 
   let selectusercaserne = createHTMLElement("div", "selectusercaserne");
@@ -62,7 +66,7 @@ function containerconsulcaserne(data, translate) {
         let TitleDivInfanterie = document.createElement("div");
         TitleDivInfanterie.id = "titleInfanterie";
         TitleDivInfanterie.classList.add("titlelistUnit");
-        TitleDivInfanterie.textContent = "︾ " + translate.caserne.infantry;
+        TitleDivInfanterie.textContent = "︾ " + data.Gestion.ListUnitType[0][data.UserInfo.Language];
         let listUnitInfanterie = document.createElement("div");
         listUnitInfanterie.classList.add("listUnit");
         listUnitInfanterie.style.display = "none";
@@ -71,7 +75,7 @@ function containerconsulcaserne(data, translate) {
         let TitleDivDistant = document.createElement("div");
         TitleDivDistant.id = "titleDistant";
         TitleDivDistant.classList.add("titlelistUnit");
-        TitleDivDistant.textContent = "︾ " + translate.caserne.distant;
+        TitleDivDistant.textContent = "︾ " + data.Gestion.ListUnitType[1][data.UserInfo.Language];
         let listUnitDistant = document.createElement("div");
         listUnitDistant.classList.add("listUnit");
         listUnitDistant.style.display = "none";
@@ -80,7 +84,7 @@ function containerconsulcaserne(data, translate) {
         let TitleDivCav = document.createElement("div");
         TitleDivCav.id = "titleCav";
         TitleDivCav.classList.add("titlelistUnit");
-        TitleDivCav.textContent = "︾ " + translate.caserne.cavalry;
+        TitleDivCav.textContent = "︾ " + data.Gestion.ListUnitType[2][data.UserInfo.Language];
         let listUnitCav = document.createElement("div");
         listUnitCav.classList.add("listUnit");
         listUnitCav.style.display = "none";
@@ -148,6 +152,10 @@ function containerconsulcaserne(data, translate) {
   });
 
   Container.appendChild(caserne);
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+  }
 }
 
 function MAJCaserne(nbunit, iduser) {
@@ -266,7 +274,7 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
   }
 }
 
-function sendDataMAJCaserne(nbunit, iduser) {
+async function sendDataMAJCaserne(nbunit, iduser) {
   // récupération de toutes les valeurs
   let listNewLvlUnitCaserne = [];
   for (let i = 0; i < nbunit; i++) {
@@ -292,7 +300,7 @@ function sendDataMAJCaserne(nbunit, iduser) {
 
   const currenthouse = localStorage.getItem("user_house");
 
-  fetch(adressAPI + "majspecificcaserne/?house=" + currenthouse, {
+  const update = await fetch(adressAPI + "majspecificcaserne/?house=" + currenthouse, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -305,15 +313,14 @@ function sendDataMAJCaserne(nbunit, iduser) {
       }
       return response.json();
     })
-    .then((data) => {
-      if (typeof data === "object") {
-        // console.log('Data received (Register):', data);
-        location.reload();
-      } else {
-        throw new Error("Réponse invalide du serveur (non-JSON)");
-      }
-    })
     .catch((error) => {
       console.error("Erreur lors de la récupération des données:", error);
     });
+
+  if (update.Gestion.Logged && update.Gestion.Officier) {
+    const translate = await loadTranslate(update.UserInfo.Language);
+    containerconsulcaserne(update, translate);
+  } else {
+    fetchlogout();
+  }
 }

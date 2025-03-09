@@ -1,7 +1,10 @@
 import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
 import { loadTranslate } from "./translate.js";
+import { showNotification } from "./notification.js";
 
-export async function accueil() {
+export async function accueil(data) {
+  console.log("ENTER");
+
   const language = localStorage.getItem("selectedLang") || "en";
   document.getElementById("lang-select").value = language;
 
@@ -47,6 +50,16 @@ export async function accueil() {
   zone.appendChild(listbutton);
   containerAccueil.appendChild(zone);
   Container.appendChild(containerAccueil);
+
+  const storedNotif = localStorage.getItem("notif");
+  if (storedNotif) {
+    const parsedNotif = JSON.parse(storedNotif);
+    if (parsedNotif && parsedNotif.Notif) {
+      const language = localStorage.getItem("selectedLang") || "en";
+      showNotification(parsedNotif.content[language], parsedNotif.Type);
+      localStorage.removeItem("notif");
+    }
+  }
 
   lang_select("/");
 }

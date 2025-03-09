@@ -1,4 +1,5 @@
 import { communBlock, confirmwindows, createHTMLElement, fetchServer, fetchlogout, removeHTMLTags } from "./useful.js";
+import { showNotification } from "./notification.js";
 import { loadTranslate } from "./translate.js";
 import { adressAPI } from "./config.js";
 
@@ -19,6 +20,8 @@ export async function administration() {
 
 let checkedRadioValue_Unit_maitrise = "";
 function containerAppAdmin(data, translate) {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   communBlock(data, translate);
 
   const subContainer = createHTMLElement("div", "subContainerbotEtat");
@@ -26,12 +29,6 @@ function containerAppAdmin(data, translate) {
   // -----------------------------------------------
   // -------------- Ajouter une unité --------------
   // -----------------------------------------------
-  let divErrorAddUnit = document.createElement("div");
-  divErrorAddUnit.id = "divErrorAddUnit";
-  divErrorAddUnit.className = "divError";
-  divErrorAddUnit.style.display = "none";
-  subContainer.appendChild(divErrorAddUnit);
-
   let divNewUnit = createHTMLElement("div", "divNewUnit");
   let titleNewUnit = createHTMLElement("div", "titleNewUnit");
   titleNewUnit.textContent = "Create one new unit";
@@ -80,12 +77,15 @@ function containerAppAdmin(data, translate) {
   // Unit_type
   let input_Unit_type = createHTMLElement("select", "typeNewUnit");
   input_Unit_type.required = true;
-  let titleOption_Unit_type = ["Type unit", "Infantry", "Distant", "Cavalry"];
-  let option_Unit_type = ["", "Infanterie", "Distant", "Cavalerie"];
-  for (let i = 0; i < option_Unit_type.length; i++) {
+  // Valeur vide :
+  let defaultoption = document.createElement("option");
+  defaultoption.value = "";
+  defaultoption.text = "Type unit";
+  input_Unit_type.appendChild(defaultoption);
+  for (let i = 0; i < data.Gestion.ListUnitType.length; i++) {
     let option = document.createElement("option");
-    option.value = option_Unit_type[i];
-    option.text = titleOption_Unit_type[i];
+    option.value = data.Gestion.ListUnitType[i].fr;
+    option.text = data.Gestion.ListUnitType[i][data.UserInfo.Language];
     input_Unit_type.appendChild(option);
   }
   formNewUnit.appendChild(input_Unit_type);
@@ -146,12 +146,6 @@ function containerAppAdmin(data, translate) {
   // -----------------------------------------------
   // ------------- Modifier une unité --------------
   // -----------------------------------------------
-  let divErrorChangeUnit = document.createElement("div");
-  divErrorChangeUnit.id = "divErrorChangeUnit";
-  divErrorChangeUnit.className = "divError";
-  divErrorChangeUnit.style.display = "none";
-  subContainer.appendChild(divErrorChangeUnit);
-
   let divChangeUnit = createHTMLElement("div", "divChangeUnit");
   let titleChangeUnit = document.createElement("div");
   titleChangeUnit.className = "titleChangeUnit";
@@ -240,6 +234,10 @@ function containerAppAdmin(data, translate) {
   Container.appendChild(subContainer);
 
   addEventOnAllButton(data.ListUnit);
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+  }
 }
 
 let timerThrottlebutton = 0;
@@ -437,7 +435,7 @@ function addEventOnAllButton(listUnit) {
         }
       }
     } else {
-      alert("Please complete all weapon fields.");
+      showNotification("Please complete all weapon fields.", "error");
     }
   });
 
@@ -468,7 +466,7 @@ async function adminitrateBot(option) {
     dataToSend.newWeapon.en = document.getElementById("nameNewclassEN").value;
     dataToSend.newWeapon.fr = document.getElementById("nameNewclassFR").value;
     if (dataToSend.newWeapon.en == "" || dataToSend.newWeapon.fr == "") {
-      alert("Please complete all weapon fields.");
+      showNotification("Please complete all weapon fields.", "error");
       return;
     }
     sendData(dataToSend);
@@ -479,7 +477,7 @@ async function adminitrateBot(option) {
     dataToSend.newWeapon.fr = document.getElementById("informationDiscordFR").value;
     console.log("dataToSend.newWeapon :", dataToSend.newWeapon);
     if (dataToSend.newWeapon.en == "" || dataToSend.newWeapon.fr == "") {
-      alert("Please complete all information fields.");
+      showNotification("Please complete all information fields.", "error");
       return;
     }
     sendData(dataToSend);
@@ -490,6 +488,7 @@ async function adminitrateBot(option) {
     if (option === "buttonNewUnit") {
       let createUnit = {
         Unit_name: {},
+        Unit_type: {},
       };
       const inputvalue_name_en = document.getElementById("nameNewUnitEN").value;
       createUnit.Unit_name.en = removeHTMLTags(inputvalue_name_en);
@@ -497,16 +496,16 @@ async function adminitrateBot(option) {
       createUnit.Unit_name.fr = removeHTMLTags(inputvalue_name_fr);
       createUnit.Unit_influence = document.getElementById("influNewUnit").value;
       if (dataToSend.Unit_influence > 500) {
-        alert("Impossible influence.");
+        showNotification("Impossible influence.", "error");
         return;
       }
       createUnit.Unit_lvlMax = document.getElementById("lvlMaxNewUnit").value;
       if (dataToSend.Unit_lvlMax > 50) {
-        alert("Max unit level impossible.");
+        showNotification("Max unit level impossible.", "error");
         return;
       }
       createUnit.Unit_tier = document.getElementById("tierNewUnit").value;
-      createUnit.Unit_type = document.getElementById("typeNewUnit").value;
+      createUnit.Unit_type.fr = document.getElementById("typeNewUnit").value;
       if (checkedRadioValue_Unit_maitrise) {
         createUnit.Unit_maitrise = "1";
       } else {
@@ -526,24 +525,17 @@ async function adminitrateBot(option) {
           formData.append("image", input_new_img.files[0]);
 
           if (createUnit.Unit_name === "" || createUnit.Unit_influence === "" || createUnit.Unit_lvlMax === "" || createUnit.Unit_tier === "" || createUnit.Unit_type === "") {
-            let divError = document.getElementById("divErrorAddUnit");
-            divError.textContent = "Please complete all fields to create the new unit";
-            divError.style.display = "block";
+            showNotification("Please complete all fields to create the new unit", "error");
           } else if (createUnit.Unit_influence < 0 || createUnit.Unit_influence > 500 || createUnit.Unit_lvlMax < 0 || createUnit.Unit_lvlMax > 50) {
-            let divError = document.getElementById("divErrorAddUnit");
-            divError.textContent = "Problem entering data in a field to create a new unit";
-            divError.style.display = "block";
+            showNotification("Problem entering data in a field to create a new unit", "error");
           } else {
             sendFormData(formData);
-            // window.location.href = "/AppAdmin";
           }
         };
         // Démarrer la lecture du fichier
         reader.readAsDataURL(input_new_img.files[0]);
       } else {
-        let divError = document.getElementById("divErrorAddUnit");
-        divError.textContent = "Please fill in all the fields and add the image to create the new unit.";
-        divError.style.display = "block";
+        showNotification("Please fill in all the fields and add the image to create the new unit.", "error");
       }
     }
 
@@ -563,12 +555,12 @@ async function adminitrateBot(option) {
       // influence unit
       changeUnit.Unit_influence = document.getElementById("changeUnitInfluence").value;
       if (changeUnit.Unit_influence > 500 || changeUnit.Unit_influence < 0) {
-        alert("Impossible influence.");
+        showNotification("Impossible influence.", "error");
         return;
       }
       changeUnit.Unit_lvlMax = document.getElementById("changeUnitLvlMax").value;
       if (changeUnit.Unit_lvlMax > 50 || changeUnit.Unit_lvlMax < 0) {
-        alert("Max unit level impossible.");
+        showNotification("Max unit level impossible.", "error");
         return;
       }
       changeUnit.Unit_tier = document.getElementById("changeUnitTier").value;
@@ -591,7 +583,6 @@ async function adminitrateBot(option) {
           image.src = e.target.result;
           formData.append("image", input_change_img.files[0]);
           sendFormData(formData);
-          // window.location.href = "/AppAdmin";
         };
         reader.readAsDataURL(input_change_img.files[0]);
       } else if (
@@ -602,44 +593,67 @@ async function adminitrateBot(option) {
         changeUnit.Unit_tier == "" &&
         !checkboxChangeUnitMaitrise.checked
       ) {
-        let divErrorChangeUnit = document.getElementById("divErrorChangeUnit");
-        divErrorChangeUnit.textContent = "Please complete at least one field or upload an image to update the unit " + changeUnit.Unit_name;
-        divErrorChangeUnit.style.display = "block";
+        showNotification("Please complete at least one field or upload an image to update the unit " + changeUnit.Unit_name, "error");
       } else {
         // si send des data uniquement
         sendFormData(formData);
-        // window.location.href = "/AppAdmin";
       }
     }
   }
 }
 
-function sendData(dataToSend) {
+async function sendData(dataToSend) {
   // console.log('dataToSend : ', dataToSend);
   const currenthouse = localStorage.getItem("user_house");
 
-  fetch(adressAPI + "UpdateAdmin/?house=" + currenthouse, {
+  const update = await fetch(adressAPI + "UpdateAdmin/?house=" + currenthouse, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(dataToSend),
-  }).catch((error) => {
-    console.error("Erreur avec les données:", error);
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Erreur de réseau: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Erreur avec les données:", error);
+    });
 
-  // rechargement de page aprés modification
-  // window.location.href = "/AppAdmin";
+  if (update.Gestion.Logged && update.Gestion.Admin) {
+    const translate = await loadTranslate(update.UserInfo.Language);
+    containerAppAdmin(update, translate);
+  } else {
+    fetchlogout();
+  }
 }
 
-function sendFormData(formData) {
+async function sendFormData(formData) {
   const currenthouse = localStorage.getItem("user_house");
 
   // console.log('formData : ', formData);
-  fetch(adressAPI + "adminitrateBot/?house=" + currenthouse, {
+  const update = await fetch(adressAPI + "adminitrateBot/?house=" + currenthouse, {
     method: "POST",
     body: formData,
-  }).catch((error) => {
-    console.error("Erreur lors de l'envoi de l'image et des données:", error);
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Erreur de réseau: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l'envoi de l'image et des données:", error);
+    });
+
+  console.log("update :", update);
+  if (update.Gestion.Logged && update.Gestion.Admin) {
+    const translate = await loadTranslate(update.UserInfo.Language);
+    containerAppAdmin(update, translate);
+  } else {
+    fetchlogout();
+  }
 }
