@@ -1,4 +1,4 @@
-# Bot Discord & site internet pour Conqueror's Blade
+# Systéme de gestion GvG multiplateforme pour Conqueror's Blade
 
 ## 📝 Descriptif
 
