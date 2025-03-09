@@ -16,9 +16,11 @@ Les commandes sont enregistrées en tant que "Slash Command" Discord et sont acc
         <tr>
             <td><img src="./img/bot_slashcommand.png"></td>
             <td><img src="./img/bot_commanddata.png"></td>
+        </tr>
+        <tr>
             <td><img src="./img/bot_message_gvg_on.png"></td>
             <td><img src="./img/bot_message_gvg_off.png"></td>
-        </tr>   
+        </tr>
     </tbody>
 </table>
 
@@ -35,11 +37,11 @@ Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose p
             <td><img src="./img/site_dashboard.png"></td>
         </tr>
         <tr>
-            <td><img src="./img/caserne.png"></td>
-            <td><img src="./img/charactercard.png"></td>
+            <td><img src="./img/site_groupgvg.png"></td>
+            <td><img src="./img/site_charactercard.png"></td>
         </tr>
         <tr>
-            <td><img src="./img/creategroup.png"></td>
+            <td><img src="./img/site_caserne.png"></td>
         </tr>    
     </tbody>
 </table>
