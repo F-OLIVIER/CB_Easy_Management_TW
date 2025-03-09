@@ -60,11 +60,10 @@
         ["Private (manager group)", "<span>Creating groups</span><span>Statistics</span><span>Managing user barracks</span>"]
       ],
       "images": [
-        "img/description/site/dashboard1.png",
-        "img/description/site/dashboard2.png",
+        "img/description/site/dashboard.png",
         "img/description/site/charactercard.png",
         "img/description/site/caserne.png",
-        "img/description/site/groupgvg1.png"
+        "img/description/site/groupgvg.png"
       ]
     },
     {
@@ -276,11 +275,11 @@
     },
     "author": {
       "title": "Creator of the site",
-      "content": "The website was created and is maintained by an individual (OLIVIER Fabien).</br>Address : 76100 Rouen</br>Email: fabiendeveloppeur76@gmail.com"
+      "content": "The website was created and is maintained by an individual (OLIVIER Fabien).</br>Address : 76100 Rouen</br>Email: <a href=\"mailto:fabiendeveloppeur76@gmail.com\">fabiendeveloppeur76@gmail.com</a></br></br>If you wish to support the developer, you can make a donation via <a href= \"https://paypal.me/faolivier\" target=\"_blank\">this PayPal link</a>"
     },
     "image_right": {
       "title": "Conqueror's Blade Content Rights Notice",
-      "content": "The images, logos and other content on this site belong to their respective owners. We do not claim any rights to these elements and they are used for informational or illustrative purposes only.</br>If you are the rights holder of a content and wish it to be modified or deleted, please contact us at fabiendeveloppeur76@gmail.com. We undertake to take the necessary measures as soon as possible."
+      "content": "The images, logos and other content on this site belong to their respective owners. We do not claim any rights to these elements and they are used for informational or illustrative purposes only.</br>If you are the rights holder of a content and wish it to be modified or deleted, please contact us at <a href=\"mailto:fabiendeveloppeur76@gmail.com\">fabiendeveloppeur76@gmail.com</a>. We undertake to take the necessary measures as soon as possible."
     },
     "host": {
       "title": "Host",
@@ -303,8 +302,8 @@
         "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Game Conqueror's Blade</a></li></ul>"
       },
       {
-        "title": "Contact",
-        "content": "<p>fabiendeveloppeur76@gmail.com</p>"
+        "title": "Developer",
+        "content": "<ul><li><a href=\"mailto:fabiendeveloppeur76@gmail.com\">fabiendeveloppeur76@gmail.com</a></li><li><a href=\"/mentionlegale#author\">Support the developer</a></li></ul>"
       }
     ],
     "bottom": "<p>This site contains images and information about the game Conqueror's Blade. All rights to these elements belong to their respective owners. We do not claim any rights over these contents, which are used for informational and illustrative purposes only.</p><p>&copy; 2025 OLIVIER Fabien.</p>"

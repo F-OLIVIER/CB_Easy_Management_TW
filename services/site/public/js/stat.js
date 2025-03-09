@@ -157,7 +157,7 @@ function DisplayUsers(data, Language, div) {
     statuser.appendChild(nbGvGparticiped);
 
     const lastGvGparticiped = createHTMLElement("div", "statlastgvg");
-    lastGvGparticiped.textContent = currentUser.DateLastGvGParticiped;
+    lastGvGparticiped.textContent = currentUser.DateLastGvG[Language];
     statuser.appendChild(lastGvGparticiped);
     divstat.appendChild(statuser);
 

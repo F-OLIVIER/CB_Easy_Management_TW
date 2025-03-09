@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) {
+func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif data.Notif) {
+	notif.Type = "success"
+	notif.Notif = true
+
 	var listGroup data.SaveGroup
 	err := json.NewDecoder(r.Body).Decode(&listGroup)
 	CheckErr("Erreur de décodage JSON SaveCreateGroup", err)
@@ -20,19 +23,38 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) {
 	case "current":
 		requestDeleteDB = fmt.Sprintf("DELETE FROM GroupGvG%s", id_House)
 		requestInsertDB = fmt.Sprintf("INSERT INTO GroupGvG%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4) Values(?,?,?,?,?,?)", id_House)
+
+		notif.Content = data.ListLanguage{
+			FR: "Les groupes ont été enregistrés avec succès.",
+			EN: "The groups have been successfully registered.",
+		}
 	case "SaveGroupTypeAtt":
 		requestDeleteDB = fmt.Sprintf("DELETE FROM GroupTypeAtt%s", id_House)
 		requestInsertDB = fmt.Sprintf("INSERT INTO GroupTypeAtt%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4) Values(?,?,?,?,?,?)", id_House)
+
+		notif.Content = data.ListLanguage{
+			FR: "Les groupes ont été enregistrés avec succès en tant que groupe type attaque.",
+			EN: "The groups have been successfully registered as standard attack groups.",
+		}
 	case "SaveGroupTypeDef":
 		requestDeleteDB = fmt.Sprintf("DELETE FROM GroupTypeDef%s", id_House)
 		requestInsertDB = fmt.Sprintf("INSERT INTO GroupTypeDef%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4) Values(?,?,?,?,?,?)", id_House)
+
+		notif.Content = data.ListLanguage{
+			FR: "Les groupes ont été enregistrés avec succès en tant que groupe type défense.",
+			EN: "The groups have been successfully registered as defence groups.",
+		}
 	default:
 		fmt.Println("Probléme 'Optiontype' saveDB")
-		return
+		notif.Type = "error"
+		notif.Content = data.ListLanguage{
+			FR: "Erreur 500: probléme au niveau du serveur",
+			EN: "Error 500: server problem",
+		}
+		return notif
 	}
 
 	// Update List Group GvG
-	fmt.Println("requestDeleteDB : ", requestDeleteDB)
 	stmt1, errdb := database.Prepare(requestDeleteDB)
 	CheckErr("1- DELETE - Requete DB SaveCreateGroup", errdb)
 	stmt1.Exec()
@@ -119,4 +141,5 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) {
 		}
 	}
 
+	return notif
 }

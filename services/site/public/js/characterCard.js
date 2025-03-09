@@ -1,6 +1,7 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
 import { adressAPI } from "./config.js";
 import { loadTranslate } from "./translate.js";
+import { showNotification } from "./notification.js";
 
 export async function characterCard() {
   const currenthouse = localStorage.getItem("user_house");
@@ -18,9 +19,12 @@ export async function characterCard() {
 }
 
 function containerCharacterCard(data, translate) {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   communBlock(data, translate);
 
   let container = document.getElementById("Container");
+  container.innerHTML = ``;
   let subcontainer = createHTMLElement("div", "subcontainerProfile");
 
   let divError = createHTMLElement("div", "divError");
@@ -139,10 +143,10 @@ function containerCharacterCard(data, translate) {
   nbGvG.textContent = translate.characterCard.info_GvG.nbGvG + " : " + data.UserInfo.NbGvGParticiped;
   infoGvG.appendChild(nbGvG);
   let lastGvG = document.createElement("div");
-  if (data.UserInfo.DateLastGvG == "") {
+  if (data.UserInfo.DateLastGvG[data.UserInfo.Language] == "") {
     lastGvG.textContent = translate.characterCard.info_GvG.lastGvG.description + " : " + translate.characterCard.info_GvG.lastGvG.nodata;
   } else {
-    lastGvG.textContent = translate.characterCard.info_GvG.lastGvG.description + " : " + data.UserInfo.DateLastGvG;
+    lastGvG.textContent = translate.characterCard.info_GvG.lastGvG.description + " : " + data.UserInfo.DateLastGvG[data.UserInfo.Language];
   }
   infoGvG.appendChild(lastGvG);
   divMAJ.appendChild(infoGvG);
@@ -165,6 +169,10 @@ function containerCharacterCard(data, translate) {
       });
     }
   }
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+  }
 }
 
 function majPersonnage(translate) {
@@ -175,12 +183,12 @@ function majPersonnage(translate) {
   dataToSend.GameCharacter.fr = document.getElementById("newClass").value;
   dataToSend.Lvl = document.getElementById("newlvl").value;
   if (dataToSend.Lvl !== "" && (dataToSend.Lvl > 10000 || dataToSend.Lvl < 0)) {
-    alert(translate.characterCard.error.err_lvl);
+    showNotification(translate.characterCard.error.err_lvl, "error");
     return;
   }
   dataToSend.Influence = document.getElementById("newInflu").value;
   if (dataToSend.Influence !== "" && (dataToSend.Influence > 1200 || dataToSend.Influence < 700)) {
-    alert(translate.characterCard.error.err_influ);
+    showNotification(translate.characterCard.error.err_influ, "error");
     return;
   }
 
@@ -206,15 +214,29 @@ function changeInscription(incripted) {
 async function fetchData(dataToSend) {
   const currenthouse = localStorage.getItem("user_house");
 
-  await fetch(adressAPI + "updateCharacterCard/?house=" + currenthouse, {
+  const update = await fetch(adressAPI + "updateCharacterCard/?house=" + currenthouse, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(dataToSend),
-  }).catch((error) => {
-    console.error("Erreur lors de la récupération des données:", error);
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Erreur de réseau: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la récupération des données:", error);
+    });
 
-  window.location.href = "/characterCard";
+    console.log('update : ', update);
+
+  if (update.Gestion.Logged) {
+    const translate = await loadTranslate(update.UserInfo.Language);
+    containerCharacterCard(update, translate);
+  } else {
+    fetchlogout();
+  }
 }

@@ -186,7 +186,10 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						sendHTML.UserInfo = utils.Charactercard(cookie.Value, database)
 
 					case "/api/updateCharacterCard/":
-						utils.UpdateCharacter(r, currentUser, database)
+						notif := utils.UpdateCharacter(r, currentUser, database)
+						gestion.Notification = notif
+						gestion.ListClass = utils.ListClass(database)
+						sendHTML.UserInfo = utils.Charactercard(cookie.Value, database)
 
 					// --------------------------------------------------
 					// --------------- Caserne utilisateur --------------
@@ -228,23 +231,52 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						// --------------------------------------------------
 						case "/api/creategroup/":
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
-							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupGvG"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
+							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							gestion.ListUnitType = utils.ListUnitType(database)
 
 						case "/api/saveGroupInDB/":
-							utils.SaveCreateGroup(r, id_House, database)
+							notif := utils.SaveCreateGroup(r, id_House, database)
+							gestion.Notification = notif
+
+							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
+							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupGvG"+id_House)
+							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
+							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+							gestion.ListUnitType = utils.ListUnitType(database)
 
 						case "/api/chargergrouptypeatt/":
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
 							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupTypeAtt"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
+							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+							gestion.ListUnitType = utils.ListUnitType(database)
+
+							gestion.Notification = data.Notif{
+								Notif: true,
+								Type:  "success",
+								Content: data.ListLanguage{
+									FR: "La groupe type attaque a été chargé avec succès.",
+									EN: "The attack group was successfully loaded.",
+								},
+							}
 
 						case "/api/chargergrouptypedef/":
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
 							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupTypeDef"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
+							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
+							gestion.ListUnitType = utils.ListUnitType(database)
+
+							gestion.Notification = data.Notif{
+								Notif: true,
+								Type:  "success",
+								Content: data.ListLanguage{
+									FR: "La groupe type défense a été défense avec succès.",
+									EN: "The defence group was successfully loaded.",
+								},
+							}
 
 						// --------------------------------------------------
 						// ----------------- Statistique GvG ----------------
@@ -285,13 +317,15 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						}
 					}
 
-					if currentUser.Admin {
+					// --------------------------------------------------
+					// --------- Administrateur du site internet --------
+					// --------------------------------------------------
+					if currentUser.Admin && r.Method == "POST" &&
+						(r.URL.Path == "/api/CheckAppAdmin/" || r.URL.Path == "/api/adminitrateBot/" || r.URL.Path == "/api/UpdateAdmin/") {
+
 						switch r.URL.Path {
-						// --------------------------------------------------
-						// --------- Administrateur du site internet --------
-						// --------------------------------------------------
 						case "/api/CheckAppAdmin/":
-							// Ne rien fair, commum a toutes les page admin
+							// Ne rien faire, commum a toutes les page admin
 
 						case "/api/adminitrateBot/":
 							notif := utils.UploadInformationsBot(r, database)

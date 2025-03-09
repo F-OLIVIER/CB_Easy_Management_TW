@@ -1,13 +1,14 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout, removeHTMLTags } from "./useful.js";
 import { loadTranslate } from "./translate.js";
 import { adressAPI } from "./config.js";
+import { showNotification } from "./notification.js";
 
-export async function creategroup() {
+export async function creategroup(option = "creategroup") {
   const currenthouse = localStorage.getItem("user_house");
   if ((currenthouse == "") | (currenthouse == null) | (currenthouse == undefined)) {
     window.location.href = "/home";
   } else {
-    const data = await fetchServer("creategroup/?house=" + currenthouse);
+    const data = await fetchServer(option + "/?house=" + currenthouse);
     if (data.Gestion.Logged && data.Gestion.Officier) {
       const translate = await loadTranslate(data.UserInfo.Language);
       containercreategroup(data, translate);
@@ -22,9 +23,10 @@ let listUserSelect = [];
 let timerThrottlebutton = 0;
 let eventListenersMap = new Map();
 export async function containercreategroup(data, translate) {
-  communBlock(data, translate);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
-  let Container = document.getElementById("Container");
+  await communBlock(data, translate);
+
   let containerGroupe = await createHTMLElement("div", "containerGroupe");
 
   // affichage de la liste des inscrits
@@ -57,6 +59,9 @@ export async function containercreategroup(data, translate) {
   // div de création des groupes
   divcreategroup.appendChild(creategroup);
   containerGroupe.appendChild(divcreategroup);
+
+  let Container = document.getElementById("Container");
+  Container.innerHTML = ``;
   Container.appendChild(containerGroupe);
 
   // Création des groupes déja existant
@@ -99,7 +104,6 @@ export async function containercreategroup(data, translate) {
     if (now - timerThrottlebutton > 1000) {
       timerThrottlebutton = now;
       saveGroup("current");
-      window.location.href = "/creategroup";
     }
   });
 
@@ -199,10 +203,13 @@ export async function containercreategroup(data, translate) {
       const now = new Date();
       if (now - timerThrottlebutton > 500) {
         timerThrottlebutton = now;
-        // saveGroup('current');
         window.location.href = "/viewGroup";
       }
     });
+  }
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
 }
 
@@ -295,68 +302,51 @@ async function listInscripted(data, translate, Language) {
 // -------------- Partie "Qui a l'unité ?" ----------------
 // --------------------------------------------------------
 async function whohaveunit(data, translate) {
-  let divwhohaveunit = await createHTMLElement("div", "divwhohaveunit");
+  const divwhohaveunit = await createHTMLElement("div", "divwhohaveunit");
 
-  // Boutton pour afficher la liste des inscrits
-  let buttonDisplaywhohaveunit = await createHTMLElement("div", "buttonDisplaywhohaveunit");
+  // Bouton pour afficher la liste des inscrits
+  const buttonDisplaywhohaveunit = await createHTMLElement("div", "buttonDisplaywhohaveunit");
   buttonDisplaywhohaveunit.id = "buttonDisplaywhohaveunit";
   buttonDisplaywhohaveunit.textContent = translate.create_group.who_have_unit.title;
   divwhohaveunit.appendChild(buttonDisplaywhohaveunit);
 
-  let whohaveunit = await createHTMLElement("div", "whohaveunit");
-  let selectwhohaveunit = createHTMLElement("select", "selectwhohaveunit");
-  let defaultwhohaveunit = document.createElement("option");
-  defaultwhohaveunit.value = "";
-  defaultwhohaveunit.text = translate.create_group.select;
-  selectwhohaveunit.appendChild(defaultwhohaveunit);
-  for (let i = 0; i < data.ListUnit.length; i++) {
-    const currentUnit = data.ListUnit[i];
-    let option = document.createElement("option");
-    option.value = currentUnit.Unit_name[data.UserInfo.Language];
-    option.text = currentUnit.Unit_name[data.UserInfo.Language];
+  const whohaveunit = await createHTMLElement("div", "whohaveunit");
+  const selectwhohaveunit = createHTMLElement("select", "selectwhohaveunit");
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "";
+  defaultOption.text = translate.create_group.select;
+  selectwhohaveunit.appendChild(defaultOption);
+
+  // Ajout des options d'unités dans le select
+  data.ListUnit.forEach((unit) => {
+    const option = document.createElement("option");
+    option.value = unit.Unit_name[data.UserInfo.Language];
+    option.text = unit.Unit_name[data.UserInfo.Language];
     selectwhohaveunit.appendChild(option);
-  }
+  });
+
   whohaveunit.appendChild(selectwhohaveunit);
 
-  let listplayerwhohaveunit = await createHTMLElement("div", "listplayerwhohaveunit");
+  // Affichage des joueurs possédant l'unité
+  const listplayerwhohaveunit = await createHTMLElement("div", "listplayerwhohaveunit");
   listplayerwhohaveunit.textContent = translate.create_group.who_have_unit.who;
   whohaveunit.appendChild(listplayerwhohaveunit);
 
   divwhohaveunit.appendChild(whohaveunit);
   whohaveunit.style.display = "none";
 
-  // évenement de selection de l'unité
-  selectwhohaveunit.addEventListener("change", () => {
+  // Événement de sélection de l'unité
+  selectwhohaveunit.addEventListener("change", async () => {
     const now = new Date();
     if (now - timerThrottlebutton > 500) {
       timerThrottlebutton = now;
 
-      if (selectwhohaveunit.value != "") {
-        let unitSelected;
-        for (let i = 0; i < data.ListUnit.length; i++) {
-          if (selectwhohaveunit.value === data.ListUnit[i].Unit_name[data.UserInfo.Language]) {
-            unitSelected = data.ListUnit[i];
-            break;
-          }
-        }
+      const selectedUnitName = selectwhohaveunit.value;
+      if (selectedUnitName) {
+        const unitSelected = data.ListUnit.find((unit) => unit.Unit_name[data.UserInfo.Language] === selectedUnitName);
+        const listplayer = data.ListInscripted.filter((user) => user.UserCaserne?.some((unit) => unit.Unit_id === unitSelected?.Unit_id && unit.Unit_lvl !== "0")).map((user) => user.Username);
 
-        let listplayer = [];
-        for (let i = 0; i < data.ListInscripted.length; i++) {
-          const currentuser = data.ListInscripted[i];
-          if (currentuser.UserCaserne !== null) {
-            currentuser.UserCaserne.some((unit) => {
-              if (unit.Unit_id === unitSelected.Unit_id && unit.Unit_lvl !== "0") {
-                listplayer.push(currentuser.Username);
-              }
-            });
-          }
-        }
-
-        if (listplayer.length === 0) {
-          listplayerwhohaveunit.textContent = translate.create_group.who_have_unit.no_player;
-        } else {
-          listplayerwhohaveunit.textContent = listplayer.join(" - ");
-        }
+        listplayerwhohaveunit.textContent = listplayer.length ? listplayer.join(" - ") : translate.create_group.who_have_unit.no_player;
       } else {
         listplayerwhohaveunit.textContent = translate.create_group.who_have_unit.who;
       }
@@ -370,7 +360,6 @@ async function whohaveunit(data, translate) {
 // ----------- Partie "Création des groupes" --------------
 // --------------------------------------------------------
 // ***************** Option "exist group" *****************
-
 async function createExistGroupe(data, userIngroup, translate) {
   const creategroup = document.getElementById("creategroup");
   const groupName = "group" + groupNumber;
@@ -450,14 +439,12 @@ async function createExistGroupe(data, userIngroup, translate) {
     await divuser.appendChild(unit3);
     let unit4 = await createHTMLElement("div", "unit4");
     await divuser.appendChild(unit4);
-    let selectunit1;
-    let selectunit2;
-    let selectunit3;
-    let selectunit4;
 
     if (currentUser.Username !== "") {
       // utilisateur present
+      let selectunit1, selectunit2, selectunit3, selectunit4;
       let infoUsersave = {};
+
       for (let j = 0; j < data.ListInscripted.length; j++) {
         let userInscripted = data.ListInscripted[j];
         if (userInscripted.ID === currentUser.ID) {
@@ -883,59 +870,6 @@ function namegroup(data, groupNumber, translate) {
 }
 
 // --------------------------------------------------------
-// ----------------- Fonction fetch back ------------------
-// --------------------------------------------------------
-function saveGroup(optiontype) {
-  const creategroup = document.getElementById("creategroup");
-  const divuserElements = creategroup.querySelectorAll(".divuser");
-
-  let dataToSend = [];
-  divuserElements.forEach((divuserElement) => {
-    let divuserObject = {};
-
-    const inputElement = divuserElement.querySelector("input");
-    const inputValue = inputElement ? inputElement.value : "";
-    divuserObject["inputValue"] = inputValue;
-
-    const selectElements = divuserElement.querySelectorAll("select");
-    const selectValues = Array.from(selectElements).map((select) => select.value);
-    divuserObject["selectValues"] = selectValues;
-
-    dataToSend.push(divuserObject);
-  });
-
-  const namegroupElements = creategroup.querySelectorAll(".divnamegroup");
-  let namegroup = [];
-  namegroupElements.forEach((divnamegroupElement) => {
-    let currentGroup = [];
-
-    const inputElement = divnamegroupElement.querySelector("input");
-    const inputValue = inputElement ? inputElement.value : "";
-    if (inputValue != "") {
-      currentGroup[0] = divnamegroupElement.id.replace("divnamegroup", "");
-      currentGroup[1] = removeHTMLTags(inputValue);
-    }
-
-    namegroup.push(currentGroup);
-  });
-
-  if (dataToSend.length !== 0) {
-    const currenthouse = localStorage.getItem("user_house");
-
-    fetch(adressAPI + "saveGroupInDB/?house=" + currenthouse, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ dataToSend: dataToSend, namegroup: namegroup, optiontype: optiontype }),
-    }).catch((error) => {
-      console.error("Erreur lors de la récupération des données:", error);
-    });
-  }
-}
-
-// --------------------------------------------------------
 // ------------ Fonction create eventlistener -------------
 // --------------------------------------------------------
 function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate) {
@@ -1069,51 +1003,41 @@ async function createEventSelectUnit(divName, influenceplayer, intermediairy, in
     intermediairy.textContent = "/";
     influenceplayer.textContent = 0;
 
-    selectunit1.style.visibility = "hidden";
-    selectunit1.value = "";
-    selectunit2.style.visibility = "hidden";
-    selectunit2.value = "";
-    selectunit3.style.visibility = "hidden";
-    selectunit3.value = "";
-    selectunit4.style.visibility = "hidden";
-    selectunit4.value = "";
+    [selectunit1, selectunit2, selectunit3, selectunit4].forEach((select) => {
+      select.style.visibility = "hidden";
+      select.value = "";
+    });
   } else {
     influenceUnit.id = "influUnit" + usernameSansEspaces;
     influenceplayer.id = "influPlayer" + usernameSansEspaces;
 
-    selectunit1.style.visibility = "visible";
-    selectunit1.id = "unit1" + usernameSansEspaces;
-    selectunit2.style.visibility = "visible";
-    selectunit2.id = "unit2" + usernameSansEspaces;
-    selectunit4.style.visibility = "visible";
-    selectunit3.id = "unit3" + usernameSansEspaces;
-    selectunit2.style.visibility = "visible";
-    selectunit4.id = "unit4" + usernameSansEspaces;
+    [selectunit1, selectunit2, selectunit3, selectunit4].forEach((select, index) => {
+      select.style.visibility = "visible";
+      select.id = "unit" + (index + 1) + usernameSansEspaces;
+    });
   }
 
-  const selectunit1EventListener = function () {
+  // Fonction de gestion de l'événement "change"
+  const selectUnitEventListener = () => {
     changeInfluUnit(infoUser.UserCaserne, usernameSansEspaces, Language);
   };
 
-  const selectunit2EventListener = function () {
-    changeInfluUnit(infoUser.UserCaserne, usernameSansEspaces, Language);
-  };
+  // Enregistre les événements dans la map
+  eventListenersMap.set(usernameSansEspaces, [() => selectUnitEventListener(1), () => selectUnitEventListener(2), () => selectUnitEventListener(3), () => selectUnitEventListener(4)]);
 
-  const selectunit3EventListener = function () {
-    changeInfluUnit(infoUser.UserCaserne, usernameSansEspaces, Language);
-  };
-
-  const selectunit4EventListener = function () {
-    changeInfluUnit(infoUser.UserCaserne, usernameSansEspaces, Language);
-  };
-
-  // ajout des nouveaux dans la map
-  eventListenersMap.set(usernameSansEspaces, [selectunit1EventListener, selectunit2EventListener, selectunit3EventListener, selectunit4EventListener]);
-  // activation des eventlisteners
-  await selectunit1.addEventListener("change", selectunit1EventListener);
-  await selectunit2.addEventListener("change", selectunit2EventListener);
-  await selectunit3.addEventListener("change", selectunit3EventListener);
-  await selectunit4.addEventListener("change", selectunit4EventListener);
+  // Ajout des écouteurs d'événements
+  selectunit1.addEventListener("change", () => {
+    selectUnitEventListener(1);
+  });
+  selectunit2.addEventListener("change", () => {
+    selectUnitEventListener(2);
+  });
+  selectunit3.addEventListener("change", () => {
+    selectUnitEventListener(3);
+  });
+  selectunit4.addEventListener("change", () => {
+    selectUnitEventListener(4);
+  });
 }
 
 async function deleteEventListeners() {
@@ -1180,30 +1104,19 @@ function changeInfluUnit(UserCaserne, username, Language) {
 }
 
 function optionSelectUnit(username, UserCaserne, influenceplayer, influenceAllUnitSelected, Language) {
-  const units = [document.getElementById("unit1" + username), document.getElementById("unit2" + username), document.getElementById("unit3" + username), document.getElementById("unit4" + username)];
+  const units = [1, 2, 3, 4].map((i) => document.getElementById(`unit${i}${username}`));
 
   units.forEach((unit, index) => {
     if (unit) {
-      const listUnitSelected = units.filter((_, i) => i !== index && units[i].value !== "").map((unit) => unit.value);
+      const listUnitSelected = units.filter((_, i) => i !== index && units[i]?.value).map((unit) => unit.value);
 
       unit.querySelectorAll("option").forEach((option) => {
-        if (option.value !== "" && listUnitSelected.includes(option.value)) {
+        if (option.value && listUnitSelected.includes(option.value)) {
           option.style.display = "none";
         } else {
-          let exceedingInfluence = false;
-          if (
-            UserCaserne !== null &&
-            UserCaserne.length !== undefined &&
-            influenceUnit(UserCaserne, option.value, Language) + influenceAllUnitSelected - influenceUnit(UserCaserne, unit.value, Language) > influenceplayer
-          ) {
-            // Masqué l'unité si :
-            // (influence unnités à tester + influences des unités déjà sélectionné - l'influence de l'unité du select en cour de modification) > influence du joueur
-            option.style.display = "none";
-            exceedingInfluence = true;
-          }
-          if (!exceedingInfluence) {
-            option.style.display = "";
-          }
+          const exceedingInfluence =
+            UserCaserne && UserCaserne.length && influenceUnit(UserCaserne, option.value, Language) + influenceAllUnitSelected - influenceUnit(UserCaserne, unit.value, Language) > influenceplayer;
+          option.style.display = exceedingInfluence ? "none" : "";
         }
       });
     }
@@ -1211,15 +1124,10 @@ function optionSelectUnit(username, UserCaserne, influenceplayer, influenceAllUn
 }
 
 function influenceUnit(UserCaserne, unitName = "", Language) {
-  if (unitName === "") {
-    return 0;
-  }
-  for (let j = 0; j < UserCaserne.length; j++) {
-    if (UserCaserne[j].Unit_name[Language] === unitName) {
-      return parseInt(UserCaserne[j].Unit_influence, 10);
-    }
-  }
-  return 0;
+  if (!unitName) return 0;
+
+  const unit = UserCaserne.find((u) => u.Unit_name[Language] === unitName);
+  return unit ? parseInt(unit.Unit_influence, 10) : 0;
 }
 
 function usersInGroup(listGroupGvG) {
@@ -1234,27 +1142,16 @@ function usersInGroup(listGroupGvG) {
 }
 
 function MAJlistUserSelect() {
-  let divs = document.querySelectorAll(".username");
-  listUserSelect = [];
-  divs.forEach((div) => {
-    div.querySelectorAll("option").forEach((option) => {
-      if (option.selected && option.value !== "") {
-        listUserSelect.push(option.value);
-      }
-    });
-  });
+  listUserSelect = Array.from(document.querySelectorAll(".username option"))
+    .filter((option) => option.selected && option.value !== "")
+    .map((option) => option.value);
 
-  // si absent de la selection, supression de la map d'eventlistener
+  // Si absent de la sélection, suppression de la map d'event listener
   deleteEventListeners();
 
-  let divsplace = document.querySelectorAll(".divplace");
-  divsplace.forEach((div) => {
+  document.querySelectorAll(".divplace").forEach((div) => {
     if (div.id.includes("player_")) {
-      if (listUserSelect.some((element) => element.replace(/\s/g, "") === div.id.replace(/^player_/, ""))) {
-        div.textContent = "✅";
-      } else {
-        div.textContent = "❌";
-      }
+      div.textContent = listUserSelect.some((element) => element.replace(/\s/g, "") === div.id.replace(/^player_/, "")) ? "✅" : "❌";
     }
   });
 
@@ -1262,38 +1159,23 @@ function MAJlistUserSelect() {
 }
 
 function optionSelectUsername() {
-  let divs = document.querySelectorAll(".username");
-  divs.forEach((div) => {
+  document.querySelectorAll(".username").forEach((div) => {
     div.querySelectorAll("option").forEach((option) => {
-      if (listUserSelect.includes(option.value)) {
-        option.style.display = "none";
-      } else {
-        option.style.display = "";
-      }
+      option.style.display = listUserSelect.includes(option.value) ? "none" : "";
     });
   });
 }
 
 // mise à jour des balises select avec les nouvelles unités
 function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected, translate) {
-  let infoUsersave = {};
-  for (let j = 0; j < data.ListInscripted.length; j++) {
-    let userInscripted = data.ListInscripted[j];
-    if (userInscripted.Username.replace(/\s/g, "") === userSelected.replace(/\s/g, "")) {
-      infoUsersave = userInscripted;
-      break;
-    }
-  }
+  const infoUsersave = data.ListInscripted.find((user) => user.Username.replace(/\s/g, "") === userSelected.replace(/\s/g, ""));
+  if (!infoUsersave) return;
 
   const usernameSansEspaces = infoUsersave.Username.replace(/\s/g, "");
-  insertSelectUnit(selectunit1, infoUsersave.UserCaserne, "", 0,data.Gestion.ListUnitType, data.UserInfo.Language, translate);
-  selectunit1.id = "unit1" + usernameSansEspaces;
-  insertSelectUnit(selectunit2, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
-  selectunit2.id = "unit2" + usernameSansEspaces;
-  insertSelectUnit(selectunit3, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
-  selectunit3.id = "unit3" + usernameSansEspaces;
-  insertSelectUnit(selectunit4, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
-  selectunit4.id = "unit4" + usernameSansEspaces;
+  [selectunit1, selectunit2, selectunit3, selectunit4].forEach((unit, index) => {
+    insertSelectUnit(unit, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
+    unit.id = `unit${index + 1}${usernameSansEspaces}`;
+  });
 }
 
 function groupType(translate) {
@@ -1338,4 +1220,76 @@ function groupType(translate) {
   groupType.appendChild(divCharger);
 
   return groupType;
+}
+
+// --------------------------------------------------------
+// ----------------- Fonction fetch back ------------------
+// --------------------------------------------------------
+async function saveGroup(optiontype) {
+  const creategroup = document.getElementById("creategroup");
+  const divuserElements = creategroup.querySelectorAll(".divuser");
+
+  let dataToSend = [];
+  divuserElements.forEach((divuserElement) => {
+    let divuserObject = {};
+
+    const inputElement = divuserElement.querySelector("input");
+    const inputValue = inputElement ? inputElement.value : "";
+    divuserObject["inputValue"] = inputValue;
+
+    const selectElements = divuserElement.querySelectorAll("select");
+    const selectValues = Array.from(selectElements).map((select) => select.value);
+    divuserObject["selectValues"] = selectValues;
+
+    dataToSend.push(divuserObject);
+  });
+
+  const namegroupElements = creategroup.querySelectorAll(".divnamegroup");
+  let namegroup = [];
+  namegroupElements.forEach((divnamegroupElement) => {
+    let currentGroup = [];
+
+    const inputElement = divnamegroupElement.querySelector("input");
+    const inputValue = inputElement ? inputElement.value : "";
+    if (inputValue != "") {
+      currentGroup[0] = divnamegroupElement.id.replace("divnamegroup", "");
+      currentGroup[1] = removeHTMLTags(inputValue);
+    }
+
+    namegroup.push(currentGroup);
+  });
+
+  if (dataToSend.length !== 0) {
+    const currenthouse = localStorage.getItem("user_house");
+
+    const update = await fetch(adressAPI + "saveGroupInDB/?house=" + currenthouse, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ dataToSend: dataToSend, namegroup: namegroup, optiontype: optiontype }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Erreur de réseau: ${response.status}`);
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des données:", error);
+      });
+
+    if (update.Gestion.Logged && update.Gestion.Officier) {
+      const translate = await loadTranslate(update.UserInfo.Language);
+      // Reinitialisation des variables globals et des EventsListener
+      groupNumber = 1;
+      listUserSelect = [];
+      await deleteEventListeners();
+      eventListenersMap = new Map();
+      containercreategroup(update, translate);
+    } else {
+      fetchlogout();
+    }
+  }
 }

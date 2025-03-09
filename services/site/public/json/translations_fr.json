@@ -57,11 +57,10 @@
         ["Privé (groupe gestionnaire)", "<span>Création des groupes</span><span>Statistiques</span><span>Gestion des casernes utilisateur</span>"]
       ],
       "images": [
-        "img/description/site/dashboard1.png",
-        "img/description/site/dashboard2.png",
+        "img/description/site/dashboard.png",
         "img/description/site/charactercard.png",
         "img/description/site/caserne.png",
-        "img/description/site/groupgvg1.png"
+        "img/description/site/groupgvg.png"
       ]
     },
     {
@@ -273,11 +272,11 @@
     },
     "author": {
       "title": "Créateur du site",
-      "content": "Le site internet a été créé et est maintenu par un particulier (OLIVIER Fabien).</br>Adresse : 76100 Rouen</br>Email: fabiendeveloppeur76@gmail.com"
+      "content": "Le site internet a été créé et est maintenu par un particulier (OLIVIER Fabien).</br>Adresse : 76100 Rouen</br>Email: <a href=\"mailto:fabiendeveloppeur76@gmail.com\">fabiendeveloppeur76@gmail.com</a></br></br> Si vous souhaitez soutenir le developpeur, vous pouvez effectuer une donation via <a href= \"https://paypal.me/faolivier\" target=\"_blank\">ce lien PayPal</a>"
     },
     "image_right": {
       "title": "Avis sur les droits des contenus de Conqueror's Blade",
-      "content": "Les images, logos et autres contenus présents sur ce site appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces éléments et ils sont utilisés uniquement à des fins informatives ou illustratives.</br>Si vous êtes le détenteur des droits d’un contenu et souhaitez qu’il soit modifié ou supprimé, veuillez nous contacter à fabiendeveloppeur76@gmail.com. Nous nous engageons à prendre les mesures nécessaires dans les plus brefs délais."
+      "content": "Les images, logos et autres contenus présents sur ce site appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces éléments et ils sont utilisés uniquement à des fins informatives ou illustratives.</br>Si vous êtes le détenteur des droits d’un contenu et souhaitez qu’il soit modifié ou supprimé, veuillez nous contacter à <a href=\"mailto:fabiendeveloppeur76@gmail.com\">fabiendeveloppeur76@gmail.com</a>. Nous nous engageons à prendre les mesures nécessaires dans les plus brefs délais."
     },
     "host": {
       "title": "Hébergeur",
@@ -300,8 +299,8 @@
         "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Jeu Conqueror's Blade</a></li></ul>"
       },
       {
-        "title": "Contact",
-        "content": "<p>fabiendeveloppeur76@gmail.com</p>"
+        "title": "Développeur",
+        "content": "<ul><li><a href=\"mailto:fabiendeveloppeur76@gmail.com\">fabiendeveloppeur76@gmail.com</a></li><li><a href=\"/mentionlegale#author\">Soutenir le developpeur</a></li></ul>"
       }
     ],
     "bottom": "<p>Ce site contient des images et des informations sur le jeu Conqueror's Blade. Tous les droits relatifs à ces éléments appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces contenus, qui sont utilisés uniquement à des fins informatives et illustratives.</p><p>&copy; 2025 OLIVIER Fabien.</p>"

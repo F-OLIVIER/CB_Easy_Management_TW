@@ -23,10 +23,10 @@ export async function fetchServer(option) {
   }
 }
 
-export function lang_select(path = "/") {
+export function lang_select() {
   document.getElementById("lang-select").addEventListener("change", function () {
     localStorage.setItem("selectedLang", this.value);
-    window.location.href = path;
+    window.location.reload();
   });
 }
 

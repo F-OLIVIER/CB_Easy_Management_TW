@@ -88,7 +88,7 @@ func Charactercard(uuid string, database *sql.DB) (userInfo data.UserInfo) {
 	return userInfo
 }
 
-func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database *sql.DB) {
+func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database *sql.DB) (notif data.Notif) {
 	var newUserInfo data.UserInfo
 	err := json.NewDecoder(r.Body).Decode(&newUserInfo)
 	CheckErr("Erreur de décodage JSON UpdateCharacter", err)
@@ -106,49 +106,113 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		stmt2, errdb := database.Prepare("UPDATE Users SET GameCharacter_ID = ?, Lvl = ?, Influence = ? WHERE ID = ?")
 		CheckErr("2- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, newUserInfo.Lvl, newUserInfo.Influence, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre influence, level et arme ont été mis à jour avec succès.",
+			EN: "Your influence, level and weapon have been successfully updated.",
+		}
 	} else if newUserInfo.Influence != "" && newUserInfo.Lvl != "" {
 		// Lvl + Influence
 		stmt2, errdb := database.Prepare("UPDATE Users SET Lvl = ?, Influence = ? WHERE ID = ?")
 		CheckErr("3- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.Lvl, newUserInfo.Influence, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre influence et level ont été mis à jour avec succès.",
+			EN: "Your influence and level have been successfully updated.",
+		}
 	} else if newUserInfo.Influence != "" && newUserInfo.GameCharacter.FR != "" {
 		// Class + Influence
 		stmt2, errdb := database.Prepare("UPDATE Users SET GameCharacter_ID = ?, Influence = ? WHERE ID = ?")
 		CheckErr("4- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, newUserInfo.Influence, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre influence et arme ont été mis à jour avec succès.",
+			EN: "Your influence and weapon have been successfully updated.",
+		}
 	} else if newUserInfo.Lvl != "" && newUserInfo.GameCharacter.FR != "" {
 		// Class + Lvl
 		stmt2, errdb := database.Prepare("UPDATE Users SET GameCharacter_ID = ?, Lvl = ? WHERE ID = ?")
 		CheckErr("5- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, newUserInfo.Lvl, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre level et arme ont été mis à jour avec succès.",
+			EN: "Your level and weapon have been successfully updated.",
+		}
 	} else if newUserInfo.GameCharacter.FR != "" {
 		// Class
 		stmt2, errdb := database.Prepare("UPDATE Users SET GameCharacter_ID = ? WHERE ID = ?")
 		CheckErr("6- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre arme a été mis à jour avec succès.",
+			EN: "Your weapon has been successfully updated.",
+		}
 	} else if newUserInfo.Lvl != "" {
 		// Lvl
 		stmt2, errdb := database.Prepare("UPDATE Users SET Lvl = ? WHERE ID = ?")
 		CheckErr("7- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.Lvl, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre level a été mis à jour avec succès.",
+			EN: "Your level has been successfully updated.",
+		}
 	} else if newUserInfo.Influence != "" {
 		// Influence
 		stmt2, errdb := database.Prepare("UPDATE Users SET Influence = ? WHERE ID = ?")
 		CheckErr("8- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.Influence, currentUser.User_id)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Votre influence a été mis à jour avec succès.",
+			EN: "Your influence has been successfully updated.",
+		}
+	} else {
+		notif.Type = "error"
+		notif.Content = data.ListLanguage{
+			FR: "Erreur 500: probléme au niveau du serveur",
+			EN: "Error 500: server problem",
+		}
 	}
 
 	if newUserInfo.EtatInscription == 1 || newUserInfo.EtatInscription == 3 { // 1: s'incrit present, 3: s'inscrit absent
 		stmt3, errdb := database.Prepare("UPDATE Users SET EtatInscription = ? WHERE ID = ?")
 		CheckErr("9- Requete DB UpdateCharacter", errdb)
 		stmt3.Exec(newUserInfo.EtatInscription, currentUser.User_id)
+
+		notif.Type = "success"
+		if newUserInfo.EtatInscription == 1 {
+			notif.Content = data.ListLanguage{
+				FR: "Vous êtes inscrit présent pour la prochaine guerre de territoire.",
+				EN: "You are registered present for the next territorial war.",
+			}
+		} else if newUserInfo.EtatInscription == 3 {
+			notif.Content = data.ListLanguage{
+				FR: "Vous êtes inscrit absent pour la prochaine guerre de territoire.",
+				EN: "You are registered absent for the next territorial war.",
+			}
+		}
 	}
+
+	notif.Notif = true
+	return notif
 }
 
 func ListInscriptedUsers(id_House string, database *sql.DB) (UsersIncripted []data.UserInfo) {
 	listUnit, err := database.Prepare(`SELECT ID, ID_House, GameCharacter_ID, DiscordName, Lvl, Influence, NbGvGParticiped, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN
 										FROM Users
-										WHERE Users.EtatInscription = '1' AND ID_House = ?;
+										WHERE Users.EtatInscription = 1 AND ID_House = ?;
 										`)
 	CheckErr("1- Requete DB fonction ListInscriptedusers", err)
 	rows, err := listUnit.Query(id_House)
@@ -163,7 +227,6 @@ func ListInscriptedUsers(id_House string, database *sql.DB) (UsersIncripted []da
 			CheckErr("Requete DB UserInfo", errdb)
 			class.QueryRow(user.GameCharacter_ID).Scan(&user.GameCharacter.FR, &user.GameCharacter.EN)
 		}
-
 		listUnitUser := CaserneUser(strconv.Itoa(user.ID), id_House, database)
 		var newListunitUser []data.Unit
 		for i := 0; i < len(listUnitUser); i++ {

@@ -1,4 +1,4 @@
-import { communBlock_notconnected } from "./useful.js";
+import { communBlock_notconnected, lang_select } from "./useful.js";
 import { loadTranslate } from "./translate.js";
 
 export async function mention() {
@@ -53,9 +53,7 @@ export async function mention() {
   collectedInfoParagraph.textContent = translate.mention.collect.content;
   contentDiv.appendChild(collectedInfoParagraph);
 
-  contentDiv.appendChild(
-    createList(translate.mention.collect.list)
-  );
+  contentDiv.appendChild(createList(translate.mention.collect.list));
 
   const cookiesTitle = document.createElement("h2");
   cookiesTitle.textContent = translate.mention.cookie.title;
@@ -90,6 +88,7 @@ export async function mention() {
   contentDiv.appendChild(protectionParagraph);
 
   const sharingTitle = document.createElement("h2");
+  sharingTitle.id = "author";
   sharingTitle.textContent = translate.mention.share.title;
   contentDiv.appendChild(sharingTitle);
 
@@ -110,7 +109,7 @@ export async function mention() {
   contentDiv.appendChild(rightsTitle);
 
   const rightsParagraph = document.createElement("p");
-  rightsParagraph.textContent = translate.mention.image_right.content;
+  rightsParagraph.innerHTML = translate.mention.image_right.content;
   contentDiv.appendChild(rightsParagraph);
 
   const hostTitle = document.createElement("h2");
@@ -124,5 +123,16 @@ export async function mention() {
   // Ajoutez le contenu au conteneur principal
   container.appendChild(contentDiv);
 
-    lang_select("/description");
+  lang_select();
+
+  window.onload = function () {
+    if (window.location.hash) {
+      setTimeout(() => {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 1000); // Attendre que l'élément soit inséré
+    }
+  };
 }

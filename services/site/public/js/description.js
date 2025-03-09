@@ -114,7 +114,7 @@ export async function description() {
 
   Container.appendChild(containerDescription);
 
-  lang_select("/description");
+  lang_select();
 }
 
 function changeImage(sectionIndex, direction, translate) {
