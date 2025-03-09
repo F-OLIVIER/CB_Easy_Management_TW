@@ -7,9 +7,10 @@ Le projet se décompose en 3 partie, un bot [Discord](https://discord.com), un s
 
 Deux langues sont prise en charge, le Français et l'anglais.
 
-Le site internet est disponible a l'adresse suivante : `a venir` (en cour de deploiement)
-Le bot discord pourra être inviter sur votre Discord directement depuis le site internet.
-L'application mobile est deployé sur le Google play store sous le nom `Easy Management GvG` (en cour de deploiement)
+**Accès à la plateforme**
+- Le site internet est disponible a l'adresse suivante : `a venir` (en cour de deploiement)
+- Le bot discord pourra être inviter sur votre Discord directement depuis le site internet.
+- L'application mobile est deployé sur le Google play store sous le nom `Easy Management GvG` (en cour de deploiement)
 
 **Partie 1 : le bot Discord** <br>
 Le bot Discord permet aux utilisateurs de s'inscrire via Discord. Les informations d'inscription des joueurs sont enregistré dans la base de donnée SQL, les joueurs peuvent ainsi donner la plupart des informations nécessaires à la préparation des GvG.<br>
