@@ -16,9 +16,7 @@ func Createdb() {
 	_, err = database.Exec(string(scriptSQL_table))
 	CheckErr(err, "2- Err execute script_create_table in db (Createdb.go)")
 
-	// Insert base element
-
-	// Insert typeUnit
+	// Elément de base : typeUnit
 	idTypeUnit := database.QueryRow("SELECT ID FROM ListTypeUnit WHERE TypeFR = 'Cavalerie'").Scan()
 	if idTypeUnit == sql.ErrNoRows {
 		scriptSQL_type, err := os.ReadFile("../database/script_INSERT_ListTypeUnit.sql")
@@ -27,7 +25,7 @@ func Createdb() {
 		CheckErr(err, "3- Err script Insert ListTypeUnit in db (Createdb.go)")
 	}
 
-	// Insert class
+	// Elément de base : classe (weapon)
 	idClass := database.QueryRow("SELECT ID FROM ListGameCharacter WHERE ClasseFR = 'Mousquet'").Scan()
 	if idClass == sql.ErrNoRows {
 		scriptSQL_class, err := os.ReadFile("../database/script_INSERT_ListGameCharacter.sql")
@@ -36,8 +34,8 @@ func Createdb() {
 		CheckErr(err, "4- Err script Insert ListGameCharacter in db (Createdb.go)")
 	}
 
-	// Insert base unit
-	idbaseUnit := database.QueryRow("SELECT ID FROM ListUnit WHERE UnitFR = 'Yeomen'").Scan()
+	// Elément de base : list des unités
+	idbaseUnit := database.QueryRow("SELECT ID FROM ListUnit WHERE UnitFR = 'khorchins'").Scan()
 	if idbaseUnit == sql.ErrNoRows {
 		scriptSQL_unit, err := os.ReadFile("../database/script_INSERT_ListUnit.sql")
 		CheckErr(err, "5- open file script_INSERT_ListUnit.sql (Createdb.go)")
