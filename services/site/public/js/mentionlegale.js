@@ -125,6 +125,7 @@ export async function mention() {
 
   lang_select();
 
+  // Gestion de l'ancre - systéme chrome
   window.onload = function () {
     if (window.location.hash) {
       setTimeout(() => {
@@ -135,4 +136,11 @@ export async function mention() {
       }, 1000); // Attendre que l'élément soit inséré
     }
   };
+
+  // Gestion de l'ancre - systéme firefox
+  const navEntries = performance.getEntriesByType("navigation");
+  const isReload = navEntries.length > 0 ? navEntries[0].type === "reload" : false;
+  if (!isReload) {
+    document.location.reload(true);
+  }
 }

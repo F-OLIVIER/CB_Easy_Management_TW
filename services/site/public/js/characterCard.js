@@ -19,8 +19,6 @@ export async function characterCard() {
 }
 
 function containerCharacterCard(data, translate) {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
   communBlock(data, translate);
 
   let container = document.getElementById("Container");
@@ -173,6 +171,9 @@ function containerCharacterCard(data, translate) {
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
 function majPersonnage(translate) {
@@ -231,7 +232,7 @@ async function fetchData(dataToSend) {
       console.error("Erreur lors de la récupération des données:", error);
     });
 
-    console.log('update : ', update);
+  // console.log('update : ', update);
 
   if (update.Gestion.Logged) {
     const translate = await loadTranslate(update.UserInfo.Language);

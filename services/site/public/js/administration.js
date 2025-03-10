@@ -20,8 +20,6 @@ export async function administration() {
 
 let checkedRadioValue_Unit_maitrise = "";
 function containerAppAdmin(data, translate) {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
   communBlock(data, translate);
 
   const subContainer = createHTMLElement("div", "subContainerbotEtat");
@@ -233,15 +231,18 @@ function containerAppAdmin(data, translate) {
   Container.innerHTML = "";
   Container.appendChild(subContainer);
 
-  addEventOnAllButton(data.ListUnit);
+  addEventOnAllButton(data.ListUnit, data.Gestion.ListUnitType);
 
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
 let timerThrottlebutton = 0;
-function addEventOnAllButton(listUnit) {
+function addEventOnAllButton(listUnit, ListUnitType) {
   // Ajout d'une nouvelle unité
   document.getElementById("formNewUnit").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -373,18 +374,16 @@ function addEventOnAllButton(listUnit) {
 
         // Unit_type
         let input_Unit_type = createHTMLElement("select", "changeUnitType");
-        let option_Unit_type_EN = ["Infantry", "Distant", "Cavalry"];
-        let option_Unit_type_value = ["Infanterie", "Distant", "Cavalerie"];
-        let index = option_Unit_type_value.indexOf(unitSelected.Unit_type);
+        const index = ListUnitType.findIndex((unit) => unit.fr === unitSelected.Unit_type.fr && unit.en === unitSelected.Unit_type.en);
         let defaultoptiontype = document.createElement("option");
-        defaultoptiontype.text = "Type : " + option_Unit_type_EN[index];
+        defaultoptiontype.text = "Type : " + ListUnitType[index].en;
         defaultoptiontype.value = "";
         input_Unit_type.appendChild(defaultoptiontype);
-        for (let i = 0; i < option_Unit_type_value.length; i++) {
-          if (unitSelected.Unit_type != option_Unit_type_value[i]) {
+        for (let i = 0; i < ListUnitType.length; i++) {
+          if (unitSelected.Unit_type != ListUnitType[i].fr) {
             let option = document.createElement("option");
-            option.text = option_Unit_type_EN[i];
-            option.value = option_Unit_type_value[i];
+            option.text = ListUnitType[i].en;
+            option.value = ListUnitType[i].fr;
             input_Unit_type.appendChild(option);
           }
         }
@@ -475,7 +474,6 @@ async function adminitrateBot(option) {
     dataToSend.informationDiscord = true;
     dataToSend.newWeapon.en = document.getElementById("informationDiscordEN").value;
     dataToSend.newWeapon.fr = document.getElementById("informationDiscordFR").value;
-    console.log("dataToSend.newWeapon :", dataToSend.newWeapon);
     if (dataToSend.newWeapon.en == "" || dataToSend.newWeapon.fr == "") {
       showNotification("Please complete all information fields.", "error");
       return;
@@ -544,6 +542,7 @@ async function adminitrateBot(option) {
       let changeUnit = {
         Unit_name: {},
         New_unit_name: {},
+        Unit_type: {},
       };
       // changeUnit.Unit_name = removeHTMLTags(document.getElementById('selectChangeUnit').value);
       const inputvalue_name = document.getElementById("selectChangeUnit").value;
@@ -551,6 +550,12 @@ async function adminitrateBot(option) {
       // nouveau nom d'unité
       changeUnit.New_unit_name.en = removeHTMLTags(document.getElementById("changeUnitNameEN").value);
       changeUnit.New_unit_name.fr = removeHTMLTags(document.getElementById("changeUnitNameFR").value);
+
+      // Tier de l'unité
+      changeUnit.Unit_tier = document.getElementById("changeUnitTier").value;
+
+      // Type de l'unité
+      changeUnit.Unit_type.fr = document.getElementById("changeUnitType").value;
 
       // influence unit
       changeUnit.Unit_influence = document.getElementById("changeUnitInfluence").value;
@@ -563,7 +568,6 @@ async function adminitrateBot(option) {
         showNotification("Max unit level impossible.", "error");
         return;
       }
-      changeUnit.Unit_tier = document.getElementById("changeUnitTier").value;
 
       const checkboxChangeUnitMaitrise = document.getElementById("changeUnitMaitrise");
       if (checkboxChangeUnitMaitrise != null && checkboxChangeUnitMaitrise.checked) {
@@ -571,6 +575,7 @@ async function adminitrateBot(option) {
       } else {
         changeUnit.Unit_maitrise = "";
       }
+
       dataToSend.changeUnit = changeUnit;
       formData.append("data", JSON.stringify(dataToSend));
 
@@ -591,6 +596,7 @@ async function adminitrateBot(option) {
         changeUnit.Unit_influence == "" &&
         changeUnit.Unit_lvlMax == "" &&
         changeUnit.Unit_tier == "" &&
+        changeUnit.Unit_type.fr == "" &&
         !checkboxChangeUnitMaitrise.checked
       ) {
         showNotification("Please complete at least one field or upload an image to update the unit " + changeUnit.Unit_name, "error");
@@ -649,7 +655,7 @@ async function sendFormData(formData) {
       console.error("Erreur lors de l'envoi de l'image et des données:", error);
     });
 
-  console.log("update :", update);
+  // console.log("update :", update);
   if (update.Gestion.Logged && update.Gestion.Admin) {
     const translate = await loadTranslate(update.UserInfo.Language);
     containerAppAdmin(update, translate);

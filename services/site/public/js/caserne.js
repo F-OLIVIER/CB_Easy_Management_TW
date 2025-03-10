@@ -20,8 +20,6 @@ export async function caserne() {
 
 let timerThrottlebutton = 0;
 function containercaserne(data, translate) {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
   communBlock(data, translate);
 
   let Container = document.getElementById("Container");
@@ -120,8 +118,11 @@ function containercaserne(data, translate) {
   MAJCaserne(data.ListUnit.length);
 
   if (data.Gestion.Notification.Notif) {
-    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type)
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
 function MAJCaserne(nbunit) {

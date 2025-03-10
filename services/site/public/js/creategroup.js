@@ -23,8 +23,6 @@ let listUserSelect = [];
 let timerThrottlebutton = 0;
 let eventListenersMap = new Map();
 export async function containercreategroup(data, translate) {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
   await communBlock(data, translate);
 
   let containerGroupe = await createHTMLElement("div", "containerGroupe");
@@ -211,6 +209,9 @@ export async function containercreategroup(data, translate) {
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
 // --------------------------------------------------------

@@ -21,8 +21,6 @@ export async function consulcaserne() {
 
 let timerThrottlebutton = 0;
 function containerconsulcaserne(data, translate) {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
   communBlock(data, translate);
 
   let Container = document.getElementById("Container");
@@ -66,7 +64,7 @@ function containerconsulcaserne(data, translate) {
         let TitleDivInfanterie = document.createElement("div");
         TitleDivInfanterie.id = "titleInfanterie";
         TitleDivInfanterie.classList.add("titlelistUnit");
-        TitleDivInfanterie.textContent = "︾ " + data.Gestion.ListUnitType[0][data.UserInfo.Language];
+        TitleDivInfanterie.textContent = "》 " + data.Gestion.ListUnitType[0][data.UserInfo.Language];
         let listUnitInfanterie = document.createElement("div");
         listUnitInfanterie.classList.add("listUnit");
         listUnitInfanterie.style.display = "none";
@@ -75,7 +73,7 @@ function containerconsulcaserne(data, translate) {
         let TitleDivDistant = document.createElement("div");
         TitleDivDistant.id = "titleDistant";
         TitleDivDistant.classList.add("titlelistUnit");
-        TitleDivDistant.textContent = "︾ " + data.Gestion.ListUnitType[1][data.UserInfo.Language];
+        TitleDivDistant.textContent = "》 " + data.Gestion.ListUnitType[1][data.UserInfo.Language];
         let listUnitDistant = document.createElement("div");
         listUnitDistant.classList.add("listUnit");
         listUnitDistant.style.display = "none";
@@ -84,7 +82,7 @@ function containerconsulcaserne(data, translate) {
         let TitleDivCav = document.createElement("div");
         TitleDivCav.id = "titleCav";
         TitleDivCav.classList.add("titlelistUnit");
-        TitleDivCav.textContent = "︾ " + data.Gestion.ListUnitType[2][data.UserInfo.Language];
+        TitleDivCav.textContent = "》 " + data.Gestion.ListUnitType[2][data.UserInfo.Language];
         let listUnitCav = document.createElement("div");
         listUnitCav.classList.add("listUnit");
         listUnitCav.style.display = "none";
@@ -156,6 +154,9 @@ function containerconsulcaserne(data, translate) {
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
 function MAJCaserne(nbunit, iduser) {

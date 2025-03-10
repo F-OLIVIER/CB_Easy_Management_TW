@@ -325,7 +325,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 
 						switch r.URL.Path {
 						case "/api/CheckAppAdmin/":
-							// Ne rien faire, commum a toutes les page admin
+							// Ne rien faire, commum a toutes les pages admin
 
 						case "/api/adminitrateBot/":
 							notif := utils.UploadInformationsBot(r, database)

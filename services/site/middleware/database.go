@@ -435,7 +435,7 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) (notif data.Notif)
 				}
 			}
 
-			if formData.ChangeUnit.LvlMax != "" || formData.ChangeUnit.Influence != "" || formData.ChangeUnit.Maitrise != "" || formData.ChangeUnit.Newunitname.EN != "" || formData.ChangeUnit.Newunitname.FR != "" || formData.ChangeUnit.Tier != "" { // Update des data d'une unit
+			if formData.ChangeUnit.LvlMax != "" || formData.ChangeUnit.Influence != "" || formData.ChangeUnit.Maitrise != "" || formData.ChangeUnit.Newunitname.EN != "" || formData.ChangeUnit.Newunitname.FR != "" || formData.ChangeUnit.Tier != "" || formData.ChangeUnit.Type.FR != "" { // Update des data d'une unit
 				updateDataUnit(formData.ChangeUnit, database)
 				notif.Content = data.ListLanguage{
 					FR: "Unité mise à jour avec succès.",
@@ -580,6 +580,21 @@ func updateDataUnit(dataCreateUnit data.Unit, database *sql.DB) {
 		stmt, err := database.Prepare(`UPDATE ListUnit SET ForceUnit = ? WHERE UnitFR = ?;`)
 		CheckErr("3- Update updateDataUnit ", err)
 		stmt.Exec(dataCreateUnit.Tier, dataCreateUnit.Name.FR)
+	}
+
+	if dataCreateUnit.Type.FR != "" {
+		// Selection de l'id correspondant
+		searchindex, errdb := database.Prepare("SELECT ID FROM ListTypeUnit WHERE TypeFR = ?")
+		CheckErr("1- Requete DB UserInfo", errdb)
+		index := 0
+		searchindex.QueryRow(dataCreateUnit.Type.FR).Scan(&index)
+
+		// Update de l'id
+		if index != 0 {
+			stmt, err := database.Prepare(`UPDATE ListUnit SET TypeUnit = ? WHERE UnitFR = ?;`)
+			CheckErr("3- Update updateDataUnit ", err)
+			stmt.Exec(index, dataCreateUnit.Name.FR)
+		}
 	}
 
 	// changement du nom de l'unit

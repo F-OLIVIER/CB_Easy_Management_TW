@@ -8,7 +8,10 @@ export async function fetchServer(option) {
       return;
     }
 
-    const response = await fetch(adressAPI + option);
+    const response = await fetch(adressAPI + option, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
 
     if (!response.ok) {
       throw new Error(`Erreur de réseau: ${response.status}`);
