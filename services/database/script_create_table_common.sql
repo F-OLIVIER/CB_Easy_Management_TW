@@ -1,8 +1,3 @@
--- Initialisation manuel de la db :
--- 1: sqlite3 ./database/databaseGvG.db
--- 2: .databases
--- 3: .quit
--- run query
 CREATE TABLE IF NOT EXISTS Houses (
     ID INTEGER PRIMARY KEY,
     House_name VARCHAR(100) NOT NULL,

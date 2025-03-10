@@ -1,4 +1,7 @@
 -- Table ListTypeUnit
-INSERT INTO ListTypeUnit(TypeFR,TypeEN) VALUES('Infanterie','Infantry');
-INSERT INTO ListTypeUnit(TypeFR,TypeEN) VALUES('Distant','Distant');
-INSERT INTO ListTypeUnit(TypeFR,TypeEN) VALUES('Cavalerie','Cavalry');
+INSERT INTO
+    ListTypeUnit (TypeFR, TypeEN)
+VALUES
+    ('Infanterie', 'Infantry'),
+    ('Distant', 'Distant'),
+    ('Cavalerie', 'Cavalry');
