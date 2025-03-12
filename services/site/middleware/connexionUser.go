@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gofrs/uuid"
+	"github.com/gofrs/uuid/v5"
 )
 
 var Sessions = map[string]Session{}
