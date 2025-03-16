@@ -34,7 +34,7 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 				Expires: dateCookie,
 				Domain:  data.SITE_DOMAIN,
 				Path:    "/",
-				// Secure:  true,
+				Secure:  true,
 			}
 
 			err := cookie.Valid()

@@ -17,7 +17,7 @@ fetch("https://discord.com/api/users/@me", {
     // Envoie des informations au serveur
     try {
       const data = await checkid(id, username);
-      console.log("data discord.js : ", data);
+      // console.log("data discord.js : ", data);
       if (data && data.Gestion && data.Gestion.Notification) {
         localStorage.setItem("notif", JSON.stringify(data.Gestion.Notification));
       }
