@@ -1,10 +1,10 @@
 // Fichier annexe
+import { msgChanDiscord, reponseUserInteraction, verif_perm_channel } from "./Constant.js";
 import { interactionsCache } from "./Main.js";
 import { adressdb, siteInternet } from "./config.js";
 import { initial_msgreactgvg } from "./Embed_gvg.js";
 import { createUserOneDiscord } from "./FuncData.js";
 import { loadTranslations } from "./language.js";
-import { msgChanDiscord, reponseUserInteraction } from "./Constant.js";
 import { logToFile } from "./log.js";
 
 // Module nodejs et npm
@@ -84,7 +84,20 @@ export async function config_4_ID_Chan_Gestion(interaction) {
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
   const translate = await loadTranslations(houseData.Langage);
-  return await list_discord_channels(interaction, translate.config.ID_Chan_Gestion, "config_4_ID_Chan_Gestion");
+  // Vérification des permissions du channel
+  const valid = await verif_perm_channel(houseData.ID_Chan_GvG);
+  if (valid) {
+    // Si le chan à les permissions continuer l'interaction
+    return await list_discord_channels(interaction, translate.config.ID_Chan_Gestion, "config_4_ID_Chan_Gestion");
+  } else {
+    await interaction.deferUpdate();
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} (channel <#${houseData.ID_Chan_GvG}>)`,
+      components: [],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 }
 
 export async function config_5_ID_Chan_Users(interaction) {
@@ -95,7 +108,21 @@ export async function config_5_ID_Chan_Users(interaction) {
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
   const translate = await loadTranslations(houseData.Langage);
-  return await list_discord_channels(interaction, translate.config.ID_Chan_Users, "config_5_ID_Chan_Users");
+
+  // Vérification des permissions du channel
+  const valid = await verif_perm_channel(houseData.ID_Chan_Gestion);
+  if (valid) {
+    // Si le chan à les permissions continuer l'interaction
+    return await list_discord_channels(interaction, translate.config.ID_Chan_Users, "config_5_ID_Chan_Users");
+  } else {
+    await interaction.deferUpdate();
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} (channel <#${houseData.ID_Chan_Gestion}>)`,
+      components: [],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 }
 
 export async function config_6_ID_Group_Users(interaction) {
@@ -106,7 +133,19 @@ export async function config_6_ID_Group_Users(interaction) {
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
   const translate = await loadTranslations(houseData.Langage);
-  return await list_discord_roles(interaction, translate.config.ID_Group_Users, "config_6_ID_Group_Users");
+  // Vérification des permissions du channel
+  const valid = await verif_perm_channel(houseData.ID_Chan_Users);
+  if (valid) {
+    return await list_discord_roles(interaction, translate.config.ID_Group_Users, "config_6_ID_Group_Users");
+  } else {
+    await interaction.deferUpdate();
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} (channel <#${houseData.ID_Chan_Users}>)`,
+      components: [],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 }
 
 export async function config_7_ID_Group_Officier(interaction) {

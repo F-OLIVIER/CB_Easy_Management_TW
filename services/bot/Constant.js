@@ -53,3 +53,12 @@ export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
   }
   chan.send(name + " (" + nickname + ") " + msg);
 }
+
+export async function verif_perm_channel(ID_Chan) {
+  const chan = client.channels.cache.get(ID_Chan);
+  if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans le chan ${ID_Chan} (initial_msgreactgvg)`, "errors_bot.log");
+    return false;
+  }
+  return true;
+}

@@ -25,6 +25,7 @@
   ],
 
   "config": {
+    "noperm": "Le bot n'a pas la permission d'envoyer des messages dans le chan",
     "avertissement": "Nous allons passer en revue toutes les informations nécessaires au bon fonctionnement des application de `Easy Management TW`.\nMerci de lire les explications sur le site internet avant de continuer, car vous avez éventuellement des paramétrages Discord à effectuer.\n\nLien des explications sur le site internet : ",
     "ID_Chan_GvG": "**Chan Discord ou les utilisateurs vont s'inscrire.**",
     "ID_Chan_Gestion": "**Chan Discord ou des messages d'information d'administration s'afficheront.**",
