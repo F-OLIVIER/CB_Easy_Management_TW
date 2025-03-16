@@ -24,7 +24,7 @@ export async function config_1_language(interaction) {
   const row = new ActionRowBuilder().addComponents(selectMenu);
 
   await interaction.reply({
-    content: "<@" + interaction.user.id + ">, select your language",
+    content: "<@" + interaction.user.id + ">, select Discord bot language",
     components: [row],
     flags: MessageFlags.Ephemeral,
   });
@@ -41,6 +41,7 @@ export async function config_2_avertissement(interaction) {
   if (server == null) {
     const translate = await loadTranslations("global");
     await reponseUserInteraction(interaction, translate.noperm);
+    logToFile(`Erreur server = null (config_2_avertissement) : ${translate.noperm}`);
     return;
   }
   // Initialisation du cache pour l'utilisateur
@@ -62,7 +63,7 @@ export async function config_2_avertissement(interaction) {
   // Suppression de l'intéraction précédente
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate.config.avertissement + "\n" + siteInternet +"/description",
+    content: "<@" + userId + ">\n" + translate.config.avertissement + "\n" + siteInternet + "/description",
     flags: MessageFlags.Ephemeral,
     components: [buttons],
   });
@@ -158,8 +159,9 @@ export async function config_finish(interaction) {
     return;
   } else if (houseData.ID_MessageGvG == -1) {
     const translate = await loadTranslations("global");
-    await reponseUserInteraction(interaction, translate.noperm);
-    return
+    await reponseUserInteraction(interaction, `${translate.noperm} (channel #${houseData.ID_Chan_GvG})`);
+    logToFile(`${translate.noperm} (channel #${houseData.ID_Chan_GvG})`);
+    return;
   }
 
   // Mise à jour du cache
