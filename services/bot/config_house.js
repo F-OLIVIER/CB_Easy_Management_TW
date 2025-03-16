@@ -93,7 +93,7 @@ export async function config_4_ID_Chan_Gestion(interaction) {
     await interaction.deferUpdate();
     await interaction.deleteReply();
     await interaction.followUp({
-      content: `<@${interaction.user.id}>\n${translate.config.noperm} (channel <#${houseData.ID_Chan_GvG}>)`,
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} <#${houseData.ID_Chan_GvG}>`,
       components: [],
       flags: MessageFlags.Ephemeral,
     });
@@ -118,7 +118,7 @@ export async function config_5_ID_Chan_Users(interaction) {
     await interaction.deferUpdate();
     await interaction.deleteReply();
     await interaction.followUp({
-      content: `<@${interaction.user.id}>\n${translate.config.noperm} (channel <#${houseData.ID_Chan_Gestion}>)`,
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} <#${houseData.ID_Chan_Gestion}>`,
       components: [],
       flags: MessageFlags.Ephemeral,
     });
@@ -141,7 +141,7 @@ export async function config_6_ID_Group_Users(interaction) {
     await interaction.deferUpdate();
     await interaction.deleteReply();
     await interaction.followUp({
-      content: `<@${interaction.user.id}>\n${translate.config.noperm} (channel <#${houseData.ID_Chan_Users}>)`,
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} <#${houseData.ID_Chan_Users}>`,
       components: [],
       flags: MessageFlags.Ephemeral,
     });
@@ -200,7 +200,7 @@ export async function config_finish(interaction) {
   } else if (houseData.ID_MessageGvG == -1) {
     const translate = await loadTranslations("global");
     await interaction.editReply({
-      content: `<@${userId}>\n${translate.noperm} (channel <#${houseData.ID_Chan_GvG}>)`,
+      content: `<@${userId}>\n${translate.noperm} <#${houseData.ID_Chan_GvG}>`,
       components: [],
     });
 
