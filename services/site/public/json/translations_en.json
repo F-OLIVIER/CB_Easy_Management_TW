@@ -49,6 +49,10 @@
         ["TW registration message channel", "Chan Discord where users will register (message with reaction buttons)."],
         ["User channel", "Chan Discord or information messages to the bot user will be displayed (new unit added, etc.)."],
         ["Manager channel", "Chan Discord or administration information messages will be displayed (user leaves Discord and is deleted from the database)."],
+        [
+          "Permission channel",
+          "In each channel (TW registration, user and management), you must authorise the bot to :</br><ul><li>view server logs</li><li>send messages</li><li>integrate links</li><li>attach files</li><li>manage messages</li><li>view old messages</li><li>connect</li><li>use application commands</li></ul>"
+        ],
         ["User group", "Group who will have access to the website to fill in their details (barrack, lvl, etc.)."],
         ["User manager", "Group who will have access to the Discord bot administration."]
       ]
@@ -59,7 +63,13 @@
         ["Private (user connected)", "<span>Home (dashboard)</span><span>Character card</span><span>Barracks"],
         ["Private (manager group)", "<span>Creating groups</span><span>Statistics</span><span>Managing user barracks</span>"]
       ],
-      "images": ["img/description/site/dashboard1.png", "img/description/site/dashboard2.png", "img/description/site/charactercard.png", "img/description/site/caserne.png", "img/description/site/groupgvg.png"]
+      "images": [
+        "img/description/site/dashboard1.png",
+        "img/description/site/dashboard2.png",
+        "img/description/site/charactercard.png",
+        "img/description/site/caserne.png",
+        "img/description/site/groupgvg.png"
+      ]
     },
     {
       "title": "Mobile Application",
