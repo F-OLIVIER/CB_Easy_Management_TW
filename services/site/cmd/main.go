@@ -95,5 +95,8 @@ func main() {
 	fmt.Println("Server started at : http://" + data.SITE_DOMAIN + ":" + data.PORT)
 
 	// Mise en écoute du serveur HTTP
-	http.ListenAndServe(":"+data.PORT, nil)
+	err := http.ListenAndServe(":"+data.PORT, nil)
+	if err != nil {
+		fmt.Println("Erreur demarrage serveur :\n", err)
+	}
 }
