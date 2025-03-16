@@ -24,7 +24,10 @@
     {
       "title": "Bot Discord",
       "commands": [
-        ["/config","<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>`"],
+        [
+          "/config",
+          "<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>`"
+        ],
         ["/visite", "Les commande sont expliqué par le bot"],
         ["/site", "Affiche le lien du site internet associé au bot"],
         ["/guide", "Affiche des informations d'aide sur Conqueror's Blade"],
@@ -56,12 +59,7 @@
         ["Privé (utilisateur connecté)", "<span>Home (tableau de bord)</span><span>Fiche personnage</span><span>Caserne"],
         ["Privé (groupe gestionnaire)", "<span>Création des groupes</span><span>Statistiques</span><span>Gestion des casernes utilisateur</span>"]
       ],
-      "images": [
-        "img/description/site/dashboard.png",
-        "img/description/site/charactercard.png",
-        "img/description/site/caserne.png",
-        "img/description/site/groupgvg.png"
-      ]
+      "images": ["img/description/site/dashboard.png", "img/description/site/charactercard.png", "img/description/site/caserne.png", "img/description/site/groupgvg.png"]
     },
     {
       "title": "Application Mobile",
@@ -71,7 +69,7 @@
   ],
 
   "accueil": {
-    "description": "Easy Management GvG, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 3 applications interconnecté ensemble :</br>un bot Discord, ce site internet et une application mobile.",
+    "description": "Easy Management TW, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 3 applications interconnecté ensemble :</br>un bot Discord, ce site internet et une application mobile.",
     "explain": "ℹ️ Comment sa marche ?",
     "adddiscord": "Ajouter à Discord"
   },
@@ -233,11 +231,41 @@
   },
 
   "mention": {
-    "intro": "Cette politique de confidentialité explique comment nous collectons, utilisons, et protégeons vos informations lorsque vous utilisez l'une des 3 applications.</br>Les 3 applications sont :",
+    "intro": {
+      "title": "Introduction",
+      "content": [
+        "Les présentes Conditions Générales d’Utilisation (CGU) et politique de confidentialité encadrent l’utilisation des services de \"Easy Management TW\" incluant les 3 applications.",
+        "",
+        "Les CGU constituent le contrat entre les services proposés nommé \"Easy Management TW\", l'accès aux services s'effectue par l’intermédiaire d'une des trois applications. L’accès aux services signifie l’acceptation sans réserve des présentes Conditions Générales d’Utilisation.",
+        "",
+        "Les 3 applications sont :"
+      ]
+    },
     "listapp": ["Un bot Discord", "Ce site internet", "Une application mobile"],
-    "auth": {
-      "title": "Identification utilisé dans l'application",
-      "content": "Un système d'authentification non-personnelle (c'est-à-dire qui ne permet pas de vous identifier) est utilisé pour vous connecter et utiliser nos applications. Il est associé à votre identifiant unique Discord."
+    "presentation": {
+      "title": "Présentation et objectifs des services",
+      "content": "Les services de \"Easy Management TW\" permettent d’accéder à différentes fonctionnalités facilitant la gestion de vos membres et l'organisation des guerres de territoire sur le jeu Conqueror's Blade."
+    },
+    "acces": {
+      "title": "Accès aux applications",
+      "content": [
+        "L’accès aux services necessite internet. Les moyens d'accès à internet sont à la charge de l'utilisateur.",
+        "",
+        "L’accès à l’application Discord requiert son installation sur la plateforme Discord (Discord Inc.). Ceci s’effectue en cliquant sur le bouton \"Ajouter à Discord\" sur la page d'acceuil de ce site internet. Une fois sur votre serveur Discord, la commande \"/config\" permet d'éffectuer les paramétrages nécessaire aux 3 applications.",
+        "L’accès à l’application mobile ainsi qu'à la partie privée de ce site internet requiert l'installation et le paramétrage du bot Discord sur son serveur Discord.",
+        "L’accès à la partie privée du site internet s’effectue par authentification OAuth2 Discord du compte de l’utilisateur.",
+        "L’accès à l’application mobile s’effectue par l'intermédiaire d'un jeton d'accées généré par la commande \"/smartphone\" via le bot Discord",
+        "",
+        "Pour des raisons de maintenance ou de panne, l’accès à une ou plusieurs application(s) peut être suspendu pour une durée déterminée ou indéterminée."
+      ]
+    },
+    "Responsabilite": {
+      "title": "Responsabilité",
+      "content": [
+        "\"Easy Management TW\" ne peut être tenu pour responsable de tout abus lié à une mauvaise utilisation de ses services. En tant qu’Utilisateur, vous vous engagez donc à signaler toute faille sans l’exploiter.",
+        "",
+        "Le site ne peut être tenu pour responsable en cas de force majeure ou du fait imprévisible et insurmontable d’un tiers."
+      ]
     },
     "collect": {
       "title": "Informations collectées",
@@ -264,7 +292,7 @@
     },
     "rgpd": {
       "title": "Protection des données",
-      "content": "Nous prenons la sécurité de vos données très au sérieux. Nous utilisons des mesures de sécurité standards pour protéger vos informations contre tout accès non autorisé, altération ou divulgation."
+      "content": "La garantie totale de la sécurité et la confidentialité des données n’est pas assurée par le site. Cependant, nous prenons la sécurité de vos données très au sérieux et nous utilisons des mesures de sécurité standards pour protéger vos informations contre tout accès non autorisé, altération ou divulgation."
     },
     "share": {
       "title": "Partage des informations",

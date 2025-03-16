@@ -188,7 +188,7 @@ export async function slash_interaction(interaction) {
   }
 
   // interaction qui retourne l'embed guide de l'utilisateur, Command /guide
-  if (interaction.commandName === "guide") {
+  if (interaction.commandName === "tuto") {
     if (await houseExist(interaction.guildId)) {
       interaction.reply({
         embeds: [await EmbedGuide()],

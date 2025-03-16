@@ -30,116 +30,114 @@ export async function createCommands() {
     // const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
     // await rest.put(Routes.applicationCommands(process.env.ID_APP), { body: [] });
 
-    // Création de la commande '/help'
-    await client.application.commands.create({
-      name: "help",
-      description: "List of commands proposed by the bot",
-    });
+    await client.application.commands.set([
+      // Création de la commande '/help'
+      {
+        name: "help",
+        description: "List of commands proposed by the bot",
+      },
 
-    // Création de la commande '/data'
-    await client.application.commands.create({
-      name: "data",
-      description: "Displays user information",
-    });
+      // Création de la commande '/data'
+      {
+        name: "data",
+        description: "Displays user information",
+      },
 
-    // Création de la commande '/guide'
-    await client.application.commands.create({
-      name: "guide",
-      description: "Displays help information (tutorials, etc.) about Conqueror's Blade",
-    });
+      // Création de la commande '/tuto'
+      // {
+      //   name: "tuto",
+      //   description: "Displays help information (tutorials, etc.) about Conqueror's Blade",
+      // },
 
-    // Création de la commande '/website'
-    await client.application.commands.create({
-      name: "website",
-      description: "Link to the bot's associated website",
-    });
+      // Création de la commande '/website'
+      {
+        name: "website",
+        description: "Link to the bot's associated website",
+      },
 
-    // Création de la commande '/smarthone'
-    await client.application.commands.create({
-      name: "smartphone",
-      description: "Generates a connection token for the mobile application",
-    });
+      // Création de la commande '/smarthone'
+      {
+        name: "smartphone",
+        description: "Generates a connection token for the mobile application",
+      },
 
-    // Création de la commande '/class'
-    await client.application.commands.create({
-      name: "class",
-      description: "Update the weapon played with your hero",
-    });
+      // Création de la commande '/class'
+      {
+        name: "class",
+        description: "Update the weapon played with your hero",
+      },
 
-    // Création de la commande '/lvl'
-    await client.application.commands.create({
-      name: "level",
-      description: "Update your hero's level",
-      options: [
-        {
-          name: "lvl_number",
-          description: "hero's level",
-          type: 4, // entier
-          min_value: 0,
-          max_value: 100000,
-          required: true,
-        },
-      ],
-    });
+      // Création de la commande '/lvl'
+      {
+        name: "level",
+        description: "Update your hero's level",
+        options: [
+          {
+            name: "lvl_number",
+            description: "hero's level",
+            type: 4, // entier
+            min_value: 0,
+            max_value: 100000,
+            required: true,
+          },
+        ],
+      },
 
-    // Création de la commande '/influ'
-    await client.application.commands.create({
-      name: "influence",
-      description: "Update your hero's influence",
-      options: [
-        {
-          name: "influ_number",
-          description: "hero's influence",
-          type: 4, // entier
-          min_value: 700,
-          max_value: 1000,
-          required: true,
-        },
-      ],
-    });
+      // Création de la commande '/influ'
+      {
+        name: "influence",
+        description: "Update your hero's influence",
+        options: [
+          {
+            name: "influ_number",
+            description: "hero's influence",
+            type: 4, // entier
+            min_value: 700,
+            max_value: 1000,
+            required: true,
+          },
+        ],
+      },
 
-    // -------------------------------------------------------------------
-    // ------------------- Command gestionnaire du bot -------------------
-    // -------------------------------------------------------------------
-    // Création de la commande '/config'
-    await client.application.commands.create({
-      name: "config",
-      description: "Configuring the bot discord",
-    });
+      // -------------------------------------------------------------------
+      // ------------------- Command gestionnaire du bot -------------------
+      // -------------------------------------------------------------------
+      // Création de la commande '/config'
+      {
+        name: "config",
+        description: "Configuring the bot discord",
+      },
 
-    // -------------------------------------------------------------------
-    // ---------------------- Command admin du bot -----------------------
-    // -------------------------------------------------------------------
+      // Création de la commande '/resetmsggvg'
+      {
+        name: "reset_msg_gvg",
+        description: "Manual reset of the GvG registration message (for managers only)",
+      },
 
-    // Création de la commande '/resetmsggvg'
-    await client.application.commands.create({
-      name: "reset_msg_gvg",
-      description: "Manual reset of the GvG registration message (for managers only)",
-    });
-
-    // Création de la commande '/manager_bot_activation'
-    await client.application.commands.create({
-      name: "bot_activation",
-      description: "Enable or disable GvG registration message (for managers only)",
-      options: [
-        {
-          name: "option_bot_activation",
-          description: "Choose an option",
-          type: 3, // 3 correspond à une option de type chaîne de texte
-          required: true,
-          choices: [
-            {
-              name: "on",
-              value: "on",
-            },
-            {
-              name: "off",
-              value: "off",
-            },
-          ],
-        },
-      ],
-    });
+      // Création de la commande '/manager_bot_activation'
+      {
+        name: "bot_activation",
+        description: "Enable or disable GvG registration message (for managers only)",
+        options: [
+          {
+            name: "option_bot_activation",
+            description: "Choose an option",
+            type: 3, // 3 correspond à une option de type chaîne de texte
+            required: true,
+            choices: [
+              {
+                name: "on",
+                value: "on",
+              },
+              {
+                name: "off",
+                value: "off",
+              },
+            ],
+          },
+        ],
+      },
+    ]);
 
     console.log("│ • Successfully created application (/) commands │");
   } catch (err) {
@@ -155,7 +153,7 @@ export async function createCommands() {
 export async function slashHelp(interaction) {
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
-  reponseUserInteraction(interaction, translate.help.join('\n'))
+  reponseUserInteraction(interaction, translate.help.join("\n"));
   return true;
 }
 
@@ -165,7 +163,7 @@ export async function slashLevel(interaction) {
 
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
-  reponseUserInteraction(interaction, `${translate.information.lvl} : ${lvlnumber}`)
+  reponseUserInteraction(interaction, `${translate.information.lvl} : ${lvlnumber}`);
   return true;
 }
 
@@ -175,7 +173,7 @@ export async function slashInflu(interaction) {
 
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
-  reponseUserInteraction(interaction, `${translate.information.influ} ${influnumber}`)
+  reponseUserInteraction(interaction, `${translate.information.influ} ${influnumber}`);
   return true;
 }
 

@@ -62,7 +62,7 @@ function containerforcode(data) {
   let title = document.createElement("h2");
   title.className = "titleApp";
   title.textContent =
-    "Voici votre code d'authentification pour l'application mobile Easy Management GvG";
+    "Voici votre code d'authentification pour l'application mobile `Easy Management TW`";
   subContainer.appendChild(title);
 
   // Code d'autorisation

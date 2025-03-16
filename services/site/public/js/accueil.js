@@ -1,6 +1,7 @@
 import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
 import { loadTranslate } from "./translate.js";
 import { showNotification } from "./notification.js";
+import { LINK_INVITE_BOT } from "./config.js";
 
 export async function accueil() {
   const language = localStorage.getItem("selectedLang") || "en";
@@ -35,7 +36,8 @@ export async function accueil() {
   let buttoninvitebot = document.createElement("a");
   buttoninvitebot.id = "buttoninvitebot";
   buttoninvitebot.classList = "no-style-link ";
-  buttoninvitebot.href = "";
+  buttoninvitebot.target = "_blank"
+  buttoninvitebot.href = LINK_INVITE_BOT;
 
   let imginvitebot = document.createElement("img");
   imginvitebot.src = "img/Logo_Discord.webp";
@@ -75,10 +77,10 @@ export async function accueil() {
   infoBox.style.transition = "opacity 0.5s ease-out";
   if (language == "fr") {
     infoBox.innerHTML =
-      "Jusqu'au 30 mars 2025, ce système est en phase de test.</br>Cela implique des bugs, suppression possible de la base de données ou autres instabilités.</br></br>Si vous souhaitez nous aider, n'hésitez pas à nous remonter des informations.";
+      "Jusqu'au 30 avril 2025, ce système est en phase de test.</br>Cela implique des bugs, suppression possible de la base de données ou autres instabilités.</br></br>Si vous souhaitez nous aider, n'hésitez pas à nous remonter des informations (bug ou amélioration possible).";
   } else {
     infoBox.innerHTML =
-      "Until 30 March 2025, this system is in a test phase.</br>This may involve bugs, possible deletion of the database or other instabilities.</br></br>If you would like to help us, please do not hesitate to send us information.";
+      "Until 30 April 2025, this system is in a test phase.</br>This may involve bugs, possible deletion of the database or other instabilities.</br></br>If you would like to help us, please do not hesitate to send us information (bug or possible improvement).";
   }
   Container.appendChild(betaBadge);
   Container.appendChild(infoBox);

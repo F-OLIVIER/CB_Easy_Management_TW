@@ -8,35 +8,30 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gofrs/uuid/v5"
+	"github.com/gofrs/uuid"
 )
-
-var Sessions = map[string]Session{}
-
-type Session struct {
-	DiscordId string
-	Cookie    *http.Cookie
-}
 
 func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 	// Récupération des informations du post
 	var discordUser data.DiscordUser
 	err := json.NewDecoder(r.Body).Decode(&discordUser)
 	CheckErr("Erreur de décodage JSON CheckUser", err)
+
 	if discordUser.Id != "" {
-		var ID string
+		var id string
 		stmt, err := database.Prepare("SELECT ID FROM Users WHERE DiscordID = ?")
-		CheckErr("db Prepare CheckUser : ", err)
-		err1 := stmt.QueryRow(discordUser.Id).Scan(&ID)
-		// CheckErr("QueryRow CheckUser, user not autorised ", err1)
+		CheckErr("db Prepare user_db_uuid : ", err)
+		err1 := stmt.QueryRow(discordUser.Id).Scan(&id)
+		// fmt.Println("err1 : ", err1)
 
 		if err1 == nil {
 			userUUID := uuid.Must(uuid.NewV4())
-			uuid := userUUID.String()
+			new_uuid := userUUID.String()
+			dateCookie := time.Now().Add(720 * time.Hour) // 1 mois
 			cookie := &http.Cookie{
 				Name:    "user_token",
-				Value:   uuid,
-				Expires: time.Now().Add(720 * time.Hour), // 1 mois
+				Value:   new_uuid,
+				Expires: dateCookie,
 				Domain:  data.SITE_DOMAIN,
 				Path:    "/",
 				// Secure:  true,
@@ -47,7 +42,7 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 				fmt.Printf("invalid cookie: %v\n", err)
 			}
 
-			SessionLogger(w, r, ID, discordUser.Id, cookie, database)
+			SessionLogger(w, discordUser.Id, cookie, database)
 			return true
 		}
 	}
@@ -55,26 +50,41 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 }
 
 // Fonction qui crée le cookie et sa correspondance dans la db ainsi que dans la map
-func SessionLogger(w http.ResponseWriter, r *http.Request, IdDB, discordId string, cookie *http.Cookie, database *sql.DB) {
-	Sessions[IdDB] = Session{
-		DiscordId: discordId,
-		Cookie:    cookie,
-	}
-	stmt, err := database.Prepare("UPDATE Users SET uuid = ? WHERE DiscordID = ?")
+func SessionLogger(w http.ResponseWriter, discordId string, cookie *http.Cookie, database *sql.DB) {
+	// Convertir en string avec un format spécifique
+	layout := "2006-01-02 15:04:05"
+	strDate_cookie := cookie.Expires.Format(layout)
+
+	stmt, err := database.Prepare("UPDATE Users SET uuid = ?, DateCookie = ? WHERE DiscordID = ?")
 	CheckErr("sessionlogger (SessionLogger): ", err)
-	stmt.Exec(cookie.Value, discordId)
+	stmt.Exec(cookie.Value, strDate_cookie, discordId)
 	// fmt.Println("cookie.Value : ", cookie.Value)
 	http.SetCookie(w, cookie)
-	// fmt.Println(Sessions)
 }
 
 // Fonction qui compare le cookie utilisateur avec la map de gestion des cookies
-func CheckToken(s map[string]Session, c *http.Cookie) bool {
-	for _, v := range s {
-		if v.Cookie.Value == c.Value {
+func CheckToken(c *http.Cookie, database *sql.DB) bool {
+	// Récupération des informations cookie de la db
+	var id, uuid, dateCookie string
+	stmt, err := database.Prepare("SELECT ID, uuid, DateCookie FROM Users WHERE uuid = ?")
+	CheckErr("db Prepare user_db_uuid : ", err)
+	err1 := stmt.QueryRow(c.Value).Scan(&id, &uuid, &dateCookie)
+	// fmt.Println("err1 : ", err1)
+
+	if err1 == nil && dateCookie != "" {
+		// Format de date pour convertir en time.Time
+		layout := "2006-01-02 15:04:05"
+		origine_date_cookie, err := time.Parse(layout, dateCookie)
+		if err != nil {
+			fmt.Println("Erreur de parsing date cookie:", err)
+			return false
+		}
+
+		if uuid == c.Value && time.Now().Before(origine_date_cookie) {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -85,10 +95,9 @@ func Logout(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 	// CheckErr("1- logout : ", err)
-	stmt, err := database.Prepare("UPDATE Users SET uuid = NULL WHERE uuid = ?")
+	stmt, err := database.Prepare("UPDATE Users SET uuid = '', DateCookie = '' WHERE uuid = ?")
 	CheckErr("2- logout :", err)
 	stmt.Exec(c.Value)
-	delete(Sessions, c.Value)
 
 	cookie := &http.Cookie{
 		Name:    "user_token",

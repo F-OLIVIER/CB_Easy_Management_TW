@@ -26,24 +26,40 @@ export async function mention() {
     return ul;
   }
 
-  // Ajoutez le contenu au div
+  function createParagraph(items) {
+    const p = document.createElement("p");
+    items.forEach((item) => {
+      if (item === "") {
+        p.appendChild(document.createElement("br"));
+      } else {
+        const div = document.createElement("div");
+        div.innerHTML = `${item}`;
+        p.appendChild(div);
+      }
+    });
+    return p;
+  }
+
   const introTitle = document.createElement("h2");
-  introTitle.textContent = "Introduction";
+  introTitle.textContent = translate.mention.intro.title;
   contentDiv.appendChild(introTitle);
 
-  const introParagraph = document.createElement("p");
-  introParagraph.textContent = translate.mention.intro;
-  contentDiv.appendChild(introParagraph);
-
+  contentDiv.appendChild(createParagraph(translate.mention.intro.content));
   contentDiv.appendChild(createList(translate.mention.listapp));
 
-  const authTitle = document.createElement("h2");
-  authTitle.textContent = translate.mention.auth.title;
-  contentDiv.appendChild(authTitle);
+  const presentationTitle = document.createElement("h2");
+  presentationTitle.textContent = translate.mention.presentation.title;
+  contentDiv.appendChild(presentationTitle);
 
-  const authParagraph = document.createElement("p");
-  authParagraph.textContent = translate.mention.auth.content;
-  contentDiv.appendChild(authParagraph);
+  const presentationParagraph = document.createElement("p");
+  presentationParagraph.innerHTML = translate.mention.presentation.content;
+  contentDiv.appendChild(presentationParagraph);
+
+  const accesTitle = document.createElement("h2");
+  accesTitle.textContent = translate.mention.acces.title;
+  contentDiv.appendChild(accesTitle);
+
+  contentDiv.appendChild(createParagraph(translate.mention.acces.content));
 
   const collectedInfoTitle = document.createElement("h2");
   collectedInfoTitle.textContent = translate.mention.collect.title;

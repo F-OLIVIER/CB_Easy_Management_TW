@@ -116,7 +116,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 		defer database.Close()
 
 		if err1 != http.ErrNoCookie { // If cookie
-			if !utils.CheckToken(utils.Sessions, cookie) { // If cookie not valid
+			if !utils.CheckToken(cookie, database) {
 				utils.Logout(w, r, database)
 				gestion := &data.Gestion{
 					Logged:   false,

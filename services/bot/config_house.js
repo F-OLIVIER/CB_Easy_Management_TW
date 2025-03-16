@@ -36,12 +36,22 @@ export async function config_2_avertissement(interaction) {
   // Récupération de la valeur et initialisation du cache
   const userId = interaction.user.id;
   const language = interaction.values[0];
+  const server = interaction.guildId;
+
+  if (server == null) {
+    await interaction.reply({
+      content: "<@" + interaction.user.id + ">, the bot does not have permission for this interaction",
+      components: [row],
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
+  }
   // Initialisation du cache pour l'utilisateur
   interactionsCache.set(userId, {
     House_name: "",
     House_logo: interaction.guild.iconURL(),
     Langage: language,
-    ID_Server: interaction.guildId,
+    ID_Server: server,
     ID_Group_Users: "",
     ID_Group_Officier: "",
     ID_Chan_GvG: "",
@@ -59,6 +69,7 @@ export async function config_2_avertissement(interaction) {
     flags: MessageFlags.Ephemeral,
     components: [buttons],
   });
+  return;
 }
 
 export async function config_3_ID_Chan_GvG(interaction) {

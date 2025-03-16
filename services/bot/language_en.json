@@ -4,23 +4,22 @@
 
   "help": [
     "Hello, brave hero",
-    "I am Easy Management GvG",
-    "My main role is to manage sign-ups for territory wars (GvG) in the game Conqueror's Blade.",
-    "To sign up for GvG, simply reply \"présent\" or \"absent\" to the dedicated GvG message. I will update it after each territory war.",
+    "I am Easy Management TW",
+    "My main role is to manage sign-ups for territory wars (TW) in the game Conqueror's Blade.",
+    "To sign up for TW, simply reply \"présent\" or \"absent\" to the dedicated TW message. I will update it after each territory war.",
     "",
     "**Here is the list of user commands**",
     "* `/level` updates your hero's level.",
     "* `/influence` updates your hero's influence.",
     "* `/class` updates the weapon your hero plays.",
     "* `/data`  displays your personal information.",
-    "* `/guide` provides a list of guides and tutorials for Conqueror's Blade.",
     "* `/site`  displays the link to the associated website.",
     "* `/smartphone`  generates a one-time-use token to log in to the mobile app.",
     "",
     "**Here is the list of commands reserved for managers**",
     "* `/config` allows you to configure the house.",
-    "* `/bot_activation` enables (on option) or disables (off option) the GvG sign-up message to avoid unnecessary pings.",
-    "* `/reset_msg_gvg` allows you to manually reset the GvG sign-up message in case of a reset bug.",
+    "* `/bot_activation` enables (on option) or disables (off option) the TW sign-up message to avoid unnecessary pings.",
+    "* `/reset_msg_tw` allows you to manually reset the TW sign-up message in case of a reset bug.",
     "",
     "May glory be in your wake!"
   ],
@@ -34,19 +33,19 @@
     "ID_Group_Officier": "**Group who will have access to the Discord bot administration.**",
     "House_name": "House name",
     "Config_finish": [
-      "You've completed the configuration and can now take advantage of `CB_Easy_Management_GvG`!",
+      "You've completed the configuration and can now take advantage of `Easy Management TW`!",
       "",
-      "Your users can go to the website to fill in their details and you'll be able to easily create your GvG groups.",
+      "Your users can go to the website to fill in their details and you'll be able to easily create your TW groups.",
       "",
       "Would you like me to send them a message in the user channel to let them know?`"
     ],
     "Welcome_msg": [
       "Hello everyone,",
       "I'm pleased to meet you.",
-      "Let me introduce myself, I'm `Easy_Management_GvG` and your Discord managers have put me in charge of writing your legend!",
+      "Let me introduce myself, I'm `Easy Management TW` and your Discord managers have put me in charge of writing your legend!",
       "",
       "__I have 2 main missions:__",
-      "- To collect your attendance figures for upcoming GvGs (which I'll do directly on this Discord)",
+      "- To collect your attendance figures for upcoming TWs (which I'll do directly on this Discord)",
       "- To collect your IG information. For example: barracks, level, etc. (something I'll do via the website or mobile app)",
       "",
       "For more details, to get to know me and find out what I can do for you, you can use the `/visit` command."
@@ -55,15 +54,15 @@
   },
 
   "gestion": {
-    "resetmanuelmsggvg": "has just manually reset the GvG registration message.",
+    "resetmanuelmsggvg": "has just manually reset the TW registration message.",
     "resetmsggvg": {
-      "ok": "GvG registration message reset.",
-      "notok": "Action impossible, GvG registration message is desactivated. Use `/bot_activation` command to activate it."
+      "ok": "TW registration message reset.",
+      "notok": "Action impossible, TW registration message is desactivated. Use `/bot_activation` command to activate it."
     },
-    "updateBotActivation": "has just changed the registration status of the GvG registration message",
+    "updateBotActivation": "has just changed the registration status of the TW registration message",
     "botActivation": {
       "ok": "Status of the registration message has been changed",
-      "notok": "Action impossible, GvG registration message is already in the desired state"
+      "notok": "Action impossible, TW registration message is already in the desired state"
     }
   },
 
@@ -104,18 +103,18 @@
     "nodata": "No data",
     "description_lvl": "Hero level",
     "lvl": "undefined\nuse /level to define it",
-    "description_classe": "Class played in GvG",
+    "description_classe": "Class played in TW",
     "classe": "undefined\nuse /class to define it",
     "description_influence": "Your hero's influence (700 + armour)",
-    "description_inscription_GvG": "GvG registration",
+    "description_inscription_GvG": "TW registration",
     "present": "Registered present",
     "noinscrit": "Not registered",
     "absent": "Registered absent",
     "never": "Never registered",
     "player": "Player",
-    "stat": "GvG statistics",
-    "partiped_GvG": "GvG participated",
-    "last_GvG": "Last gvg participated",
+    "stat": "TW statistics",
+    "partiped_GvG": "TW participated",
+    "last_GvG": "Last TW participated",
     "nolastGvG": "Never",
     "pourcent_GvG": "Presence"
   },
@@ -123,10 +122,10 @@
   "EmbedGvG": {
     "button_present": "Present",
     "button_absent": "Absent",
-    "description": "Please let us know if you will be attending the next GvG.",
-    "description_nogvg": "The next GvG will be a training GvG (also known as a drill), so registrations are not required.",
+    "description": "Please let us know if you will be attending the next TW.",
+    "description_nogvg": "The next TW will be a training TW (also known as a drill), so registrations are not required.",
 
-    "date": "Next GvG date",
+    "date": "Next TW date",
     "nbpresent": "Present",
     "nbabsent": "Absent",
     "noinscrit": "None"

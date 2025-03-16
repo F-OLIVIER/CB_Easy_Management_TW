@@ -14,7 +14,7 @@
     "__comment": "Si la configuration n'a pas encore été faite",
     "botNotExist": "Impossible to use this command, you haven't configured the bot yet.\nUse the `/config` command to configure the bot.\n\nFor more information, visit the website: [URL ICI]",
     "noPermission": "You don't have the required permissions",
-    "noingroup": "Sorry, you are not in one Discord groups authorised to use Easy Management GvG bot.",
+    "noingroup": "Sorry, you are not in one Discord groups authorised to use Easy Management TW bot.",
     "config_exist": {
       "1": "The configuration of this server already exists, only members of the <@&",
       "2": "> group or the owner of the Discord can use this command."

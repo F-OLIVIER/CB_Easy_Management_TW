@@ -90,30 +90,30 @@ function listLink(Container, data, translate) {
   let subcontainerUser = createHTMLElement("div", "subcontainerUser");
 
   // page characterCard
-  let linkCharacterCard = createHTMLElement("a", "no-style-link");
-  linkCharacterCard.href = "/characterCard";
-  // Image fiche personnage
-  let imgCharacterCard = document.createElement("img");
-  imgCharacterCard.src = "/img/charactercard.webp";
-  linkCharacterCard.appendChild(imgCharacterCard);
+  let divcharacterCard = createHTMLElement("div", "divcharacterCard")
   // Button fiche personnage
   let buttoncharacterCard = createHTMLElement("div", "buttoncharacterCard");
   buttoncharacterCard.textContent = translate.home.characterChard;
-  linkCharacterCard.appendChild(buttoncharacterCard);
-  subcontainerUser.appendChild(linkCharacterCard);
+  // Lien
+  let linkCharacterCard = createHTMLElement("a", "no-style-link");
+  linkCharacterCard.classList.add("linkCharacterCard")
+  linkCharacterCard.href = "/characterCard";
+  buttoncharacterCard.appendChild(linkCharacterCard);
+  divcharacterCard.appendChild(buttoncharacterCard)
+  subcontainerUser.appendChild(divcharacterCard);
 
   // page caserne
-  let linkCaserne = createHTMLElement("a", "no-style-link");
-  linkCaserne.href = "/caserne";
-  // Image caserne
-  let imgcaserne = document.createElement("img");
-  imgcaserne.src = "/img/caserne.webp";
-  linkCaserne.appendChild(imgcaserne);
+  let divcaserne = createHTMLElement("div", "divcaserne")
   // Button caserne
   let buttonCaserne = createHTMLElement("div", "buttonCaserne");
   buttonCaserne.textContent = translate.home.caserne;
-  linkCaserne.appendChild(buttonCaserne);
-  subcontainerUser.appendChild(linkCaserne);
+  // Lien
+  let linkCaserne = createHTMLElement("a", "no-style-link");
+  linkCaserne.classList.add("linkCaserne")
+  linkCaserne.href = "/caserne";
+  buttonCaserne.appendChild(linkCaserne);
+  divcaserne.appendChild(buttonCaserne)
+  subcontainerUser.appendChild(divcaserne);
 
   subContainer.appendChild(subcontainerUser);
 
