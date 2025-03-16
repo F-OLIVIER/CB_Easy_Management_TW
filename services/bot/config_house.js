@@ -160,12 +160,13 @@ export async function config_finish(interaction) {
     return;
   } else if (houseData.ID_MessageGvG == -1) {
     const translate = await loadTranslations("global");
-    await interaction.deleteReply();
-    await interaction.followUp({
-      content: `<@${userId}>\n${translate.noperm} (channel #${houseData.ID_Chan_GvG})`,
-      flags: MessageFlags.Ephemeral,
-      components: [buttons],
-    });
+    try {
+      await interaction.editReply({
+        content: `<@${userId}>\n${translate.noperm} (channel #${houseData.ID_Chan_GvG})`,
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'editReply :", error);
+    }
     logToFile(`${translate.noperm} (channel #${houseData.ID_Chan_GvG})`);
     return;
   }
