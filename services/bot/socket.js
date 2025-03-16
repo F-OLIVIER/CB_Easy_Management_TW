@@ -1,4 +1,6 @@
 // fichier annexe
+import { msgChanDiscord } from "./Constant.js";
+import { loadTranslations } from "./language.js";
 import { adressdb } from "./config.js";
 import { logToFile } from "./log.js";
 
@@ -6,8 +8,6 @@ import { logToFile } from "./log.js";
 import WebSocket from "ws";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
-import { msgChanDiscord } from "./Constant.js";
-import { loadTranslations } from "./language.js";
 
 const wss = new WebSocket.Server({ port: 8081 });
 

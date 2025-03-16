@@ -4,7 +4,7 @@ import { adressdb, siteInternet } from "./config.js";
 import { initial_msgreactgvg } from "./Embed_gvg.js";
 import { createUserOneDiscord } from "./FuncData.js";
 import { loadTranslations } from "./language.js";
-import { msgChanDiscord } from "./Constant.js";
+import { msgChanDiscord, reponseUserInteraction } from "./Constant.js";
 import { logToFile } from "./log.js";
 
 // Module nodejs et npm
@@ -39,11 +39,8 @@ export async function config_2_avertissement(interaction) {
   const server = interaction.guildId;
 
   if (server == null) {
-    await interaction.reply({
-      content: "<@" + interaction.user.id + ">, the bot does not have permission for this interaction",
-      components: [row],
-      flags: MessageFlags.Ephemeral,
-    });
+    const translate = await loadTranslations("global");
+    await reponseUserInteraction(interaction, translate.noperm);
     return;
   }
   // Initialisation du cache pour l'utilisateur
@@ -65,7 +62,7 @@ export async function config_2_avertissement(interaction) {
   // Suppression de l'intéraction précédente
   await interaction.deleteReply();
   await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate.config.avertissement + "\n" + siteInternet,
+    content: "<@" + userId + ">\n" + translate.config.avertissement + "\n" + siteInternet +"/description",
     flags: MessageFlags.Ephemeral,
     components: [buttons],
   });
@@ -159,6 +156,10 @@ export async function config_finish(interaction) {
   }
   if (houseData.ID_MessageGvG == 0) {
     return;
+  } else if (houseData.ID_MessageGvG == -1) {
+    const translate = await loadTranslations("global");
+    await reponseUserInteraction(interaction, translate.noperm);
+    return
   }
 
   // Mise à jour du cache

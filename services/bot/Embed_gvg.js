@@ -19,6 +19,12 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
     return 0;
   }
 
+  // Vérifie si le bot a la permission d'envoyer des messages et d'intégrer des liens
+  if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_GvG}`, "errors_bot.log");
+    return -1;
+  }
+
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
   const sendMessage = await chan.send({
     files: [imageAttachment],
@@ -36,6 +42,10 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
   const chan = client.channels.cache.get(ID_Chan_GvG);
   if (!chan) {
     logToFile(`Chan ${ID_Chan_GvG} innexistant pour le serveur ${ID_Server}`, "errors_bot.log");
+    return;
+  }
+  if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_GvG} pour le serveur ${ID_Server}`, "errors_bot.log");
     return;
   }
 
@@ -103,6 +113,10 @@ export async function noGvGReactMsgGvG(houseData) {
   const chan = client.channels.cache.get(houseData.ID_Chan_GvG);
   if (!chan) {
     logToFile(`Chan ${houseData.ID_Chan_GvG} innexistant pour le serveur ${houseData.ID_Server}`, "errors_bot.log");
+    return;
+  }
+  if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${houseData.ID_Chan_GvG} pour le serveur ${houseData.ID_Server}`, "errors_bot.log");
     return;
   }
 

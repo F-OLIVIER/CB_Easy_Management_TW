@@ -25,7 +25,7 @@
   ],
 
   "config": {
-    "avertissement": "We're going to go through all the information needed for the bot to work properly.\nPlease read the explanations on the website before continuing, as you may need to make some Discord settings.\nLink to explanations on the website: ",
+    "avertissement": "We're going to go over all the information needed for `Easy Management TW` applications to work properly.\nPlease read the explanations on the website before continuing, as you may need to make some Discord settings.\n\nLink to explanations on the website: ",
     "ID_Chan_GvG": "**Chan Discord where users will register.**",
     "ID_Chan_Gestion": "**Chan Discord or administration information messages will be displayed.**",
     "ID_Chan_Users": "**Chan Discord or information messages to the bot user will be displayed.**",

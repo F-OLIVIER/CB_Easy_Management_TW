@@ -19,8 +19,8 @@ export const client = new Client({
 });
 
 // Réponse d'interaction à l'utilisateur
-export function reponseUserInteraction(interaction, msg) {
-  interaction.reply({
+export async function reponseUserInteraction(interaction, msg) {
+  await interaction.reply({
     content: "<@" + interaction.user.id + ">\n" + msg,
     flags: MessageFlags.Ephemeral,
   });
@@ -33,6 +33,10 @@ export function msgChanDiscord(ID_Group, ID_Chan, msg) {
     logToFile(`Chan ${ID_Chan} innexistant`, "errors_bot.log");
     return;
   }
+  if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan}`, "errors_bot.log");
+    return;
+  }
   chan.send("<@&" + ID_Group + ">\n" + msg);
 }
 
@@ -41,6 +45,10 @@ export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
   const chan = client.channels.cache.get(ID_Chan_Gestion);
   if (!chan) {
     logToFile(`Chan ${ID_Chan_Gestion} innexistant`, "errors_bot.log");
+    return;
+  }
+  if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_Gestion}`, "errors_bot.log");
     return;
   }
   chan.send(name + " (" + nickname + ") " + msg);

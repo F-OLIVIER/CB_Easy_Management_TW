@@ -36,8 +36,8 @@
         ["/level", "Update your hero's level"],
         ["/influence", "Update your hero's influence"],
         ["/smarthone", "Generates a connection token for the mobile application"],
-        ["/reset_msg_gvg", "Manual reset of GvG registration reaction message (manager only)"],
-        ["/bot_activation", "Activate or deactivate the GvG registration message (manager only)"]
+        ["/reset_msg_tw", "Manual reset of TW registration reaction message (manager only)"],
+        ["/bot_activation", "Activate or deactivate the TW registration message (manager only)"]
       ],
       "images": ["img/description/bot/slashcommand.png", "img/description/bot/message_gvg_on.png", "img/description/bot/message_gvg_off.png", "img/description/bot/commanddata.png"]
     },
@@ -46,7 +46,7 @@
       "commands": [
         ["House name", "House name"],
         ["Language", "Language in which the Discord bot will send messages on Discord"],
-        ["GvG registration message channel", "Chan Discord where users will register (message with reaction buttons)."],
+        ["TW registration message channel", "Chan Discord where users will register (message with reaction buttons)."],
         ["User channel", "Chan Discord or information messages to the bot user will be displayed (new unit added, etc.)."],
         ["Manager channel", "Chan Discord or administration information messages will be displayed (user leaves Discord and is deleted from the database)."],
         ["User group", "Group who will have access to the website to fill in their details (barrack, lvl, etc.)."],
@@ -59,11 +59,11 @@
         ["Private (user connected)", "<span>Home (dashboard)</span><span>Character card</span><span>Barracks"],
         ["Private (manager group)", "<span>Creating groups</span><span>Statistics</span><span>Managing user barracks</span>"]
       ],
-      "images": ["img/description/site/dashboard.png", "img/description/site/charactercard.png", "img/description/site/caserne.png", "img/description/site/groupgvg.png"]
+      "images": ["img/description/site/dashboard1.png", "img/description/site/dashboard2.png", "img/description/site/charactercard.png", "img/description/site/caserne.png", "img/description/site/groupgvg.png"]
     },
     {
       "title": "Mobile Application",
-      "commands": [["Private (user connected)", "<span>Login page</span><span>GvG registration page</span><span>Character card</span><span>Barracks</span>"]],
+      "commands": [["Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card</span><span>Barracks</span>"]],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],
@@ -83,7 +83,7 @@
     "characterChard": "My character card",
     "caserne": "My barrack",
     "zone_gestion": "Managers only",
-    "groupGvG": "Create GvG groups",
+    "groupGvG": "Create TW groups",
     "stat": "Statistics",
     "caserne_other": "Consult a barracks",
     "zone_admin": "Administrators only",
@@ -113,22 +113,22 @@
     },
 
     "info_GvG": {
-      "title": "GvG information",
+      "title": "TW information",
       "inscripted": {
-        "nodata": "⁉️ You are not registered for the next GvG",
-        "present": "✅ Present from next GvG",
-        "absent": "❌ Absent from next GvG"
+        "nodata": "⁉️ You are not registered for the next TW",
+        "present": "✅ Present from next TW",
+        "absent": "❌ Absent from next TW"
       },
       "button": {
         "present": "Register me present",
         "absent": "Register me absent"
       },
-      "nbGvG": "Number of gvg participating",
+      "nbGvG": "Number of TW participating",
       "lastGvG": {
         "nodata": "Never participated",
-        "description": "Last gvg participated"
+        "description": "Last TW participated"
       },
-      "noinscription": "No registration for GvGs at the moment"
+      "noinscription": "No registration for TWs at the moment"
     },
 
     "error": {
@@ -153,8 +153,8 @@
       "class": "Class played",
       "influ": "Influence",
       "lvl": "Level",
-      "nbGvG": "GvG number",
-      "lastGvG": "Latest GvG"
+      "nbGvG": "TW number",
+      "lastGvG": "Latest TW"
     },
 
     "title": {
@@ -162,8 +162,8 @@
       "class": "Class played",
       "influ": "Influence",
       "lvl": "Level",
-      "nbGvG": "GvG participated/total",
-      "lastGvG": "Last GvG participated"
+      "nbGvG": "TW participated/total",
+      "lastGvG": "Last TW participated"
     }
   },
 
@@ -192,7 +192,7 @@
       "no_player": "No players have this unit"
     },
     "create_group": {
-      "title": "》 Creating GvG groups",
+      "title": "》 Creating TW groups",
       "listLegend": ["🔴 Unit not mastered", "🟡 Unit being mastered", "🟢 Unit mastered"],
       "add_group": "➕ Add a new group",
       "save_group": "💾 Save groups",
@@ -316,7 +316,7 @@
     "sections": [
       {
         "title": "About us",
-        "content": "<p>The best system for managing your GvG on Conqueror's Blade</p>"
+        "content": "<p>The best system for managing your Territory War on Conqueror's Blade</p>"
       },
       {
         "title": "Internal links",

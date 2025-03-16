@@ -21,5 +21,6 @@
     }
   },
 
+  "noperm": "the bot does not have permission for this interaction",
   "website": "Link to the website associated with the bot:\n${siteInternet}"
 }

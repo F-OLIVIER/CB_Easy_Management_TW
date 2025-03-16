@@ -36,8 +36,8 @@
         ["/level", "Mettre à jour le level de votre héros"],
         ["/influence", "Mettre à jour l'influence de votre héros"],
         ["/smarthone", "Génère un token de connexion pour l'application mobile"],
-        ["/reset_msg_gvg", "Reset manuel du message de réaction d'inscription GvG (gestionnaire uniquement)"],
-        ["/bot_activation", "Active ou désactive le message d'inscription au GvG (gestionnaire uniquement)"]
+        ["/reset_msg_tw", "Reset manuel du message de réaction d'inscription TW (gestionnaire uniquement)"],
+        ["/bot_activation", "Active ou désactive le message d'inscription au TW (gestionnaire uniquement)"]
       ],
       "images": ["img/description/bot/slashcommand.png", "img/description/bot/message_gvg_on.png", "img/description/bot/message_gvg_off.png", "img/description/bot/commanddata.png"]
     },
@@ -46,7 +46,7 @@
       "commands": [
         ["Nom de la maison", "Nom de la maison"],
         ["Langue", "Langue dans lesquel le bot Discord enverra les messages sur Discord"],
-        ["Channel du message d'inscription au GvG", "Chan Discord ou les utilisateurs vont s'inscrire (message avec les boutons de réaction)."],
+        ["Channel du message d'inscription au TW", "Chan Discord ou les utilisateurs vont s'inscrire (message avec les boutons de réaction)."],
         ["Channel utilisateur", "Chan Discord ou des messages d'information au utilisateur du bot s'afficheront (nouvelle unité ajoutée, etc.)."],
         ["Channel de gestion", "Chan Discord ou des messages d'information d'administration s'afficheront (utilisateur qui quitte le Discord et se retrouve supprimer de la base de données)."],
         ["Groupe utilisateur", "Groupe qui aura accès au site internet pour remplir leurs informations (caserne, lvl, etc.)."],
@@ -59,11 +59,11 @@
         ["Privé (utilisateur connecté)", "<span>Home (tableau de bord)</span><span>Fiche personnage</span><span>Caserne"],
         ["Privé (groupe gestionnaire)", "<span>Création des groupes</span><span>Statistiques</span><span>Gestion des casernes utilisateur</span>"]
       ],
-      "images": ["img/description/site/dashboard.png", "img/description/site/charactercard.png", "img/description/site/caserne.png", "img/description/site/groupgvg.png"]
+      "images": ["img/description/site/dashboard1.png", "img/description/site/dashboard2.png", "img/description/site/charactercard.png", "img/description/site/caserne.png", "img/description/site/groupgvg.png"]
     },
     {
       "title": "Application Mobile",
-      "commands": [["Privé (utilisateur connecté)", "<span>Page de connexion</span><span>Page d'inscription au GvG</span><span>Fiche personnage</span><span>Caserne</span>"]],
+      "commands": [["Privé (utilisateur connecté)", "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage</span><span>Caserne</span>"]],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],
@@ -83,7 +83,7 @@
     "characterChard": "Ma fiche personnage",
     "caserne": "Ma caserne",
     "zone_gestion": "Réservé aux gestionnaires",
-    "groupGvG": "Créer les groupes GvG",
+    "groupGvG": "Créer les groupes TW",
     "stat": "Statistique",
     "caserne_other": "Consulter une caserne",
     "zone_admin": "Réservé aux administrateurs",
@@ -113,22 +113,22 @@
     },
 
     "info_GvG": {
-      "title": "Informations GvG",
+      "title": "Informations TW",
       "inscripted": {
-        "nodata": "⁉️ Vous n'éte pas inscrit pour la prochaine GvG",
-        "present": "✅ Inscrit présent pour la prochaine GvG",
-        "absent": "❌ Inscrit absent pour la prochaine GvG"
+        "nodata": "⁉️ Vous n'éte pas inscrit pour la prochaine TW",
+        "present": "✅ Inscrit présent pour la prochaine TW",
+        "absent": "❌ Inscrit absent pour la prochaine TW"
       },
       "button": {
         "present": "M'inscrire présent",
         "absent": "M'inscrire absent"
       },
-      "nbGvG": "Nombre de gvg participé",
+      "nbGvG": "Nombre de TW participé",
       "lastGvG": {
         "nodata": "Jamais participé",
-        "description": "Derniére gvg participé"
+        "description": "Derniére TW participé"
       },
-      "noinscription": "Pas d'inscription pour les GvG actuellement"
+      "noinscription": "Pas d'inscription pour les TW actuellement"
     },
 
     "error": {
@@ -153,8 +153,8 @@
       "class": "Classe joué",
       "influ": "Influence",
       "lvl": "Level",
-      "nbGvG": "Nb GvG",
-      "lastGvG": "Derniére GvG"
+      "nbGvG": "Nb TW",
+      "lastGvG": "Derniére TW"
     },
 
     "title": {
@@ -162,8 +162,8 @@
       "class": "Classe joué",
       "influ": "Influence",
       "lvl": "Level",
-      "nbGvG": "GvG participé/total",
-      "lastGvG": "Dernière GvG participé"
+      "nbGvG": "TW participé/total",
+      "lastGvG": "Dernière TW participé"
     }
   },
 
@@ -192,7 +192,7 @@
       "no_player": "Aucun joueurs n'a cet unité"
     },
     "create_group": {
-      "title": "》 Création des groupes GvG",
+      "title": "》 Création des groupes TW",
       "listLegend": ["🔴 Unité non maitrisé", "🟡 Unité en cour de maitrise", "🟢 Unité maitrisé"],
       "add_group": "➕ Ajouter un groupe",
       "save_group": "💾 Sauvegarder les groupes",
@@ -316,7 +316,7 @@
     "sections": [
       {
         "title": "À propos",
-        "content": "<p>Le meilleur systéme pour gérer vos GvG sur Conqueror's Blade</p>"
+        "content": "<p>Le meilleur systéme pour gérer vos guerres de territoire sur Conqueror's Blade</p>"
       },
       {
         "title": "Liens interne",

@@ -110,7 +110,7 @@ export async function createCommands() {
 
       // Création de la commande '/resetmsggvg'
       {
-        name: "reset_msg_gvg",
+        name: "reset_msg_tw",
         description: "Manual reset of the GvG registration message (for managers only)",
       },
 
@@ -153,7 +153,7 @@ export async function createCommands() {
 export async function slashHelp(interaction) {
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
-  reponseUserInteraction(interaction, translate.help.join("\n"));
+  await reponseUserInteraction(interaction, translate.help.join("\n"));
   return true;
 }
 
@@ -163,7 +163,7 @@ export async function slashLevel(interaction) {
 
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
-  reponseUserInteraction(interaction, `${translate.information.lvl} : ${lvlnumber}`);
+  await reponseUserInteraction(interaction, `${translate.information.lvl} : ${lvlnumber}`);
   return true;
 }
 
@@ -173,7 +173,7 @@ export async function slashInflu(interaction) {
 
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
-  reponseUserInteraction(interaction, `${translate.information.influ} ${influnumber}`);
+  await reponseUserInteraction(interaction, `${translate.information.influ} ${influnumber}`);
   return true;
 }
 
@@ -231,9 +231,9 @@ export async function slashResetmsggvg(interaction) {
   if (houseData.Allumage == "0") {
     resetManuelMsgGvG(houseData);
     msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.resetmanuelmsggvg);
-    reponseUserInteraction(interaction, translate.gestion.resetmsggvg.ok);
+    await reponseUserInteraction(interaction, translate.gestion.resetmsggvg.ok);
   } else {
-    reponseUserInteraction(interaction, translate.gestion.resetmsggvg.notok);
+    await reponseUserInteraction(interaction, translate.gestion.resetmsggvg.notok);
   }
   return true;
 }
@@ -249,9 +249,9 @@ export async function botActivation(interaction) {
       await updateBotActivation(interaction.guildId, "0");
       await resetManuelMsgGvG(houseData);
       msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.updateBotActivation);
-      reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
+      await reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
     } else {
-      reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
+      await reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
     }
   }
 
@@ -261,9 +261,9 @@ export async function botActivation(interaction) {
       await updateBotActivation(interaction.guildId, "1");
       await noGvGReactMsgGvG(houseData);
       msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.updateBotActivation);
-      reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
+      await reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
     } else {
-      reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
+      await reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
     }
   }
 

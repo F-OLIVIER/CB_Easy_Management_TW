@@ -155,7 +155,7 @@ export async function slash_interaction(interaction) {
         config_1_language(interaction);
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, `${translate.global_config.config_exist[1]} <@${houseData.ID_Group_Officier}> ${translate.global_config.config_exist[2]}`);
+        await reponseUserInteraction(interaction, `${translate.global_config.config_exist[1]} <@${houseData.ID_Group_Officier}> ${translate.global_config.config_exist[2]}`);
       }
     } else {
       // Tous les utilisateurs peuvent effectué la configuration
@@ -178,11 +178,11 @@ export async function slash_interaction(interaction) {
         });
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noingroup);
+        await reponseUserInteraction(interaction, translate.global_config.noingroup);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
     }
     return true;
   }
@@ -196,7 +196,7 @@ export async function slash_interaction(interaction) {
       });
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
     }
     return true;
   }
@@ -208,11 +208,11 @@ export async function slash_interaction(interaction) {
         return await slashLevel(interaction);
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noingroup);
+        await reponseUserInteraction(interaction, translate.global_config.noingroup);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
       return true;
     }
   }
@@ -224,11 +224,11 @@ export async function slash_interaction(interaction) {
         return await slashInflu(interaction);
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noingroup);
+        await reponseUserInteraction(interaction, translate.global_config.noingroup);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
       return true;
     }
   }
@@ -240,11 +240,11 @@ export async function slash_interaction(interaction) {
         return await slashClass(interaction);
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noingroup);
+        await reponseUserInteraction(interaction, translate.global_config.noingroup);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
       return true;
     }
   }
@@ -252,7 +252,7 @@ export async function slash_interaction(interaction) {
   // interaction qui donne l'adresse du site internet associé au bot, Command /site
   if (interaction.commandName === "website") {
     const translate = await loadTranslations("global");
-    reponseUserInteraction(interaction, translate.website);
+    await reponseUserInteraction(interaction, translate.website);
     return true;
   }
 
@@ -265,7 +265,7 @@ export async function slash_interaction(interaction) {
         const translate = await loadTranslations(houseData.Langage);
 
         if (tokenapp == "") {
-          reponseUserInteraction(interaction, translate.information.smartphone.err);
+          await reponseUserInteraction(interaction, translate.information.smartphone.err);
         } else {
           await interaction.reply({
             content:
@@ -282,11 +282,11 @@ export async function slash_interaction(interaction) {
         }
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noingroup);
+        await reponseUserInteraction(interaction, translate.global_config.noingroup);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
     }
     return true;
   }
@@ -295,17 +295,17 @@ export async function slash_interaction(interaction) {
   // ---- Command Gestionnaire ----
   // ------------------------------
 
-  if (interaction.commandName === "reset_msg_gvg") {
+  if (interaction.commandName === "reset_msg_tw") {
     if (await houseExist(interaction.guildId)) {
       if (isOfficier(interaction.guildId, userId)) {
         return await slashResetmsggvg(interaction);
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noPermission);
+        await reponseUserInteraction(interaction, translate.global_config.noPermission);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
       return true;
     }
   }
@@ -316,11 +316,11 @@ export async function slash_interaction(interaction) {
         return await botActivation(interaction);
       } else {
         const translate = await loadTranslations("global");
-        reponseUserInteraction(interaction, translate.global_config.noPermission);
+        await reponseUserInteraction(interaction, translate.global_config.noPermission);
       }
     } else {
       const translate = await loadTranslations("global");
-      reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
       return true;
     }
   }
