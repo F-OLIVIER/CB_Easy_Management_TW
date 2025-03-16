@@ -12,20 +12,19 @@ import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
 export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) {
-  const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
   const chan = client.channels.cache.get(ID_Chan_GvG);
   if (!chan) {
     logToFile(`Chan ${ID_Chan_GvG} innexistant`, "errors_bot.log");
     return 0;
   }
-
   // Vérifie si le bot a la permission d'envoyer des messages et d'intégrer des liens
   if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
-    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_GvG}`, "errors_bot.log");
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans le chan ${ID_Chan_GvG} (initial_msgreactgvg)`, "errors_bot.log");
     return -1;
   }
-
+  
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
+  const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
   const sendMessage = await chan.send({
     files: [imageAttachment],
     content: "<@&" + ID_Group_Users + ">",
@@ -45,7 +44,7 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
     return;
   }
   if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
-    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_GvG} pour le serveur ${ID_Server}`, "errors_bot.log");
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_GvG} pour le serveur ${ID_Server} (msgreactgvg)`, "errors_bot.log");
     return;
   }
 
@@ -116,7 +115,7 @@ export async function noGvGReactMsgGvG(houseData) {
     return;
   }
   if (!chan.permissionsFor(client.user)?.has(["SendMessages", "AttachFiles", "EmbedLinks"])) {
-    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${houseData.ID_Chan_GvG} pour le serveur ${houseData.ID_Server}`, "errors_bot.log");
+    logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${houseData.ID_Chan_GvG} pour le serveur ${houseData.ID_Server} (noGvGReactMsgGvG)`, "errors_bot.log");
     return;
   }
 

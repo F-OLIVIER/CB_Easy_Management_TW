@@ -155,11 +155,17 @@ export async function config_finish(interaction) {
       houseData.ID_MessageGvG = db_houseData.ID_Chan_GvG;
     }
   }
+
   if (houseData.ID_MessageGvG == 0) {
     return;
   } else if (houseData.ID_MessageGvG == -1) {
     const translate = await loadTranslations("global");
-    await reponseUserInteraction(interaction, `${translate.noperm} (channel #${houseData.ID_Chan_GvG})`);
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${userId}>\n${translate.noperm} (channel #${houseData.ID_Chan_GvG})`,
+      flags: MessageFlags.Ephemeral,
+      components: [buttons],
+    });
     logToFile(`${translate.noperm} (channel #${houseData.ID_Chan_GvG})`);
     return;
   }
