@@ -75,10 +75,19 @@ async function new_class(content) {
 
 async function new_information(content) {
   const list_houses = await get_list_houses();
-  for (let index = 0; index < list_houses.length; index++) {
-    const house = list_houses[index];
-    msgChanDiscord(house.ID_Group_Users, house.ID_Chan_Users, content[house.Langage]);
-  }
+
+  // Envoi des messages en parallèle pour améliorer la rapidité
+  await Promise.all(
+    list_houses.map(async (house) => {
+      if (!content[house.Langage]) return; // Vérifie si la clé existe
+
+      // Remplacer les retours à la ligne par \n
+      const message = content[house.Langage].replace(/\r?\n/g, "\n");
+
+      // Envoi du message à Discord
+      await msgChanDiscord(house.ID_Group_Users, house.ID_Chan_Users, message);
+    })
+  );
 }
 
 // ------------------------------------------------------------
