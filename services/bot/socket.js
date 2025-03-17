@@ -13,14 +13,14 @@ const wss = new WebSocket.Server({ port: 8081 });
 
 export function socket() {
   wss.on("connection", (ws) => {
-    console.log("✅ Client WebSocket connecté !");
+    // console.log("✅ Client WebSocket connecté !");
+    logToFile("✅ Client WebSocket connecté !");
 
     ws.on("message", function incoming(message) {
       try {
         const jsonMessage = JSON.parse(message);
+        // console.log("jsonMessage : ", jsonMessage);
         logToFile(`Socket Message reçu : ${jsonMessage}`);
-
-        console.log("jsonMessage : ", jsonMessage);
 
         switch (jsonMessage.type) {
           case "newunit":
@@ -47,7 +47,8 @@ export function socket() {
     });
 
     ws.on("close", function close() {
-      console.log("❌ Client déconnecté !");
+      // console.log("❌ Client socket déconnecté !");
+      logToFile("❌ Client socket déconnecté !");
     });
   });
 }
@@ -82,7 +83,7 @@ async function new_information(content) {
       if (!content[house.Langage]) return; // Vérifie si la clé existe
 
       // Remplacer les retours à la ligne par \n
-      const message = content[house.Langage].replace(/\r?\n/g, "\n");
+      const message = content[house.Langage].replace(/\\n/g, "\n");
 
       // Envoi du message à Discord
       await msgChanDiscord(house.ID_Group_Users, house.ID_Chan_Users, message);
