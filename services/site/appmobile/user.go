@@ -4,7 +4,6 @@ import (
 	data "botgvg/internal"
 	utils "botgvg/middleware"
 	"database/sql"
-	"fmt"
 )
 
 func UserInfoApp(uuidApp string, database *sql.DB) (user_id, id_House, langage string, exist, officier bool) {
@@ -108,7 +107,6 @@ func UpdateCharacterApp(newUserInfo data.UserInfo, database *sql.DB) bool {
 		utils.CheckErr("1- Requete DB UpdateCharacterApp", errdb)
 		stmt1.QueryRow(newUserInfo.GameCharacter.EN).Scan(&newUserInfo.GameCharacter_ID)
 	} else {
-		fmt.Println("Erreur newUserInfo.GameCharacter_ID (UpdateCharacterApp)")
 		newUserInfo.GameCharacter_ID = 0
 	}
 

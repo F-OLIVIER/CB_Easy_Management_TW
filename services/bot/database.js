@@ -11,11 +11,6 @@ import { logToFile } from "./log.js";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
-// Utilisateur de test pour l'app mobile
-// INSERT INTO Users
-// (ID_House, DiscordID, DiscordName, DiscordBaseName, DiscordRole, DiscordPhoto, EtatInscription, userLangage, uuidApp,uuidAppUse)
-// VALUES (1, 0, 'user test', 'user test', 'Member', '', -1, 'en', 'code_user_test', 2);
-
 export async function CreateOrUpdateUser(data) {
   const db = await open({
     filename: adressdb,
