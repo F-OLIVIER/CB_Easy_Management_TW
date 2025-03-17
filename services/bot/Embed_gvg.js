@@ -24,7 +24,7 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
   }
 
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
-  const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
+  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner.webp");
   const sendMessage = await chan.send({
     files: [imageAttachment],
     content: "<@&" + ID_Group_Users + ">",
@@ -53,7 +53,7 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
     .then((message) => message.delete())
     .catch((error) => logToFile(`Message ${ID_MessageGvG} innexistant pour le serveur ${ID_Server} (msgreactgvg) :\n${error}`));
 
-  const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
+  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner.webp");
   // Génére le message et l'envoi sur discord
   const sendMessage = await chan.send({
     files: [imageAttachment],
@@ -83,7 +83,7 @@ export async function EmbedInscription(Langage, presents = [], absents = []) {
     .setTitle(":regional_indicator_g::regional_indicator_v::regional_indicator_g:")
     .setColor(13373715)
     .setDescription(translate.EmbedGvG.description)
-    .setThumbnail("https://i43.servimg.com/u/f43/15/76/70/95/poleax10.png")
+    .setThumbnail("https://easymanagementtw.fr/img/imgdiscord/heros_att.webp")
     .addFields(
       { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
       { name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__", value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit, inline: true },
@@ -128,12 +128,12 @@ export async function noGvGReactMsgGvG(houseData) {
 
   const translate = await loadTranslations(houseData.Langage);
 
-  const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
+  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner.webp");
   const embedData = new EmbedBuilder()
     .setTitle(":regional_indicator_g::regional_indicator_v::regional_indicator_g:")
     .setColor(13373715)
     .setDescription(translate.EmbedGvG.description_nogvg)
-    .setThumbnail("https://i43.servimg.com/u/f43/15/76/70/95/spear10.png");
+    .setThumbnail("https://easymanagementtw.fr/img/imgdiscord/heros_repos.webp");
 
   // Génére le message et l'envoi sur discord
   const sendMessage = await chan.send({
