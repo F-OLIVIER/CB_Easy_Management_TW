@@ -27,11 +27,11 @@
   "config": {
     "noperm": "Le bot n'a pas la permission d'envoyer des messages dans le chan",
     "avertissement": "Nous allons passer en revue toutes les informations nécessaires au bon fonctionnement des application de `Easy Management TW`.\nMerci de lire les explications sur le site internet avant de continuer, car vous avez éventuellement des paramétrages Discord à effectuer.\n\nLien des explications sur le site internet : ",
-    "ID_Chan_GvG": "**Chan Discord ou les utilisateurs vont s'inscrire.**",
-    "ID_Chan_Gestion": "**Chan Discord ou des messages d'information d'administration s'afficheront.**",
-    "ID_Chan_Users": "**Chan Discord ou des messages d'information au utilisateur du bot s'afficheront.**",
-    "ID_Group_Users": "**Groupe qui aura accès au site internet pour remplir leurs informations.**",
-    "ID_Group_Officier": "**Groupe qui aura accès à de l'administration du bot Discord.**",
+    "ID_Chan_GvG": "**Dans quel channel Discord les utilisateurs vont s'inscrire au TW ?**",
+    "ID_Chan_Gestion": "**Dans quel channel Discord des messages d'information aux gestionnaires des TW seront envoyé ?**",
+    "ID_Chan_Users": "**Dans quel channel Discord des messages d'information aux utilisateurs (gestionnaires et membres) seront envoyé ?**",
+    "ID_Group_Users": "**Quel groupe Discord (gestionnaires et membres) aura accès au site internet pour remplir leurs informations ?**",
+    "ID_Group_Officier": "**Quel groupe Discord (gestionnaires) aura accès à la gestion ? (création des groupes TW, etc.)**",
     "House_name": "Nom de la maison",
     "Config_finish": [
       "Vous avez terminé la configuration, vous pouvez à présent profiter de `Easy Management TW` !",
