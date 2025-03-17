@@ -6,15 +6,15 @@
     "Hello, brave hero",
     "I am Easy Management TW",
     "My main role is to manage sign-ups for territory wars (TW) in the game Conqueror's Blade.",
-    "To sign up for TW, simply reply \"présent\" or \"absent\" to the dedicated TW message. I will update it after each territory war.",
+    "To sign up for TW, simply reply `présent` or `absent` to the dedicated TW message. I will update it after each territory war.",
     "",
     "**Here is the list of user commands**",
     "* `/level` updates your hero's level.",
     "* `/influence` updates your hero's influence.",
     "* `/class` updates the weapon your hero plays.",
-    "* `/data`  displays your personal information.",
-    "* `/site`  displays the link to the associated website.",
-    "* `/smartphone`  generates a one-time-use token to log in to the mobile app.",
+    "* `/data` displays your personal information.",
+    "* `/website` displays the link to the website.",
+    "* `/smartphone` generates a one-time-use token to log in to the mobile app.",
     "",
     "**Here is the list of commands reserved for managers**",
     "* `/config` allows you to configure the house.",
@@ -49,7 +49,7 @@
       "- To collect your attendance figures for upcoming TWs (which I'll do directly on this Discord)",
       "- To collect your IG information. For example: barracks, level, etc. (something I'll do via the website or mobile app)",
       "",
-      "For more details, to get to know me and find out what I can do for you, you can use the `/visit` command."
+      "For more details, to get to know me and find out what I can do for you, you can use the `/help` command."
     ],
     "finish": "Congratulations :tada:\nInteraction complete, bot operational."
   },

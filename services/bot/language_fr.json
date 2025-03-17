@@ -6,14 +6,14 @@
     "Bonjour brave héros,",
     "Je suis **Easy Management TW**.",
     "Mon rôle principal est de gérer les inscriptions aux guerres de territoire (TW) pour le jeu **Conqueror's Blade**.",
-    "Pour **s'inscrire au TW**, il suffit de répondre \"présent\" ou \"absent\" sur le message dédié au TW. Je me charge de le changer après chaque guerre de territoire.",
+    "Pour **s'inscrire au TW**, il suffit de répondre `présent` ou `absent` sur le message dédié au TW. Je me charge de le changer après chaque guerre de territoire.",
     "",
     "**Voici la liste des commandes utilisateur**",
     "* `/level` permet de mettre à jour le niveau de ton héros.",
     "* `/influence` permet de mettre à jour l'influence de ton héros.",
     "* `/class` permet de mettre à jour l'arme jouée de ton héros.",
     "* `/data` permet de voir les informations te concernant.",
-    "* `/site` permet d'afficher le lien du site internet associé.",
+    "* `/website` permet d'afficher le lien du site internet.",
     "* `/smartphone` permet de générer un token à usage unique pour se connecter à l'application téléphone.",
     "",
     "**Voici la liste des commandes réservées aux gestionnaires**",
@@ -49,7 +49,7 @@
       "- Collecter vos présences pour les prochaines TW (chose que je ferais directement sur ce Discord)",
       "- Collecter vos informations IG. Par exemple : caserne, niveau, etc. (chose que je ferais via le site internet ou l'application mobile)",
       "",
-      "Pour plus de détail, faire connaissance avec moi et connaître les possibilités que je peux vous apporter, vous pouvez utiliser la commande `/visit`."
+      "Pour plus de détail, faire connaissance avec moi et connaître les possibilités que je peux vous apporter, vous pouvez utiliser la commande `/help`."
     ],
     "finish": "Félicitations :tada:\nInteraction terminée, bot opérationnel."
   },
