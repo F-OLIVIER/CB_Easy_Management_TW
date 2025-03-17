@@ -16,7 +16,7 @@ import {
   houseExist,
 } from "./config_house.js";
 import { botActivation, slashClass, slashHelp, slashInflu, slashLevel, slashResetmsggvg } from "./slashcommand.js";
-import { store_app_android, store_app_ios } from "./config.js";
+import { siteInternet, store_app_android, store_app_ios } from "./config.js";
 import { PlayerCreateOrUpdate } from "./FuncData.js";
 import { MAJinscription } from "./FuncRaid.js";
 import { genereTokenApp } from "./appMobile.js";
@@ -182,7 +182,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
     }
     return true;
   }
@@ -196,7 +196,7 @@ export async function slash_interaction(interaction) {
       });
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
     }
     return true;
   }
@@ -212,7 +212,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
       return true;
     }
   }
@@ -228,7 +228,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
       return true;
     }
   }
@@ -244,7 +244,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
       return true;
     }
   }
@@ -252,7 +252,7 @@ export async function slash_interaction(interaction) {
   // interaction qui donne l'adresse du site internet associé au bot, Command /site
   if (interaction.commandName === "website") {
     const translate = await loadTranslations("global");
-    await reponseUserInteraction(interaction, translate.website);
+    await reponseUserInteraction(interaction, `${translate.website}\n${siteInternet}`);
     return true;
   }
 
@@ -286,7 +286,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
     }
     return true;
   }
@@ -305,7 +305,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
       return true;
     }
   }
@@ -320,7 +320,7 @@ export async function slash_interaction(interaction) {
       }
     } else {
       const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, translate.global_config.botNotExist);
+      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
       return true;
     }
   }

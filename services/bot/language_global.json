@@ -12,7 +12,7 @@
 
   "global_config": {
     "__comment": "Si la configuration n'a pas encore été faite",
-    "botNotExist": "Impossible to use this command, you haven't configured the bot yet.\nUse the `/config` command to configure the bot.\n\nFor more information, visit the website: [URL ICI]",
+    "botNotExist": "Impossible to use this command, you haven't configured the bot yet.\nUse the `/config` command to configure the bot.\n\nFor more information, visit the website:",
     "noPermission": "You don't have the required permissions",
     "noingroup": "Sorry, you are not in one Discord groups authorised to use Easy Management TW bot.",
     "config_exist": {
@@ -22,5 +22,5 @@
   },
 
   "noperm": "the bot does not have permission for this interaction.",
-  "website": "Link to the website associated with the bot:\n${siteInternet}"
+  "website": "Link to the website associated with the bot:"
 }
