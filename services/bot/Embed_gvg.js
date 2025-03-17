@@ -22,7 +22,7 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
     logToFile(`Le bot n'a pas la permission d'envoyer des messages dans le chan ${ID_Chan_GvG} (initial_msgreactgvg)`, "errors_bot.log");
     return -1;
   }
-  
+
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
   const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
   const sendMessage = await chan.send({
@@ -48,10 +48,12 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
     return;
   }
 
-  await chan.messages.fetch(ID_MessageGvG).then((message) => message.delete());
+  await chan.messages
+    .fetch(ID_MessageGvG)
+    .then((message) => message.delete())
+    .catch((error) => logToFile(`Message ${ID_MessageGvG} innexistant pour le serveur ${ID_Server} (msgreactgvg) :\n${error}`));
 
   const imageAttachment = new AttachmentBuilder("https://i43.servimg.com/u/f43/15/76/70/95/gvg10.jpg");
-
   // Génére le message et l'envoi sur discord
   const sendMessage = await chan.send({
     files: [imageAttachment],
