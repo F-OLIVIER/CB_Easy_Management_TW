@@ -9,12 +9,17 @@ import (
 func UserInfoApp(uuidApp string, database *sql.DB) (user_id, id_House, langage string, exist, officier bool) {
 	if uuidApp != "" {
 		stmt, errdb := database.Prepare("SELECT ID, ID_House, DiscordRole, userLangage FROM Users WHERE uuidApp = ?")
+		defer stmt.Close()
 		utils.CheckErr("Requete DB UserInfoApp", errdb)
 		var DiscordRole string
 		// Vérifier si la requête renvoie une ligne
 		err := stmt.QueryRow(uuidApp).Scan(&user_id, &id_House, &DiscordRole, &langage)
 		// Si erreurs de requête (ex: aucune ligne n'est trouvée)
 		if err != nil {
+			if err == sql.ErrNoRows {
+				// Aucun utilisateur trouvé
+				return "", "", "", false, false
+			}
 			utils.CheckErr("Erreur lors du Scan de la requête UserInfoApp", err)
 			return "", "", "", false, false
 		}
