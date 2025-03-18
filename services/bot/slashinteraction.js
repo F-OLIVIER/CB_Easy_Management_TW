@@ -234,7 +234,7 @@ export async function slash_interaction(interaction) {
   }
 
   // interaction changement de classe, Command /classe
-  if (interaction.commandName === "classe") {
+  if (interaction.commandName === "class") {
     if (await houseExist(interaction.guildId)) {
       if (isMember(interaction.guildId, userId)) {
         return await slashClass(interaction);
