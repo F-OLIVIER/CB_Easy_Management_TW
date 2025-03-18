@@ -178,8 +178,7 @@ export async function slashInflu(interaction) {
 }
 
 export async function slashClass(interaction) {
-  const user_Info = await userInfo(interaction.user.id);
-  console.log('user_Info', user_Info);
+  const user_Info = await userInfo(interaction.guildId, interaction.user.id);
   const options = await cmdclass(user_Info.userLangage);
 
   const houseData = await get_houseData(interaction.guildId);

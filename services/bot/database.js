@@ -81,9 +81,9 @@ export async function userInfo(ServerID, user_id) {
                   ELSE Users.DateLastGvGParticiped_EN
               END AS DateLastGvGParticiped,  
               CASE
-                  WHEN Users.userLangage = 'fr' THEN COALESCE(ListGameCharacter.ClasseFR, 0)
-                  WHEN Users.userLangage = 'en' THEN COALESCE(ListGameCharacter.ClasseEN, 0)
-                  ELSE COALESCE(ListGameCharacter.ClasseEN, 0)
+                  WHEN Users.userLangage = 'fr' THEN COALESCE(ListGameCharacter.ClasseFR, '')
+                  WHEN Users.userLangage = 'en' THEN COALESCE(ListGameCharacter.ClasseEN, '')
+                  ELSE COALESCE(ListGameCharacter.ClasseEN, 'nodata')
               END AS Classe
         FROM Users
         LEFT JOIN ListGameCharacter ON ListGameCharacter.ID = Users.GameCharacter_ID
