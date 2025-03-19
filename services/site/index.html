@@ -3,7 +3,7 @@
   <head id="head">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <link rel="stylesheet" href="/css/index.css" type="text/css" />
     <link rel="stylesheet" href="/css/commun.css" type="text/css" />
 
@@ -11,67 +11,64 @@
     <title>E.M.TW</title>
 
     <!-- Meta Description (160 caractères max) -->
-    <meta name="description" lang="en" content="Manage your wars of conquest in Conqueror's Blade with Easy Management TW, a strategic and effective tool.">
-    <meta name="description" lang="fr" content="Gérez vos guerres de conquête dans Conqueror's Blade avec Easy Management TW, un outil stratégique et efficace.">
+    <meta name="description" lang="en" content="Manage your wars of conquest in Conqueror's Blade with Easy Management TW, a strategic and effective tool." />
+    <meta name="description" lang="fr" content="Gérez vos guerres de conquête dans Conqueror's Blade avec Easy Management TW, un outil stratégique et efficace." />
     <!-- Meta Keywords (obsolète pour Google mais utile pour d'autres moteurs) -->
-    <meta name="keywords" content="EMTW, Easy Management TW, conqueror's blade, territory war, guerre de territoire">
+    <meta name="keywords" content="EMTW, Easy Management TW, conqueror's blade, territory war, guerre de territoire" />
     <!-- Auteur -->
-    <meta name="author" content="OLIVIER Fabien">
+    <meta name="author" content="OLIVIER Fabien" />
     <!-- Robots (indexation et suivi des liens) -->
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow" />
     <!-- Canonical URL (évite le contenu dupliqué) -->
-    <link rel="canonical" href="https://easymanagementtw.fr">
+    <link rel="canonical" href="https://easymanagementtw.fr" />
     <!-- Open Graph (affichage Facebook, Discord et réseaux sociaux) -->
-    <meta property="og:title" content="Easy Management tw">
-    <meta property="og:description" content="Manage your wars of conquest in Conqueror's Blade with Easy Management TW, a strategic and effective tool.">
-    <meta property="og:image" content="https://easymanagementtw.fr/img/description/site/dashboard1.png">
-    <meta property="og:url" content="https://easymanagementtw.fr">
-    <meta property="og:type" content="website">
+    <meta property="og:title" content="Easy Management tw" />
+    <meta property="og:description" content="Manage your wars of conquest in Conqueror's Blade with Easy Management TW, a strategic and effective tool." />
+    <meta property="og:image" content="https://easymanagementtw.fr/img/description/site/dashboard1.png" />
+    <meta property="og:url" content="https://easymanagementtw.fr" />
+    <meta property="og:type" content="website" />
     <!-- Twitter Card (affichage Twitter) -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Easy Management TW">
-    <meta name="twitter:description" content="Manage your wars of conquest in Conqueror's Blade with Easy Management TW, a strategic and effective tool.">
-    <meta name="twitter:image" content="https://easymanagementtw.fr/img/description/site/dashboard1.png">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Easy Management TW" />
+    <meta name="twitter:description" content="Manage your wars of conquest in Conqueror's Blade with Easy Management TW, a strategic and effective tool." />
+    <meta name="twitter:image" content="https://easymanagementtw.fr/img/description/site/dashboard1.png" />
   </head>
 
-  <!--------------------------------------------------------------------->
-  <!-------------------------- BANDEAU EN TETE -------------------------->
-  <!--------------------------------------------------------------------->
-  <header>
-    <div class="bandeau">
-      <div class="bandeauHaut">
-        <a id="logoheader" class="logoheader" href="/" title="Home / Accueil">
-          <img src="img/Logo_EMTW.webp" alt="Logo de l'application">
-        </a>
-        <p class="Title">Easy Management TW</p>
-        <div class="language-selector">
-          <select id="lang-select">
-            <option value="en">🇬🇧 English</option>
-            <option value="fr">🇫🇷 Français</option>
-          </select>
-        </div>
-        
-        <div id="user"></div>
-        <div id="headerdivuser" class="headerdivuser">
+  <body>
+    <header>
+      <!--------------------------------------------------------------------->
+      <!-------------------------- BANDEAU EN TETE -------------------------->
+      <!--------------------------------------------------------------------->
+      <div class="bandeau">
+        <div class="bandeauHaut">
+          <a id="logoheader" class="logoheader" href="/" title="Home / Accueil">
+            <img src="img/Logo_EMTW.webp" alt="Logo de l'application" />
+          </a>
+          <p class="Title">Easy Management TW</p>
+          <div class="language-selector">
+            <select id="lang-select">
+              <option value="en">🇬🇧 English</option>
+              <option value="fr">🇫🇷 Français</option>
+            </select>
+          </div>
+
+          <div id="user"></div>
+          <div id="headerdivuser" class="headerdivuser">
             <div></div>
             <div id="disconnect"></div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="sousBandeau"></div>
-  <header>
+      <div class="sousBandeau"></div>
+    </header>
 
-  <!--------------------------------------------------------------------->
-  <!------------------------- CONTENU DE LA PAGE ------------------------>
-  <!--------------------------------------------------------------------->
-  <body>
-    <div id="Container" class="body"></div>
+    <main>
+      <!--------------------------------------------------------------------->
+      <!------------------------- CONTENU DE LA PAGE ------------------------>
+      <!--------------------------------------------------------------------->
+      <div id="Container" class="main"></div>
+    </main>
   </body>
 
   <script type="module" src="/js/main.js"></script>
-
-  <!--------------------------------------------------------------------->
-  <!---------------------------- PIED DE PAGE --------------------------->
-  <!--------------------------------------------------------------------->
-  <footer id ="footer"></footer>
 </html>
