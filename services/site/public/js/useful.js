@@ -189,35 +189,37 @@ export async function confirmwindows(message) {
 }
 
 function createFooter(translate) {
-  // Créer l'élément footer
-  const footer = document.createElement("footer");
-  footer.id = "footer";
+  if (!document.getElementById("footer")) {
+    // Créer l'élément footer
+    const footer = document.createElement("footer");
+    footer.id = "footer";
 
-  // Créer le conteneur du footer
-  const footerContainer = document.createElement("div");
-  footerContainer.className = "footer-container";
+    // Créer le conteneur du footer
+    const footerContainer = document.createElement("div");
+    footerContainer.className = "footer-container";
 
-  translate.footer.sections.forEach((section) => {
-    const footerSection = document.createElement("div");
-    footerSection.className = "footer-section";
+    translate.footer.sections.forEach((section) => {
+      const footerSection = document.createElement("div");
+      footerSection.className = "footer-section";
 
-    const h4 = document.createElement("h4");
-    h4.textContent = section.title;
-    footerSection.appendChild(h4);
+      const h4 = document.createElement("h4");
+      h4.textContent = section.title;
+      footerSection.appendChild(h4);
 
-    footerSection.innerHTML += section.content;
-    footerContainer.appendChild(footerSection);
-  });
+      footerSection.innerHTML += section.content;
+      footerContainer.appendChild(footerSection);
+    });
 
-  // Créer la partie inférieure du footer
-  const footerBottom = document.createElement("div");
-  footerBottom.className = "footer-bottom";
-  footerBottom.innerHTML = translate.footer.bottom;
+    // Créer la partie inférieure du footer
+    const footerBottom = document.createElement("div");
+    footerBottom.className = "footer-bottom";
+    footerBottom.innerHTML = translate.footer.bottom;
 
-  // Ajouter les éléments au footer
-  footer.appendChild(footerContainer);
-  footer.appendChild(footerBottom);
+    // Ajouter les éléments au footer
+    footer.appendChild(footerContainer);
+    footer.appendChild(footerBottom);
 
-  // Ajouter le footer au document
-  document.body.appendChild(footer);
+    // Ajouter le footer au document
+    document.body.appendChild(footer);
+  }
 }
