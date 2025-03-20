@@ -856,7 +856,8 @@
 
 .divuser select {
   width: calc((100% - 35px) / 5);
-  height: 40px;
+  height: auto;
+  min-height: 40px;
   margin: 5px;
   padding: 2px;
   text-align: left;
