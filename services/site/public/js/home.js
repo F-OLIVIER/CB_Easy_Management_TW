@@ -33,9 +33,9 @@ function containerhome(data, translate) {
   let containerhouses = createHTMLElement("div", "containerhouses");
   let titlehouses = document.createElement("h1");
   if (data.House.length == 1) {
-    titlehouses.textContent = translate.home.houses[1];
+    titlehouses.textContent = translate.home.houses.one;
   } else {
-    titlehouses.textContent = translate.home.houses[2];
+    titlehouses.textContent = translate.home.houses.two;
   }
   containerhouses.appendChild(titlehouses);
 

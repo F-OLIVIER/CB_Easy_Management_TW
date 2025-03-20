@@ -86,8 +86,8 @@
 
   "home": {
     "houses": {
-      "1": "Ma Maison",
-      "2": "Mes Maisons",
+      "one": "Ma Maison",
+      "two": "Mes Maisons",
       "button": "Selectionner"
     },
     "characterChard": "Ma fiche personnage",
