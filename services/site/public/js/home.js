@@ -66,7 +66,12 @@ function containerhome(data, translate) {
       // Ajout de l'event listener
       buttonselecthouse.addEventListener("click", async () => {
         localStorage.setItem("user_house", current_house.Discord);
-        home();
+        let language = localStorage.getItem("selectedLang") || "en";
+        if (data.UserInfo.Language) {
+          language = data.UserInfo.Language;
+        }
+        const newtranslate = await loadTranslate(language);
+        containerhome(data, newtranslate);
       });
     }
 
