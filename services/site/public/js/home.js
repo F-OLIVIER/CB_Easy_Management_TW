@@ -64,9 +64,9 @@ function containerhome(data, translate) {
       zonetexthouse.appendChild(buttonselecthouse);
 
       // Ajout de l'event listener
-      buttonselecthouse.addEventListener("click", () => {
+      buttonselecthouse.addEventListener("click", async () => {
         localStorage.setItem("user_house", current_house.Discord);
-        containerhome(data);
+        home();
       });
     }
 
