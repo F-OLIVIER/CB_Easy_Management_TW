@@ -339,7 +339,7 @@ async function config_house_db(houseData, exist_id_house) {
 
   try {
     if (exist_id_house == 0) {
-      // Création de maison dans la table Houses
+      // Création de maison dans la table Houses car par d'ID trouvé
       const insertQuery_Houses = `INSERT INTO Houses 
         (House_name, House_logo, Langage, ID_Server, ID_Group_Users, ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, ID_MessageGvG) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
