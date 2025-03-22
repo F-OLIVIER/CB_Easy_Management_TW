@@ -103,9 +103,9 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 			}
 
 			username_ID := 0
-			stmtUsers, errdb := database.Prepare("SELECT ID FROM Users WHERE DiscordName = ?")
+			stmtUsers, errdb := database.Prepare("SELECT ID FROM Users WHERE DiscordName = ? AND ID_House = ?")
 			CheckErr("1- Requete DB SaveCreateGroup", errdb)
-			stmtUsers.QueryRow(currentline.UserToSave[0]).Scan(&username_ID)
+			stmtUsers.QueryRow(currentline.UserToSave[0]).Scan(&username_ID, id_House)
 
 			if username_ID != 0 {
 				groupNumber := strings.Replace(currentline.NameGroup, "group", "", 1)
