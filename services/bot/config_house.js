@@ -181,7 +181,7 @@ export async function config_finish(interaction) {
   let houseData = interactionsCache.get(userId);
   houseData.House_name = interaction.fields.getTextInputValue("House_name");
 
-  const exist_id_house = await get_ID_House(houseData);
+  const exist_id_house = await get_ID_House(houseData.ID_Server);
 
   if (exist_id_house == 0) {
     // Création du message GvG initial
@@ -232,11 +232,19 @@ export async function config_finish(interaction) {
   );
   // Reponse à l'utilisateur
   await interaction.deleteReply();
-  await interaction.followUp({
-    content: "<@" + userId + ">\n" + translate.config.Config_finish.join("\n"),
-    flags: MessageFlags.Ephemeral,
-    components: [buttons],
-  });
+  if (exist_id_house == 0) {
+    await interaction.followUp({
+      content: `<@${userId}>\n${translate.config.Config_finish.join("\n")}`,
+      flags: MessageFlags.Ephemeral,
+      components: [buttons],
+    });
+  } else {
+    await interaction.followUp({
+      content: `<@${userId}>\n${translate.config.Config_modif}`,
+      flags: MessageFlags.Ephemeral,
+      components: [buttons],
+    });
+  }
 }
 
 export async function config_finish_yes(interaction) {
@@ -376,6 +384,7 @@ async function config_house_db(houseData, exist_id_house) {
                                     ID_Chan_Users = ?, 
                                     ID_MessageGvG = ?
                                   WHERE ID = ?;`;
+
       await db.run(updateQuery_house, [
         houseData.House_name,
         houseData.House_logo,

@@ -40,6 +40,7 @@
       "",
       "Would you like me to send them a message in the user channel to let them know?`"
     ],
+    "Config_modif": "The configuration was successfully modified.",
     "Welcome_msg": [
       "Hello everyone,",
       "I'm pleased to meet you.",

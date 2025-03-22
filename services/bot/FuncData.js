@@ -4,6 +4,8 @@ import { deleteHouse, get_ID_House, list_ID_house } from "./config_house.js";
 import { client } from "./Constant.js";
 import { logToFile } from "./log.js";
 
+// module nodejs et npm
+
 // Check l'ensemble des utilisateur (pour le demarrage du bot Discord, mise à jour aprés un arret server)
 export async function checkAllUser() {
   const list_discord_server = await list_ID_house();

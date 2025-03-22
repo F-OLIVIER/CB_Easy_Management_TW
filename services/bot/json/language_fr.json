@@ -40,6 +40,7 @@
       "",
       "Souhaitez-vous que j'envoie un message dans le canal utilisateur pour les prévenir ?"
     ],
+    "Config_modif": "La configuration a bien été modifiée avec succès.",
     "Welcome_msg": [
       "Bonjour à tous,",
       "Enchanté de faire votre connaissance",

@@ -1,10 +1,10 @@
-// fichier annexe
-import { siteInternet, store_app_android, store_app_ios } from "./config.js";
+// fichiers annexe
 
+// module nodejs et npm
 import { readFile } from "fs/promises";
 
 export async function loadTranslations(language) {
-  const data = await readFile(new URL(`./language_${language}.json`, import.meta.url), "utf8");
+  const data = await readFile(new URL(`./json/language_${language}.json`, import.meta.url), "utf8");
   return JSON.parse(data);
 }
 
