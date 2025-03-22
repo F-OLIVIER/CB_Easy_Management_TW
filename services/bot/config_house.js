@@ -238,12 +238,14 @@ export async function config_finish(interaction) {
       flags: MessageFlags.Ephemeral,
       components: [buttons],
     });
+    msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, `<@${userId}> ${translate.config.user_create_config}`);
   } else {
     await interaction.followUp({
       content: `<@${userId}>\n${translate.config.Config_modif}`,
       flags: MessageFlags.Ephemeral,
-      components: [buttons],
+      components: [],
     });
+    msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, `<@${userId}> ${translate.config.user_modif_config}`);
   }
 }
 
@@ -398,6 +400,7 @@ async function config_house_db(houseData, exist_id_house) {
         exist_id_house,
       ]);
     }
+    logToFile(`Modification de la maison ${houseData.House_name} (${houseData.ID_Server})`);
   } finally {
     await db.close();
   }
@@ -511,21 +514,6 @@ async function createGroupsTable(insertedID, db) {
     throw err;
   }
 }
-
-// houseData :  {
-//     ID: 1
-//     House_name: 'Nom Maison',
-//     House_logo: 'https://cdn.discordapp.com/icons/674215425546125323/b56b1f27a7c977693bfde3aa9f2d0599.webp',
-//     Langage: 'fr',
-//     ID_Server: '674215425546125323',
-//     ID_Group_Users: '1223899873196113991',
-//     ID_Group_Officier: '1223899873196113991',
-//     ID_Chan_GvG: '1111983569900929024',
-//     ID_Chan_Gestion: '674275684364845057',
-//     ID_Chan_Users: '674275684364845057',
-//     Allumage: 0
-//     ID_MessageGvG: '1342862281611939850'
-//   }
 
 export async function get_houseData(ID_Server) {
   const db = await open({
