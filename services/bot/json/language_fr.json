@@ -41,6 +41,8 @@
       "Souhaitez-vous que j'envoie un message dans le canal utilisateur pour les prévenir ?"
     ],
     "Config_modif": "La configuration a bien été modifiée avec succès.",
+    "user_create_config": "a créé ma configuration pour le Discord.",
+    "user_modif_config": "à modifié ma configuration pour le Discord.",
     "Welcome_msg": [
       "Bonjour à tous,",
       "Enchanté de faire votre connaissance",

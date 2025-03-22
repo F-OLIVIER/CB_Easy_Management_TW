@@ -41,6 +41,8 @@
       "Would you like me to send them a message in the user channel to let them know?`"
     ],
     "Config_modif": "The configuration was successfully modified.",
+    "user_create_config": "created my configuration for the Discord.",
+    "user_modif_config": "has modified my configuration for the Discord.",
     "Welcome_msg": [
       "Hello everyone,",
       "I'm pleased to meet you.",
