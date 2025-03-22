@@ -3,6 +3,8 @@
 ***.env
 ***package-lock.json
 ***mail dev.txt
+user_test.md
+pare_feu.md
 
 # fichier build
 ***main
@@ -17,7 +19,6 @@ file_config
 ***/logs
 ***app.log
 ***/app_mobile.old
-***/images
 # Pour l'application mobile
 
 clean_ram.md
@@ -99,7 +100,6 @@ analysis_benchmark.json
 .pub-cache/
 .pub/
 build/
-flutter_*.png
 linked_*.ds
 unlinked.ds
 unlinked_spec.ds

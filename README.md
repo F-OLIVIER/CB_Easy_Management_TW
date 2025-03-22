@@ -2,19 +2,19 @@
 
 ## 📝 Descriptif
 
-Le projet permet de gérer de façon automatisée les inscriptions aux Guildes versus Guilde (GvG) des joueurs pour le jeu [Conqueror's Blade](https://www.conquerorsblade.com) et la préparation des batailles en créant les groupes à l'avance avec les informations nécessaires pour optimiser les groupes.<br>
+Le projet permet de gérer de façon automatisée les inscriptions aux guerre de territoire (TW) des joueurs pour le jeu [Conqueror's Blade](https://www.conquerorsblade.com) et la préparation des batailles en créant les groupes à l'avance avec les informations nécessaires pour optimiser les groupes.<br>
 Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un site internet et une application mobile (Android), les 3 applications ont en commum une base de données SQL.
 
-Deux langues sont prise en charge, le Français et l'anglais.
+Deux langues sont prise en charge, le Français et l'Anglais.
 
 **Accès à la plateforme**
-- Le site internet est disponible a l'adresse suivante : `a venir` (en cour de deploiement)
-- Le bot discord pourra être inviter sur votre Discord directement depuis le site internet.
-- L'application mobile est en phase de test sur le Google play store sous le nom `Easy Management GvG` (en cour de deploiement)
+- Le site internet est disponible a l'adresse suivante : <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
+- Le bot discord peut être inviter sur votre Discord directement depuis le site internet a l'adresse <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
+- L'application mobile est en phase de test sur le Google play store sous le nom `Easy Management TW` (en cour de deploiement)
 
 
 **Partie 1 : le bot Discord** <br>
-Le bot Discord permet aux utilisateurs de s'inscrire via Discord. Les informations d'inscription des joueurs sont enregistré dans la base de donnée SQL, les joueurs peuvent ainsi donner la plupart des informations nécessaires à la préparation des GvG.<br>
+Le bot Discord permet aux utilisateurs de s'inscrire via Discord. Les informations d'inscription des joueurs sont enregistré dans la base de donnée SQL, les joueurs peuvent ainsi donner la plupart des informations nécessaires à la préparation des TW.<br>
 Les commandes sont enregistrées en tant que "Slash Command" Discord et sont accessibles avec une description aux utilisateurs directement sur Discord.
 
 <table align= "center" width="95%">
@@ -30,11 +30,24 @@ Les commandes sont enregistrées en tant que "Slash Command" Discord et sont acc
     </tbody>
 </table>
 
+__Les permissions utilisé par l'application Discord sont :__
+| **Action**                            | **Permission Discord**         |
+|--------------------------------------|--------------------------------|
+| Se connecter                         | `Connect`                      |
+| Envoyer des messages                 | `SendMessages`                 |
+| Gérer les messages                   | `ManageMessages`               |
+| Voir les anciens messages            | `ReadMessageHistory`           |
+| Joindre des fichiers                 | `AttachFiles`                  |
+| Intégrer des liens                   | `EmbedLinks`                   |
+| Voir les logs du serveur             | `ViewAuditLog`                 |
+| Utiliser les commandes de l'application | `UseApplicationCommands`     |
+
+
 **Partie 2 : le site internet** <br>
 Seul les utilisateurs presents sur le Discord associé peuvent se connecté au site internet. Les roles Discord permettent de gérer automatiquement les accées privilégier ou non au site.
 Les utilisateurs peuvent indiqué la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
 
-Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose pas un simple utilisateur, ils peuvent créer les groupes GvG, ils accèdent également à une page de statistique des informations contenu dans la base de donnée.
+Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose pas un simple utilisateur, ils peuvent créer les groupes TW, ils accèdent également à une page de statistique des informations contenu dans la base de donnée.
 
 <table align= "center" width="95%">
     <tbody>
