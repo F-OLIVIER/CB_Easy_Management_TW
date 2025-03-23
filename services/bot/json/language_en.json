@@ -18,7 +18,7 @@
     "",
     "**Here is the list of commands reserved for managers**",
     "* `/config` allows you to configure the house.",
-    "* `/bot_activation` enables (on option) or disables (off option) the TW sign-up message to avoid unnecessary pings.",
+    "* `/activation_msg_tw` enables (on option) or disables (off option) the TW sign-up message to avoid unnecessary pings.",
     "* `/reset_msg_tw` allows you to manually reset the TW sign-up message in case of a reset bug.",
     "",
     "May glory be in your wake!"

@@ -18,7 +18,7 @@
     "",
     "**Voici la liste des commandes réservées aux gestionnaires**",
     "* `/config` permet de configurer la maison.",
-    "* `/bot_activation` permet d'activer (option `on`) ou de désactiver (option `off`) le message d'inscription au TW afin d'éviter des pings inutiles.",
+    "* `/activation_msg_tw` permet d'activer (option `on`) ou de désactiver (option `off`) le message d'inscription au TW afin d'éviter des pings inutiles.",
     "* `/reset_msg_tw` permet, en cas de bug du reset du message d'inscription au TW, de le faire manuellement.",
     "",
     "Que la gloire soit dans ton sillage !"
