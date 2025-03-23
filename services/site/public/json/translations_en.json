@@ -1,12 +1,6 @@
 {
   "commun": {
-    "disconnected": "Disconnecting",
-    "no_unit": "Unit not unlocked",
-    "listoption_maitrise": [
-      ["0", "Mastery not started", "red"],
-      ["1", "Mastery in progress", "orange"],
-      ["2", "Complete mastery", "green"]
-    ]
+    "disconnected": "Disconnecting"
   },
 
   "descriptionIntro": {
@@ -151,6 +145,14 @@
   "caserne": {
     "consulcaserne": "Select the barrack of the player you wish to see",
     "select": "Select",
+    "influence": "Influence",
+    "level": "level",
+    "listoption_maitrise": [
+      ["0", "Mastery not started", "red"],
+      ["1", "Mastery in progress", "orange"],
+      ["2", "Complete mastery", "green"]
+    ],
+    "nodata": "Unit not unlocked",
     "buttonconsul": "Updating the barrack",
     "avertissement": "Remember to save your fire station by clicking on the \"Updating my barrack\" button at the bottom of the page.",
     "button": "Updating my barrack"

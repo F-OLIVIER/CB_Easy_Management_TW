@@ -88,9 +88,9 @@ function containerconsulcaserne(data, translate) {
         listUnitCav.style.display = "none";
 
         // ajout des unités dans un certain ordre
-        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T5", translate, data.UserInfo.Language);
-        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T4", translate, data.UserInfo.Language);
-        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T3", translate, data.UserInfo.Language);
+        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T5", translate, data.UserInfo.Language, translate);
+        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T4", translate, data.UserInfo.Language, translate);
+        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T3", translate, data.UserInfo.Language, translate);
 
         divInfanterie.appendChild(TitleDivInfanterie);
         divInfanterie.appendChild(listUnitInfanterie);
@@ -185,7 +185,7 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
       name.textContent = Currentunit.Unit_name[Language];
       unit.appendChild(name);
       let info = document.createElement("div");
-      info.textContent = "Influence : " + Currentunit.Unit_influence + " (" + Currentunit.Unit_tier + ")";
+      info.textContent = translate.caserne.influence + " : " + Currentunit.Unit_influence + " (" + Currentunit.Unit_tier + ")";
       unit.appendChild(info);
       let selecctlvl = document.createElement("select");
       selecctlvl.className = "selecctLevelCaserne";
@@ -194,13 +194,13 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
       let defaultoption = document.createElement("option");
       defaultoption.value = "";
       if (Currentunit.Unit_lvl == Currentunit.Unit_lvlMax) {
-        defaultoption.text = "level " + Currentunit.Unit_lvl;
+        defaultoption.text = translate.caserne.level + " " + Currentunit.Unit_lvl;
         selecctlvl.style.backgroundColor = "green";
       } else if (Currentunit.Unit_lvl != "0") {
-        defaultoption.text = "level " + Currentunit.Unit_lvl;
+        defaultoption.text = translate.caserne.level + " " + Currentunit.Unit_lvl;
         selecctlvl.style.backgroundColor = "orange";
       } else {
-        defaultoption.text = translate.commun.no_unit;
+        defaultoption.text = translate.caserne.nodata;
         selecctlvl.style.backgroundColor = "red";
       }
       selecctlvl.style.borderRadius = "15px";
@@ -209,21 +209,23 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
       if (Currentunit.Unit_lvl != "0") {
         let optionAbsent = document.createElement("option");
         optionAbsent.value = -1;
-        optionAbsent.text = translate.commun.no_unit;
+        optionAbsent.text = translate.caserne.nodata;
         optionAbsent.style.backgroundColor = "red";
         selecctlvl.appendChild(optionAbsent);
       }
       for (let j = 1; j <= Currentunit.Unit_lvlMax; j++) {
-        let option = document.createElement("option");
-        option.value = j;
-        option.text = "level " + j;
-        if (j < Currentunit.Unit_lvlMax) {
-          option.style.backgroundColor = "orange";
-        } else {
-          option.style.backgroundColor = "green";
-        }
+        if (j % 5 == 0 || j == Currentunit.Unit_lvlMax) {
+          let option = document.createElement("option");
+          option.value = j;
+          option.text = translate.caserne.level + " " + j;
+          if (j < Currentunit.Unit_lvlMax) {
+            option.style.backgroundColor = "orange";
+          } else {
+            option.style.backgroundColor = "green";
+          }
 
-        selecctlvl.appendChild(option);
+          selecctlvl.appendChild(option);
+        }
       }
       unit.appendChild(selecctlvl);
 
@@ -239,8 +241,8 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
         let defaultoption = document.createElement("option");
         selecctMaitrise.appendChild(defaultoption);
 
-        for (let i = 0; i < translate.commun.listoption_maitrise.length; i++) {
-          const element = translate.commun.listoption_maitrise[i];
+        for (let i = 0; i < translate.caserne.listoption_maitrise.length; i++) {
+          const element = translate.caserne.listoption_maitrise[i];
           if (Currentunit.UserMaitrise == element[0]) {
             // ne maitrise pas
             defaultoption.text = element[1];
@@ -249,8 +251,8 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
             selecctMaitrise.style.backgroundColor = element[2];
           } else {
             if (i === 0 && Currentunit.UserMaitrise == "") {
-              defaultoption.text = translate.commun.listoption_maitrise[0][1];
-              defaultoption.value = translate.commun.listoption_maitrise[0][0];
+              defaultoption.text = translate.caserne.listoption_maitrise[0][1];
+              defaultoption.value = translate.caserne.listoption_maitrise[0][0];
               selecctMaitrise.style.backgroundColor = element[2];
             } else {
               let option = document.createElement("option");

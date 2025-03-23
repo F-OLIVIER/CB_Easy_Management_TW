@@ -1,12 +1,6 @@
 {
   "commun": {
-    "disconnected": "Se déconnecter",
-    "no_unit": "Unité non débloqué",
-    "listoption_maitrise": [
-      ["0", "Maîtrise non démarré", "red"],
-      ["1", "Maitrise en cours", "orange"],
-      ["2", "Maitrise compléte", "green"]
-    ]
+    "disconnected": "Se déconnecter"
   },
 
   "descriptionIntro": {
@@ -151,6 +145,14 @@
   "caserne": {
     "consulcaserne": "Selectionner la caserne du joueur que vous souhaitez voir",
     "select": "Choisissez",
+    "influence": "Influence",
+    "level": "level",
+    "listoption_maitrise": [
+      ["0", "Maîtrise non démarré", "red"],
+      ["1", "Maitrise en cours", "orange"],
+      ["2", "Maitrise compléte", "green"]
+    ],
+    "nodata": "Unité non débloqué",
     "buttonconsul": "Mettre à jour la caserne",
     "avertissement": "Pensez à sauvegarder votre caserne en cliquant sur le bouton \"Mettre à jour ma caserne\" en bas de page",
     "button": "Mettre à jour ma caserne"
