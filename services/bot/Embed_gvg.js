@@ -80,7 +80,7 @@ export async function EmbedInscription(Langage, presents = [], absents = []) {
   const translate = await loadTranslations(Langage);
 
   const embedData = new EmbedBuilder()
-    .setTitle(":regional_indicator_g::regional_indicator_v::regional_indicator_g:")
+    .setTitle(translate.EmbedGvG.title)
     .setColor(13373715)
     .setDescription(translate.EmbedGvG.description)
     .setThumbnail("https://easymanagementtw.fr/img/imgdiscord/heros_att.webp")
@@ -121,16 +121,17 @@ export async function noGvGReactMsgGvG(houseData) {
     return;
   }
 
-  await client.channels.cache
-    .get(houseData.ID_Chan_GvG)
-    .messages.fetch(houseData.ID_MessageGvG)
-    .then((message) => message.delete());
+  const message = await chan.messages.fetch(houseData.ID_MessageGvG);
+  if (message) {
+    await message.delete();
+  }
+
 
   const translate = await loadTranslations(houseData.Langage);
 
-  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner.webp");
+  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner_notw.webp");
   const embedData = new EmbedBuilder()
-    .setTitle(":regional_indicator_g::regional_indicator_v::regional_indicator_g:")
+    .setTitle(translate.EmbedGvG.title)
     .setColor(13373715)
     .setDescription(translate.EmbedGvG.description_nogvg)
     .setThumbnail("https://easymanagementtw.fr/img/imgdiscord/heros_repos.webp");

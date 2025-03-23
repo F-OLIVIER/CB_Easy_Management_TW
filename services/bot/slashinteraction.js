@@ -310,7 +310,7 @@ export async function slash_interaction(interaction) {
     }
   }
 
-  if (interaction.commandName === "bot_activation") {
+  if (interaction.commandName === "activation_msg_tw") {
     if (await houseExist(interaction.guildId)) {
       if (isOfficier(interaction.guildId, userId)) {
         return await botActivation(interaction);

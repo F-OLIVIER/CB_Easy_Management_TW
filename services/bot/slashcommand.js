@@ -114,13 +114,13 @@ export async function createCommands() {
         description: "Manual reset of the GvG registration message (for managers only)",
       },
 
-      // Création de la commande '/manager_bot_activation'
+      // Création de la commande '/activation_msg_tw'
       {
-        name: "bot_activation",
+        name: "activation_msg_tw",
         description: "Enable or disable GvG registration message (for managers only)",
         options: [
           {
-            name: "option_bot_activation",
+            name: "option_msg_tw",
             description: "Choose an option",
             type: 3, // 3 correspond à une option de type chaîne de texte
             required: true,
@@ -239,7 +239,7 @@ export async function slashResetmsggvg(interaction) {
 }
 
 export async function botActivation(interaction) {
-  const option = interaction.options.getString("option_bot_activation");
+  const option = interaction.options.getString("option_msg_tw");
   const houseData = await get_houseData(interaction.guildId);
   const translate = await loadTranslations(houseData.Langage);
 
