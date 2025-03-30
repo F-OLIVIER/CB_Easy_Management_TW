@@ -46,6 +46,7 @@ type ScearchUserInfo struct {
 	ID_House     string
 	Gestionnaire bool
 	Admin        bool
+	Owner        bool
 }
 
 type Gestion struct {
@@ -108,6 +109,7 @@ type SendHTML struct {
 	NameGroupGvG   map[int]string
 	Screen         []Screen
 	House          []Houses
+	Statistique    Stat
 }
 
 type Houses struct {
@@ -151,4 +153,9 @@ type Screen struct {
 type SocketMessage struct {
 	Type    string            `json:"type"`
 	Content map[string]string `json:"content"`
+}
+
+type Stat struct {
+	Houses   []Houses `json:"Houses"`
+	Nb_Table string   `json:"Nb_Table"`
 }

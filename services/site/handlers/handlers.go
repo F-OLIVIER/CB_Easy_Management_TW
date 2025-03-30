@@ -342,6 +342,9 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 						sendHTML.ListInscripted = utils.SendStatGvG(database)
 						gestion.ListUnitType = utils.ListUnitType(database)
+						if currentUser.Owner {
+							sendHTML.Statistique = utils.Stat_db(database)
+						}
 					}
 				}
 				sendHTML.Gestion = *gestion

@@ -25,6 +25,58 @@ function containerAppAdmin(data, translate) {
   const subContainer = createHTMLElement("div", "subContainerbotEtat");
 
   // -----------------------------------------------
+  // ----------------- Statistique -----------------
+  // -----------------------------------------------
+  if (data.Statistique) {
+    let divstatdb = createHTMLElement("div", "divstatdb");
+
+    let stathouses = createHTMLElement("div", "stathouses");
+
+    // Title
+    let stathouse = createHTMLElement("div", "stathouse");
+
+    let statname = createHTMLElement("div", "statname");
+    statname.textContent = "Maison";
+    stathouse.appendChild(statname);
+
+    let statusers = createHTMLElement("div", "statusers");
+    statusers.textContent = "Utilisateurs";
+    stathouse.appendChild(statusers);
+
+    let statlanguage = createHTMLElement("div", "statlanguage");
+    statlanguage.textContent = "Langue";
+    stathouse.appendChild(statlanguage);
+
+    stathouses.appendChild(stathouse);
+
+    for (let index = 0; index < data.Statistique.Houses.length; index++) {
+      const house = data.Statistique.Houses[index];
+      let stathouse = createHTMLElement("div", "stathouse");
+
+      let statname = createHTMLElement("div", "statname");
+      statname.textContent = house.House_name;
+      stathouse.appendChild(statname);
+
+      let statusers = createHTMLElement("div", "statusers");
+      statusers.textContent = house.Discord;
+      stathouse.appendChild(statusers);
+
+      let statlanguage = createHTMLElement("div", "statlanguage");
+      statlanguage.textContent = house.Language;
+      stathouse.appendChild(statlanguage);
+
+      stathouses.appendChild(stathouse);
+    }
+    divstatdb.appendChild(stathouses);
+
+    let stattable = createHTMLElement("div", "stattable");
+    stattable.textContent = `Nombre de tables : ${data.Statistique.Nb_Table}`;
+    divstatdb.appendChild(stattable);
+
+    subContainer.appendChild(divstatdb);
+  }
+
+  // -----------------------------------------------
   // -------------- Ajouter une unité --------------
   // -----------------------------------------------
   let divNewUnit = createHTMLElement("div", "divNewUnit");

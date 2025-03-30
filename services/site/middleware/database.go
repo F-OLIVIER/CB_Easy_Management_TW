@@ -15,19 +15,22 @@ import (
 // Fonction qui récupérer les informations utilisateur à partir de son uuid
 func UserInfo(uuid string, database *sql.DB) (users []data.ScearchUserInfo, list_houses []data.Houses) {
 	if uuid != "" {
-		query := "SELECT ID, ID_House, DiscordName, DiscordRole, DiscordPhoto, userLangage, userAdmin FROM Users WHERE uuid = ?"
+		query := "SELECT ID, ID_House, DiscordID, DiscordName, DiscordRole, DiscordPhoto, userLangage, userAdmin FROM Users WHERE uuid = ?"
 		rows, err := database.Query(query, uuid)
 		CheckErr("Requête DB UserInfo", err)
 		defer rows.Close()
 
 		for rows.Next() {
 			var user data.ScearchUserInfo
-			var DiscordRole, userAdmin string
-			err := rows.Scan(&user.User_id, &user.ID_House, &user.DiscordUsername, &DiscordRole, &user.DiscordPhoto, &user.Language, &userAdmin)
+			var DiscordRole, DiscordID, userAdmin string
+			err := rows.Scan(&user.User_id, &user.ID_House, &DiscordID, &user.DiscordUsername, &DiscordRole, &user.DiscordPhoto, &user.Language, &userAdmin)
 			CheckErr("Erreur lors du scan des résultats", err)
 
 			user.Admin = (userAdmin == "1")
 			user.Gestionnaire = (DiscordRole == "Officier")
+			if DiscordID == data.OWNER {
+				user.Owner = true
+			}
 
 			users = append(users, user)
 		}
@@ -628,4 +631,35 @@ func SendStatGvG(database *sql.DB) (listuser []data.UserInfo) {
 		listuser = append(listuser, user)
 	}
 	return listuser
+}
+
+func Stat_db(database *sql.DB) (stat data.Stat) {
+	// Nombre de maison et d'utilisateurs dans la db
+	stmt_stathouse, errdb := database.Prepare(`
+		SELECT Houses.House_name, Houses.Langage, COUNT(Users.ID) AS total_users
+		FROM Houses
+		LEFT JOIN Users ON Houses.ID = Users.ID_House
+		GROUP BY Houses.ID, Houses.House_name;
+
+	`)
+	CheckErr("Requete prepare DB stat_db (stmt_stathouse)", errdb)
+	rows, err := stmt_stathouse.Query()
+	CheckErr("Requete DB stat_db (stmt_stathouse)", err)
+	defer rows.Close()
+
+	for rows.Next() {
+		var house data.Houses
+		err := rows.Scan(&house.House_name, &house.Langage, &house.ID_Server)
+		CheckErr("Erreur lors du scan des résultats stat_db (stmt_stathouse)", err)
+		stat.Houses = append(stat.Houses, house)
+	}
+
+	// Nombre de tables dans la DB
+	stmt_nbtable, errdb := database.Prepare(`
+		SELECT COUNT(*) FROM sqlite_master WHERE type = 'table';
+	`)
+	CheckErr("Requete DB stat_db (stmt_nbtable)", errdb)
+	stmt_nbtable.QueryRow().Scan(&stat.Nb_Table)
+
+	return stat
 }

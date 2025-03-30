@@ -1250,6 +1250,7 @@
   margin-bottom: 20px;
 }
 
+.divstatdb,
 .divNewUnit,
 .divChangeUnit,
 .divNewclass,
@@ -1269,6 +1270,7 @@
 }
 
 .divChangeUnit,
+.divstatdb,
 .divNewUnit,
 .divNewclass {
   margin-bottom: 50px;
@@ -1329,6 +1331,29 @@
 #buttonConfirmDeleteUser {
   margin-top: 5px;
   background-color: red;
+}
+
+.stathouses {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.stathouse {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.stathouse div {
+  width: 33%;
+}
+
+.stattable {
+  width: 80%;
+  text-align: left;
+  padding-top: 30px;
 }
 
 /* --------------------------------------------- */
