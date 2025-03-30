@@ -22,16 +22,15 @@
           "/config",
           "<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>"
         ],
-        ["/visite", "Les commande sont expliqué par le bot"],
-        ["/site", "Affiche le lien du site internet associé au bot"],
-        ["/guide", "Affiche des informations d'aide sur Conqueror's Blade"],
+        ["/help", "Liste des commandes du bot"],
+        ["/website", "Affiche le lien du site internet associé au bot"],
         ["/data", "Affiche les informations de l'utilisateur"],
         ["/class", "Mettre à jour l'arme jouée avec votre héros"],
         ["/level", "Mettre à jour le level de votre héros"],
         ["/influence", "Mettre à jour l'influence de votre héros"],
-        ["/smarthone", "Génère un token de connexion pour l'application mobile"],
+        ["/smartphone", "Génère un token de connexion pour l'application mobile"],
         ["/reset_msg_tw", "Reset manuel du message de réaction d'inscription TW (gestionnaire uniquement)"],
-        ["/bot_activation", "Active ou désactive le message d'inscription au TW (gestionnaire uniquement)"]
+        ["/activation_msg_tw", "Active ou désactive le message d'inscription au TW (gestionnaire uniquement)"]
       ],
       "images": ["img/description/bot/slashcommand.png", "img/description/bot/message_gvg_on.png", "img/description/bot/message_gvg_off.png", "img/description/bot/commanddata.png"]
     },

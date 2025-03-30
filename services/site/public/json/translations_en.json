@@ -22,16 +22,15 @@
           "/config",
           "<span>Used to configure the bot for your server</span><span>• If the bot has never been configured: all users can use this command</span><span>• If the bot has an existing setting for the server, only members of the management group or the owner of the Discord server can change the setting</span>"
         ],
-        ["/visite", "The commands are explained by the bot"],
-        ["/site", "Displays the link to the website associated with the bot"],
-        ["/guide", "Displays help information about Conqueror's Blade"],
+        ["/help", "The commands are explained by the bot"],
+        ["/website", "Displays the link to the website associated with the bot"],
         ["/data", "Displays user information"],
         ["/class", "Update the weapon played with by your hero"],
         ["/level", "Update your hero's level"],
         ["/influence", "Update your hero's influence"],
-        ["/smarthone", "Generates a connection token for the mobile application"],
+        ["/smartphone", "Generates a connection token for the mobile application"],
         ["/reset_msg_tw", "Manual reset of TW registration reaction message (manager only)"],
-        ["/bot_activation", "Activate or deactivate the TW registration message (manager only)"]
+        ["/activation_msg_tw", "Activate or deactivate the TW registration message (manager only)"]
       ],
       "images": ["img/description/bot/slashcommand.png", "img/description/bot/message_gvg_on.png", "img/description/bot/message_gvg_off.png", "img/description/bot/commanddata.png"]
     },
