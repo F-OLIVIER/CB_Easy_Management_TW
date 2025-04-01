@@ -3,7 +3,7 @@ import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, EmbedB
 import { loadTranslations } from "./language.js";
 import { updateIdMessage } from "./database.js";
 import { client } from "./Constant.js";
-import { adressdb } from "./config.js";
+import { adressdb, siteInternet } from "./config.js";
 import { logToFile } from "./log.js";
 
 // module nodejs et npm
@@ -24,7 +24,7 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
   }
 
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
-  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner.webp");
+  const imageAttachment = new AttachmentBuilder(siteInternet + "/img/imgdiscord/banner_tw.webp");
   const sendMessage = await chan.send({
     files: [imageAttachment],
     content: "<@&" + ID_Group_Users + ">",
@@ -53,7 +53,7 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
     .then((message) => message.delete())
     .catch((error) => logToFile(`Message ${ID_MessageGvG} innexistant pour le serveur ${ID_Server} (msgreactgvg) :\n${error}`));
 
-  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner.webp");
+  const imageAttachment = new AttachmentBuilder(siteInternet + "/img/imgdiscord/banner_tw.webp");
   // Génére le message et l'envoi sur discord
   const sendMessage = await chan.send({
     files: [imageAttachment],
@@ -83,7 +83,7 @@ export async function EmbedInscription(Langage, presents = [], absents = []) {
     .setTitle(translate.EmbedGvG.title)
     .setColor(13373715)
     .setDescription(translate.EmbedGvG.description)
-    .setThumbnail("https://easymanagementtw.fr/img/imgdiscord/heros_att.webp")
+    .setThumbnail(siteInternet + "/img/imgdiscord/heros_att.webp")
     .addFields(
       { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
       { name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__", value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit, inline: true },
@@ -129,12 +129,12 @@ export async function noGvGReactMsgGvG(houseData) {
 
   const translate = await loadTranslations(houseData.Langage);
 
-  const imageAttachment = new AttachmentBuilder("https://easymanagementtw.fr/img/imgdiscord/banner_notw.webp");
+  const imageAttachment = new AttachmentBuilder(siteInternet + "/img/imgdiscord/banner_notw.webp");
   const embedData = new EmbedBuilder()
     .setTitle(translate.EmbedGvG.title)
     .setColor(13373715)
     .setDescription(translate.EmbedGvG.description_nogvg)
-    .setThumbnail("https://easymanagementtw.fr/img/imgdiscord/heros_repos.webp");
+    .setThumbnail(siteInternet + "/img/imgdiscord/heros_repos.webp");
 
   // Génére le message et l'envoi sur discord
   const sendMessage = await chan.send({

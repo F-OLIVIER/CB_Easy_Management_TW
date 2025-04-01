@@ -43,7 +43,7 @@ func Createdb() {
 		CheckErr(err, "5- Err script Insert ListUnit in db (Createdb.go)")
 	}
 
-	fmt.Println("Création intial de la DB terminé")
+	fmt.Println("Initialisation de la DB terminé")
 
 	database.Close()
 }
