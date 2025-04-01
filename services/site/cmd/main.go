@@ -14,21 +14,24 @@ func main() {
 
 	flag.Parse()
 
+	// ServeMux pour gérer les routes
+	mux := http.NewServeMux()
+
 	// Page not connected
 	routes_Dispatch := []string{
 		"/",
 		"/discord",
 	}
 	for _, route := range routes_Dispatch {
-		http.HandleFunc(route, handlers.ServeDispatch)
+		mux.HandleFunc(route, handlers.ServeDispatch)
 	}
 
 	// page de transition de connexion Discord site internet
-	http.HandleFunc("/api/discord", handlers.DiscordApiHandler)
+	mux.HandleFunc("/api/discord", handlers.DiscordApiHandler)
 	// Page de connexion pour l'application mobile
-	http.HandleFunc("/api/discordapp", handlers.DiscordApiHandler)
+	mux.HandleFunc("/api/discordapp", handlers.DiscordApiHandler)
 	// Systéme de déconnexion
-	http.HandleFunc("/api/logout", handlers.LogoutHandler)
+	mux.HandleFunc("/api/logout", handlers.LogoutHandler)
 	// page utilisateur connected/autorised site internet
 	routes_ApiHandler := []string{
 		"/api/home/",
@@ -49,11 +52,11 @@ func main() {
 		"/api/updatelanguage/",
 	}
 	for _, route := range routes_ApiHandler {
-		http.HandleFunc(route, handlers.ApiHandler)
+		mux.HandleFunc(route, handlers.ApiHandler)
 	}
 
 	// page Application mobile
-	http.HandleFunc("/app/updatecaserne", handlers.AppMajCaserneHandler)
+	mux.HandleFunc("/app/updatecaserne", handlers.AppMajCaserneHandler)
 	routes_AppMobile := []string{
 		"/app/login",
 		"/app/user",
@@ -64,39 +67,37 @@ func main() {
 		"/app/setting",
 	}
 	for _, route := range routes_AppMobile {
-		http.HandleFunc(route, handlers.AppMobileHandler)
+		mux.HandleFunc(route, handlers.AppMobileHandler)
 	}
 
-	// Appel des fichiers annexes et les mettres en cache navigateur client autmatiquement
-	cssHandler := http.StripPrefix("/css/", http.FileServer(http.Dir("./public/css/")))
-	http.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "max-age=31536000, only-if-cached")
-		cssHandler.ServeHTTP(w, r)
+	// Fichiers statiques avec cache
+	mux.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/css")
+		http.StripPrefix("/css/", http.FileServer(http.Dir("public/css"))).ServeHTTP(w, r)
 	})
-
-	jsHandler := http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js/")))
-	http.HandleFunc("/js/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "max-age=31536000, only-if-cached")
-		jsHandler.ServeHTTP(w, r)
-	})
-
-	imgHandler := http.StripPrefix("/img/", http.FileServer(http.Dir("./public/images/")))
-	http.HandleFunc("/img/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "max-age=31536000, only-if-cached")
-		imgHandler.ServeHTTP(w, r)
-	})
-
-	jsonHandler := http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json/")))
-	http.HandleFunc("/json/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "max-age=31536000, only-if-cached")
-		jsonHandler.ServeHTTP(w, r)
-	})
+	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
+	mux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./public/img"))))
+	mux.Handle("/json/", http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json"))))
 
 	fmt.Println("Server started at : http://" + data.SITE_DOMAIN + ":" + data.PORT)
 
 	// Mise en écoute du serveur HTTP
-	err := http.ListenAndServe(":"+data.PORT, nil)
+	err := http.ListenAndServe(":"+data.PORT, securityHeadersMiddleware(mux))
 	if err != nil {
 		fmt.Println("Erreur demarrage serveur :\n", err)
 	}
+}
+
+// Middleware pour ajouter les en-têtes de sécurité
+func securityHeadersMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		// w.Header().Set("Content-Security-Policy", "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com data:;")
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; connect-src 'self' https://discord.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com data:;")
+		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
+		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
+		next.ServeHTTP(w, r)
+	})
 }
