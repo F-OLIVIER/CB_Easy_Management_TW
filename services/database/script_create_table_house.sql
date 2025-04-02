@@ -1,6 +1,3 @@
-
--- Table des maisons
-
 CREATE TABLE IF NOT EXISTS GroupGvG (
     ID INTEGER PRIMARY KEY,
     User_ID INTEGER NOT NULL,
@@ -39,9 +36,6 @@ CREATE TABLE IF NOT EXISTS NameGroupGvG (
     GroupNumber INTEGER NOT NULL,
     NameGroup VARCHAR(150) NOT NULL
 );
-
-
-
 
 CREATE TABLE IF NOT EXISTS Caserne (
     ID INTEGER PRIMARY KEY,
