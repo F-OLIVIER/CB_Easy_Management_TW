@@ -613,10 +613,10 @@ func updateDataUnit(dataCreateUnit data.Unit, database *sql.DB) {
 	}
 }
 
-func SendStatGvG(database *sql.DB) (listuser []data.UserInfo) {
-	listUser, err := database.Prepare(`SELECT DiscordName, GameCharacter_ID, Lvl, Influence, EtatInscription, NbGvGParticiped, NbTotalGvG, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN FROM Users;`)
+func SendStatGvG(id_House string, database *sql.DB) (listuser []data.UserInfo) {
+	listUser, err := database.Prepare(`SELECT DiscordName, GameCharacter_ID, Lvl, Influence, EtatInscription, NbGvGParticiped, NbTotalGvG, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN FROM Users WHERE ID_House = ?;`)
 	CheckErr("1- Requete DB fonction SendStatGvG", err)
-	rows, err := listUser.Query()
+	rows, err := listUser.Query(id_House)
 	CheckErr("2- Requete DB fonction SendStatGvG", err)
 	for rows.Next() {
 		var user data.UserInfo

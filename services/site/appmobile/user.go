@@ -37,8 +37,7 @@ func GetHouseApp(id_House string, database *sql.DB) (houses []data.Houses) {
 	var house data.Houses
 	stmt, errdb := database.Prepare("SELECT ID, House_name, House_logo FROM Houses WHERE ID = ?")
 	utils.CheckErr("Requete SELECT DB GetHouseApp", errdb)
-	errquery := stmt.QueryRow(id_House).Scan(&house.ID, &house.House_name, &house.House_logo)
-	utils.CheckErr("QueryRow DB GetHouseApp", errquery)
+	stmt.QueryRow(id_House).Scan(&house.ID, &house.House_name, &house.House_logo)
 	houses = append(houses, house)
 	return houses
 }
