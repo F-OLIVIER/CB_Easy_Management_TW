@@ -210,14 +210,14 @@
 }
 
 .modal {
-  display: none; /* Caché par défaut */
+  display: none;
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Fond sombre semi-transparent */
+  background-color: rgba(0, 0, 0, 0.8);
   justify-content: center;
   align-items: center;
   cursor: zoom-out;
@@ -344,7 +344,8 @@
 
 .subContainer,
 .containerhouses,
-.subcontainerAdmin {
+.subcontainerAdmin,
+.subcontainerForum {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -353,7 +354,8 @@
 
 /* Espace House */
 .containerhouses,
-.subcontainerAdmin {
+.subcontainerAdmin,
+.subcontainerForum {
   width: 90%;
   justify-content: center;
   background-color: var(--main-background-color);
@@ -454,7 +456,6 @@
   position: relative;
 }
 
-/* space lien */
 .subcontainerOfficier {
   display: flex;
   flex-direction: column;
@@ -465,27 +466,31 @@
   border: 1px solid white;
 }
 
-.subcontainerAdmin {
+.subcontainerAdmin,
+.subcontainerForum {
   width: 100%;
   margin-top: 30px;
 }
 
 .subcontainerOfficier a,
 .subcontainerAdmin a,
-.subcontainerUser a {
+.subcontainerUser a,
+.subcontainerForum a {
   width: 100%;
 }
 
 .subcontainerOfficier a div,
 .subcontainerAdmin a div,
-.subcontainerUser a div {
+.subcontainerUser a div,
+.subcontainerForum a div {
   width: 95%;
   margin: 0 auto;
   margin-bottom: 25px;
 }
 
 .titlesubcontainerOfficier,
-.titlesubcontainerAdmin {
+.titlesubcontainerAdmin,
+.titlesubcontainerForum {
   font-size: 50px;
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
   padding-bottom: 15px;
@@ -496,7 +501,10 @@
 .buttonCreateGroup,
 .buttonAppAdmin,
 .buttonStat,
-.buttonconsulcaserne {
+.buttonconsulcaserne,
+.buttonAppForum,
+.buttondivCreatePost,
+.buttondivCreateComment {
   width: 100%;
   padding-bottom: 5px;
   font-size: 50px;
@@ -528,9 +536,190 @@
 .buttonCreateGroup:hover,
 .buttonAppAdmin:hover,
 .buttonStat:hover,
-.buttonconsulcaserne:hover {
+.buttonconsulcaserne:hover,
+.buttonAppForum:hover,
+.buttondivCreatePost:hover,
+.buttondivCreateComment:hover {
   background-color: rgb(63, 85, 116, 0.8);
   border: 1px solid white;
+}
+
+/* --------------------------------------------- */
+/* ---------------- page /forum ---------------- */
+/* --------------------------------------------- */
+.containerforum {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+}
+
+.descriptionForum,
+.divCreatePost,
+.postsForum {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  background-color: var(--main-background-color);
+  border-radius: 20px;
+  border: 1px solid white;
+  margin-bottom: 20px;
+}
+
+.titlepostsForum,
+.titledescriptionForum {
+  font-size: 50px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  padding-bottom: 15px;
+}
+
+.divCreatePost button {
+  margin: 10px 0px;
+  width: 90%;
+}
+
+.buttondivCreatePost,
+.buttondivCreateComment {
+  width: calc(100% - 60px);
+  margin: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.encartCreatePost {
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.divtitlenewPost {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.titlenewPost {
+  width: 20%;
+}
+.divtitlenewPost input {
+  width: 80%;
+  border-radius: 10px;
+  padding: 10px;
+}
+.divTextarea,
+.divTextareaComment {
+  width: 90%;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+}
+.divTextareaComment {
+  width: 100%;
+}
+
+.divTextarea #editor,
+.divTextareaComment #editorcomment {
+  width: 100%;
+  height: 350px;
+  border: 1px solid #ccc;
+  color: black;
+}
+
+.post {
+  width: calc(100% - 20px);
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #696969;
+  border: 1px solid white;
+  border-radius: 10px;
+  cursor: zoom-in;
+}
+
+.titlepost {
+  font-size: 30px;
+}
+
+.infopost {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.modalpost {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modalpost-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 90%;
+  max-height: 100%;
+  overflow-y: auto;  
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 50px;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 25px;
+}
+
+.modaltitlepost {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.modaladdcommentspost {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalcontentpost,
+.modaladdcommentspost {
+  width: calc(100% - 40px);
+  border: 1px solid white;
+  background-color: #888;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: left;
+  white-space: normal;
+}
+
+.buttonNewComment {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.modalpostclose {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  color: white;
+  float: right;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.modalpostclose:hover,
+.modalpostclose:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 /* --------------------------------------------- */
@@ -1744,7 +1933,10 @@
   .buttonCreateGroup,
   .buttonAppAdmin,
   .buttonStat,
-  .buttonconsulcaserne {
+  .buttonconsulcaserne,
+  .buttondivCreatePost,
+  .buttondivCreateComment,
+  .postsForum {
     font-size: 25px;
   }
 

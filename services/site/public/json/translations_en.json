@@ -90,7 +90,9 @@
     "stat": "Statistics",
     "caserne_other": "Consult a barracks",
     "zone_admin": "Administrators only",
-    "admin": "Administration page"
+    "admin": "Administration page",
+    "commun_zone": "Multi-house space",
+    "forum": "Forum"
   },
 
   "characterCard": {

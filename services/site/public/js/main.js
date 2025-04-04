@@ -10,6 +10,7 @@ import { stat } from "./stat.js";
 import { accueil } from "./accueil.js";
 import { description } from "./description.js";
 import { mention } from "./mentionlegale.js";
+import { forum } from "./forum.js";
 
 let path = window.location.pathname;
 switch (path) {
@@ -71,6 +72,10 @@ switch (path) {
 
   case "/consulcaserne":
     consulcaserne();
+    break;
+
+  case "/Appforum":
+    forum();
     break;
 
   default:

@@ -90,7 +90,9 @@
     "stat": "Statistique",
     "caserne_other": "Consulter une caserne",
     "zone_admin": "Réservé aux administrateurs",
-    "admin": "Page d'administration"
+    "admin": "Page d'administration",
+    "commun_zone": "Espace multi-maison",
+    "forum": "Forum"
   },
 
   "characterCard": {
