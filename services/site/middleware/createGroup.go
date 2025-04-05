@@ -124,7 +124,9 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 			currentID := 0
 			requeststmtID := fmt.Sprintf("SELECT ID FROM NameGroupGvG%s WHERE GroupNumber = ?", id_House)
 			stmtID, errdb := database.Prepare(requeststmtID)
-			CheckErr("1- Requete DB SELECT NameGroup (exist ?)", errdb)
+			if errdb != sql.ErrNoRows {
+				CheckErr("1- Requete DB SELECT NameGroup (exist ?)", errdb)
+			}
 			stmtID.QueryRow(arrayGroup[0]).Scan(&currentID)
 
 			if currentID == 0 { // nom de groupe non existant
