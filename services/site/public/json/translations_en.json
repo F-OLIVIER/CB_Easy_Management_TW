@@ -205,6 +205,10 @@
     "create_group": {
       "title": "》 Creating TW groups",
       "listLegend": ["🔴 Unit not mastered", "🟡 Unit being mastered", "🟢 Unit mastered"],
+      "listFilter": ["All", "T2", "T3", "T4", "T5"],
+      "filter": {
+        "title": "Filter :"
+      },
       "add_group": "➕ Add a new group",
       "save_group": "💾 Save groups",
       "group_type": {
@@ -217,10 +221,11 @@
       },
       "delete": "Supprimer le joueur",
       "selectmenu": {
-        "title": "Option de gestion",
+        "title": "Management option",
         "t5": "T5",
         "t4": "T4",
         "t3": "T3",
+        "t2": "T2",
         "delete": "Delete unit",
         "other": "Consult an officer"
       }

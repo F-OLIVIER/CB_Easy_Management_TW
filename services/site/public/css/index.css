@@ -692,7 +692,7 @@
   height: 40px;
   margin: 5px;
   padding: 2px;
-  text-align: center;
+  text-align: left;
   white-space: normal;
   word-wrap: break-word;
   background-color: white;
@@ -931,7 +931,8 @@
 }
 
 .legendMaitrise,
-.titledivuser {
+.titledivuser,
+.filtertypeunit {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -940,11 +941,18 @@
   border-radius: 15px;
 }
 
-.legendMaitrise {
+.legendMaitrise,
+.filtertypeunit {
   width: 100%;
   justify-content: space-around;
   margin-bottom: 5px;
   padding: 10px 0px;
+}
+.checkbox,
+.checkbox *,
+.checkbox label,
+.checkbox input {
+  cursor: pointer;
 }
 
 .titledivuser {
@@ -1309,6 +1317,7 @@
 }
 
 .formchangeUnit > .selectChangeUnit {
+  text-align: left;
   background-color: #fef4c3;
 }
 

@@ -205,6 +205,10 @@
     "create_group": {
       "title": "》 Création des groupes TW",
       "listLegend": ["🔴 Unité non maitrisé", "🟡 Unité en cour de maitrise", "🟢 Unité maitrisé"],
+      "listFilter": ["Toute", "T2", "T3", "T4", "T5"],
+      "filter": {
+        "title": "Filtre :"
+      },
       "add_group": "➕ Ajouter un groupe",
       "save_group": "💾 Sauvegarder les groupes",
       "group_type": {
@@ -221,6 +225,7 @@
         "t5": "T5",
         "t4": "T4",
         "t3": "T3",
+        "t2": "T2",
         "delete": "Supprimer l'unité",
         "other": "Consulter un officier"
       }

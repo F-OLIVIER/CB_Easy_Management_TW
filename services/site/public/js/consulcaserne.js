@@ -91,6 +91,7 @@ function containerconsulcaserne(data, translate) {
         addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T5", translate, data.UserInfo.Language, translate);
         addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T4", translate, data.UserInfo.Language, translate);
         addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T3", translate, data.UserInfo.Language, translate);
+        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T2", translate, data.UserInfo.Language, translate);
 
         divInfanterie.appendChild(TitleDivInfanterie);
         divInfanterie.appendChild(listUnitInfanterie);

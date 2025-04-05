@@ -46,12 +46,18 @@ export async function containercreategroup(data, translate) {
   // div de la création des groupes GvG
   let creategroup = await createHTMLElement("div", "creategroup");
 
-  // légende
+  // Légende
   const listLegend = translate.create_group.create_group.listLegend;
   let legend = await createLegend(listLegend, "legendMaitrise");
   legend.prepend(translate.create_group.legend.title);
-
   creategroup.appendChild(legend);
+
+  // Filtre
+  const listFilter = translate.create_group.create_group.listFilter;
+  let filter = await createFilter(listFilter, "filtertypeunit");
+  filter.prepend(translate.create_group.create_group.filter.title);
+  creategroup.appendChild(filter);
+
   // en-tête
   creategroup.appendChild(entete(translate));
   // div de création des groupes
@@ -206,6 +212,8 @@ export async function containercreategroup(data, translate) {
     });
   }
 
+  eventCheckboxFilterunit();
+
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
@@ -318,13 +326,91 @@ async function whohaveunit(data, translate) {
   defaultOption.text = translate.create_group.select;
   selectwhohaveunit.appendChild(defaultOption);
 
+  let optgroupT5Infanterie = document.createElement("optgroup");
+  optgroupT5Infanterie.label = `${translate.create_group.create_group.selectmenu.t5} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT5Distant = document.createElement("optgroup");
+  optgroupT5Distant.label = `${translate.create_group.create_group.selectmenu.t5} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT5Cav = document.createElement("optgroup");
+  optgroupT5Cav.label = `${translate.create_group.create_group.selectmenu.t5} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
+  let optgroupT4Infanterie = document.createElement("optgroup");
+  optgroupT4Infanterie.label = `${translate.create_group.create_group.selectmenu.t4} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT4Distant = document.createElement("optgroup");
+  optgroupT4Distant.label = `${translate.create_group.create_group.selectmenu.t4} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT4Cav = document.createElement("optgroup");
+  optgroupT4Cav.label = `${translate.create_group.create_group.selectmenu.t4} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
+  let optgroupT3Infanterie = document.createElement("optgroup");
+  optgroupT3Infanterie.label = `${translate.create_group.create_group.selectmenu.t3} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT3Distant = document.createElement("optgroup");
+  optgroupT3Distant.label = `${translate.create_group.create_group.selectmenu.t3} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT3Cav = document.createElement("optgroup");
+  optgroupT3Cav.label = `${translate.create_group.create_group.selectmenu.t3} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
+  let optgroupT2Infanterie = document.createElement("optgroup");
+  optgroupT2Infanterie.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT2Distant = document.createElement("optgroup");
+  optgroupT2Distant.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT2Cav = document.createElement("optgroup");
+  optgroupT2Cav.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
   // Ajout des options d'unités dans le select
   data.ListUnit.forEach((unit) => {
     const option = document.createElement("option");
     option.value = unit.Unit_name[data.UserInfo.Language];
     option.text = unit.Unit_name[data.UserInfo.Language];
-    selectwhohaveunit.appendChild(option);
+    if (unit.Unit_tier === "T5") {
+      // "Infanterie" "Distant" "Cavalerie"
+      if (unit.Unit_type.fr === "Infanterie") {
+        optgroupT5Infanterie.appendChild(option);
+      } else if (unit.Unit_type.fr === "Distant") {
+        optgroupT5Distant.appendChild(option);
+      } else if (unit.Unit_type.fr === "Cavalerie") {
+        optgroupT5Cav.appendChild(option);
+      }
+    } else if (unit.Unit_tier === "T4") {
+      if (unit.Unit_type.fr === "Infanterie") {
+        optgroupT4Infanterie.appendChild(option);
+      } else if (unit.Unit_type.fr === "Distant") {
+        optgroupT4Distant.appendChild(option);
+      } else if (unit.Unit_type.fr === "Cavalerie") {
+        optgroupT4Cav.appendChild(option);
+      }
+    } else if (unit.Unit_tier === "T3") {
+      if (unit.Unit_type.fr === "Infanterie") {
+        optgroupT3Infanterie.appendChild(option);
+      } else if (unit.Unit_type.fr === "Distant") {
+        optgroupT3Distant.appendChild(option);
+      } else if (unit.Unit_type.fr === "Cavalerie") {
+        optgroupT3Cav.appendChild(option);
+      }
+    } else if (unit.Unit_tier === "T2") {
+      if (unit.Unit_type.fr === "Infanterie") {
+        optgroupT2Infanterie.appendChild(option);
+      } else if (unit.Unit_type.fr === "Distant") {
+        optgroupT2Distant.appendChild(option);
+      } else if (unit.Unit_type.fr === "Cavalerie") {
+        optgroupT2Cav.appendChild(option);
+      }
+    }
   });
+
+  // T5
+  selectwhohaveunit.appendChild(optgroupT5Infanterie);
+  selectwhohaveunit.appendChild(optgroupT5Distant);
+  selectwhohaveunit.appendChild(optgroupT5Cav);
+  // T4
+  selectwhohaveunit.appendChild(optgroupT4Infanterie);
+  selectwhohaveunit.appendChild(optgroupT4Distant);
+  selectwhohaveunit.appendChild(optgroupT4Cav);
+  // T3
+  selectwhohaveunit.appendChild(optgroupT3Infanterie);
+  selectwhohaveunit.appendChild(optgroupT3Distant);
+  selectwhohaveunit.appendChild(optgroupT3Cav);
+  // T2
+  selectwhohaveunit.appendChild(optgroupT2Infanterie);
+  selectwhohaveunit.appendChild(optgroupT2Distant);
+  selectwhohaveunit.appendChild(optgroupT2Cav);
 
   whohaveunit.appendChild(selectwhohaveunit);
 
@@ -636,6 +722,13 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitTyp
   let optgroupT3Cav = document.createElement("optgroup");
   optgroupT3Cav.label = `${translate.create_group.create_group.selectmenu.t3} - ${ListUnitType[2][Language]}`;
 
+  let optgroupT2Infanterie = document.createElement("optgroup");
+  optgroupT2Infanterie.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT2Distant = document.createElement("optgroup");
+  optgroupT2Distant.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT2Cav = document.createElement("optgroup");
+  optgroupT2Cav.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
   // Légende : 🔴 Unité non maitrisé, 🟡 Unité en cour de maitrise, 🟢 Unité maitrisé
   if (caserne !== null && caserne.length !== undefined) {
     // Trier le tableau jsonData en utilisant la fonction de comparaison
@@ -665,7 +758,6 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitTyp
         option.value = unit.Unit_name[Language];
         option.text = textoption;
         if (unit.Unit_tier === "T5") {
-          // "Infanterie" "Distant" "Cavalerie"
           if (unit.Unit_type.fr === "Infanterie") {
             optgroupT5Infanterie.appendChild(option);
           } else if (unit.Unit_type.fr === "Distant") {
@@ -688,6 +780,14 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitTyp
             optgroupT3Distant.appendChild(option);
           } else if (unit.Unit_type.fr === "Cavalerie") {
             optgroupT3Cav.appendChild(option);
+          }
+        } else if (unit.Unit_tier === "T2") {
+          if (unit.Unit_type.fr === "Infanterie") {
+            optgroupT2Infanterie.appendChild(option);
+          } else if (unit.Unit_type.fr === "Distant") {
+            optgroupT2Distant.appendChild(option);
+          } else if (unit.Unit_type.fr === "Cavalerie") {
+            optgroupT2Cav.appendChild(option);
           }
         }
       }
@@ -721,18 +821,22 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitTyp
   }
 
   selectunit.appendChild(optgroupOther);
-  // unit Infanterie
+  // T5
   selectunit.appendChild(optgroupT5Infanterie);
   selectunit.appendChild(optgroupT5Distant);
   selectunit.appendChild(optgroupT5Cav);
-  // unit Distant
+  // T4
   selectunit.appendChild(optgroupT4Infanterie);
   selectunit.appendChild(optgroupT4Distant);
   selectunit.appendChild(optgroupT4Cav);
-  // unit Cav
+  // T3
   selectunit.appendChild(optgroupT3Infanterie);
   selectunit.appendChild(optgroupT3Distant);
   selectunit.appendChild(optgroupT3Cav);
+  // T2
+  selectunit.appendChild(optgroupT2Infanterie);
+  selectunit.appendChild(optgroupT2Distant);
+  selectunit.appendChild(optgroupT2Cav);
 }
 
 function compareUnitNames(a, b) {
@@ -811,6 +915,35 @@ function createLegend(listLegend, name) {
     currentlegend.textContent = listLegend[i];
     legend.appendChild(currentlegend);
   }
+  return legend;
+}
+
+function createFilter(listLegend, name) {
+  let legend = createHTMLElement("div", name);
+
+  for (let i = 0; i < listLegend.length; i++) {
+    const container = createHTMLElement("div", "checkbox");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    if (i == 0) {
+      checkbox.id = `checkboxAll`;
+      checkbox.value = `checkboxAll`;
+    } else {
+      checkbox.id = `checkbox${listLegend[i]}`;
+      checkbox.value = listLegend[i];
+    }
+    checkbox.checked = true;
+
+    const label = document.createElement("label");
+    label.htmlFor = checkbox.id;
+    label.textContent = listLegend[i];
+
+    container.appendChild(checkbox);
+    container.appendChild(label);
+    legend.appendChild(container);
+  }
+
   return legend;
 }
 
@@ -1121,6 +1254,51 @@ function optionSelectUnit(username, UserCaserne, influenceplayer, influenceAllUn
         }
       });
     }
+  });
+}
+
+function eventCheckboxFilterunit() {
+  const checkboxAll = document.getElementById("checkboxAll");
+  const checkboxes = Array.from(document.querySelectorAll(".checkbox input[type='checkbox']")).filter((cb) => cb.id !== "checkboxAll");
+
+  checkboxAll.addEventListener("change", () => {
+    checkboxes.forEach((cb) => {
+      cb.checked = checkboxAll.checked;
+    });
+    filterUnitOptions();
+  });
+
+  checkboxes.forEach((cb) => {
+    cb.addEventListener("change", () => {
+      checkboxAll.checked = checkboxes.every((cb) => cb.checked);
+      filterUnitOptions();
+    });
+  });
+}
+
+function filterUnitOptions() {
+  const selectedTypes = Array.from(document.querySelectorAll(".checkbox input[type='checkbox']"))
+    .filter((cb) => cb.checked && cb.id !== "checkboxAll")
+    .map((cb) => cb.value);
+
+  const listSelect = Array.from(document.querySelectorAll("select[id^='unit']"));
+
+  listSelect.forEach((select) => {
+    const optgroups = select.querySelectorAll("optgroup");
+
+    optgroups.forEach((group) => {
+      const label = group.label;
+      if (selectedTypes.length === 0) {
+        group.style.display = label !== "Option de gestion" && label !== "Management option" ? "none" : "";
+      } else {
+        if (label === "Option de gestion" || label == "Management option") {
+          group.style.display = "";
+        } else {
+          const type = label.split(" ")[0];
+          group.style.display = selectedTypes.length === 0 || selectedTypes.includes(type) ? "" : "none";
+        }
+      }
+    });
   });
 }
 
