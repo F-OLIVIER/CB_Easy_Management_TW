@@ -141,7 +141,6 @@ function MAJCaserne(nbunit) {
 function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier, translate) {
   for (let i = 0; i < data.ListUnit.length; i++) {
     const Currentunit = data.ListUnit[i];
-    console.log('Currentunit : ', Currentunit)
     if (Currentunit.Unit_tier === tier) {
       let unit = document.createElement("div");
       unit.className = "unit";
