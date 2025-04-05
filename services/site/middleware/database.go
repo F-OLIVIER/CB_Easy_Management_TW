@@ -413,7 +413,7 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) (notif data.Notif)
 			file, header, err := r.FormFile("image")
 			if err == nil {
 				defer file.Close()
-				UploadPicture(file, header, "./public/images/unit/"+header.Filename)
+				UploadPicture(file, header, "./public/img/unit/"+header.Filename)
 				if formData.CreateUnit.Name.FR != "" { // création d'une unité
 					createNewUnit(formData.CreateUnit, "./img/unit/"+header.Filename, database)
 					message := data.SocketMessage{

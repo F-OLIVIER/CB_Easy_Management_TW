@@ -62,6 +62,7 @@ function containercaserne(data, translate) {
   addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T5", translate);
   addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T4", translate);
   addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T3", translate);
+  addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T2", translate);
 
   divInfanterie.appendChild(TitleDivInfanterie);
   divInfanterie.appendChild(listUnitInfanterie);
@@ -140,6 +141,7 @@ function MAJCaserne(nbunit) {
 function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier, translate) {
   for (let i = 0; i < data.ListUnit.length; i++) {
     const Currentunit = data.ListUnit[i];
+    console.log('Currentunit : ', Currentunit)
     if (Currentunit.Unit_tier === tier) {
       let unit = document.createElement("div");
       unit.className = "unit";
