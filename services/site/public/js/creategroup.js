@@ -723,11 +723,11 @@ function insertSelectUnit(selectunit, caserne, nameUnit, optionUser, ListUnitTyp
   optgroupT3Cav.label = `${translate.create_group.create_group.selectmenu.t3} - ${ListUnitType[2][Language]}`;
 
   let optgroupT2Infanterie = document.createElement("optgroup");
-  optgroupT2Infanterie.label = `${translate.create_group.create_group.selectmenu.t2} - ${ListUnitType[0][data.UserInfo.Language]}`;
+  optgroupT2Infanterie.label = `${translate.create_group.create_group.selectmenu.t2} - ${ListUnitType[0][Language]}`;
   let optgroupT2Distant = document.createElement("optgroup");
-  optgroupT2Distant.label = `${translate.create_group.create_group.selectmenu.t2} - ${ListUnitType[1][data.UserInfo.Language]}`;
+  optgroupT2Distant.label = `${translate.create_group.create_group.selectmenu.t2} - ${ListUnitType[1][Language]}`;
   let optgroupT2Cav = document.createElement("optgroup");
-  optgroupT2Cav.label = `${translate.create_group.create_group.selectmenu.t2} - ${ListUnitType[2][data.UserInfo.Language]}`;
+  optgroupT2Cav.label = `${translate.create_group.create_group.selectmenu.t2} - ${ListUnitType[2][Language]}`;
 
   // Légende : 🔴 Unité non maitrisé, 🟡 Unité en cour de maitrise, 🟢 Unité maitrisé
   if (caserne !== null && caserne.length !== undefined) {
