@@ -91,11 +91,17 @@ func main() {
 // Middleware pour ajouter les en-têtes de sécurité
 func securityHeadersMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Oblige les navigateurs à utiliser HTTPS uniquement
 		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; connect-src 'self' https://discord.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com data:;")
+		// Sources autorisées
+		w.Header().Set("Content-Security-Policy", "default-src 'self'; connect-src 'self' https://discord.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com data:; script-src 'self' https://html2canvas.hertzen.com;")
+		// intégration iframe du site interdite
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
+		// Empêche le navigateur d’essayer de deviner le type MIME d’un fichier
 		w.Header().Set("X-Content-Type-Options", "nosniff")
+		// Envoie le 'Referer' (source des liens cliquer) seulement si la navigation est en HTTPS
 		w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
+		// Interdit explicitement certaines API
 		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
 		next.ServeHTTP(w, r)
 	})
