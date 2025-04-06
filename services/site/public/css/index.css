@@ -818,6 +818,42 @@
   border-radius: 15px;
 }
 
+.linedivuser {
+  display: flex;
+  flex-direction: column;
+  margin-right: 15px;
+}
+
+.usercomment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.zonecheckbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 150px;
+  margin-left: 15px;
+  font-size: 14px;
+}
+
+.zonecheckbox,
+.zonecheckbox *,
+.zonecheckbox label,
+.zonecheckbox input {
+  cursor: pointer;
+}
+
+.textusercomment {
+  flex: 1;
+  border-radius: 20px;
+  padding: 10px;
+}
+
 .divuser,
 .divuserviewgroup {
   width: 100%;
@@ -828,7 +864,7 @@
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
-.divuser,
+.linedivuser,
 .divuserviewgroup {
   border-bottom: 1px solid black;
   box-sizing: border-box;
@@ -836,7 +872,7 @@
 
 .divuser {
   width: 100%;
-  padding: 5px;
+  padding: 5px 5px 0px 5px;
 }
 
 .divuser:last-child,
@@ -871,7 +907,6 @@
 }
 
 .divuser select option {
-  /* overflow-wrap: break-word; */
   white-space: normal;
 }
 

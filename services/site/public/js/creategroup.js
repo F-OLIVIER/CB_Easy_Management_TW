@@ -476,7 +476,28 @@ async function createExistGroupe(data, userIngroup, translate) {
       document.getElementById("player_" + userIngroup[i].Username.replace(/\s/g, "")).textContent = "✅";
     }
 
+    let linedivuser = await createHTMLElement("div", "linedivuser");
     let divuser = await createHTMLElement("div", "divuser");
+    let linecomment = createHTMLElement("div", "usercomment");
+    linecomment.style.display = "none";
+    linecomment.id = `usercommentvide`;
+    // Checkbox Zone de commentaire
+    let zonecheckbox = createHTMLElement("div", "zonecheckbox");
+    const checkbox = document.createElement("input");
+    checkbox.id = `commentcheckvide`;
+    checkbox.type = "checkbox";
+    zonecheckbox.appendChild(checkbox);
+    const label = document.createElement("label");
+    label.textContent = `Add commentaire`;
+    label.htmlFor = checkbox.id;
+    zonecheckbox.appendChild(label);
+    linecomment.appendChild(zonecheckbox);
+    // Zone de texte commentaire
+    const text = document.createElement("input");
+    text.classList.add("textusercomment");
+    text.type = "text";
+    text.style.display = "none";
+    linecomment.appendChild(text);
 
     let inputHidden = document.createElement("input");
     inputHidden.value = groupName;
@@ -490,6 +511,10 @@ async function createExistGroupe(data, userIngroup, translate) {
     if (currentUser.Username === "") {
       defaultoption.value = "";
       defaultoption.text = translate.create_group.select;
+      linecomment.style.display = "none";
+      linecomment.id = `usercommentvide`;
+      checkbox.id = `commentcheckvide`;
+      label.htmlFor = checkbox.id;
     } else {
       defaultoption.value = currentUser.Username;
       defaultoption.text = currentUser.Username;
@@ -546,6 +571,13 @@ async function createExistGroupe(data, userIngroup, translate) {
       intermediairy.textContent = "/";
       influenceplayer.id = "influPlayer" + usernameSansEspaces;
       influenceplayer.textContent = infoUsersave.Influence;
+
+      // Zone de commentaire
+      linecomment.id = `usercomment${usernameSansEspaces}`;
+      linecomment.style.display = "flex";
+      text.placeholder = `Commentaire pour ${infoUsersave.Username}`;
+      checkbox.id = `commentcheck${usernameSansEspaces}`;
+      label.htmlFor = checkbox.id;
 
       // Unité 1
       selectunit1 = await createSelectUnit(1, infoUsersave.UserCaserne, currentUser, usernameSansEspaces, 1, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
@@ -639,16 +671,38 @@ async function createExistGroupe(data, userIngroup, translate) {
                 usernameSansEspaces2,
                 data.UserInfo.Language
               );
+              // Zone de commentaire
+              linecomment.id = `usercomment${usernameSansEspaces2}`;
+              linecomment.style.display = "flex";
+              text.placeholder = `Commentaire pour ${userInscripted.Username}`;
+              checkbox.id = `commentcheck${usernameSansEspaces2}`;
+              label.htmlFor = checkbox.id;
               break;
             }
           }
+        } else {
+          selectunit1.style.visibility = "hidden";
+          selectunit2.style.visibility = "hidden";
+          selectunit3.style.visibility = "hidden";
+          selectunit4.style.visibility = "hidden";
+          linecomment.style.display = "none";
+          linecomment.id = `usercommentvide`;
+          checkbox.id = `commentcheckvide`;
+          label.htmlFor = checkbox.id;
         }
       });
     } else {
       // utilisateur non present
-      createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate);
+      createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label);
     }
-    divGroup.appendChild(divuser);
+
+    linedivuser.appendChild(divuser);
+    linedivuser.appendChild(linecomment);
+    divGroup.appendChild(linedivuser);
+    // Afficher/Masquer la zone de texte de commentaire
+    checkbox.addEventListener("change", () => {
+      text.style.display = checkbox.checked ? "flex" : "none";
+    });
   }
 
   creategroup.appendChild(divGroup);
@@ -859,6 +913,28 @@ function createOneGroupe(data, translate) {
   divGroup.appendChild(namegroup(data, groupNumber, translate));
 
   for (let i = 0; i < 5; i++) {
+    let linedivuser = createHTMLElement("div", "linedivuser");
+    let linecomment = createHTMLElement("div", "usercomment");
+    linecomment.style.display = "none";
+    linecomment.id = `usercommentvide`;
+    // Checkbox Zone de commentaire
+    let zonecheckbox = createHTMLElement("div", "zonecheckbox");
+    const checkbox = document.createElement("input");
+    checkbox.id = `commentcheckvide`;
+    checkbox.type = "checkbox";
+    zonecheckbox.appendChild(checkbox);
+    const label = document.createElement("label");
+    label.textContent = `Add commentaire`;
+    label.htmlFor = checkbox.id;
+    zonecheckbox.appendChild(label);
+    linecomment.appendChild(zonecheckbox);
+    // Zone de texte commentaire
+    const text = document.createElement("input");
+    text.classList.add("textusercomment");
+    text.type = "text";
+    text.style.display = "none";
+    linecomment.appendChild(text);
+
     let divuser = document.createElement("div");
     divuser.classList.add("divuser");
 
@@ -898,8 +974,16 @@ function createOneGroupe(data, translate) {
     let unit4 = createHTMLElement("div", "unit4");
     divuser.appendChild(unit4);
 
-    createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate);
-    divGroup.appendChild(divuser);
+    createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label);
+
+    linedivuser.appendChild(divuser);
+    linedivuser.appendChild(linecomment);
+    divGroup.appendChild(linedivuser);
+
+    // Afficher/Masquer la zone de texte de commentaire
+    checkbox.addEventListener("change", () => {
+      text.style.display = checkbox.checked ? "flex" : "none";
+    });
   }
   creategroup.appendChild(divGroup);
   optionSelectUsername();
@@ -1006,7 +1090,7 @@ function namegroup(data, groupNumber, translate) {
 // --------------------------------------------------------
 // ------------ Fonction create eventlistener -------------
 // --------------------------------------------------------
-function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate) {
+function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label) {
   let selectunit1;
   let selectunit2;
   let selectunit3;
@@ -1101,6 +1185,12 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
               usernameSansEspaces,
               data.UserInfo.Language
             );
+            // Zone de commentaire
+            linecomment.id = `usercomment${usernameSansEspaces}`;
+            linecomment.style.display = "flex";
+            text.placeholder = `Commentaire pour ${userInscripted.Username}`;
+            checkbox.id = `commentcheck${usernameSansEspaces}`;
+            label.htmlFor = checkbox.id;
           } else {
             influenceplayer.textContent = "";
             intermediairy.textContent = "";
@@ -1110,6 +1200,10 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
             selectunit2.style.visibility = "hidden";
             selectunit3.style.visibility = "hidden";
             selectunit4.style.visibility = "hidden";
+            linecomment.style.display = "none";
+            linecomment.id = `usercommentvide`;
+            checkbox.id = `commentcheckvide`;
+            label.htmlFor = checkbox.id;
           }
           selectunit2.value = "";
           selectunit3.value = "";
@@ -1127,6 +1221,10 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
       selectunit2.style.visibility = "hidden";
       selectunit3.style.visibility = "hidden";
       selectunit4.style.visibility = "hidden";
+      linecomment.style.display = "none";
+      linecomment.id = `usercommentvide`;
+      checkbox.id = `commentcheckvide`;
+      label.htmlFor = checkbox.id;
     }
   });
 }

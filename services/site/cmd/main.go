@@ -88,16 +88,16 @@ func main() {
 	}
 }
 
-// Middleware pour ajouter les en-têtes de sécurité
+// Fonction pour ajouter les en-têtes de sécurité à toutes les pages
 func securityHeadersMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Oblige les navigateurs à utiliser HTTPS uniquement
 		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		// Sources autorisées
 		w.Header().Set("Content-Security-Policy", "default-src 'self'; connect-src 'self' https://discord.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com data:; script-src 'self' https://html2canvas.hertzen.com;")
-		// intégration iframe du site interdite
+		// Intégration iframe du site interdite
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
-		// Empêche le navigateur d’essayer de deviner le type MIME d’un fichier
+		// Empêche les navigateurs de deviner le type MIME d’un fichier et force à utiliser celui defini
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		// Envoie le 'Referer' (source des liens cliquer) seulement si la navigation est en HTTPS
 		w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
