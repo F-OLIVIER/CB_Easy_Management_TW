@@ -453,6 +453,11 @@ async function createExistGroupe(data, userIngroup, translate) {
   let divGroup = document.createElement("div");
   divGroup.classList.add("divgroup");
   divGroup.classList.add(groupName);
+  if (groupNumber % 2 == 0) {
+    divGroup.classList.add("grouppair");
+  } else {
+    divGroup.classList.add("groupimpair");
+  }
   divGroup.appendChild(namegroup(data, groupNumber, translate));
 
   for (let i = 0; i < 5; i++) {
@@ -471,6 +476,7 @@ async function createExistGroupe(data, userIngroup, translate) {
       currentUser.Unit2 = userIngroup[i].Unit2;
       currentUser.Unit3 = userIngroup[i].Unit3;
       currentUser.Unit4 = userIngroup[i].Unit4;
+      currentUser.commentaire = userIngroup[i].commentaire;
 
       // mise à jour de la divplace pour chaque joueur deja placé dans la liste des inscrits
       document.getElementById("player_" + userIngroup[i].Username.replace(/\s/g, "")).textContent = "✅";
@@ -488,7 +494,7 @@ async function createExistGroupe(data, userIngroup, translate) {
     checkbox.type = "checkbox";
     zonecheckbox.appendChild(checkbox);
     const label = document.createElement("label");
-    label.textContent = `Add commentaire`;
+    label.textContent = translate.create_group.create_group.comment.usercomment;
     label.htmlFor = checkbox.id;
     zonecheckbox.appendChild(label);
     linecomment.appendChild(zonecheckbox);
@@ -512,7 +518,7 @@ async function createExistGroupe(data, userIngroup, translate) {
       defaultoption.value = "";
       defaultoption.text = translate.create_group.select;
       linecomment.style.display = "none";
-      linecomment.id = `usercommentvide`;
+      text.id = `textusercomment`;
       checkbox.id = `commentcheckvide`;
       label.htmlFor = checkbox.id;
     } else {
@@ -536,6 +542,15 @@ async function createExistGroupe(data, userIngroup, translate) {
       }
     }
     divuser.appendChild(name);
+
+    let zoneWeapon = createHTMLElement("div", "zoneWeapon");
+    let cadre = createHTMLElement("img", "cadreweapon");
+    cadre.src = "./img/weapon/vide.png";
+    zoneWeapon.appendChild(cadre);
+    let weapon = createHTMLElement("img", "weapon");
+    weapon.src = "./img/weapon/vide.png";
+    zoneWeapon.appendChild(weapon);
+    divuser.appendChild(zoneWeapon);
 
     let influenceUnit = await createHTMLElement("div", "influenceUnit");
     await divuser.appendChild(influenceUnit);
@@ -566,6 +581,13 @@ async function createExistGroupe(data, userIngroup, translate) {
       }
 
       const usernameSansEspaces = infoUsersave.Username.replace(/\s/g, "");
+
+      cadre.src = "./img/weapon/cadre.png";
+      if (infoUsersave.GameCharacter.fr != undefined && infoUsersave.GameCharacter.fr != "") {
+        weapon.src = `./img/weapon/${infoUsersave.GameCharacter.fr}.png`;
+      } else {
+        weapon.src = `./img/weapon/vide.png`;
+      }
       influenceUnit.id = "influUnit" + usernameSansEspaces;
       influenceUnit.textContent = 0;
       intermediairy.textContent = "/";
@@ -573,9 +595,14 @@ async function createExistGroupe(data, userIngroup, translate) {
       influenceplayer.textContent = infoUsersave.Influence;
 
       // Zone de commentaire
-      linecomment.id = `usercomment${usernameSansEspaces}`;
       linecomment.style.display = "flex";
-      text.placeholder = `Commentaire pour ${infoUsersave.Username}`;
+      text.placeholder = `${translate.create_group.create_group.comment.placeholder} ${infoUsersave.Username}`;
+      if (currentUser.commentaire != undefined && currentUser.commentaire != "") {
+        checkbox.checked = true;
+        text.value = currentUser.commentaire;
+        text.style.display = "flex";
+      }
+      text.id = `textusercomment${usernameSansEspaces}`;
       checkbox.id = `commentcheck${usernameSansEspaces}`;
       label.htmlFor = checkbox.id;
 
@@ -601,6 +628,12 @@ async function createExistGroupe(data, userIngroup, translate) {
 
         MAJlistUserSelect();
 
+        cadre.src = "./img/weapon/cadre.png";
+        if (infoUsersave.GameCharacter.fr != undefined && infoUsersave.GameCharacter.fr != "") {
+          weapon.src = `./img/weapon/${infoUsersave.GameCharacter.fr}.png`;
+        } else {
+          weapon.src = `./img/weapon/vide.png`;
+        }
         influenceUnit.id = "influUnit";
         influenceUnit.textContent = "";
         intermediairy.textContent = "";
@@ -653,6 +686,12 @@ async function createExistGroupe(data, userIngroup, translate) {
             const userInscripted = data.ListInscripted[j];
             if (userInscripted.Username === userSelected) {
               const usernameSansEspaces2 = userInscripted.Username.replace(/\s/g, "");
+              cadre.src = "./img/weapon/cadre.png";
+              if (userInscripted.GameCharacter.fr != undefined && userInscripted.GameCharacter.fr != "") {
+                weapon.src = `./img/weapon/${userInscripted.GameCharacter.fr}.png`;
+              } else {
+                weapon.src = `./img/weapon/vide.png`;
+              }
               influenceUnit.id = "influUnit" + usernameSansEspaces2;
               influenceUnit.textContent = 0;
               intermediairy.textContent = "/";
@@ -672,28 +711,30 @@ async function createExistGroupe(data, userIngroup, translate) {
                 data.UserInfo.Language
               );
               // Zone de commentaire
-              linecomment.id = `usercomment${usernameSansEspaces2}`;
               linecomment.style.display = "flex";
-              text.placeholder = `Commentaire pour ${userInscripted.Username}`;
+              text.placeholder = `${translate.create_group.create_group.comment.placeholder} ${userInscripted.Username}`;
+              text.id = `textusercomment${userInscripted.Username}`;
               checkbox.id = `commentcheck${usernameSansEspaces2}`;
               label.htmlFor = checkbox.id;
               break;
             }
           }
         } else {
+          cadre.src = "./img/weapon/vide.png";
+          weapon.src = `./img/weapon/vide.png`;
           selectunit1.style.visibility = "hidden";
           selectunit2.style.visibility = "hidden";
           selectunit3.style.visibility = "hidden";
           selectunit4.style.visibility = "hidden";
           linecomment.style.display = "none";
-          linecomment.id = `usercommentvide`;
+          text.id = `textusercomment`;
           checkbox.id = `commentcheckvide`;
           label.htmlFor = checkbox.id;
         }
       });
     } else {
       // utilisateur non present
-      createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label);
+      createNewline(name, data, influenceplayer, intermediairy, influenceUnit, weapon, cadre, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label);
     }
 
     linedivuser.appendChild(divuser);
@@ -910,13 +951,17 @@ function createOneGroupe(data, translate) {
   let divGroup = document.createElement("div");
   divGroup.classList.add("divgroup");
   divGroup.classList.add(groupName);
+  if (groupNumber % 2 == 0) {
+    divGroup.classList.add("grouppair");
+  } else {
+    divGroup.classList.add("groupimpair");
+  }
   divGroup.appendChild(namegroup(data, groupNumber, translate));
 
   for (let i = 0; i < 5; i++) {
     let linedivuser = createHTMLElement("div", "linedivuser");
     let linecomment = createHTMLElement("div", "usercomment");
     linecomment.style.display = "none";
-    linecomment.id = `usercommentvide`;
     // Checkbox Zone de commentaire
     let zonecheckbox = createHTMLElement("div", "zonecheckbox");
     const checkbox = document.createElement("input");
@@ -924,13 +969,12 @@ function createOneGroupe(data, translate) {
     checkbox.type = "checkbox";
     zonecheckbox.appendChild(checkbox);
     const label = document.createElement("label");
-    label.textContent = `Add commentaire`;
+    label.textContent = translate.create_group.create_group.comment.usercomment;
     label.htmlFor = checkbox.id;
     zonecheckbox.appendChild(label);
     linecomment.appendChild(zonecheckbox);
     // Zone de texte commentaire
-    const text = document.createElement("input");
-    text.classList.add("textusercomment");
+    const text = createHTMLElement("input", "textusercomment");
     text.type = "text";
     text.style.display = "none";
     linecomment.appendChild(text);
@@ -959,6 +1003,14 @@ function createOneGroupe(data, translate) {
     }
     divuser.appendChild(name);
 
+    let zoneWeapon = createHTMLElement("div", "zoneWeapon");
+    let cadre = createHTMLElement("img", "cadreweapon");
+    cadre.src = "./img/weapon/vide.png";
+    zoneWeapon.appendChild(cadre);
+    let weapon = createHTMLElement("img", "weapon");
+    weapon.src = "./img/weapon/vide.png";
+    zoneWeapon.appendChild(weapon);
+    divuser.appendChild(zoneWeapon);
     let influenceUnit = createHTMLElement("div", "influenceUnit");
     divuser.appendChild(influenceUnit);
     let intermediairy = createHTMLElement("div", "intermediairy");
@@ -974,7 +1026,7 @@ function createOneGroupe(data, translate) {
     let unit4 = createHTMLElement("div", "unit4");
     divuser.appendChild(unit4);
 
-    createNewline(name, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label);
+    createNewline(name, data, influenceplayer, intermediairy, influenceUnit, weapon, cadre, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label);
 
     linedivuser.appendChild(divuser);
     linedivuser.appendChild(linecomment);
@@ -1090,7 +1142,7 @@ function namegroup(data, groupNumber, translate) {
 // --------------------------------------------------------
 // ------------ Fonction create eventlistener -------------
 // --------------------------------------------------------
-function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label) {
+function createNewline(divName, data, influenceplayer, intermediairy, influenceUnit, weapon, cadre, unit1, unit2, unit3, unit4, translate, linecomment, text, checkbox, label) {
   let selectunit1;
   let selectunit2;
   let selectunit3;
@@ -1100,11 +1152,14 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
     const userSelected = divName.value;
     MAJlistUserSelect();
 
+    cadre.src = "./img/weapon/cadre.png";
+    weapon.src = "./img/weapon/vide.png";
     influenceUnit.id = "influUnit";
     influenceUnit.textContent = "";
     intermediairy.textContent = "";
     influenceUnit.id = "influPlayer";
     influenceplayer.textContent = "";
+    text.id = "textusercomment";
 
     if (selectunit1 != undefined) {
       selectunit1.value = "";
@@ -1160,6 +1215,12 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
           }
 
           if (userSelected !== "") {
+            cadre.src = "./img/weapon/cadre.png";
+            if (userInscripted.GameCharacter.fr != undefined && userInscripted.GameCharacter.fr != "") {
+              weapon.src = `./img/weapon/${userInscripted.GameCharacter.fr}.png`;
+            } else {
+              weapon.src = `./img/weapon/vide.png`;
+            }
             // mise à jour des balises select avec les nouvelles unités
             updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectunit4, userSelected, translate);
             selectunit1.value = "";
@@ -1186,12 +1247,14 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
               data.UserInfo.Language
             );
             // Zone de commentaire
-            linecomment.id = `usercomment${usernameSansEspaces}`;
             linecomment.style.display = "flex";
-            text.placeholder = `Commentaire pour ${userInscripted.Username}`;
+            text.placeholder = `${translate.create_group.create_group.comment.placeholder} ${userInscripted.Username}`;
+            text.id = `textusercomment${usernameSansEspaces}`;
             checkbox.id = `commentcheck${usernameSansEspaces}`;
             label.htmlFor = checkbox.id;
           } else {
+            cadre.src = "./img/weapon/vide.png";
+            weapon.src = `./img/weapon/vide.png`;
             influenceplayer.textContent = "";
             intermediairy.textContent = "";
             influenceUnit.textContent = "";
@@ -1201,7 +1264,7 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
             selectunit3.style.visibility = "hidden";
             selectunit4.style.visibility = "hidden";
             linecomment.style.display = "none";
-            linecomment.id = `usercommentvide`;
+            text.id = "textusercomment";
             checkbox.id = `commentcheckvide`;
             label.htmlFor = checkbox.id;
           }
@@ -1212,6 +1275,8 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
         }
       }
     } else {
+      cadre.src = "./img/weapon/vide.png";
+      weapon.src = `./img/weapon/vide.png`;
       influenceUnit.id = "influUnit";
       influenceUnit.textContent = "";
       intermediairy.textContent = "";
@@ -1222,7 +1287,7 @@ function createNewline(divName, data, influenceplayer, intermediairy, influenceU
       selectunit3.style.visibility = "hidden";
       selectunit4.style.visibility = "hidden";
       linecomment.style.display = "none";
-      linecomment.id = `usercommentvide`;
+      text.id = `textusercomment`;
       checkbox.id = `commentcheckvide`;
       label.htmlFor = checkbox.id;
     }
@@ -1510,13 +1575,28 @@ async function saveGroup(optiontype) {
   divuserElements.forEach((divuserElement) => {
     let divuserObject = {};
 
+    // Récupération de l'input caché
     const inputElement = divuserElement.querySelector("input");
     const inputValue = inputElement ? inputElement.value : "";
     divuserObject["inputValue"] = inputValue;
 
+    // Récupération des valeurs des <select>
     const selectElements = divuserElement.querySelectorAll("select");
     const selectValues = Array.from(selectElements).map((select) => select.value);
     divuserObject["selectValues"] = selectValues;
+
+    // Récupération du commentaire utilisateur s’il est visible et activé
+    const zoneCommentaire = divuserElement.parentElement.querySelector(".usercomment");
+    if (zoneCommentaire) {
+      const checkbox = zoneCommentaire.querySelector("input[type='checkbox']");
+      const commentInput = zoneCommentaire.querySelector(".textusercomment");
+
+      if (checkbox && checkbox.checked && commentInput) {
+        divuserObject["commentaire"] = commentInput.value;
+      } else {
+        divuserObject["commentaire"] = "";
+      }
+    }
 
     dataToSend.push(divuserObject);
   });

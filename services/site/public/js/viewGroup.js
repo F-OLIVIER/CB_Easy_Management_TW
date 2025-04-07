@@ -38,7 +38,7 @@ function containerviewGroup(data, translate) {
   titledivuser.appendChild(titlename);
 
   let titleclass = createHTMLElement("div", "titleclass");
-  titleclass.textContent = translate.view_group.class;
+  // titleclass.textContent = translate.view_group.class;
   titledivuser.appendChild(titleclass);
 
   let divnameunit = document.createElement("div");
@@ -82,6 +82,11 @@ function containerviewGroup(data, translate) {
     let divGroup = document.createElement("div");
     divGroup.classList.add("divViewGroup");
     divGroup.classList.add(groupName);
+    if (groupNumber % 2 == 0) {
+      divGroup.classList.add("grouppair");
+    } else {
+      divGroup.classList.add("groupimpair");
+    }
 
     // Nom du groupe
     const divnameUserGroup = createHTMLElement("div", "divnamegroup" + groupNumber);
@@ -109,9 +114,21 @@ function containerviewGroup(data, translate) {
       divuser.appendChild(name);
 
       // classe player
-      let classplayer = createHTMLElement("div", "classplayer");
-      classplayer.textContent = currentPlayer.class[data.UserInfo.Language];
-      divuser.appendChild(classplayer);
+      // let classplayer = createHTMLElement("div", "classplayer");
+      // classplayer.textContent = currentPlayer.class[data.UserInfo.Language];
+      // divuser.appendChild(classplayer);
+      let zoneWeapon = createHTMLElement("div", "zoneWeapon");
+      let cadre = createHTMLElement("img", "cadreweapon");
+      cadre.src = "./img/weapon/cadre.png";
+      zoneWeapon.appendChild(cadre);
+      let weapon = createHTMLElement("img", "weapon");
+      if (currentPlayer.class.fr != undefined && currentPlayer.class.fr != "") {
+        weapon.src = `./img/weapon/${currentPlayer.class.fr}.png`;
+      } else {
+        weapon.src = `./img/weapon/vide.png`;
+      }
+      zoneWeapon.appendChild(weapon);
+      divuser.appendChild(zoneWeapon);
 
       // Unité du joueur
       let divlistUnit = createHTMLElement("div", "viewdivlistUnit");
@@ -151,7 +168,17 @@ function containerviewGroup(data, translate) {
       // ne pas afficher les lignes vide
       if (currentPlayer.Username != "") {
         divuser.appendChild(divlistUnit);
-        divGroup.appendChild(divuser);
+
+        let linedivuser = createHTMLElement("div", "linedivuser");
+        linedivuser.appendChild(divuser);
+
+        if (currentPlayer.commentaire != undefined && currentPlayer.commentaire != "") {
+          let linecomment = createHTMLElement("div", "linecomment");
+          linecomment.innerHTML = `ℹ️&nbsp;&nbsp; ${currentPlayer.commentaire}`;
+          linedivuser.appendChild(linecomment);
+        }
+
+        divGroup.appendChild(linedivuser);
       }
     }
     viewgroup.appendChild(divGroup);

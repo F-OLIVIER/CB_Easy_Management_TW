@@ -477,6 +477,7 @@ async function createGroupsTable(insertedID, db) {
         Unit2 VARCHAR(50) DEFAULT "",
         Unit3 VARCHAR(50) DEFAULT "",
         Unit4 VARCHAR(50) DEFAULT "",
+        Comment VARCHAR(500) DEFAULT "",
         FOREIGN KEY (User_ID) REFERENCES Users (ID)
       );`,
       `CREATE TABLE IF NOT EXISTS GroupTypeAtt${insertedID} (
@@ -487,6 +488,7 @@ async function createGroupsTable(insertedID, db) {
         Unit2 VARCHAR(50) DEFAULT "",
         Unit3 VARCHAR(50) DEFAULT "",
         Unit4 VARCHAR(50) DEFAULT "",
+        Comment VARCHAR(500) DEFAULT "",
         FOREIGN KEY (User_ID) REFERENCES Users (ID)
       );`,
       `CREATE TABLE IF NOT EXISTS GroupTypeDef${insertedID} (
@@ -497,6 +499,7 @@ async function createGroupsTable(insertedID, db) {
         Unit2 VARCHAR(50) DEFAULT "",
         Unit3 VARCHAR(50) DEFAULT "",
         Unit4 VARCHAR(50) DEFAULT "",
+        Comment VARCHAR(500) DEFAULT "",
         FOREIGN KEY (User_ID) REFERENCES Users (ID)
       );`,
       `CREATE TABLE IF NOT EXISTS NameGroupGvG${insertedID} (

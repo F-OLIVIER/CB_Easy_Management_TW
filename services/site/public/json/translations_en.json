@@ -209,6 +209,10 @@
       "filter": {
         "title": "Filter :"
       },
+      "comment": {
+        "usercomment": "Add comment",
+        "placeholder": "Comment for"
+      },
       "add_group": "➕ Add a new group",
       "save_group": "💾 Save groups",
       "group_type": {

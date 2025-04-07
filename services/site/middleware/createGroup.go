@@ -22,7 +22,7 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 	switch listGroup.Optiontype {
 	case "current":
 		requestDeleteDB = fmt.Sprintf("DELETE FROM GroupGvG%s", id_House)
-		requestInsertDB = fmt.Sprintf("INSERT INTO GroupGvG%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4) Values(?,?,?,?,?,?)", id_House)
+		requestInsertDB = fmt.Sprintf("INSERT INTO GroupGvG%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4,Comment) Values(?,?,?,?,?,?,?)", id_House)
 
 		notif.Content = data.ListLanguage{
 			FR: "Les groupes ont été enregistrés avec succès.",
@@ -30,7 +30,7 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 		}
 	case "SaveGroupTypeAtt":
 		requestDeleteDB = fmt.Sprintf("DELETE FROM GroupTypeAtt%s", id_House)
-		requestInsertDB = fmt.Sprintf("INSERT INTO GroupTypeAtt%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4) Values(?,?,?,?,?,?)", id_House)
+		requestInsertDB = fmt.Sprintf("INSERT INTO GroupTypeAtt%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4,Comment) Values(?,?,?,?,?,?,?)", id_House)
 
 		notif.Content = data.ListLanguage{
 			FR: "Les groupes ont été enregistrés avec succès en tant que groupe type attaque.",
@@ -38,7 +38,7 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 		}
 	case "SaveGroupTypeDef":
 		requestDeleteDB = fmt.Sprintf("DELETE FROM GroupTypeDef%s", id_House)
-		requestInsertDB = fmt.Sprintf("INSERT INTO GroupTypeDef%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4) Values(?,?,?,?,?,?)", id_House)
+		requestInsertDB = fmt.Sprintf("INSERT INTO GroupTypeDef%s (User_ID,GroupNumber,Unit1,Unit2,Unit3,Unit4,Comment) Values(?,?,?,?,?,?,?)", id_House)
 
 		notif.Content = data.ListLanguage{
 			FR: "Les groupes ont été enregistrés avec succès en tant que groupe type défense.",
@@ -111,7 +111,7 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 				groupNumber := strings.Replace(currentline.NameGroup, "group", "", 1)
 				stmt2, errdb := database.Prepare(requestInsertDB)
 				CheckErr("2- INSERT - Requete DB SaveCreateGroup", errdb)
-				stmt2.Exec(username_ID, groupNumber, unit1, unit2, unit3, unit4)
+				stmt2.Exec(username_ID, groupNumber, unit1, unit2, unit3, unit4, currentline.Comment)
 
 			}
 		}

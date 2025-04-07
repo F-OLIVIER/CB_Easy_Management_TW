@@ -743,8 +743,6 @@
 
 .inscriptedtitledivuser {
   font-size: 22px;
-  color: white;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .divconnected,
@@ -787,12 +785,16 @@
   width: 100%;
   border-radius: 15px;
   margin-bottom: 10px;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .divViewGroup {
   width: 100%;
   border-radius: 15px;
   overflow: hidden;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .divnamegroup {
@@ -804,8 +806,6 @@
 
 .namegroup {
   font-size: 30px;
-  color: black;
-  text-shadow: 1px 1px 5px rgb(255, 255, 255), 0 0 1em rgb(255, 255, 255), 0 0 0.2em rgb(255, 255, 255);
 }
 
 .divnamegroup input {
@@ -861,13 +861,19 @@
   display: flex;
   align-items: center;
   flex-direction: row;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  font-size: medium;
 }
 
-.linedivuser,
-.divuserviewgroup {
+.linedivuser {
   border-bottom: 1px solid black;
   box-sizing: border-box;
+}
+
+.linecomment {
+  text-align: left;
+  margin-left: 7%;
+  margin-bottom: 5px;
+  color: red;
 }
 
 .divuser {
@@ -916,7 +922,8 @@
 }
 
 .titleclass {
-  width: 10%;
+  /* width: 10%; */
+  width: 50px;
 }
 
 .titleinfluence {
@@ -934,8 +941,32 @@
 .influenceplayer,
 .influenceUnit {
   width: 40px;
-  padding-left: 10px;
+  padding-left: 5px;
   padding-right: 10px;
+}
+
+.zoneWeapon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+.cadreweapon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: auto;
+  z-index: 1;
+}
+.weapon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: auto;
+  z-index: 2;
 }
 
 .viewtitlename {
@@ -994,12 +1025,14 @@
   margin-bottom: 10px;
 }
 
-.group1,
-.viewgroup1 {
-  background-color: rgb(216, 202, 130);
+.groupimpair {
+  background-color: #b0b0b0;
+}
+.grouppair {
+  background-color: #555555;
 }
 
-.group1 {
+/* .group1 {
   color: white;
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
@@ -1007,55 +1040,10 @@
 .viewgroup1 {
   color: white;
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
-}
+} */
 
-.viewgroup1 .consultOff {
+.consultOff {
   background-color: #f98348;
-}
-
-.group2,
-.viewgroup2 {
-  background-color: #daf7a6;
-}
-
-.group3,
-.viewgroup3 {
-  background-color: #ff5733;
-}
-
-.group4,
-.viewgroup4 {
-  background-color: #f98348;
-}
-
-.group5,
-.viewgroup5 {
-  background-color: #f9c74f;
-}
-
-.group6,
-.viewgroup6 {
-  background-color: #90be6d;
-}
-
-.group7,
-.viewgroup7 {
-  background-color: #43aa8b;
-}
-
-.group8,
-.viewgroup8 {
-  background-color: #4d908e;
-}
-
-.group9,
-.viewgroup9 {
-  background-color: #577590;
-}
-
-.group10,
-.viewgroup10 {
-  background-color: #277da1;
 }
 
 .buttonAddGroup,
