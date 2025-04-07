@@ -573,6 +573,17 @@
   padding-bottom: 15px;
 }
 
+.modallinecontentpost,
+.modallinecontentcomment {
+  color: black;
+}
+
+.modallinecontentpostauthor,
+.modallinecontentcommentauthor {
+  font-size:medium;
+  font-style: italic;
+}
+
 .divCreatePost button {
   margin: 10px 0px;
   width: 90%;
@@ -626,6 +637,10 @@
   color: black;
 }
 
+.divTextareaComment #editorcomment {
+  height: 150px;
+}
+
 .post {
   width: calc(100% - 20px);
   margin: 10px;
@@ -633,7 +648,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #696969;
+  background-color: #6A6A6A;
   border: 1px solid white;
   border-radius: 10px;
   cursor: zoom-in;
@@ -641,6 +656,7 @@
 
 .titlepost {
   font-size: 30px;
+  color: black;
 }
 
 .infopost {
@@ -648,17 +664,20 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  font-size:medium;
+  font-style: italic;
 }
 
 .modalpost {
   position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  max-height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
 }
 
 .modalpost-content {
@@ -667,13 +686,14 @@
   flex-direction: column;
   justify-content: center;
   width: 90%;
+  height: 90%;
   max-height: 100%;
-  overflow-y: auto;  
+  padding-right: 20px;
   background-color: rgba(0, 0, 0, 0.8);
   border-radius: 50px;
   margin: 5% auto;
   padding: 20px;
-  border: 1px solid #888;
+  border: 1px solid white;
   border-radius: 25px;
 }
 
@@ -693,11 +713,37 @@
 .modaladdcommentspost {
   width: calc(100% - 40px);
   border: 1px solid white;
+  background-color: #B0B0B0;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: left;
+  white-space: normal;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modalcontentpost img,
+.modalcontentcomment img {
+  position: relative;
+  max-width: 80%;
+  height: auto;
+}
+
+.modalcommentspost {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.modalcontentcomment {
+  width: 85%;
+  border: 1px solid white;
   background-color: #888;
   border-radius: 20px;
   padding: 20px;
   text-align: left;
   white-space: normal;
+  margin-top: 10px;
 }
 
 .buttonNewComment {
@@ -706,13 +752,16 @@
 }
 
 .modalpostclose {
-  position: absolute;
-  top: 0px;
-  right: 20px;
+  position: sticky;
+  top: 8%;
+  right: 6%;
   color: white;
+  max-height: 25px;
   float: right;
   font-size: 40px;
   font-weight: bold;
+  z-index: 11;
+  pointer-events: auto;
 }
 
 .modalpostclose:hover,

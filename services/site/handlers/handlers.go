@@ -194,7 +194,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						gestion.Notification = utils.NewPost(r, currentUser.User_id, database)
 						sendHTML.Forum = utils.Forum(database)
 
-					case "/api/newcommentforum":
+					case "/api/newcommentforum/":
 						gestion.Notification = utils.NewComment(r, currentUser.User_id, database)
 						sendHTML.Forum = utils.Forum(database)
 

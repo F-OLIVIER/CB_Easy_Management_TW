@@ -9,6 +9,7 @@ export async function forum() {
     window.location.href = "/home";
   } else {
     const data = await fetchServer("forum/?house=" + currenthouse);
+    console.log("data : ", data);
     if (data.Gestion.Logged) {
       const translate = await loadTranslate(data.UserInfo.Language);
       containerforum(data, translate);
@@ -20,8 +21,6 @@ export async function forum() {
 
 function containerforum(data, translate) {
   communBlock(data, translate);
-
-  console.log("data : ", data);
 
   let Container = document.getElementById("Container");
   Container.innerHTML = "";
@@ -218,7 +217,6 @@ function displayListPost(listPost, language) {
   let contentpostsForum = createHTMLElement("div", "contentpostsForum");
   for (let index = 0; index < listPost.length; index++) {
     const currentPost = listPost[index];
-    console.log("currentPost : ", currentPost);
 
     let post = createHTMLElement("div", "post");
 
@@ -241,12 +239,15 @@ function displayListPost(listPost, language) {
     post.addEventListener("click", function () {
       const modal = document.getElementById("modalpost");
       modal.style.display = "flex";
-      showmodal(currentPost);
+      showmodal(currentPost, language);
 
       const closeBtn = document.getElementById("modalpostclose");
       closeBtn.addEventListener("click", function () {
         const modal = document.getElementById("modalpost");
         modal.style.display = "none";
+
+        document.getElementById("modaladdcommentspost").style.display = "none";
+        document.getElementById("buttondivCreateComment").textContent = "》 " + "Crée un nouveau commentaire";
       });
     });
   }
@@ -258,12 +259,13 @@ function basemodal() {
   modal.style.display = "none";
   let modalContent = document.createElement("div");
   modalContent.className = "modalpost-content";
-  let btnclose = createHTMLElement("span", "modalpostclose");
-  btnclose.innerHTML = "&times;";
-  modalContent.appendChild(btnclose);
   let titlepost = createHTMLElement("div", "modaltitlepost");
   modalContent.appendChild(titlepost);
   let contentpost = createHTMLElement("div", "modalcontentpost");
+  let content = createHTMLElement("div", "modallinecontentpost");
+  contentpost.appendChild(content);
+  let author = createHTMLElement("div", "modallinecontentpostauthor");
+  contentpost.appendChild(author);
   modalContent.appendChild(contentpost);
   let commentspost = createHTMLElement("div", "modalcommentspost");
   modalContent.appendChild(commentspost);
@@ -277,23 +279,38 @@ function basemodal() {
   let buttonNewComment = createHTMLElement("button", "buttonNewComment");
   buttonNewComment.textContent = "Publier le commentaire";
   addcommentspost.appendChild(buttonNewComment);
-
   modalContent.appendChild(addcommentspost);
+
   modal.appendChild(modalContent);
+
+  let btnclose = createHTMLElement("span", "modalpostclose");
+  btnclose.innerHTML = "&times;";
+  modal.appendChild(btnclose);
+
   return modal;
 }
 
-function showmodal(post) {
+function showmodal(post, language) {
   const titlepost = document.getElementById("modaltitlepost");
   titlepost.innerHTML = post.Title;
-  const contentpost = document.getElementById("modalcontentpost");
+  const contentpost = document.getElementById("modallinecontentpost");
   contentpost.innerHTML = post.Content;
+  const author = document.getElementById("modallinecontentpostauthor");
+  author.innerHTML = `Le ${formatDate(post.Date, language)} par ${post.Author}`;
+  const commentspost = document.getElementById("modalcommentspost");
+  commentspost.innerHTML = "";
 
-  if (post.comments != null) {
-    const commentspost = document.getElementById("modalcommentspost");
-    commentspost.innerHTML = "";
-    for (let index = 0; index < post.comments.length; index++) {
-      const currentComment = post.comments[index];
+  if (post.Comments != undefined) {
+    for (let index = 0; index < post.Comments.length; index++) {
+      const currentComment = post.Comments[index];
+      let comment = createHTMLElement("div", "modalcontentcomment");
+      let contentcurrentcomment = createHTMLElement("div", "modallinecontentcomment");
+      contentcurrentcomment.innerHTML = currentComment.Content;
+      comment.appendChild(contentcurrentcomment);
+      let authorcurrentcomment = createHTMLElement("div", "modallinecontentcommentauthor");
+      authorcurrentcomment.textContent = `Le ${formatDate(currentComment.Date, language)} par ${currentComment.Author}`;
+      comment.appendChild(authorcurrentcomment);
+      commentspost.appendChild(comment);
     }
   }
 
@@ -350,6 +367,16 @@ function formatDate(dateStr, language) {
 // -------------------------------------------------------
 function initQuillComment(id) {
   const wrapper = document.getElementById("divTextareaComment");
+  // Supprimer l'ancien éditeur s'il existe
+  const oldEditor = document.getElementById("editorcomment");
+  if (oldEditor) {
+    // Supprimer aussi la toolbar si elle existe juste avant
+    if (oldEditor.previousSibling && oldEditor.previousSibling.classList.contains("ql-toolbar")) {
+      oldEditor.previousSibling.remove();
+    }
+    oldEditor.remove();
+  }
+
   const editorContainer = document.createElement("div");
   editorContainer.id = "editorcomment";
   wrapper.appendChild(editorContainer);
@@ -380,11 +407,12 @@ function initQuillComment(id) {
         return;
       }
 
-      console.log("Contenu : ", postContent);
       let dataToSend = {
         ID: id,
         Content: postContent,
       };
+
+      console.log("dataToSend : ", dataToSend);
 
       await sendComment(dataToSend);
     }
@@ -410,6 +438,8 @@ async function sendComment(dataToSend) {
     .catch((error) => {
       console.error("Erreur avec les données:", error);
     });
+
+  console.log("update : ", update);
 
   if (update.Gestion.Logged && update.Gestion.Admin) {
     if (update.Gestion.Notification.Notif == true && update.Gestion.Notification.Type == "error") {

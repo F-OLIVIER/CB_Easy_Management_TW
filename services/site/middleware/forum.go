@@ -104,7 +104,7 @@ func NewComment(r *http.Request, author string, database *sql.DB) (notif data.No
 	err := json.NewDecoder(r.Body).Decode(&newcomment)
 	CheckErr("Erreur de décodage JSON NewPost", err)
 
-	if newcomment.Content != "" && !strings.Contains(strings.ToLower(newcomment.Content), "<script>") {
+	if newcomment.Content != "" && !strings.Contains(strings.ToLower(newcomment.Content), "<script>") && !strings.Contains(strings.ToLower(newcomment.Content), "</script>") {
 		stmt, err := database.Prepare("INSERT INTO Comments(Post_ID, Author, Date, Content) Values(?,?,?,?)")
 		CheckErr("2- INSERT NewComment", err)
 		stmt.Exec(newcomment.ID, author, time.Now(), newcomment.Content)

@@ -52,7 +52,7 @@ func main() {
 		"/api/updatelanguage/",
 		"/api/forum/",
 		"/api/newpostforum/",
-		"/api/newcommentforum",
+		"/api/newcommentforum/",
 	}
 	for _, route := range routes_ApiHandler {
 		mux.HandleFunc(route, handlers.ApiHandler)
