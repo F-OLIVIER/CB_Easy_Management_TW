@@ -50,6 +50,9 @@ func main() {
 		"/api/CheckAppAdmin/",
 		"/api/adminitrateBot/",
 		"/api/updatelanguage/",
+		"/api/forum/",
+		"/api/newpostforum/",
+		"/api/newcommentforum/",
 	}
 	for _, route := range routes_ApiHandler {
 		mux.HandleFunc(route, handlers.ApiHandler)
@@ -94,7 +97,13 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 		// Oblige les navigateurs à utiliser HTTPS uniquement
 		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 		// Sources autorisées
-		w.Header().Set("Content-Security-Policy", "default-src 'self'; connect-src 'self' https://discord.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://cdn.discordapp.com data:; script-src 'self' https://html2canvas.hertzen.com;")
+		w.Header().Set("Content-Security-Policy",
+			`default-src 'self'; 
+			connect-src 'self' https://discord.com; 
+			style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+			font-src 'self' https://fonts.gstatic.com;
+			img-src 'self' https://cdn.discordapp.com data:; 
+			script-src 'self' https://html2canvas.hertzen.com;`)
 		// Intégration iframe du site interdite
 		w.Header().Set("X-Frame-Options", "SAMEORIGIN")
 		// Empêche les navigateurs de deviner le type MIME d’un fichier et force à utiliser celui defini

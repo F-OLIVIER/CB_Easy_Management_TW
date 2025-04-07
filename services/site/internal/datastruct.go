@@ -111,6 +111,7 @@ type SendHTML struct {
 	Screen         []Screen
 	House          []Houses
 	Statistique    Stat
+	Forum          []Post
 }
 
 type Houses struct {
@@ -160,4 +161,16 @@ type SocketMessage struct {
 type Stat struct {
 	Houses   []Houses `json:"Houses"`
 	Nb_Table string   `json:"Nb_Table"`
+}
+
+type Post struct {
+	ID      string `json:"ID"`
+	Title   string `json:"Title"`
+	Date    string `json:"Date"`
+	Author  string `json:"Author"`
+	Content string `json:"Content"`
+	Valid   bool   `json:"Valid"`
+	Archive bool   `json:"Archive"`
+
+	Comments []*Post
 }

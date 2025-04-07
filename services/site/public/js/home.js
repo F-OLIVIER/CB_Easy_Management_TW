@@ -28,9 +28,9 @@ function containerhome(data, translate) {
 
   let Container = document.getElementById("Container");
   Container.innerHTML = "";
+  let containerhouses = createHTMLElement("div", "containerhouses");
 
   // Liste des maisons du joueurs
-  let containerhouses = createHTMLElement("div", "containerhouses");
   let titlehouses = document.createElement("h1");
   if (data.House.length == 1) {
     titlehouses.textContent = translate.home.houses.one;
@@ -90,29 +90,29 @@ function listLink(Container, data, translate) {
   let subcontainerUser = createHTMLElement("div", "subcontainerUser");
 
   // page characterCard
-  let divcharacterCard = createHTMLElement("div", "divcharacterCard")
+  let divcharacterCard = createHTMLElement("div", "divcharacterCard");
   // Button fiche personnage
   let buttoncharacterCard = createHTMLElement("div", "buttoncharacterCard");
   buttoncharacterCard.textContent = translate.home.characterChard;
   // Lien
   let linkCharacterCard = createHTMLElement("a", "no-style-link");
-  linkCharacterCard.classList.add("linkCharacterCard")
+  linkCharacterCard.classList.add("linkCharacterCard");
   linkCharacterCard.href = "/characterCard";
   buttoncharacterCard.appendChild(linkCharacterCard);
-  divcharacterCard.appendChild(buttoncharacterCard)
+  divcharacterCard.appendChild(buttoncharacterCard);
   subcontainerUser.appendChild(divcharacterCard);
 
   // page caserne
-  let divcaserne = createHTMLElement("div", "divcaserne")
+  let divcaserne = createHTMLElement("div", "divcaserne");
   // Button caserne
   let buttonCaserne = createHTMLElement("div", "buttonCaserne");
   buttonCaserne.textContent = translate.home.caserne;
   // Lien
   let linkCaserne = createHTMLElement("a", "no-style-link");
-  linkCaserne.classList.add("linkCaserne")
+  linkCaserne.classList.add("linkCaserne");
   linkCaserne.href = "/caserne";
   buttonCaserne.appendChild(linkCaserne);
-  divcaserne.appendChild(buttonCaserne)
+  divcaserne.appendChild(buttonCaserne);
   subcontainerUser.appendChild(divcaserne);
 
   subContainer.appendChild(subcontainerUser);
@@ -152,6 +152,24 @@ function listLink(Container, data, translate) {
     subContainer.appendChild(subcontainerOfficier);
   }
 
+  // Forum
+  let subcontainerForum = createHTMLElement("div", "subcontainerForum");
+  let titlesubcontainerForum = createHTMLElement("div", "titlesubcontainerForum");
+  titlesubcontainerForum.textContent = translate.home.commun_zone;
+  subcontainerForum.appendChild(titlesubcontainerForum);
+
+  // page d'Forumistration
+  let linkAppForum = createHTMLElement("a", "no-style-link");
+  linkAppForum.href = "/Appforum";
+  let buttonAppForum = createHTMLElement("div", "buttonAppForum");
+  buttonAppForum.href = "/Appforum";
+  buttonAppForum.textContent = translate.home.forum;
+  linkAppForum.appendChild(buttonAppForum);
+
+  subcontainerForum.appendChild(linkAppForum);
+  subContainer.appendChild(subcontainerForum);
+
+  // Espace Admin
   if (data.Gestion.Admin) {
     let subcontainerAdmin = createHTMLElement("div", "subcontainerAdmin");
     let titlesubcontainerAdmin = createHTMLElement("div", "titlesubcontainerAdmin");

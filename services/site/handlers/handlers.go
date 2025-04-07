@@ -172,11 +172,31 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 					House:    list_houses,
 				}
 
-				// Additional information to be sent depending on the page
+				// --------------------------------------------------
+				// --------------- Espace dédié maison --------------
+				// --------------------------------------------------
 				if id_House != "" {
 					switch r.URL.Path {
+
+					case "/api/home/":
+						// Rien à ajouter
+
 					case "/api/updatelanguage/":
 						utils.UpdateLanguage(r, currentUser.User_id, database)
+
+					// --------------------------------------------------
+					// --------------- Espace multi-maison --------------
+					// --------------------------------------------------
+					case "/api/forum/":
+						sendHTML.Forum = utils.Forum(database)
+
+					case "/api/newpostforum/":
+						gestion.Notification = utils.NewPost(r, currentUser.User_id, database)
+						sendHTML.Forum = utils.Forum(database)
+
+					case "/api/newcommentforum/":
+						gestion.Notification = utils.NewComment(r, currentUser.User_id, database)
+						sendHTML.Forum = utils.Forum(database)
 
 					// --------------------------------------------------
 					// ----------------- Fiche personnage ---------------
@@ -186,8 +206,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						sendHTML.UserInfo = utils.Charactercard(cookie.Value, database)
 
 					case "/api/updateCharacterCard/":
-						notif := utils.UpdateCharacter(r, currentUser, database)
-						gestion.Notification = notif
+						gestion.Notification = utils.UpdateCharacter(r, currentUser, database)
 						gestion.ListClass = utils.ListClass(database)
 						sendHTML.UserInfo = utils.Charactercard(cookie.Value, database)
 
@@ -216,9 +235,6 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						} else {
 							return
 						}
-
-					case "/api/home/":
-						// Rien à ajouter
 
 					default:
 						// Ne rien faire
