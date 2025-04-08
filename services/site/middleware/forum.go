@@ -69,8 +69,8 @@ func NewPost(r *http.Request, author string, database *sql.DB) (notif data.Notif
 	if errdb != sql.ErrNoRows {
 		CheckErr("1- Requete DB NewPost", errdb)
 	}
-
 	stmt1.QueryRow(newpost.Title).Scan(&exist)
+
 	if exist != 0 {
 		notif.Type = "error"
 		notif.Content = data.ListLanguage{
@@ -84,8 +84,8 @@ func NewPost(r *http.Request, author string, database *sql.DB) (notif data.Notif
 
 		notif.Type = "success"
 		notif.Content = data.ListLanguage{
-			FR: "Votre post a été créé avec succès.",
-			EN: "Your post has been successfully created.",
+			FR: "Votre post a été créé avec succès. Il sera visible dès qu'un administrateur le validera.",
+			EN: "Your post has been successfully created. It will be visible as soon as an administrator validates it.",
 		}
 	} else {
 		notif.Type = "error"
@@ -120,6 +120,93 @@ func NewComment(r *http.Request, author string, database *sql.DB) (notif data.No
 			FR: "Erreur lors de la création du commentaire.",
 			EN: "Error when creating the comment.",
 		}
+	}
+
+	notif.Notif = true
+	return notif
+}
+
+func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Notif) {
+	var modifpost data.Post
+	err := json.NewDecoder(r.Body).Decode(&modifpost)
+	CheckErr("Erreur de décodage JSON NewPost", err)
+
+	exist := 0
+	titlepost := ""
+	stmt1, errdb := database.Prepare("SELECT ID, Title FROM Forum WHERE ID = ?")
+	if errdb != sql.ErrNoRows {
+		CheckErr("1- Requete DB NewPost", errdb)
+	}
+	stmt1.QueryRow(modifpost.ID).Scan(&exist, &titlepost)
+
+	if exist == 0 {
+		notif.Type = "error"
+		notif.Content = data.ListLanguage{
+			FR: "Erreur 500, post inexistant.",
+			EN: "500 error, post does not exist.",
+		}
+
+	} else if modifpost.Content == "report" {
+		LogFile("Post id " + modifpost.ID + " signaler. Titre : " + titlepost)
+
+		message := data.SocketMessage{
+			Type: "report",
+			Content: map[string]string{
+				"fr": "Post id " + modifpost.ID + " signaler : \nTitre :" + titlepost,
+				"en": "Post id " + modifpost.ID + " report : \nTitle" + titlepost,
+			},
+		}
+		SendMessage(message)
+
+	} else {
+
+		requestdb := ""
+		switch modifpost.Content {
+		case "valid":
+			requestdb = "UPDATE Forum SET Valid = 1 WHERE ID = ?"
+
+			notif.Type = "success"
+			notif.Content = data.ListLanguage{
+				FR: "Post validé avec succès.",
+				EN: "Post successfully validated.",
+			}
+
+		case "archivage":
+			requestdb = "UPDATE Forum SET Archive = 1 WHERE ID = ?"
+
+			notif.Type = "success"
+			notif.Content = data.ListLanguage{
+				FR: "Post archivé avec succès.",
+				EN: "Post successfully archived.",
+			}
+
+		case "delete":
+			requestdb = "DELETE FROM Forum WHERE ID = ?"
+
+			stmtcomments, err := database.Prepare("DELETE FROM Comments WHERE Post_ID = ?")
+			CheckErr("2- Update Modifpost", err)
+			stmtcomments.Exec(modifpost.ID)
+
+			notif.Type = "success"
+			notif.Content = data.ListLanguage{
+				FR: "Post et commentaires supprimé avec succès.",
+				EN: "Post and comments successfully deleted.",
+			}
+
+		default:
+			notif.Type = "error"
+			notif.Content = data.ListLanguage{
+				FR: "Modification du post non gérer.",
+				EN: "Modification of the post not managed.",
+			}
+		}
+
+		if requestdb != "" {
+			stmtforum, err := database.Prepare(requestdb)
+			CheckErr("2- Update Modifpost", err)
+			stmtforum.Exec(modifpost.ID)
+		}
+
 	}
 
 	notif.Notif = true

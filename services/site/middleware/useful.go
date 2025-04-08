@@ -31,6 +31,16 @@ func CheckErr(str string, err error) {
 	}
 }
 
+func LogFile(str string) {
+	logFile, fileErr := os.OpenFile("logfile.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if fileErr != nil {
+		log.Fatalf("Erreur lors de l'ouverture du fichier de log : %v", fileErr)
+	}
+	defer logFile.Close()
+	log.SetOutput(logFile)
+	log.Printf("%s", str)
+}
+
 // Permet de charger en local une images envoyé via un formulaire (Format supporté : jpeg/jpg, png, gif)
 func UploadPicture(fileUpload multipart.File, header *multipart.FileHeader, filePath string) bool {
 	typeFile1 := strings.ToLower(filePath[len(filePath)-3:])

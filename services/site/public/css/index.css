@@ -504,7 +504,9 @@
 .buttonconsulcaserne,
 .buttonAppForum,
 .buttondivCreatePost,
-.buttondivCreateComment {
+.buttondivArchivePost,
+.buttondivCreateComment,
+.buttonreglesforum {
   width: 100%;
   padding-bottom: 5px;
   font-size: 50px;
@@ -539,7 +541,9 @@
 .buttonconsulcaserne:hover,
 .buttonAppForum:hover,
 .buttondivCreatePost:hover,
-.buttondivCreateComment:hover {
+.buttondivArchivePost:hover,
+.buttondivCreateComment:hover,
+.buttonreglesforum:hover {
   background-color: rgb(63, 85, 116, 0.8);
   border: 1px solid white;
 }
@@ -555,7 +559,9 @@
 
 .descriptionForum,
 .divCreatePost,
-.postsForum {
+.postsForum,
+.validpostsForum,
+.archivepostsForum {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -566,8 +572,16 @@
   margin-bottom: 20px;
 }
 
+.contentpostsForum,
+.contentvalidpostsForum,
+.contentpostsForum {
+  padding-bottom: 20px;
+}
+
 .titlepostsForum,
-.titledescriptionForum {
+.titledescriptionForum,
+.validtitlepostsForum,
+.archivetitlepostsForum {
   font-size: 50px;
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
   padding-bottom: 15px;
@@ -575,12 +589,13 @@
 
 .modallinecontentpost,
 .modallinecontentcomment {
-  color: black;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .modallinecontentpostauthor,
 .modallinecontentcommentauthor {
-  font-size:medium;
+  font-size: medium;
   font-style: italic;
 }
 
@@ -590,11 +605,42 @@
 }
 
 .buttondivCreatePost,
-.buttondivCreateComment {
+.buttondivCreateComment,
+.buttondivArchivePost,
+.buttonreglesforum {
   width: calc(100% - 60px);
   margin: 30px;
   display: flex;
   justify-content: center;
+}
+
+.buttonreglesforum {
+  margin-top: 10px;
+}
+
+.contentReglesForum {
+  flex-direction: column;
+  text-align: left;
+  padding-left: 5%;
+  padding-top: 0px;
+  padding-bottom: 35px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+}
+
+.contentReglesForum h3 {
+  margin-bottom: 0px;
+}
+.contentReglesForum ul {
+  padding-left: 50px;
+  margin: 0px;
+}
+
+.archivepostsForum,
+.divArchivePost {
+  width: 100%;
+}
+.divArchivePost div {
+  width: calc(100% - 20px);
 }
 
 .encartCreatePost {
@@ -642,13 +688,13 @@
 }
 
 .post {
-  width: calc(100% - 20px);
-  margin: 10px;
+  width: calc(100% - 40px);
+  margin: 8px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #6A6A6A;
+  background-color: #6a6a6a;
   border: 1px solid white;
   border-radius: 10px;
   cursor: zoom-in;
@@ -656,7 +702,8 @@
 
 .titlepost {
   font-size: 30px;
-  color: black;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .infopost {
@@ -664,7 +711,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  font-size:medium;
+  font-size: medium;
   font-style: italic;
 }
 
@@ -674,6 +721,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
+  min-height: 100vh;
   max-height: 100%;
   overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.5);
@@ -702,6 +750,24 @@
   margin-bottom: 20px;
 }
 
+.modalencartbutton {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 5px;
+}
+
+.modalencartbutton button {
+  min-width: 30%;
+  padding: 5px 10px;
+}
+
+.contentpostsForum {
+  display: flex;
+  flex-direction: column-reverse;
+  margin-bottom: 0px;
+}
+
 .modaladdcommentspost {
   display: flex;
   flex-direction: column;
@@ -713,7 +779,7 @@
 .modaladdcommentspost {
   width: calc(100% - 40px);
   border: 1px solid white;
-  background-color: #B0B0B0;
+  background-color: #6a6a6a;
   border-radius: 20px;
   padding: 20px;
   text-align: left;
@@ -1984,8 +2050,10 @@
   .buttonStat,
   .buttonconsulcaserne,
   .buttondivCreatePost,
+  .buttondivArchivePost,
   .buttondivCreateComment,
-  .postsForum {
+  .postsForum,
+  .buttonreglesforum {
     font-size: 25px;
   }
 

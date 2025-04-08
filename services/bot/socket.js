@@ -35,6 +35,10 @@ export function socket() {
             new_information(jsonMessage.content);
             break;
 
+          case "report":
+            msgChanDiscord("1359090617870848050", "1359086033689509939", jsonMessage.content);
+            break;
+
           default:
             console.log("Message reçu (non traité):", jsonMessage);
             logToFile(`Socket Message reçu (non traité): ${jsonMessage}`, "err_socket.log");

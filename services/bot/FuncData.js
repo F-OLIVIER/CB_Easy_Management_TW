@@ -3,6 +3,7 @@ import { CreateOrUpdateUser, deleteUser, getUserDiscordRole, isMember } from "./
 import { deleteHouse, get_ID_House, list_ID_house } from "./config_house.js";
 import { client } from "./Constant.js";
 import { logToFile } from "./log.js";
+import { listUserBan } from "./config.js";
 
 // module nodejs et npm
 
@@ -23,7 +24,7 @@ export async function checkAllUser() {
       const members = await serv.members.fetch();
 
       for (const member of members.values()) {
-        if (!member.user.bot) {
+        if (!member.user.bot && !listUserBan.includes(member.user.id)) {
           await PlayerCreateOrUpdate(ID_Server, member.user.id);
         }
       }
@@ -66,7 +67,10 @@ export async function PlayerCreateOrUpdate(ServerID, MemberID) {
     let CreateOrUpdateinDB = false;
     // check de la liste des roles discord pour garder le plus élevé pour les permissions du site internet
     let MemberRole = "";
-    if (allListRole.includes(list_role.ID_Group_Officier)) {
+    if (listUserBan.includes(MemberID)) {
+      deleteUser(ServerID, MemberID);
+      return;
+    } else if (allListRole.includes(list_role.ID_Group_Officier)) {
       MemberRole = "Officier";
       CreateOrUpdateinDB = true;
     } else if (allListRole.includes(list_role.ID_Group_Users)) {

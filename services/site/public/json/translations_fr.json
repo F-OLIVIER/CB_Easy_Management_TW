@@ -243,6 +243,70 @@
     "back": "Revenir à l'édition des groupes"
   },
 
+  "forum": {
+    "title": "Espace forum multi-maisons",
+    "description": "Ce forum vous permet de communiquer avec les administrateurs de Easy Management TW.</br>Vous pouvez ainsi remonter des bugs ou proposer des améliorations.",
+    "regle": {
+      "display": "Régles du forum",
+      "hide": "Masquer les régles du forum",
+      "description": [
+        "1. Respect et courtoisie",
+        "<li>Soyez respectueux.</li>",
+        "<li>Pas d'insultes, de propos haineux, racistes, sexistes ou discriminatoires.</li>",
+        "<li>Les attaques personnelles ne sont pas tolérées.</li>",
+        "2. Pas de spam",
+        "<li>Ne postez pas de messages publicitaires ou promotionnels.</li>",
+        "<li>Évitez les messages en double ou inutiles.</li>",
+        "3. Restez dans le sujet",
+        "<li>Restez pertinent par rapport au sujet du fil de discussion.</li>",
+        "<li>Créez un nouveau sujet si nécessaire.</li>",
+        "4. Utilisez un langage clair",
+        "<li>Évitez le langage SMS ou trop d’abréviations.</li>",
+        "5. Pas de contenu illégal ou offensant",
+        "<li>Ne partagez pas de liens ou contenus pirates, pornographiques, violents ou illicites.</li>",
+        "<li>Le non-respect des régles entraînera un bannissement permanant.</li>",
+        "6. Respect de la vie privée",
+        "<li>Ne postez pas d’informations personnelles (votre adresse, numéro de téléphone, etc.) ni celles d’autrui.</li>",
+        "7. Modération",
+        "<li>Respectez les décisions des modérateurs et administrateurs.</li>"
+      ]
+    },
+    "valid": {
+      "title": "Post à valider",
+      "button": "Valider le post"
+    },
+    "create": {
+      "display": "Créer un nouveau post",
+      "hide": "Masquer la création de post",
+      "title": "Titre du post",
+      "placeholder": "Saisissez votre texte...",
+      "button": "Publier le post"
+    },
+    "actif": "Post actif du Forum",
+    "post": {
+      "date": "Date",
+      "author": "Auteur",
+      "on": "Le",
+      "by": "par",
+      "delete": "Supprimer le post"
+    },
+    "comment": {
+      "display": "Ecrire une réponse",
+      "hide": "Masquer la création de réponse",
+      "button": "Publier la réponse"
+    },
+    "archive": {
+      "display": "Afficher les posts archivé",
+      "hide": "Masquer les posts archivé",
+      "button": "Archiver le post"
+    },
+    "report": "Signaler le fil de discussion",
+    "error": {
+      "notext": "merci de compléter tous les champs",
+      "prohibe": "Contenu interdit !!!"
+    }
+  },
+
   "mention": {
     "intro": {
       "title": "Introduction",

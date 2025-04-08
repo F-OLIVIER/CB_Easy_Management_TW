@@ -9,7 +9,7 @@ export async function forum() {
     window.location.href = "/home";
   } else {
     const data = await fetchServer("forum/?house=" + currenthouse);
-    console.log("data : ", data);
+    // console.log("data : ", data);
     if (data.Gestion.Logged) {
       const translate = await loadTranslate(data.UserInfo.Language);
       containerforum(data, translate);
@@ -26,46 +26,117 @@ function containerforum(data, translate) {
   Container.innerHTML = "";
   let containerforum = createHTMLElement("div", "containerforum");
 
+  containerforum.appendChild(basemodal(translate));
+
   // Encart description
   let descriptionForum = createHTMLElement("div", "descriptionForum");
   let titlesubcontainerForum = createHTMLElement("div", "titledescriptionForum");
-  titlesubcontainerForum.textContent = "Espace forum multi-maisons";
+  titlesubcontainerForum.textContent = translate.forum.title;
   descriptionForum.appendChild(titlesubcontainerForum);
   let contentdescriptionForum = createHTMLElement("div", "contentdescriptionForum");
-  contentdescriptionForum.textContent = "Description ici (utilité, etc...)";
+  contentdescriptionForum.innerHTML = translate.forum.description;
   descriptionForum.appendChild(contentdescriptionForum);
+  let buttonreglesforum = createHTMLElement("div", "buttonreglesforum");
+  buttonreglesforum.textContent = "》 " + translate.forum.regle.display;
+  descriptionForum.appendChild(buttonreglesforum);
+  let contentReglesForum = reglesForum(translate.forum.regle.description);
+  contentReglesForum.style.display = "none";
+  descriptionForum.appendChild(contentReglesForum);
   containerforum.appendChild(descriptionForum);
 
   // Div de création d'une publication
   let divCreatePost = createHTMLElement("div", "divCreatePost");
   let buttondivCreatePost = createHTMLElement("div", "buttondivCreatePost");
-  buttondivCreatePost.textContent = "》 " + "Crée un nouveau post";
+  buttondivCreatePost.textContent = "》 " + translate.forum.create.display;
   divCreatePost.appendChild(buttondivCreatePost);
-  divCreatePost.appendChild(createPost());
+  divCreatePost.appendChild(createPost(translate));
   containerforum.appendChild(divCreatePost);
 
   // Div pour afficher les posts existant
   let postsForum = createHTMLElement("div", "postsForum");
   let titlepostsForum = createHTMLElement("div", "titlepostsForum");
-  titlepostsForum.textContent = "Post du Forum";
+  titlepostsForum.textContent = translate.forum.actif;
   postsForum.appendChild(titlepostsForum);
-  let contentpostsForum = displayListPost(data.Forum, data.UserInfo.Language);
+  let contentpostsForum = displayListPost(data.Gestion.Admin, data.Forum, data.UserInfo.Language, true, false, translate);
   postsForum.appendChild(contentpostsForum);
   containerforum.appendChild(postsForum);
 
-  containerforum.appendChild(basemodal());
+  // Div pour afficher les posts a valider
+  if (data.Gestion.Admin) {
+    let validpostsForum = createHTMLElement("div", "validpostsForum");
+    let validtitlepostsForum = createHTMLElement("div", "validtitlepostsForum");
+    validtitlepostsForum.textContent = translate.forum.valid.title;
+    validpostsForum.appendChild(validtitlepostsForum);
+    let validcontentpostsForum = displayListPost(data.Gestion.Admin, data.Forum, data.UserInfo.Language, false, false, translate);
+    validpostsForum.appendChild(validcontentpostsForum);
+    containerforum.appendChild(validpostsForum);
+  }
+
+  // Div pour afficher les posts archivé
+  let archivepostsForum = createHTMLElement("div", "archivepostsForum");
+  let buttondivArchivePost = createHTMLElement("div", "buttondivArchivePost");
+  buttondivArchivePost.textContent = "》 " + translate.forum.archive.display;
+  archivepostsForum.appendChild(buttondivArchivePost);
+
+  let divArchivePost = createHTMLElement("div", "divArchivePost");
+  divArchivePost.style.display = "none";
+  let archivecontentpostsForum = displayListPost(data.Gestion.Admin, data.Forum, data.UserInfo.Language, true, true, translate);
+  divArchivePost.appendChild(archivecontentpostsForum);
+  archivepostsForum.appendChild(divArchivePost);
+
+  containerforum.appendChild(archivepostsForum);
 
   Container.appendChild(containerforum);
 
-  activateButton();
+  activateButton(translate);
 
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
 }
 
+function reglesForum(description) {
+  let contentReglesForum = createHTMLElement("div", "contentReglesForum");
+
+  let currentList = null;
+
+  for (const item of description) {
+    if (!item.includes("<li>")) {
+      const title = document.createElement("h3");
+      title.textContent = item;
+      contentReglesForum.appendChild(title);
+
+      currentList = document.createElement("ul");
+      contentReglesForum.appendChild(currentList);
+    } else {
+      const temp = document.createElement("div");
+      temp.innerHTML = item;
+      const li = temp.firstChild;
+      if (currentList) currentList.appendChild(li);
+    }
+  }
+
+  return contentReglesForum;
+}
+
 let timerThrottlebutton = 0;
-function activateButton() {
+function activateButton(translate) {
+  document.getElementById("buttonreglesforum").addEventListener("click", () => {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+
+      let contentReglesForum = document.getElementById("contentReglesForum");
+      if (contentReglesForum.style.display == "none") {
+        contentReglesForum.style.display = "flex";
+        document.getElementById("buttonreglesforum").textContent = "》 " + translate.forum.regle.hide;
+      } else {
+        contentReglesForum.style.display = "none";
+        document.getElementById("buttonreglesforum").textContent = "》 " + translate.forum.regle.display;
+      }
+    }
+  });
+
   document.getElementById("buttondivCreatePost").addEventListener("click", () => {
     const now = new Date();
     if (now - timerThrottlebutton > 500) {
@@ -74,10 +145,26 @@ function activateButton() {
       let encartNewpost = document.getElementById("encartCreatePost");
       if (encartNewpost.style.display == "none") {
         encartNewpost.style.display = "flex";
-        document.getElementById("buttondivCreatePost").textContent = "》 " + "Masquer la création de post";
+        document.getElementById("buttondivCreatePost").textContent = "》 " + translate.forum.create.hide;
       } else {
         encartNewpost.style.display = "none";
-        document.getElementById("buttondivCreatePost").textContent = "》 " + "Crée un nouveau post";
+        document.getElementById("buttondivCreatePost").textContent = "》 " + translate.forum.create.display;
+      }
+    }
+  });
+
+  document.getElementById("buttondivArchivePost").addEventListener("click", () => {
+    const now = new Date();
+    if (now - timerThrottlebutton > 500) {
+      timerThrottlebutton = now;
+
+      let divArchivePost = document.getElementById("divArchivePost");
+      if (divArchivePost.style.display == "none") {
+        divArchivePost.style.display = "flex";
+        document.getElementById("buttondivArchivePost").textContent = "》 " + translate.forum.archive.hide;
+      } else {
+        divArchivePost.style.display = "none";
+        document.getElementById("buttondivArchivePost").textContent = "》 " + translate.forum.archive.display;
       }
     }
   });
@@ -86,13 +173,13 @@ function activateButton() {
 // -------------------------------------------------------
 // ------------------ Création d'un post -----------------
 // -------------------------------------------------------
-function createPost() {
+function createPost(translate) {
   let encartCreatePost = createHTMLElement("div", "encartCreatePost");
   encartCreatePost.style.display = "none";
 
   let divtitlenewPost = createHTMLElement("div", "divtitlenewPost");
   let titlenewPost = createHTMLElement("div", "titlenewPost");
-  titlenewPost.textContent = "Titre du post :";
+  titlenewPost.textContent = translate.forum.create.title + " : ";
   divtitlenewPost.appendChild(titlenewPost);
   let inputtitlenewPost = createHTMLElement("input", "inputtitlenewPost");
   inputtitlenewPost.type = "text";
@@ -102,16 +189,16 @@ function createPost() {
 
   let divTextarea = createHTMLElement("div", "divTextarea");
   encartCreatePost.appendChild(divTextarea);
-  loadQuillAndInit();
+  loadQuillAndInit(translate);
 
   let buttonNewPost = createHTMLElement("button", "buttonNewPost");
-  buttonNewPost.textContent = "Publier";
+  buttonNewPost.textContent = translate.forum.create.button;
   encartCreatePost.appendChild(buttonNewPost);
 
   return encartCreatePost;
 }
 
-export function loadQuillAndInit() {
+export function loadQuillAndInit(translate) {
   // 1. Charger la CSS
   const quillCss = document.createElement("link");
   quillCss.rel = "stylesheet";
@@ -122,12 +209,12 @@ export function loadQuillAndInit() {
   const quillScript = document.createElement("script");
   quillScript.src = "https://cdn.quilljs.com/1.3.6/quill.js";
   quillScript.onload = () => {
-    initQuill();
+    initQuill(translate);
   };
   document.body.appendChild(quillScript);
 }
 
-function initQuill() {
+function initQuill(translate) {
   const wrapper = document.getElementById("divTextarea");
 
   const editorContainer = document.createElement("div");
@@ -137,7 +224,7 @@ function initQuill() {
 
   const quill = new Quill("#editor", {
     theme: "snow",
-    placeholder: "Saisissez votre texte...",
+    placeholder: translate.forum.create.placeholder,
     modules: {
       toolbar: [
         ["bold", "italic", "underline", "strike", "code"],
@@ -158,13 +245,18 @@ function initQuill() {
       const postTitle = document.getElementById("inputtitlenewPost").value;
       const postContent = quill.root.innerHTML;
 
-      if (postTitle.trim() === "" || postContent.trim() === "") {
-        showNotification("merci de completer tous les champs", "error");
+      const isEmptyHtml = (html) => {
+        // Quill retourne par defaut des balise "<p></p>" quand vide
+        return html.replace(/<[^>]*>/g, "").trim() === "";
+      };
+
+      if (isEmptyHtml(postTitle) || isEmptyHtml(postContent)) {
+        showNotification(translate.forum.error.notext, "error");
         return;
       }
 
       if (postContent.includes("<script>") || postContent.includes("</script>")) {
-        showNotification("Contenu interdit !!!", "error");
+        showNotification(translate.forum.error.prohibe, "error");
         return;
       }
 
@@ -173,88 +265,100 @@ function initQuill() {
         Content: postContent,
       };
 
-      await sendPost(dataToSend);
+      await sendData("newpostforum", dataToSend);
     }
   });
-}
-
-async function sendPost(dataToSend) {
-  const currenthouse = localStorage.getItem("user_house");
-
-  const update = await fetch(adressAPI + "newpostforum/?house=" + currenthouse, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(dataToSend),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Erreur de réseau: ${response.status}`);
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("Erreur avec les données:", error);
-    });
-
-  if (update.Gestion.Logged && update.Gestion.Admin) {
-    if (update.Gestion.Notification.Notif == true && update.Gestion.Notification.Type == "error") {
-      showNotification(update.Gestion.Notification.content[update.UserInfo.Language], update.Gestion.Notification.Type);
-      return;
-    }
-    const translate = await loadTranslate(update.UserInfo.Language);
-    containerforum(update, translate);
-  } else {
-    fetchlogout();
-  }
 }
 
 // -------------------------------------------------------
 // ----------------- Affichage des posts -----------------
 // -------------------------------------------------------
-function displayListPost(listPost, language) {
+function displayListPost(admin, listPost, language, optionvalidation, optionarchivage, translate) {
   let contentpostsForum = createHTMLElement("div", "contentpostsForum");
   for (let index = 0; index < listPost.length; index++) {
     const currentPost = listPost[index];
+    if (currentPost.Valid == optionvalidation && currentPost.Archive != optionarchivage) {
+      let post = createHTMLElement("div", "post");
 
-    let post = createHTMLElement("div", "post");
+      let title = createHTMLElement("div", "titlepost");
+      title.textContent = currentPost.Title;
+      post.appendChild(title);
 
-    let title = createHTMLElement("div", "titlepost");
-    title.textContent = currentPost.Title;
-    post.appendChild(title);
+      let infoPost = createHTMLElement("div", "infopost");
+      let date = createHTMLElement("div", "datepost");
+      date.textContent = `${translate.forum.post.date} : ${formatDate(currentPost.Date, language)}`;
+      infoPost.appendChild(date);
 
-    let infoPost = createHTMLElement("div", "infopost");
-    let date = createHTMLElement("div", "datepost");
-    date.textContent = `Date : ${formatDate(currentPost.Date, language)}`;
-    infoPost.appendChild(date);
+      let author = createHTMLElement("div", "authorpost");
+      author.textContent = `${translate.forum.post.author} : ${currentPost.Author}`;
+      infoPost.appendChild(author);
 
-    let author = createHTMLElement("div", "authorpost");
-    author.textContent = `Auteur : ${currentPost.Author}`;
-    infoPost.appendChild(author);
+      post.appendChild(infoPost);
+      contentpostsForum.appendChild(post);
 
-    post.appendChild(infoPost);
-    contentpostsForum.appendChild(post);
-
-    post.addEventListener("click", function () {
-      const modal = document.getElementById("modalpost");
-      modal.style.display = "flex";
-      showmodal(currentPost, language);
-
-      const closeBtn = document.getElementById("modalpostclose");
-      closeBtn.addEventListener("click", function () {
+      post.addEventListener("click", function () {
         const modal = document.getElementById("modalpost");
-        modal.style.display = "none";
+        modal.style.display = "flex";
+        showmodal(currentPost, admin, language, translate);
 
-        document.getElementById("modaladdcommentspost").style.display = "none";
-        document.getElementById("buttondivCreateComment").textContent = "》 " + "Crée un nouveau commentaire";
+        const closeBtn = document.getElementById("modalpostclose");
+        closeBtn.addEventListener("click", function () {
+          const modal = document.getElementById("modalpost");
+          modal.style.display = "none";
+
+          document.getElementById("modaladdcommentspost").style.display = "none";
+          if (currentPost.Valid && !currentPost.Archive) {
+            document.getElementById("buttondivCreateComment").style.display = "none";
+            document.getElementById("buttondivCreateComment").textContent = "》 " + translate.forum.comment.display;
+          } else {
+            document.getElementById("buttondivCreateComment").style.display = "flex";
+          }
+        });
       });
-    });
+    } else if (currentPost.Valid == optionvalidation && currentPost.Archive == optionarchivage) {
+      let post = createHTMLElement("div", "post");
+
+      let title = createHTMLElement("div", "titlepost");
+      title.textContent = currentPost.Title;
+      post.appendChild(title);
+
+      let infoPost = createHTMLElement("div", "infopost");
+      let date = createHTMLElement("div", "datepost");
+      date.textContent = `${translate.forum.post.date} : ${formatDate(currentPost.Date, language)}`;
+      infoPost.appendChild(date);
+
+      let author = createHTMLElement("div", "authorpost");
+      author.textContent = `${translate.forum.post.author} : ${currentPost.Author}`;
+      infoPost.appendChild(author);
+
+      post.appendChild(infoPost);
+      contentpostsForum.appendChild(post);
+
+      post.addEventListener("click", function () {
+        const modal = document.getElementById("modalpost");
+        modal.style.display = "flex";
+        showmodal(currentPost, admin, language, translate);
+
+        const closeBtn = document.getElementById("modalpostclose");
+        closeBtn.addEventListener("click", function () {
+          const modal = document.getElementById("modalpost");
+          modal.style.display = "none";
+
+          document.getElementById("modaladdcommentspost").style.display = "none";
+          if (currentPost.Valid && !currentPost.Archive) {
+            document.getElementById("buttondivCreateComment").style.display = "none";
+            document.getElementById("buttondivCreateComment").textContent = "》 " + translate.forum.comment.display;
+          } else {
+            document.getElementById("buttondivCreateComment").style.display = "flex";
+          }
+        });
+      });
+    }
   }
   return contentpostsForum;
 }
 
-function basemodal() {
+function basemodal(translate) {
   let modal = createHTMLElement("div", "modalpost");
   modal.style.display = "none";
   let modalContent = document.createElement("div");
@@ -267,17 +371,19 @@ function basemodal() {
   let author = createHTMLElement("div", "modallinecontentpostauthor");
   contentpost.appendChild(author);
   modalContent.appendChild(contentpost);
+  let encartbutton = createHTMLElement("div", "modalencartbutton");
+  modalContent.appendChild(encartbutton);
   let commentspost = createHTMLElement("div", "modalcommentspost");
   modalContent.appendChild(commentspost);
   let buttondivCreateComment = createHTMLElement("div", "buttondivCreateComment");
-  buttondivCreateComment.textContent = "》 " + "Crée un nouveau commentaire";
+  buttondivCreateComment.textContent = "》 " + translate.forum.comment.display;
   modalContent.appendChild(buttondivCreateComment);
   let addcommentspost = createHTMLElement("div", "modaladdcommentspost");
   addcommentspost.style.display = "none";
   let divTextarea = createHTMLElement("div", "divTextareaComment");
   addcommentspost.appendChild(divTextarea);
   let buttonNewComment = createHTMLElement("button", "buttonNewComment");
-  buttonNewComment.textContent = "Publier le commentaire";
+  buttonNewComment.textContent = translate.forum.comment.button;
   addcommentspost.appendChild(buttonNewComment);
   modalContent.appendChild(addcommentspost);
 
@@ -290,13 +396,13 @@ function basemodal() {
   return modal;
 }
 
-function showmodal(post, language) {
+function showmodal(post, admin, language, translate) {
   const titlepost = document.getElementById("modaltitlepost");
   titlepost.innerHTML = post.Title;
   const contentpost = document.getElementById("modallinecontentpost");
   contentpost.innerHTML = post.Content;
   const author = document.getElementById("modallinecontentpostauthor");
-  author.innerHTML = `Le ${formatDate(post.Date, language)} par ${post.Author}`;
+  author.innerHTML = `${translate.forum.post.on} ${formatDate(post.Date, language)} ${translate.forum.post.by} ${post.Author}`;
   const commentspost = document.getElementById("modalcommentspost");
   commentspost.innerHTML = "";
 
@@ -308,29 +414,46 @@ function showmodal(post, language) {
       contentcurrentcomment.innerHTML = currentComment.Content;
       comment.appendChild(contentcurrentcomment);
       let authorcurrentcomment = createHTMLElement("div", "modallinecontentcommentauthor");
-      authorcurrentcomment.textContent = `Le ${formatDate(currentComment.Date, language)} par ${currentComment.Author}`;
+      authorcurrentcomment.textContent = `${translate.forum.post.on} ${formatDate(currentComment.Date, language)} ${translate.forum.post.by} ${currentComment.Author}`;
       comment.appendChild(authorcurrentcomment);
       commentspost.appendChild(comment);
     }
   }
 
-  initQuillComment(post.ID);
+  showButton(post.ID, admin, post.Valid, post.Archive, translate);
 
-  document.getElementById("buttondivCreateComment").addEventListener("click", () => {
-    const now = new Date();
-    if (now - timerThrottlebutton > 500) {
-      timerThrottlebutton = now;
-
-      let encartNewComment = document.getElementById("modaladdcommentspost");
-      if (encartNewComment.style.display == "none") {
-        encartNewComment.style.display = "flex";
-        document.getElementById("buttondivCreateComment").textContent = "》 " + "Masquer la création de commentaire";
-      } else {
-        encartNewComment.style.display = "none";
-        document.getElementById("buttondivCreateComment").textContent = "》 " + "Crée un nouveau commentaire";
-      }
+  // Supprimer l'ancien éditeur s'il existe
+  const oldEditor = document.getElementById("editorcomment");
+  if (oldEditor) {
+    // Supprimer aussi la toolbar si elle existe juste avant
+    if (oldEditor.previousSibling && oldEditor.previousSibling.classList.contains("ql-toolbar")) {
+      oldEditor.previousSibling.remove();
     }
-  });
+    oldEditor.remove();
+  }
+
+  if (!post.Archive && post.Valid) {
+    document.getElementById("buttondivCreateComment").style.display = "flex";
+    initQuillComment(post.ID);
+
+    document.getElementById("buttondivCreateComment").addEventListener("click", () => {
+      const now = new Date();
+      if (now - timerThrottlebutton > 500) {
+        timerThrottlebutton = now;
+
+        let encartNewComment = document.getElementById("modaladdcommentspost");
+        if (encartNewComment.style.display == "none") {
+          encartNewComment.style.display = "flex";
+          document.getElementById("buttondivCreateComment").textContent = "》 " + translate.forum.comment.hide;
+        } else {
+          encartNewComment.style.display = "none";
+          document.getElementById("buttondivCreateComment").textContent = "》 " + translate.forum.comment.display;
+        }
+      }
+    });
+  } else {
+    document.getElementById("buttondivCreateComment").style.display = "none";
+  }
 }
 
 function formatDate(dateStr, language) {
@@ -363,20 +486,80 @@ function formatDate(dateStr, language) {
 }
 
 // -------------------------------------------------------
+// ---------------------- Bouttons -----------------------
+// -------------------------------------------------------
+function showButton(idpost, admin = false, valid, archive, translate) {
+  let listbutton = document.getElementById("modalencartbutton");
+  listbutton.innerHTML = "";
+
+  if (admin) {
+    if (!valid) {
+      // Bouton de validation
+      let buttonvalid = createHTMLElement("button", "forumbuttonvalid");
+      buttonvalid.textContent = translate.forum.valid.button;
+      buttonvalid.id = idpost;
+      listbutton.appendChild(buttonvalid);
+
+      buttonvalid.addEventListener("click", () => {
+        let dataToSend = {
+          ID: idpost,
+          Content: "valid",
+        };
+        sendData("modifpostforum", dataToSend);
+      });
+    } else if (!archive) {
+      // Boutton d'achivage
+      let buttonarchivage = createHTMLElement("button", "forumbuttonarchivage");
+      buttonarchivage.textContent = translate.forum.archive.button;
+      buttonarchivage.id = idpost;
+      listbutton.appendChild(buttonarchivage);
+
+      buttonarchivage.addEventListener("click", () => {
+        let dataToSend = {
+          ID: idpost,
+          Content: "archivage",
+        };
+        sendData("modifpostforum", dataToSend);
+      });
+    }
+
+    // Boutton de suppression
+    let buttonsuppression = createHTMLElement("button", "forumbuttonsuppression");
+    buttonsuppression.textContent = translate.forum.post.delete;
+    buttonsuppression.id = idpost;
+    listbutton.appendChild(buttonsuppression);
+
+    buttonsuppression.addEventListener("click", () => {
+      let dataToSend = {
+        ID: idpost,
+        Content: "delete",
+      };
+      sendData("modifpostforum", dataToSend);
+    });
+  }
+
+  if (valid && !archive) {
+    // Bouton de signalement
+    let buttonsignaler = createHTMLElement("button", "forumbuttonsignaler");
+    buttonsignaler.textContent = translate.forum.report;
+    buttonsignaler.id = idpost;
+    listbutton.appendChild(buttonsignaler);
+
+    buttonsignaler.addEventListener("click", () => {
+      let dataToSend = {
+        ID: idpost,
+        Content: "report",
+      };
+      sendData("modifpostforum", dataToSend);
+    });
+  }
+}
+
+// -------------------------------------------------------
 // ----------------- Commentaire de post -----------------
 // -------------------------------------------------------
 function initQuillComment(id) {
   const wrapper = document.getElementById("divTextareaComment");
-  // Supprimer l'ancien éditeur s'il existe
-  const oldEditor = document.getElementById("editorcomment");
-  if (oldEditor) {
-    // Supprimer aussi la toolbar si elle existe juste avant
-    if (oldEditor.previousSibling && oldEditor.previousSibling.classList.contains("ql-toolbar")) {
-      oldEditor.previousSibling.remove();
-    }
-    oldEditor.remove();
-  }
-
   const editorContainer = document.createElement("div");
   editorContainer.id = "editorcomment";
   wrapper.appendChild(editorContainer);
@@ -403,7 +586,7 @@ function initQuillComment(id) {
 
       const postContent = quill.root.innerHTML;
       if (postContent.includes("<script>") || postContent.includes("</script>")) {
-        showNotification("Contenu interdit !!!", "error");
+        showNotification(translate.forum.error.prohibe, "error");
         return;
       }
 
@@ -412,17 +595,15 @@ function initQuillComment(id) {
         Content: postContent,
       };
 
-      console.log("dataToSend : ", dataToSend);
-
-      await sendComment(dataToSend);
+      await sendData("newcommentforum", dataToSend);
     }
   });
 }
 
-async function sendComment(dataToSend) {
+async function sendData(option, dataToSend) {
   const currenthouse = localStorage.getItem("user_house");
 
-  const update = await fetch(adressAPI + "newcommentforum/?house=" + currenthouse, {
+  const update = await fetch(adressAPI + option + "/?house=" + currenthouse, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -438,8 +619,6 @@ async function sendComment(dataToSend) {
     .catch((error) => {
       console.error("Erreur avec les données:", error);
     });
-
-  console.log("update : ", update);
 
   if (update.Gestion.Logged && update.Gestion.Admin) {
     if (update.Gestion.Notification.Notif == true && update.Gestion.Notification.Type == "error") {

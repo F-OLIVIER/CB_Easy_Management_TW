@@ -243,6 +243,70 @@
     "back": "Back to editing groups"
   },
 
+  "forum": {
+    "title": "Multi-house forum space",
+    "description": "This forum allows you to communicate with Easy Management TW administrators.</br>So you can report bugs or suggest improvements.",
+    "regle": {
+      "display": "Forum rules",
+      "hide": "Hide forum rules",
+      "description": [
+        "1. Respect and courtesy",
+        "<li>Show respect.</li>",
+        "<li>No insults, hateful, racist, sexist or discriminatory comments.</li>",
+        "<li>Personal attacks are not tolerated.</li>",
+        "2. No spam",
+        "<li>Do not post advertising or promotional messages.</li>",
+        "<li>Avoid duplicate or unnecessary messages.</li>",
+        "3. Keep to the subject",
+        "<li>Remain relevant to the subject of the thread.</li>",
+        "<li>Create a new subject if necessary.</li>",
+        "4. Use clear language",
+        "<li>Avoid SMS language or too many abbreviations.</li>",
+        "5. No illegal or offensive content",
+        "<li>Do not share pirate, pornographic, violent or illegal links or content.</li>",
+        "<li>Failure to comply with the rules will result in a permanent ban.</li>",
+        "6. Respect for privacy",
+        "<li>Do not post personal information (your address, telephone number, etc.) or that of others.</li>",
+        "7. Moderation",
+        "<li>Respect the decisions of the moderators and administrators.</li>"
+      ]
+    },
+    "valid": {
+      "title": "Post to be validated",
+      "button": "Validate post"
+    },
+    "create": {
+      "display": "Create a new post",
+      "hide": "Hide post creation",
+      "title": "Post title",
+      "placeholder": "Enter your text...",
+      "button": "Publish post"
+    },
+    "actif": "Active forum post",
+    "post": {
+      "date": "Date",
+      "author": "Author",
+      "on": "On",
+      "by": "by",
+      "delete": "Delete post"
+    },
+    "comment": {
+      "display": "Write a reply",
+      "hide": "Hide reply creation",
+      "button": "Publish reply"
+    },
+    "archive": {
+      "display": "Show archived posts",
+      "hide": "Hide archived posts",
+      "button": "Archive post"
+    },
+    "report": "Report thread",
+    "error": {
+      "notext": "Please complete all fields",
+      "prohibe": "Banned content !!!"
+    }
+  },
+
   "mention": {
     "intro": {
       "title": "Introduction",

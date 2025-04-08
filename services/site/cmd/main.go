@@ -53,6 +53,7 @@ func main() {
 		"/api/forum/",
 		"/api/newpostforum/",
 		"/api/newcommentforum/",
+		"/api/modifpostforum/",
 	}
 	for _, route := range routes_ApiHandler {
 		mux.HandleFunc(route, handlers.ApiHandler)

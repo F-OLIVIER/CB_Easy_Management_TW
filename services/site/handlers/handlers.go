@@ -198,6 +198,10 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						gestion.Notification = utils.NewComment(r, currentUser.User_id, database)
 						sendHTML.Forum = utils.Forum(database)
 
+					case "/api/modifpostforum/":
+						gestion.Notification = utils.Modifpost(r, currentUser.User_id, database)
+						sendHTML.Forum = utils.Forum(database)
+
 					// --------------------------------------------------
 					// ----------------- Fiche personnage ---------------
 					// --------------------------------------------------
