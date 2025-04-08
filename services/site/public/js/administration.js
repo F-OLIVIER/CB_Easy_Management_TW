@@ -253,37 +253,68 @@ function containerAppAdmin(data, translate) {
   // -----------------------------------------------
   // -------- Message d'information Discord --------
   // -----------------------------------------------
-  let divinformationDiscord = createHTMLElement("div", "divinformationDiscord");
-  let titleinformationDiscord = createHTMLElement("div", "titleinformationDiscord");
-  titleinformationDiscord.textContent = "Send information Discord";
-  divinformationDiscord.appendChild(titleinformationDiscord);
+  if (data.Statistique) {
+    let divinformationDiscord = createHTMLElement("div", "divinformationDiscord");
+    let titleinformationDiscord = createHTMLElement("div", "titleinformationDiscord");
+    titleinformationDiscord.textContent = "Send information Discord";
+    divinformationDiscord.appendChild(titleinformationDiscord);
 
-  let forminformationDiscord = document.createElement("form");
-  forminformationDiscord.id = "forminformationDiscord";
-  forminformationDiscord.className = "forminformationDiscord";
-  // informationDiscord
-  let input_informationDiscord_en = createHTMLElement("textarea", "informationDiscordEN");
-  input_informationDiscord_en.placeholder = "Information Discord (English)";
-  input_informationDiscord_en.required = true;
-  forminformationDiscord.appendChild(input_informationDiscord_en);
-  let input_informationDiscord_fr = createHTMLElement("textarea", "informationDiscordFR");
-  input_informationDiscord_fr.placeholder = "Information Discord (French)";
-  input_informationDiscord_fr.required = true;
-  forminformationDiscord.appendChild(input_informationDiscord_fr);
+    let forminformationDiscord = document.createElement("form");
+    forminformationDiscord.id = "forminformationDiscord";
+    forminformationDiscord.className = "forminformationDiscord";
+    // informationDiscord
+    let input_informationDiscord_en = createHTMLElement("textarea", "informationDiscordEN");
+    input_informationDiscord_en.placeholder = "Information Discord (English)";
+    input_informationDiscord_en.required = true;
+    forminformationDiscord.appendChild(input_informationDiscord_en);
+    let input_informationDiscord_fr = createHTMLElement("textarea", "informationDiscordFR");
+    input_informationDiscord_fr.placeholder = "Information Discord (French)";
+    input_informationDiscord_fr.required = true;
+    forminformationDiscord.appendChild(input_informationDiscord_fr);
 
-  let buttoninformationDiscord = createHTMLElement("button", "buttoninformationDiscord");
-  buttoninformationDiscord.textContent = "Send information Discord";
-  buttoninformationDiscord.type = "submit";
-  forminformationDiscord.appendChild(buttoninformationDiscord);
+    let buttoninformationDiscord = createHTMLElement("button", "buttoninformationDiscord");
+    buttoninformationDiscord.textContent = "Send information Discord all houses";
+    buttoninformationDiscord.type = "submit";
+    forminformationDiscord.appendChild(buttoninformationDiscord);
 
-  divinformationDiscord.appendChild(forminformationDiscord);
-  subContainer.appendChild(divinformationDiscord);
+    divinformationDiscord.appendChild(forminformationDiscord);
+    subContainer.appendChild(divinformationDiscord);
+
+    // -----------------------------------------------
+    // --------- Message privée Discord (DM) ---------
+    // -----------------------------------------------
+    let divDmDiscord = createHTMLElement("div", "divinformationDiscord");
+    let titleDmDiscord = createHTMLElement("div", "titleinformationDiscord");
+    titleDmDiscord.textContent = "Send Dm Discord";
+    divDmDiscord.appendChild(titleDmDiscord);
+
+    let formDmDiscord = document.createElement("form");
+    formDmDiscord.id = "formDmDiscord";
+    formDmDiscord.className = "formDmDiscord";
+    // DmDiscord
+    let inputDmDiscord = createHTMLElement("input", "inputDmDiscord");
+    inputDmDiscord.placeholder = "ID User to send DM";
+    inputDmDiscord.required = true;
+    formDmDiscord.appendChild(inputDmDiscord);
+    let input_DmDiscord_en = createHTMLElement("textarea", "DmDiscord");
+    input_DmDiscord_en.placeholder = "Dm Discord (French or English ?)";
+    input_DmDiscord_en.required = true;
+    formDmDiscord.appendChild(input_DmDiscord_en);
+
+    let buttonDmDiscord = createHTMLElement("button", "buttonDmDiscord");
+    buttonDmDiscord.textContent = "Send Dm Discord";
+    buttonDmDiscord.type = "submit";
+    formDmDiscord.appendChild(buttonDmDiscord);
+
+    divDmDiscord.appendChild(formDmDiscord);
+    subContainer.appendChild(divDmDiscord);
+  }
 
   let Container = document.getElementById("Container");
   Container.innerHTML = "";
   Container.appendChild(subContainer);
 
-  addEventOnAllButton(data.ListUnit, data.Gestion.ListUnitType);
+  addEventOnAllButton(data.ListUnit, data.Gestion.ListUnitType, data.Statistique);
 
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
@@ -294,7 +325,7 @@ function containerAppAdmin(data, translate) {
 }
 
 let timerThrottlebutton = 0;
-function addEventOnAllButton(listUnit, ListUnitType) {
+function addEventOnAllButton(listUnit, ListUnitType, acces) {
   // Ajout d'une nouvelle unité
   document.getElementById("formNewUnit").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -476,7 +507,7 @@ function addEventOnAllButton(listUnit, ListUnitType) {
   document.getElementById("buttonNewclass").addEventListener("click", async (event) => {
     event.preventDefault();
     // fenetre de confirmation
-    if (document.getElementById("nameNewclassEN").value !== "" && document.getElementById("nameNewclassFR").value !== "") {
+    if (document.getElementById("nameNewclassEN").value.trim() !== "" && document.getElementById("nameNewclassFR").value.trim() !== "") {
       const userConfirmed = await confirmwindows(`Confirm the addition of the weapon "${document.getElementById("nameNewclassEN").value}" ?`);
       if (userConfirmed) {
         const now = new Date();
@@ -490,21 +521,43 @@ function addEventOnAllButton(listUnit, ListUnitType) {
     }
   });
 
-  // Envoie d'une information Discord
-  document.getElementById("forminformationDiscord").addEventListener("submit", async (event) => {
-    event.preventDefault();
-    // fenetre de confirmation
-    if (document.getElementById("informationDiscordEN").value !== "" && document.getElementById("informationDiscordFR").value !== "") {
-      const userConfirmed = await confirmwindows(`Confirm send information Discord ?`);
-      if (userConfirmed) {
-        const now = new Date();
-        if (now - timerThrottlebutton > 500) {
-          timerThrottlebutton = now;
-          adminitrateBot("buttoninformationDiscord");
+  if (acces) {
+    // Envoie d'une information Discord
+    document.getElementById("forminformationDiscord").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      // fenetre de confirmation
+      if (document.getElementById("informationDiscordEN").value.trim() !== "" && document.getElementById("informationDiscordFR").value.trim() !== "") {
+        const userConfirmed = await confirmwindows(`Confirm send information Discord ?`);
+        if (userConfirmed) {
+          const now = new Date();
+          if (now - timerThrottlebutton > 500) {
+            timerThrottlebutton = now;
+            adminitrateBot("buttoninformationDiscord");
+          }
         }
+      } else {
+        showNotification("Please complete all fields.", "error");
       }
-    }
-  });
+    });
+
+    // Envoie d'un DM Discord
+    document.getElementById("formDmDiscord").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      // fenetre de confirmation
+      if (document.getElementById("inputDmDiscord").value.trim() !== "" && document.getElementById("DmDiscord").value.trim() !== "") {
+        const userConfirmed = await confirmwindows(`Confirm send DM Discord ?`);
+        if (userConfirmed) {
+          const now = new Date();
+          if (now - timerThrottlebutton > 500) {
+            timerThrottlebutton = now;
+            adminitrateBot("buttonDmDiscord");
+          }
+        }
+      } else {
+        showNotification("Please complete all fields.", "error");
+      }
+    });
+  }
 }
 
 // option et le name du button cliquer
@@ -514,8 +567,8 @@ async function adminitrateBot(option) {
   if (option === "buttonNewclass") {
     dataToSend.newWeapon = {};
     dataToSend.informationDiscord = false;
-    dataToSend.newWeapon.en = document.getElementById("nameNewclassEN").value;
-    dataToSend.newWeapon.fr = document.getElementById("nameNewclassFR").value;
+    dataToSend.newWeapon.en = document.getElementById("nameNewclassEN").value.trim();
+    dataToSend.newWeapon.fr = document.getElementById("nameNewclassFR").value.trim();
     if (dataToSend.newWeapon.en == "" || dataToSend.newWeapon.fr == "") {
       showNotification("Please complete all weapon fields.", "error");
       return;
@@ -524,8 +577,18 @@ async function adminitrateBot(option) {
   } else if (option === "buttoninformationDiscord") {
     dataToSend.newWeapon = {};
     dataToSend.informationDiscord = true;
-    dataToSend.newWeapon.en = document.getElementById("informationDiscordEN").value;
-    dataToSend.newWeapon.fr = document.getElementById("informationDiscordFR").value;
+    dataToSend.newWeapon.en = document.getElementById("informationDiscordEN").value.trim();
+    dataToSend.newWeapon.fr = document.getElementById("informationDiscordFR").value.trim();
+    if (dataToSend.newWeapon.en == "" || dataToSend.newWeapon.fr == "") {
+      showNotification("Please complete all information fields.", "error");
+      return;
+    }
+    sendData(dataToSend);
+  } else if (option === "buttonDmDiscord") {
+    dataToSend.newWeapon = {};
+    dataToSend.dmDiscord = true;
+    dataToSend.newWeapon.en = document.getElementById("inputDmDiscord").value.trim();
+    dataToSend.newWeapon.fr = document.getElementById("DmDiscord").value.trim();
     if (dataToSend.newWeapon.en == "" || dataToSend.newWeapon.fr == "") {
       showNotification("Please complete all information fields.", "error");
       return;

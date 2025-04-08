@@ -350,7 +350,7 @@ func UpdateAdministration(r *http.Request, database *sql.DB) (notif data.Notif) 
 	err := json.NewDecoder(r.Body).Decode(&datajson)
 	CheckErr("Erreur de décodage JSON SaveCreateGroup", err)
 
-	if !datajson.Informationdiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" { // ajout d'une nouvelle arme de héros
+	if !datajson.Informationdiscord && !datajson.DmDiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" { // ajout d'une nouvelle arme de héros
 		// insertion de la nouvelle arme dans la db
 		stmt, err := database.Prepare(`INSERT INTO ListGameCharacter(ClasseFR, ClasseEN) VALUES(?,?);`)
 		CheckErr("1- INSERT NewWeapon in UpdateAdministration ", err)
@@ -370,7 +370,7 @@ func UpdateAdministration(r *http.Request, database *sql.DB) (notif data.Notif) 
 			EN: "New weapon added successfully.",
 		}
 
-	} else if datajson.Informationdiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" {
+	} else if datajson.Informationdiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" { // Information Discord
 		message := data.SocketMessage{
 			Type: "informationdiscord",
 			Content: map[string]string{
@@ -385,7 +385,21 @@ func UpdateAdministration(r *http.Request, database *sql.DB) (notif data.Notif) 
 			FR: "Information Discord envoyé avec succès.",
 			EN: "Discord information sent successfully.",
 		}
+	} else if datajson.DmDiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" {
+		message := data.SocketMessage{
+			Type: "dm_discord",
+			Content: map[string]string{
+				"userid": datajson.NewWeapon.EN,
+				"msg":    datajson.NewWeapon.FR,
+			},
+		}
+		SendMessage(message)
 
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "DM Discord envoyé avec succès.",
+			EN: "DM Discord send successfully.",
+		}
 	} else {
 		notif.Type = "error"
 		notif.Content = data.ListLanguage{

@@ -28,7 +28,7 @@ function containerforum(data, translate) {
 
   containerforum.appendChild(basemodal(translate));
 
-  // Encart description
+  // Encart régles forum
   let descriptionForum = createHTMLElement("div", "descriptionForum");
   let titlesubcontainerForum = createHTMLElement("div", "titledescriptionForum");
   titlesubcontainerForum.textContent = translate.forum.title;
@@ -44,7 +44,7 @@ function containerforum(data, translate) {
   descriptionForum.appendChild(contentReglesForum);
   containerforum.appendChild(descriptionForum);
 
-  // Div de création d'une publication
+  // Création d'une publication
   let divCreatePost = createHTMLElement("div", "divCreatePost");
   let buttondivCreatePost = createHTMLElement("div", "buttondivCreatePost");
   buttondivCreatePost.textContent = "》 " + translate.forum.create.display;
@@ -52,7 +52,7 @@ function containerforum(data, translate) {
   divCreatePost.appendChild(createPost(translate));
   containerforum.appendChild(divCreatePost);
 
-  // Div pour afficher les posts existant
+  // Posts actif
   let postsForum = createHTMLElement("div", "postsForum");
   let titlepostsForum = createHTMLElement("div", "titlepostsForum");
   titlepostsForum.textContent = translate.forum.actif;
@@ -61,7 +61,7 @@ function containerforum(data, translate) {
   postsForum.appendChild(contentpostsForum);
   containerforum.appendChild(postsForum);
 
-  // Div pour afficher les posts a valider
+  // Posts à valider
   if (data.Gestion.Admin) {
     let validpostsForum = createHTMLElement("div", "validpostsForum");
     let validtitlepostsForum = createHTMLElement("div", "validtitlepostsForum");
@@ -72,7 +72,7 @@ function containerforum(data, translate) {
     containerforum.appendChild(validpostsForum);
   }
 
-  // Div pour afficher les posts archivé
+  // Posts archivé
   let archivepostsForum = createHTMLElement("div", "archivepostsForum");
   let buttondivArchivePost = createHTMLElement("div", "buttondivArchivePost");
   buttondivArchivePost.textContent = "》 " + translate.forum.archive.display;
@@ -227,12 +227,9 @@ function initQuill(translate) {
     placeholder: translate.forum.create.placeholder,
     modules: {
       toolbar: [
-        ["bold", "italic", "underline", "strike", "code"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [{ align: "" }, { align: "center" }, { align: "right" }, { align: "justify" }],
+        ["bold", "italic", "underline", "strike"],
         ["link", "image"],
         [{ header: 1 }, { header: 2 }],
-        [{ indent: "-1" }, { indent: "+1" }],
       ],
     },
   });
@@ -277,45 +274,7 @@ function displayListPost(admin, listPost, language, optionvalidation, optionarch
   let contentpostsForum = createHTMLElement("div", "contentpostsForum");
   for (let index = 0; index < listPost.length; index++) {
     const currentPost = listPost[index];
-    if (currentPost.Valid == optionvalidation && currentPost.Archive != optionarchivage) {
-      let post = createHTMLElement("div", "post");
-
-      let title = createHTMLElement("div", "titlepost");
-      title.textContent = currentPost.Title;
-      post.appendChild(title);
-
-      let infoPost = createHTMLElement("div", "infopost");
-      let date = createHTMLElement("div", "datepost");
-      date.textContent = `${translate.forum.post.date} : ${formatDate(currentPost.Date, language)}`;
-      infoPost.appendChild(date);
-
-      let author = createHTMLElement("div", "authorpost");
-      author.textContent = `${translate.forum.post.author} : ${currentPost.Author}`;
-      infoPost.appendChild(author);
-
-      post.appendChild(infoPost);
-      contentpostsForum.appendChild(post);
-
-      post.addEventListener("click", function () {
-        const modal = document.getElementById("modalpost");
-        modal.style.display = "flex";
-        showmodal(currentPost, admin, language, translate);
-
-        const closeBtn = document.getElementById("modalpostclose");
-        closeBtn.addEventListener("click", function () {
-          const modal = document.getElementById("modalpost");
-          modal.style.display = "none";
-
-          document.getElementById("modaladdcommentspost").style.display = "none";
-          if (currentPost.Valid && !currentPost.Archive) {
-            document.getElementById("buttondivCreateComment").style.display = "none";
-            document.getElementById("buttondivCreateComment").textContent = "》 " + translate.forum.comment.display;
-          } else {
-            document.getElementById("buttondivCreateComment").style.display = "flex";
-          }
-        });
-      });
-    } else if (currentPost.Valid == optionvalidation && currentPost.Archive == optionarchivage) {
+    if (currentPost.Valid == optionvalidation && currentPost.Archive == optionarchivage) {
       let post = createHTMLElement("div", "post");
 
       let title = createHTMLElement("div", "titlepost");
@@ -569,12 +528,9 @@ function initQuillComment(id) {
     placeholder: "Saisissez votre texte...",
     modules: {
       toolbar: [
-        ["bold", "italic", "underline", "strike", "code"],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [{ align: "" }, { align: "center" }, { align: "right" }, { align: "justify" }],
+        ["bold", "italic", "underline", "strike"],
         ["link", "image"],
         [{ header: 1 }, { header: 2 }],
-        [{ indent: "-1" }, { indent: "+1" }],
       ],
     },
   });

@@ -6,7 +6,7 @@ import { slash_interaction } from "./slashinteraction.js";
 import { createCommands } from "./slashcommand.js";
 import { cronResetMsgReaction } from "./Cronjob.js";
 import { client } from "./Constant.js";
-import { ListAdmin } from "./config.js";
+import { discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
 import { logToFile } from "./log.js";
 import { socket } from "./socket.js";
 
@@ -136,6 +136,18 @@ client.on("interactionCreate", async (interaction) => {
 client.on("messageCreate", async (message) => {
   // ! Bot refusé
   if (message.author.bot) return;
+
+  // ! Message privée envoyé par un utilisateur au bot
+  if (message.channel.type === 1) {
+    const guild = client.guilds.cache.get(discordTest_id);
+    const channel = guild.channels.cache.get(discordTest_chanDM);
+
+    if (channel && channel.isTextBased()) {
+      await channel.send({
+        content: `<@&${discordTest_groupAdminForum}>\n📩 Message privé de **${message.author.tag}** \`${message.author.id}\` :\n\n${message.content}`,
+      });
+    }
+  }
 
   // ! Commande réservé aux admin du Bot
   const AuthorID = message.author.id;

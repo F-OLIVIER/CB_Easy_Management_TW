@@ -1,7 +1,7 @@
 // fichier annexe
-import { msgChanDiscord } from "./Constant.js";
+import { msgChanDiscord, sendPrivateMsg } from "./Constant.js";
 import { loadTranslations } from "./language.js";
-import { adressdb } from "./config.js";
+import { adressdb, discordTest_chanDM, discordTest_chanForum, discordTest_groupAdminForum } from "./config.js";
 import { logToFile } from "./log.js";
 
 // module nodejs et npm
@@ -35,8 +35,20 @@ export function socket() {
             new_information(jsonMessage.content);
             break;
 
+          case "new_post":
+            msgChanDiscord(discordTest_groupAdminForum, discordTest_chanForum, jsonMessage.content.msg);
+            break;
+
+          case "validate_post":
+            sendPrivateMsg(jsonMessage.content.userid, jsonMessage.content.msg);
+            break;
+
           case "report":
-            msgChanDiscord("1359090617870848050", "1359086033689509939", jsonMessage.content);
+            msgChanDiscord(discordTest_groupAdminForum, discordTest_chanForum, jsonMessage.content.msg);
+            break;
+
+          case "dm_discord":
+            sendPrivateMsg(jsonMessage.content.userid, jsonMessage.content.msg);
             break;
 
           default:

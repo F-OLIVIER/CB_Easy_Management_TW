@@ -1591,7 +1591,8 @@
 .newUnit,
 .formchangeUnit,
 .formNewclass,
-.forminformationDiscord {
+.forminformationDiscord,
+.formDmDiscord {
   width: 95%;
   display: flex;
   flex-direction: column;
@@ -1603,7 +1604,9 @@
 .divChangeUnit select,
 .divChangeUnit input,
 .formNewclass input,
-.forminformationDiscord textarea {
+.forminformationDiscord textarea,
+.formDmDiscord textarea,
+.formDmDiscord input {
   font-size: 16px;
   text-align: center;
   border: 2px solid white;

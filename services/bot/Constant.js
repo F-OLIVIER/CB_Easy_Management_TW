@@ -1,4 +1,5 @@
 // fichier annexe
+import { discordTest_chanDM, discordTest_groupAdminForum } from "./config.js";
 import { logToFile } from "./log.js";
 
 // Module nodejs et npm
@@ -12,9 +13,11 @@ export const client = new Client({
     GatewayIntentBits.MessageContent, // permet au bot de lire le contenu des messages envoyés dans les salons textuels.
     GatewayIntentBits.GuildMembers, // Permet au bot de recevoir les ajouts, suppressions et mises à jour des membres d'un serveur (⚠️ doit être activé sur le portail Discord).
     GatewayIntentBits.GuildVoiceStates, // Permet au bot de suivre les connexions, déconnexions et changements d'état des membres dans les salons vocaux.
+    GatewayIntentBits.DirectMessages, // Capter les message privée envoyer au bot
   ],
   partials: [
     Partials.Message, // Permet d’accéder aux messages supprimés ou non mis en cache.
+    Partials.Channel, // Permet d'accéder au DM
   ],
 });
 
@@ -52,6 +55,17 @@ export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
     return;
   }
   chan.send(name + " (" + nickname + ") " + msg);
+}
+
+export async function sendPrivateMsg(userId, msg = "") {
+  const user = await client.users.fetch(userId);
+  try {
+    await user.send(msg);
+    msgChanDiscord(discordTest_groupAdminForum, discordTest_chanDM, `:white_check_mark: Reply to : **${user.globalName}** (${userId})\n${msg}`);
+  } catch (error) {
+    msgChanDiscord(discordTest_groupAdminForum, discordTest_chanDM, `:x: Reply to : **${user.globalName}** (${userId})\n${error}`);
+    logToFile(`Impossible d'envoyer un MP à ${user.username} :\n${error}`, "errors_bot.log");
+  }
 }
 
 export async function verif_perm_channel(ID_Chan) {

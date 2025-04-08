@@ -144,6 +144,7 @@ type AdministrateBot struct {
 	ChangeUnit         Unit         `json:"changeUnit"`
 	Resetnbgvg         bool         `json:"resetnbgvg"`
 	Informationdiscord bool         `json:"Informationdiscord"`
+	DmDiscord          bool         `json:"dmDiscord"`
 }
 
 type Screen struct {

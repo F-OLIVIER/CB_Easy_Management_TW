@@ -64,20 +64,7 @@ func NewPost(r *http.Request, author string, database *sql.DB) (notif data.Notif
 	err := json.NewDecoder(r.Body).Decode(&newpost)
 	CheckErr("Erreur de décodage JSON NewPost", err)
 
-	exist := 0
-	stmt1, errdb := database.Prepare("SELECT ID FROM Forum WHERE Title = ?")
-	if errdb != sql.ErrNoRows {
-		CheckErr("1- Requete DB NewPost", errdb)
-	}
-	stmt1.QueryRow(newpost.Title).Scan(&exist)
-
-	if exist != 0 {
-		notif.Type = "error"
-		notif.Content = data.ListLanguage{
-			FR: "Ce nom de post existe déjà.",
-			EN: "This post name already exists.",
-		}
-	} else if newpost.Title != "" && !strings.Contains(strings.ToLower(newpost.Title), "<script>") && newpost.Content != "" && !strings.Contains(strings.ToLower(newpost.Content), "<script>") {
+	if newpost.Title != "" && !strings.Contains(strings.ToLower(newpost.Title), "<script>") && newpost.Content != "" && !strings.Contains(strings.ToLower(newpost.Content), "<script>") {
 		stmt, err := database.Prepare("INSERT INTO Forum(Author, Date, Title, Content) Values(?,?,?,?)")
 		CheckErr("2- INSERT NewPost", err)
 		stmt.Exec(author, time.Now(), newpost.Title, newpost.Content)
@@ -87,6 +74,26 @@ func NewPost(r *http.Request, author string, database *sql.DB) (notif data.Notif
 			FR: "Votre post a été créé avec succès. Il sera visible dès qu'un administrateur le validera.",
 			EN: "Your post has been successfully created. It will be visible as soon as an administrator validates it.",
 		}
+
+		// Récupération des information de l'utilisateur
+		var discordID, discordName, userLangage string
+		stmtuser, errdb := database.Prepare(`SELECT DiscordID, DiscordName, userLangage FROM Users WHERE ID = ?`)
+		if errdb != sql.ErrNoRows {
+			CheckErr("1- Requete DB Modifpost", errdb)
+		}
+		stmtuser.QueryRow(author).Scan(&discordID, &discordName, &userLangage)
+
+		msg := "**New Post** on forum\nCreate by : `" + discordName + "` (" + discordID + ")\nPost title : `" + newpost.Title + "`"
+
+		message := data.SocketMessage{
+			Type: "new_post",
+			Content: map[string]string{
+				"msg": msg,
+			},
+		}
+		SendMessage(message)
+		LogFile(msg)
+
 	} else {
 		notif.Type = "error"
 		notif.Content = data.ListLanguage{
@@ -106,7 +113,7 @@ func NewComment(r *http.Request, author string, database *sql.DB) (notif data.No
 
 	if newcomment.Content != "" && !strings.Contains(strings.ToLower(newcomment.Content), "<script>") && !strings.Contains(strings.ToLower(newcomment.Content), "</script>") {
 		stmt, err := database.Prepare("INSERT INTO Comments(Post_ID, Author, Date, Content) Values(?,?,?,?)")
-		CheckErr("2- INSERT NewComment", err)
+		CheckErr("1- INSERT NewComment", err)
 		stmt.Exec(newcomment.ID, author, time.Now(), newcomment.Content)
 
 		notif.Type = "success"
@@ -114,6 +121,32 @@ func NewComment(r *http.Request, author string, database *sql.DB) (notif data.No
 			FR: "Votre commentaire a été créé avec succès.",
 			EN: "Your comment has been successfully created.",
 		}
+
+		// Récupération des informations de l'utilisateur
+		var discordID, discordName, userLangage string
+		stmtuser, errdb := database.Prepare(`SELECT DiscordID, DiscordName, userLangage FROM Users WHERE ID = ?`)
+		if errdb != sql.ErrNoRows {
+			CheckErr("2- Requete DB NewComment", errdb)
+		}
+		stmtuser.QueryRow(author).Scan(&discordID, &discordName, &userLangage)
+		// Récupération des informations de l'utilisateur
+		var titlePost string
+		stmtpost, errdb := database.Prepare(`SELECT Title FROM Forum WHERE ID = ?`)
+		if errdb != sql.ErrNoRows {
+			CheckErr("3- Requete DB NewComment", errdb)
+		}
+		stmtpost.QueryRow(newcomment.ID).Scan(&titlePost)
+
+		msg := "New **Comment** on forum\nCreate by : `" + discordName + "` (" + discordID + ")\nPost title : `" + titlePost + "`"
+		message := data.SocketMessage{
+			Type: "new_post",
+			Content: map[string]string{
+				"msg": msg,
+			},
+		}
+		SendMessage(message)
+		LogFile(msg)
+
 	} else {
 		notif.Type = "error"
 		notif.Content = data.ListLanguage{
@@ -132,12 +165,14 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 	CheckErr("Erreur de décodage JSON NewPost", err)
 
 	exist := 0
-	titlepost := ""
-	stmt1, errdb := database.Prepare("SELECT ID, Title FROM Forum WHERE ID = ?")
+	var discordID, discordName, userLangage, titlepost string
+	stmt1, errdb := database.Prepare(`SELECT Forum.ID, Forum.Title, Users.DiscordID, Users.DiscordName, Users.userLangage FROM Forum 
+										INNER JOIN Users ON Users.ID = Forum.Author 
+										WHERE Forum.ID = ?`)
 	if errdb != sql.ErrNoRows {
-		CheckErr("1- Requete DB NewPost", errdb)
+		CheckErr("1- Requete DB Modifpost", errdb)
 	}
-	stmt1.QueryRow(modifpost.ID).Scan(&exist, &titlepost)
+	stmt1.QueryRow(modifpost.ID).Scan(&exist, &titlepost, &discordID, &discordName, &userLangage)
 
 	if exist == 0 {
 		notif.Type = "error"
@@ -147,16 +182,21 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 		}
 
 	} else if modifpost.Content == "report" {
-		LogFile("Post id " + modifpost.ID + " signaler. Titre : " + titlepost)
+		LogFile("Post id " + modifpost.ID + " signaler par : " + discordName + " (" + discordID + ")\nTitre : " + titlepost)
 
 		message := data.SocketMessage{
 			Type: "report",
 			Content: map[string]string{
-				"fr": "Post id " + modifpost.ID + " signaler : \nTitre :" + titlepost,
-				"en": "Post id " + modifpost.ID + " report : \nTitle" + titlepost,
+				"msg": "Post **report** on forum\nPost id `" + modifpost.ID + "`\nReport by : `" + discordName + "` (" + discordID + ")\nPost title : `" + titlepost + "`",
 			},
 		}
 		SendMessage(message)
+
+		notif.Type = "success"
+		notif.Content = data.ListLanguage{
+			FR: "Le post a été signalé aux administrateurs.",
+			EN: "The post has been reported to the administrators.",
+		}
 
 	} else {
 
@@ -170,6 +210,27 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 				FR: "Post validé avec succès.",
 				EN: "Post successfully validated.",
 			}
+
+			var message data.SocketMessage
+			switch userLangage {
+			case "fr":
+				message = data.SocketMessage{
+					Type: "validate_post",
+					Content: map[string]string{
+						"msg":    "Un administrateur a validé votre post.\nTitre du post : " + titlepost,
+						"userid": discordID,
+					},
+				}
+			default: // en
+				message = data.SocketMessage{
+					Type: "validate_post",
+					Content: map[string]string{
+						"msg":    "An administrator has validated your post.\nPost title : " + titlepost,
+						"userid": discordID,
+					},
+				}
+			}
+			SendMessage(message)
 
 		case "archivage":
 			requestdb = "UPDATE Forum SET Archive = 1 WHERE ID = ?"
@@ -203,7 +264,7 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 
 		if requestdb != "" {
 			stmtforum, err := database.Prepare(requestdb)
-			CheckErr("2- Update Modifpost", err)
+			CheckErr("3- Update Modifpost", err)
 			stmtforum.Exec(modifpost.ID)
 		}
 
