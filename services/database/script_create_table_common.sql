@@ -31,10 +31,11 @@ CREATE TABLE IF NOT EXISTS Users (
     NbTotalGvG INTEGER DEFAULT 0,
     DateLastGvGParticiped_FR VARCHAR(25) default "",
     DateLastGvGParticiped_EN VARCHAR(25) default "",
+    CommentGestionnaire VARCHAR(500) default "",
     uuidApp VARCHAR(50) DEFAULT "",
     uuidAppUse INTEGER DEFAULT 0,
-    userAdmin INTEGER DEFAULT 0,
     userLangage VARCHAR(5) DEFAULT "en",
+    userAdmin INTEGER DEFAULT 0,
     FOREIGN KEY (ID_House) REFERENCES Houses (ID),
     FOREIGN KEY (GameCharacter_ID) REFERENCES ListGameCharacter (ID)
 );
