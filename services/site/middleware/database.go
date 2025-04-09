@@ -272,13 +272,13 @@ func AllCaserne(id_House string, database *sql.DB) (ListInscripted []data.UserIn
 }
 
 func GroupGvG(database *sql.DB, nameTable string) (listUserAlreadyRegistered []data.UserGvG) {
-	listUnit, err := database.Prepare("SELECT User_ID, GroupNumber, Unit1, Unit2, Unit3, Unit4 FROM " + nameTable)
+	listUnit, err := database.Prepare("SELECT User_ID, GroupNumber, Unit1, Unit2, Unit3, Unit4, Comment FROM " + nameTable)
 	CheckErr("1- Requete DB fonction GroupGvG", err)
 	rows, err := listUnit.Query()
 	CheckErr("2- Requete DB fonction GroupGvG", err)
 	for rows.Next() {
 		var user data.UserGvG
-		err = rows.Scan(&user.User_ID, &user.GroupNumber, &user.Unit1, &user.Unit2, &user.Unit3, &user.Unit4)
+		err = rows.Scan(&user.User_ID, &user.GroupNumber, &user.Unit1, &user.Unit2, &user.Unit3, &user.Unit4, &user.Comment)
 		CheckErr("3- Requete DB fonction GroupGvG", err)
 
 		stmt, errdb := database.Prepare("SELECT DiscordName FROM Users WHERE ID = ?")
@@ -427,7 +427,7 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) (notif data.Notif)
 			file, header, err := r.FormFile("image")
 			if err == nil {
 				defer file.Close()
-				UploadPicture(file, header, "./public/images/unit/"+header.Filename)
+				UploadPicture(file, header, "./public/img/unit/"+header.Filename)
 				if formData.CreateUnit.Name.FR != "" { // création d'une unité
 					createNewUnit(formData.CreateUnit, "./img/unit/"+header.Filename, database)
 					message := data.SocketMessage{

@@ -33,18 +33,40 @@ function containerconsulcaserne(data, translate) {
   title.textContent = translate.caserne.consulcaserne;
   selectusercaserne.appendChild(title);
 
+  // let selectusertosee = createHTMLElement("select", "selectusertosee");
+  // let defaultusertosee = document.createElement("option");
+  // defaultusertosee.value = "";
+  // defaultusertosee.text = translate.caserne.select;
+  // selectusertosee.appendChild(defaultusertosee);
+  // for (let i = 0; i < data.ListInscripted.length; i++) {
+  //   const currentUser = data.ListInscripted[i];
+  //   let option = document.createElement("option");
+  //   option.value = currentUser.ID;
+  //   option.text = currentUser.Username;
+  //   selectusertosee.appendChild(option);
+  // }
+  // selectusercaserne.appendChild(selectusertosee);
+  // entetecaserne.appendChild(selectusercaserne);
+  // Container.appendChild(entetecaserne);
+
   let selectusertosee = createHTMLElement("select", "selectusertosee");
   let defaultusertosee = document.createElement("option");
   defaultusertosee.value = "";
   defaultusertosee.text = translate.caserne.select;
   selectusertosee.appendChild(defaultusertosee);
+  
+  let options = [];
   for (let i = 0; i < data.ListInscripted.length; i++) {
     const currentUser = data.ListInscripted[i];
     let option = document.createElement("option");
     option.value = currentUser.ID;
     option.text = currentUser.Username;
-    selectusertosee.appendChild(option);
+    options.push(option);
   }
+  // Trier les options par ordre alphabétique
+  options.sort((a, b) => a.text.localeCompare(b.text));
+    options.forEach(option => selectusertosee.appendChild(option));
+  
   selectusercaserne.appendChild(selectusertosee);
   entetecaserne.appendChild(selectusercaserne);
   Container.appendChild(entetecaserne);
@@ -91,6 +113,7 @@ function containerconsulcaserne(data, translate) {
         addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T5", translate, data.UserInfo.Language, translate);
         addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T4", translate, data.UserInfo.Language, translate);
         addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T3", translate, data.UserInfo.Language, translate);
+        addUnit(currentUser.UserCaserne, listUnitInfanterie, listUnitDistant, listUnitCav, "T2", translate, data.UserInfo.Language, translate);
 
         divInfanterie.appendChild(TitleDivInfanterie);
         divInfanterie.appendChild(listUnitInfanterie);

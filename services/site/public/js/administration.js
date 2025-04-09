@@ -115,8 +115,8 @@ function containerAppAdmin(data, translate) {
   // Unit_tier
   let input_Unit_tier = createHTMLElement("select", "tierNewUnit");
   input_Unit_tier.required = true;
-  let title_option_Unit_tier = ["Tier unit", "T3", "T4", "T5"];
-  let option_Unit_tier = ["", "T3", "T4", "T5"];
+  let title_option_Unit_tier = ["Tier unit", "T2", "T3", "T4", "T5"];
+  let option_Unit_tier = ["", "T2", "T3", "T4", "T5"];
   for (let i = 0; i < option_Unit_tier.length; i++) {
     let option = document.createElement("option");
     option.value = option_Unit_tier[i];
@@ -209,14 +209,94 @@ function containerAppAdmin(data, translate) {
   defaultChangeUnit.value = "";
   defaultChangeUnit.text = "Select";
   selectChangeUnit.appendChild(defaultChangeUnit);
+
+  let optgroupT5Infanterie = document.createElement("optgroup");
+  optgroupT5Infanterie.label = `${translate.create_group.create_group.selectmenu.t5} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT5Distant = document.createElement("optgroup");
+  optgroupT5Distant.label = `${translate.create_group.create_group.selectmenu.t5} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT5Cav = document.createElement("optgroup");
+  optgroupT5Cav.label = `${translate.create_group.create_group.selectmenu.t5} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
+  let optgroupT4Infanterie = document.createElement("optgroup");
+  optgroupT4Infanterie.label = `${translate.create_group.create_group.selectmenu.t4} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT4Distant = document.createElement("optgroup");
+  optgroupT4Distant.label = `${translate.create_group.create_group.selectmenu.t4} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT4Cav = document.createElement("optgroup");
+  optgroupT4Cav.label = `${translate.create_group.create_group.selectmenu.t4} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
+  let optgroupT3Infanterie = document.createElement("optgroup");
+  optgroupT3Infanterie.label = `${translate.create_group.create_group.selectmenu.t3} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT3Distant = document.createElement("optgroup");
+  optgroupT3Distant.label = `${translate.create_group.create_group.selectmenu.t3} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT3Cav = document.createElement("optgroup");
+  optgroupT3Cav.label = `${translate.create_group.create_group.selectmenu.t3} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
+  let optgroupT2Infanterie = document.createElement("optgroup");
+  optgroupT2Infanterie.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[0][data.UserInfo.Language]}`;
+  let optgroupT2Distant = document.createElement("optgroup");
+  optgroupT2Distant.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[1][data.UserInfo.Language]}`;
+  let optgroupT2Cav = document.createElement("optgroup");
+  optgroupT2Cav.label = `${translate.create_group.create_group.selectmenu.t2} - ${data.Gestion.ListUnitType[2][data.UserInfo.Language]}`;
+
   for (let i = 0; i < data.ListUnit.length; i++) {
     const currentUnit = data.ListUnit[i];
 
     let option = document.createElement("option");
     option.value = currentUnit.Unit_name[data.UserInfo.Language];
     option.text = currentUnit.Unit_name.fr;
-    selectChangeUnit.appendChild(option);
+
+    if (currentUnit.Unit_tier === "T5") {
+      if (currentUnit.Unit_type.fr === "Infanterie") {
+        optgroupT5Infanterie.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Distant") {
+        optgroupT5Distant.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Cavalerie") {
+        optgroupT5Cav.appendChild(option);
+      }
+    } else if (currentUnit.Unit_tier === "T4") {
+      if (currentUnit.Unit_type.fr === "Infanterie") {
+        optgroupT4Infanterie.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Distant") {
+        optgroupT4Distant.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Cavalerie") {
+        optgroupT4Cav.appendChild(option);
+      }
+    } else if (currentUnit.Unit_tier === "T3") {
+      if (currentUnit.Unit_type.fr === "Infanterie") {
+        optgroupT3Infanterie.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Distant") {
+        optgroupT3Distant.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Cavalerie") {
+        optgroupT3Cav.appendChild(option);
+      }
+    } else if (currentUnit.Unit_tier === "T2") {
+      if (currentUnit.Unit_type.fr === "Infanterie") {
+        optgroupT2Infanterie.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Distant") {
+        optgroupT2Distant.appendChild(option);
+      } else if (currentUnit.Unit_type.fr === "Cavalerie") {
+        optgroupT2Cav.appendChild(option);
+      }
+    }
   }
+
+  // T5
+  selectChangeUnit.appendChild(optgroupT5Infanterie);
+  selectChangeUnit.appendChild(optgroupT5Distant);
+  selectChangeUnit.appendChild(optgroupT5Cav);
+  // T4
+  selectChangeUnit.appendChild(optgroupT4Infanterie);
+  selectChangeUnit.appendChild(optgroupT4Distant);
+  selectChangeUnit.appendChild(optgroupT4Cav);
+  // T3
+  selectChangeUnit.appendChild(optgroupT3Infanterie);
+  selectChangeUnit.appendChild(optgroupT3Distant);
+  selectChangeUnit.appendChild(optgroupT3Cav);
+  // T2
+  selectChangeUnit.appendChild(optgroupT2Infanterie);
+  selectChangeUnit.appendChild(optgroupT2Distant);
+  selectChangeUnit.appendChild(optgroupT2Cav);
+
   formChangeUnit.appendChild(selectChangeUnit);
   divChangeUnit.appendChild(formChangeUnit);
   subContainer.appendChild(divChangeUnit);

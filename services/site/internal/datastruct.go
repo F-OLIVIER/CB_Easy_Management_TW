@@ -98,6 +98,7 @@ type UserGvG struct {
 	Unit2       string `json:"Unit2"`
 	Unit3       string `json:"Unit3"`
 	Unit4       string `json:"Unit4"`
+	Comment     string `json:"commentaire"`
 }
 
 type SendHTML struct {
@@ -130,6 +131,7 @@ type SaveGroup struct {
 type UserGroup struct {
 	NameGroup  string   `json:"inputValue"`
 	UserToSave []string `json:"selectValues"`
+	Comment    string   `json:"commentaire"`
 }
 
 type GestionAdministrateBot struct {

@@ -996,7 +996,7 @@
   height: 40px;
   margin: 5px;
   padding: 2px;
-  text-align: center;
+  text-align: left;
   white-space: normal;
   word-wrap: break-word;
   background-color: white;
@@ -1047,8 +1047,6 @@
 
 .inscriptedtitledivuser {
   font-size: 22px;
-  color: white;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .divconnected,
@@ -1091,12 +1089,16 @@
   width: 100%;
   border-radius: 15px;
   margin-bottom: 10px;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .divViewGroup {
   width: 100%;
   border-radius: 15px;
   overflow: hidden;
+  color: white;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
 
 .divnamegroup {
@@ -1108,8 +1110,6 @@
 
 .namegroup {
   font-size: 30px;
-  color: black;
-  text-shadow: 1px 1px 5px rgb(255, 255, 255), 0 0 1em rgb(255, 255, 255), 0 0 0.2em rgb(255, 255, 255);
 }
 
 .divnamegroup input {
@@ -1122,6 +1122,42 @@
   border-radius: 15px;
 }
 
+.linedivuser {
+  display: flex;
+  flex-direction: column;
+  margin-right: 15px;
+}
+
+.usercomment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.zonecheckbox {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 150px;
+  margin-left: 15px;
+  font-size: 14px;
+}
+
+.zonecheckbox,
+.zonecheckbox *,
+.zonecheckbox label,
+.zonecheckbox input {
+  cursor: pointer;
+}
+
+.textusercomment {
+  flex: 1;
+  border-radius: 20px;
+  padding: 10px;
+}
+
 .divuser,
 .divuserviewgroup {
   width: 100%;
@@ -1129,18 +1165,24 @@
   display: flex;
   align-items: center;
   flex-direction: row;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  font-size: medium;
 }
 
-.divuser,
-.divuserviewgroup {
+.linedivuser {
   border-bottom: 1px solid black;
   box-sizing: border-box;
 }
 
+.linecomment {
+  text-align: left;
+  margin-left: 7%;
+  margin-bottom: 5px;
+  color: red;
+}
+
 .divuser {
   width: 100%;
-  padding: 5px;
+  padding: 5px 5px 0px 5px;
 }
 
 .divuser:last-child,
@@ -1175,7 +1217,6 @@
 }
 
 .divuser select option {
-  /* overflow-wrap: break-word; */
   white-space: normal;
 }
 
@@ -1185,7 +1226,8 @@
 }
 
 .titleclass {
-  width: 10%;
+  /* width: 10%; */
+  width: 50px;
 }
 
 .titleinfluence {
@@ -1203,8 +1245,32 @@
 .influenceplayer,
 .influenceUnit {
   width: 40px;
-  padding-left: 10px;
+  padding-left: 5px;
   padding-right: 10px;
+}
+
+.zoneWeapon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+.cadreweapon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: auto;
+  z-index: 1;
+}
+.weapon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: auto;
+  z-index: 2;
 }
 
 .viewtitlename {
@@ -1235,7 +1301,8 @@
 }
 
 .legendMaitrise,
-.titledivuser {
+.titledivuser,
+.filtertypeunit {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1244,23 +1311,32 @@
   border-radius: 15px;
 }
 
-.legendMaitrise {
+.legendMaitrise,
+.filtertypeunit {
   width: 100%;
   justify-content: space-around;
   margin-bottom: 5px;
   padding: 10px 0px;
+}
+.checkbox,
+.checkbox *,
+.checkbox label,
+.checkbox input {
+  cursor: pointer;
 }
 
 .titledivuser {
   margin-bottom: 10px;
 }
 
-.group1,
-.viewgroup1 {
-  background-color: rgb(216, 202, 130);
+.groupimpair {
+  background-color: #b0b0b0;
+}
+.grouppair {
+  background-color: #555555;
 }
 
-.group1 {
+/* .group1 {
   color: white;
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
 }
@@ -1268,55 +1344,10 @@
 .viewgroup1 {
   color: white;
   text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
-}
+} */
 
-.viewgroup1 .consultOff {
+.consultOff {
   background-color: #f98348;
-}
-
-.group2,
-.viewgroup2 {
-  background-color: #daf7a6;
-}
-
-.group3,
-.viewgroup3 {
-  background-color: #ff5733;
-}
-
-.group4,
-.viewgroup4 {
-  background-color: #f98348;
-}
-
-.group5,
-.viewgroup5 {
-  background-color: #f9c74f;
-}
-
-.group6,
-.viewgroup6 {
-  background-color: #90be6d;
-}
-
-.group7,
-.viewgroup7 {
-  background-color: #43aa8b;
-}
-
-.group8,
-.viewgroup8 {
-  background-color: #4d908e;
-}
-
-.group9,
-.viewgroup9 {
-  background-color: #577590;
-}
-
-.group10,
-.viewgroup10 {
-  background-color: #277da1;
 }
 
 .buttonAddGroup,
@@ -1616,6 +1647,7 @@
 }
 
 .formchangeUnit > .selectChangeUnit {
+  text-align: left;
   background-color: #fef4c3;
 }
 

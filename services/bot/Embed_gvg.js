@@ -273,8 +273,6 @@ function dateGvG(Langage) {
     // la date sera un samedi (jour 6)
     dateFR = "Samedi " + futurdateformate.getDate() + " " + moisfr + "";
     dateEN = "Saturday" + futurdateformate.getDate() + " " + moisen + "";
-  } else {
-    console.log("probleme de date dans function dateGvG()");
   }
 
   if (Langage == "fr") {

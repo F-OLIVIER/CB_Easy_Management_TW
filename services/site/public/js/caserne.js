@@ -62,6 +62,7 @@ function containercaserne(data, translate) {
   addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T5", translate);
   addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T4", translate);
   addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T3", translate);
+  addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, "T2", translate);
 
   divInfanterie.appendChild(TitleDivInfanterie);
   divInfanterie.appendChild(listUnitInfanterie);
