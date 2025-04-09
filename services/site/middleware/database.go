@@ -670,7 +670,7 @@ func UpdateStat(r *http.Request, id_House string, database *sql.DB) (notif data.
 			}
 			return notif
 
-		} else if CommentGestionnaire != "" {
+		} else {
 			stmt, errdb := database.Prepare("UPDATE Users SET CommentGestionnaire = ? WHERE ID = ? AND ID_House = ?")
 			CheckErr("2- Requete DB UpdateStat", errdb)
 			stmt.Exec(CommentGestionnaire, newinfoStat.List[i].ID, id_House)

@@ -1,6 +1,7 @@
 {
   "commun": {
-    "disconnected": "Disconnecting"
+    "disconnected": "Disconnecting",
+    "err_no_fields": "No fields changed !!!"
   },
 
   "descriptionIntro": {

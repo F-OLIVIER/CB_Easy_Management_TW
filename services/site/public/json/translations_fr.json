@@ -1,6 +1,7 @@
 {
   "commun": {
-    "disconnected": "Se déconnecter"
+    "disconnected": "Se déconnecter",
+    "err_no_fields": "Aucun champ modifié !!!"
   },
 
   "descriptionIntro": {

@@ -144,20 +144,34 @@ function containerstat(data, translate) {
     const lignes = document.querySelectorAll(".divstat");
     const resultats = [];
 
+    console.log("data.ListInscripted : ", data.ListInscripted);
+
     lignes.forEach((ligne) => {
       const id = parseInt(ligne.querySelector('input[type="hidden"]')?.value);
-      const commentaire = ligne.querySelector(".statComment")?.value.trim();
+      const commentaireActuel = ligne.querySelector(".statComment")?.value.trim();
 
-      resultats.push({
-        ID: id,
-        CommentGestionnaire: commentaire,
-      });
+      for (let index = 0; index < data.ListInscripted.length; index++) {
+        const currentUser = data.ListInscripted[index];
+        if (currentUser.ID == id) {
+          if (commentaireActuel !== currentUser.CommentGestionnaire) {
+            resultats.push({
+              ID: id,
+              CommentGestionnaire: commentaireActuel,
+            });
+          }
+          break;
+        }
+      }
     });
 
-    let dataToSend = {
-      List: resultats,
-    };
-    sendData(dataToSend);
+    if (resultats.length > 0) {
+      let dataToSend = {
+        List: resultats,
+      };
+      sendData(dataToSend);
+    } else {
+      showNotification(translate.commun.err_no_fields, "error");
+    }
   });
 
   if (data.Gestion.Notification.Notif) {
