@@ -14,7 +14,7 @@ import (
 // Vérificateur d'erreurs
 func CheckErr(str string, err error) {
 	if err != nil {
-		fmt.Printf("\n__________________________________________\nERROR : %v\n%v\n", str, err)
+		fmt.Printf("ERROR : %v\n%v\n__________________________________________\n", str, err)
 
 		// Ouvrir ou créer le fichier de log
 		logFile, fileErr := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -27,7 +27,7 @@ func CheckErr(str string, err error) {
 		log.SetOutput(logFile)
 
 		// Log le message d'erreur avec contexte
-		log.Printf("\n__________________________________________\nERROR: %s - %v\n", str, err)
+		log.Printf("ERROR: %s - %v\n__________________________________________\n", str, err)
 	}
 }
 

@@ -25,7 +25,7 @@ func UserInfo(uuid string, database *sql.DB) (users []data.ScearchUserInfo, list
 			var user data.ScearchUserInfo
 			var DiscordRole, DiscordID, userAdmin string
 			err := rows.Scan(&user.User_id, &user.ID_House, &DiscordID, &user.DiscordUsername, &DiscordRole, &user.DiscordPhoto, &user.Language, &userAdmin)
-			CheckErr("Erreur lors du scan des résultats", err)
+			CheckErr("Erreur lors du scan des résultats (UserInfo)", err)
 
 			user.Admin = (userAdmin == "1")
 			user.Gestionnaire = (DiscordRole == "Officier")

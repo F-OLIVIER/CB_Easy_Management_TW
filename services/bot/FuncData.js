@@ -81,16 +81,19 @@ export async function PlayerCreateOrUpdate(ServerID, MemberID) {
       return;
     }
 
-    const id_house = await get_ID_House(ServerID);
-
     if (CreateOrUpdateinDB) {
-      // data pour la requete sql
+      const id_house = await get_ID_House(ServerID);
+
+      let discordPhoto = "./img/noavatar.jpg";
+      if (guildMember.user.avatarURL() != null && guildMember.user.avatarURL() != undefined) {
+        discordPhoto = guildMember.user.avatarURL();
+      }
       const data = {
         DiscordID: MemberID,
         DiscordName: guildMember.displayName,
         DiscordBaseName: guildMember.user.username,
         DiscordRole: MemberRole,
-        DiscordPhoto: guildMember.user.avatarURL(),
+        DiscordPhoto: discordPhoto,
         ID_Server: ServerID,
         ID_House: id_house,
       };
