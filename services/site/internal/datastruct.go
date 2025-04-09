@@ -22,6 +22,7 @@ type UserInfo struct {
 	UserCaserne           []Unit
 	ConnectedSite         string `json:"ConnectedSite"`
 	ListDateGvG           [][]string
+	CommentGestionnaire   string `json:"CommentGestionnaire"`
 
 	ID_House  int
 	ID_Server string `json:"Discord"`
@@ -160,8 +161,9 @@ type SocketMessage struct {
 }
 
 type Stat struct {
-	Houses   []Houses `json:"Houses"`
-	Nb_Table string   `json:"Nb_Table"`
+	Houses   []Houses   `json:"Houses"`
+	Nb_Table string     `json:"Nb_Table"`
+	List     []UserInfo `json:"List"`
 }
 
 type Post struct {

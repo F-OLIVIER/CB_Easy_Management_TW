@@ -44,6 +44,7 @@ func main() {
 		"/api/chargergrouptypeatt/",
 		"/api/chargergrouptypedef/",
 		"/api/statGvG/",
+		"/api/updatestatGvG/",
 		"/api/consulcaserne/",
 		"/api/majspecificcaserne/",
 		"/api/UpdateAdmin/",

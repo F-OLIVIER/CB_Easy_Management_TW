@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -628,13 +629,13 @@ func updateDataUnit(dataCreateUnit data.Unit, database *sql.DB) {
 }
 
 func SendStatGvG(id_House string, database *sql.DB) (listuser []data.UserInfo) {
-	listUser, err := database.Prepare(`SELECT DiscordName, GameCharacter_ID, Lvl, Influence, EtatInscription, NbGvGParticiped, NbTotalGvG, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN FROM Users WHERE ID_House = ?;`)
+	listUser, err := database.Prepare(`SELECT ID, DiscordName, GameCharacter_ID, Lvl, Influence, EtatInscription, NbGvGParticiped, NbTotalGvG, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN, CommentGestionnaire FROM Users WHERE ID_House = ?;`)
 	CheckErr("1- Requete DB fonction SendStatGvG", err)
 	rows, err := listUser.Query(id_House)
 	CheckErr("2- Requete DB fonction SendStatGvG", err)
 	for rows.Next() {
 		var user data.UserInfo
-		err = rows.Scan(&user.DiscordUsername, &user.GameCharacter_ID, &user.Lvl, &user.Influence, &user.EtatInscription, &user.NbGvGParticiped, &user.NbTotalGvG, &user.DateLastGvGParticiped.FR, &user.DateLastGvGParticiped.EN)
+		err = rows.Scan(&user.ID, &user.DiscordUsername, &user.GameCharacter_ID, &user.Lvl, &user.Influence, &user.EtatInscription, &user.NbGvGParticiped, &user.NbTotalGvG, &user.DateLastGvGParticiped.FR, &user.DateLastGvGParticiped.EN, &user.CommentGestionnaire)
 		CheckErr("3- Requete DB fonction SendStatGvG", err)
 
 		if user.GameCharacter_ID != 0 {
@@ -645,6 +646,43 @@ func SendStatGvG(id_House string, database *sql.DB) (listuser []data.UserInfo) {
 		listuser = append(listuser, user)
 	}
 	return listuser
+}
+
+func UpdateStat(r *http.Request, id_House string, database *sql.DB) (notif data.Notif) {
+	var newinfoStat data.Stat
+	err := json.NewDecoder(r.Body).Decode(&newinfoStat)
+	CheckErr("Erreur de décodage JSON UpdateStat", err)
+
+	notif.Notif = true
+	notif.Type = "error"
+	notif.Content = data.ListLanguage{
+		FR: "Aucune information à mettre à jour.",
+		EN: "No information to update.",
+	}
+
+	for i := 0; i < len(newinfoStat.List); i++ {
+		CommentGestionnaire := newinfoStat.List[i].CommentGestionnaire
+		if CommentGestionnaire != "" && (strings.Contains(CommentGestionnaire, "<script>") || strings.Contains(CommentGestionnaire, "</script>")) {
+			notif.Type = "error"
+			notif.Content = data.ListLanguage{
+				FR: "Contenu interdit !!!",
+				EN: "Prohibited content!!!",
+			}
+			return notif
+
+		} else if CommentGestionnaire != "" {
+			stmt, errdb := database.Prepare("UPDATE Users SET CommentGestionnaire = ? WHERE ID = ? AND ID_House = ?")
+			CheckErr("2- Requete DB UpdateStat", errdb)
+			stmt.Exec(CommentGestionnaire, newinfoStat.List[i].ID, id_House)
+
+			notif.Type = "success"
+			notif.Content = data.ListLanguage{
+				FR: "Information mise à jour avec succès.",
+				EN: "Information successfully updated.",
+			}
+		}
+	}
+	return notif
 }
 
 func Stat_db(database *sql.DB) (stat data.Stat) {

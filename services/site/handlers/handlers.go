@@ -304,6 +304,10 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						case "/api/statGvG/":
 							sendHTML.ListInscripted = utils.SendStatGvG(id_House, database)
 
+						case "/api/updatestatGvG/":
+							gestion.Notification = utils.UpdateStat(r, id_House, database)
+							sendHTML.ListInscripted = utils.SendStatGvG(id_House, database)
+
 						// --------------------------------------------------
 						// ------------ Accès caserne utilisateur -----------
 						// --------------------------------------------------
@@ -348,8 +352,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 							// Ne rien faire, commum a toutes les pages admin
 
 						case "/api/adminitrateBot/":
-							notif := utils.UploadInformationsBot(r, database)
-							gestion.Notification = notif
+							gestion.Notification = utils.UploadInformationsBot(r, database)
 
 						case "/api/UpdateAdmin/":
 							notif := utils.UpdateAdministration(r, database)

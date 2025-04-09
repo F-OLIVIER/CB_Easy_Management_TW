@@ -176,8 +176,11 @@
       "influ": "Influence",
       "lvl": "Level",
       "nbGvG": "TW participé/total",
-      "lastGvG": "Dernière TW participé"
-    }
+      "lastGvG": "Dernière TW participé",
+      "comment": "Commentaire"
+    },
+    "placeholderComment": "Votre commentaire",
+    "buttoncomment": "Ajouter les commentaires"
   },
 
   "create_group": {

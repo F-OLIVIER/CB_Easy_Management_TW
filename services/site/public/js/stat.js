@@ -1,5 +1,7 @@
 import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
 import { loadTranslate } from "./translate.js";
+import { adressAPI } from "./config.js";
+import { showNotification } from "./notification.js";
 
 export async function stat() {
   const currenthouse = localStorage.getItem("user_house");
@@ -98,7 +100,6 @@ function containerstat(data, translate) {
   titledivstat.appendChild(titlename);
 
   let titleclass = createHTMLElement("div", "statclass");
-  titleclass.textContent = translate.stat.title.class;
   titledivstat.appendChild(titleclass);
 
   let titleinfluenceplayer = createHTMLElement("div", "statinfluence");
@@ -117,18 +118,57 @@ function containerstat(data, translate) {
   titlelastGvGparticiped.textContent = translate.stat.title.lastGvG;
   titledivstat.appendChild(titlelastGvGparticiped);
 
+  let titleComment = createHTMLElement("div", "titlestatComment");
+  titleComment.textContent = translate.stat.title.comment;
+  titledivstat.appendChild(titleComment);
+
   subContainerStat.appendChild(titledivstat);
   let subContainerStatForSort = createHTMLElement("div", "subContainerStatForSort");
   subContainerStat.appendChild(subContainerStatForSort);
   // Insere la liste des joueurs
-  DisplayUsers(data.ListInscripted, data.UserInfo.Language, subContainerStatForSort);
+  DisplayUsers(data.ListInscripted, data.UserInfo.Language, subContainerStatForSort, translate);
 
-  document.getElementById("Container").appendChild(subContainerStat);
+  // Bouton d'ajout des commentaires
+  let buttoncomment = createHTMLElement("button", "statbuttoncomment");
+  buttoncomment.type = "button";
+  buttoncomment.textContent = translate.stat.buttoncomment;
+  subContainerStat.appendChild(buttoncomment);
+
+  let container = document.getElementById("Container");
+  container.innerHTML = "";
+  container.appendChild(subContainerStat);
 
   createFilterEventlistener(ListFilter);
+
+  buttoncomment.addEventListener("click", () => {
+    const lignes = document.querySelectorAll(".divstat");
+    const resultats = [];
+
+    lignes.forEach((ligne) => {
+      const id = parseInt(ligne.querySelector('input[type="hidden"]')?.value);
+      const commentaire = ligne.querySelector(".statComment")?.value.trim();
+
+      resultats.push({
+        ID: id,
+        CommentGestionnaire: commentaire,
+      });
+    });
+
+    let dataToSend = {
+      List: resultats,
+    };
+    sendData(dataToSend);
+  });
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+  }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
-function DisplayUsers(data, Language, div) {
+function DisplayUsers(data, Language, div, translate) {
   for (let i = 0; i < data.length; i++) {
     const currentUser = data[i];
 
@@ -139,8 +179,13 @@ function DisplayUsers(data, Language, div) {
     name.textContent = currentUser.Username;
     statuser.appendChild(name);
 
-    const classPlayer = createHTMLElement("div", "statclass");
-
+    const classPlayer = createHTMLElement("img", "statclass");
+    classPlayer.value = currentUser.GameCharacter.fr;
+    if (currentUser.GameCharacter.fr != "") {
+      classPlayer.src = `./img/weapon/${currentUser.GameCharacter.fr}.png`;
+    } else {
+      classPlayer.src = `./img/weapon/vide.png`;
+    }
     classPlayer.textContent = currentUser.GameCharacter[Language];
     statuser.appendChild(classPlayer);
 
@@ -159,6 +204,22 @@ function DisplayUsers(data, Language, div) {
     const lastGvGparticiped = createHTMLElement("div", "statlastgvg");
     lastGvGparticiped.textContent = currentUser.DateLastGvG[Language];
     statuser.appendChild(lastGvGparticiped);
+    divstat.appendChild(statuser);
+
+    const inputID = document.createElement("input");
+    inputID.type = "hidden";
+    inputID.value = currentUser.ID;
+    statuser.appendChild(inputID);
+
+    const comment = createHTMLElement("input", "statComment");
+    comment.type = "text";
+    comment.placeholder = translate.stat.placeholderComment;
+    if (currentUser.CommentGestionnaire != "") {
+      comment.value = currentUser.CommentGestionnaire;
+    } else {
+      comment.value = "";
+    }
+    statuser.appendChild(comment);
     divstat.appendChild(statuser);
 
     div.appendChild(divstat);
@@ -239,4 +300,36 @@ function sortBy(option = "", order) {
 function convertToDate(dateString) {
   const [day, month, year] = dateString.split("/").map((part) => parseInt(part, 10));
   return new Date(year, month - 1, day);
+}
+
+async function sendData(dataToSend) {
+  const currenthouse = localStorage.getItem("user_house");
+
+  const update = await fetch(adressAPI + "updatestatGvG/?house=" + currenthouse, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dataToSend),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Erreur de réseau: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Erreur avec les données:", error);
+    });
+
+  if (update.Gestion.Logged && update.Gestion.Admin) {
+    if (update.Gestion.Notification.Notif == true && update.Gestion.Notification.Type == "error") {
+      showNotification(update.Gestion.Notification.content[update.UserInfo.Language], update.Gestion.Notification.Type);
+      return;
+    }
+    const translate = await loadTranslate(update.UserInfo.Language);
+    containerstat(update, translate);
+  } else {
+    fetchlogout();
+  }
 }
