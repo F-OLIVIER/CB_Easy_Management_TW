@@ -209,9 +209,14 @@ export function loadQuillAndInit(translate) {
   const quillScript = document.createElement("script");
   quillScript.src = "https://cdn.quilljs.com/1.3.6/quill.js";
   quillScript.onload = () => {
-    document.addEventListener("DOMContentLoaded", () => {
+    // Initialisation de Quill se fait après le chargement du DOM
+    if (document.readyState === 'loading') {
+      document.addEventListener("DOMContentLoaded", () => {
+        initQuill(translate);
+      });
+    } else {
       initQuill(translate);
-    });
+    }
   };
   document.body.appendChild(quillScript);
 }

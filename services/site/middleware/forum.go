@@ -217,7 +217,7 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 				message = data.SocketMessage{
 					Type: "validate_post",
 					Content: map[string]string{
-						"msg":    "Un administrateur a validé votre post.\nTitre du post : " + titlepost,
+						"msg":    "Bonjour,\nUn administrateur a **validé votre post** sur le forum `Easy Management TW`.\nTitre de votre post : " + titlepost + "`",
 						"userid": discordID,
 					},
 				}
@@ -225,7 +225,7 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 				message = data.SocketMessage{
 					Type: "validate_post",
 					Content: map[string]string{
-						"msg":    "An administrator has validated your post.\nPost title : " + titlepost,
+						"msg":    "Hello,\nAn administrator has **validated your post** on the `Easy Management TW` forum.\nYour post title : `" + titlepost + "`",
 						"userid": discordID,
 					},
 				}
