@@ -41,6 +41,7 @@
         ["Nom de la maison", "Nom de la maison"],
         ["Langue", "Langue dans lesquel le bot Discord enverra les messages sur Discord"],
         ["Channel du message d'inscription au TW", "Chan Discord ou les utilisateurs vont s'inscrire (message avec les boutons de réaction)."],
+        ["Rappel automatique TW", "Permet d'activer ou non un rappel automatique pour les joueurs n'ayant pas encore indiqué leur présence 24h avant la TW."],
         ["Channel utilisateur", "Chan Discord ou des messages d'information au utilisateur du bot s'afficheront (nouvelle unité ajoutée, etc.)."],
         ["Channel de gestion", "Chan Discord ou des messages d'information d'administration s'afficheront (utilisateur qui quitte le Discord et se retrouve supprimer de la base de données)."],
         [
@@ -54,8 +55,8 @@
     {
       "title": "Site Internet",
       "commands": [
-        ["Privé (utilisateur connecté)", "<span>Home (tableau de bord)</span><span>Fiche personnage</span><span>Caserne"],
-        ["Privé (groupe gestionnaire)", "<span>Création des groupes</span><span>Statistiques</span><span>Gestion des casernes utilisateur</span>"]
+        ["Privé (utilisateur connecté)", "<span>Home (tableau de bord)</span><span>Fiche personnage (arme jouée, influence, niveau de héros & état de l'inscription TW).</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont).</span>"],
+        ["Privé (groupe gestionnaire)", "<span>Création des groupes en fonction des inscriptions et des unités (level & maîtrise) indiqué par les joueurs.</span><span>Statistiques des informations de la maison.</span><span>Gestion des casernes utilisateur (les gestionnaires ont accès aux casernes des utilisateurs).</span>"]
       ],
       "images": [
         "img/description/site/dashboard1.png",
@@ -67,7 +68,7 @@
     },
     {
       "title": "Application Mobile",
-      "commands": [["Privé (utilisateur connecté)", "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage</span><span>Caserne</span>"]],
+      "commands": [["Privé (utilisateur connecté)", "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage (arme jouée, influence & niveau de héros)</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont)</span>"]],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],

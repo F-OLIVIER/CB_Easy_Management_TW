@@ -42,6 +42,7 @@
         ["Language", "Language in which the Discord bot will send messages on Discord"],
         ["TW registration message channel", "Chan Discord where users will register (message with reaction buttons)."],
         ["User channel", "Chan Discord or information messages to the bot user will be displayed (new unit added, etc.)."],
+        ["Automatic TW recall", "Activate or deactivate an automatic reminder for players who have not yet indicated their presence 24 hours before the TW."],
         ["Manager channel", "Chan Discord or administration information messages will be displayed (user leaves Discord and is deleted from the database)."],
         [
           "Permission channel",
@@ -54,8 +55,8 @@
     {
       "title": "Website",
       "commands": [
-        ["Private (user connected)", "<span>Home (dashboard)</span><span>Character card</span><span>Barracks"],
-        ["Private (manager group)", "<span>Creating groups</span><span>Statistics</span><span>Managing user barracks</span>"]
+        ["Private (user connected)", "<span>Home (dashboard)</span><span>Character card (weapon played, influence, hero level, TW registration status)</span><span>Barracks (allows players to indicate which units they have)</span>"],
+        ["Private (manager group)", "<span>Creation of groups based on registrations and units (level & mastery) indicated by players</span><span>Home information statistics</span><span>Managing user barracks (managers have access to users' barracks)</span>"]
       ],
       "images": [
         "img/description/site/dashboard1.png",
@@ -67,7 +68,7 @@
     },
     {
       "title": "Mobile Application",
-      "commands": [["Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card</span><span>Barracks</span>"]],
+      "commands": [["Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card (weapon played, influence & hero level)</span><span>Barracks (allows players to indicate which units they have)</span>"]],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],
