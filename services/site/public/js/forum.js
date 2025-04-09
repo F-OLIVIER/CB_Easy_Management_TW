@@ -209,7 +209,9 @@ export function loadQuillAndInit(translate) {
   const quillScript = document.createElement("script");
   quillScript.src = "https://cdn.quilljs.com/1.3.6/quill.js";
   quillScript.onload = () => {
-    initQuill(translate);
+    document.addEventListener("DOMContentLoaded", () => {
+      initQuill(translate);
+    });
   };
   document.body.appendChild(quillScript);
 }
@@ -272,6 +274,8 @@ function initQuill(translate) {
 // -------------------------------------------------------
 function displayListPost(admin, listPost, language, optionvalidation, optionarchivage, translate) {
   let contentpostsForum = createHTMLElement("div", "contentpostsForum");
+  if (listPost == null) return contentpostsForum
+
   for (let index = 0; index < listPost.length; index++) {
     const currentPost = listPost[index];
     if (currentPost.Valid == optionvalidation && currentPost.Archive == optionarchivage) {
