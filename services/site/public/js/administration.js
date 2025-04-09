@@ -399,9 +399,6 @@ function containerAppAdmin(data, translate) {
   if (data.Gestion.Notification.Notif) {
     showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
   }
-  setTimeout(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, 50);
 }
 
 let timerThrottlebutton = 0;
