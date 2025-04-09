@@ -37,8 +37,6 @@ export async function cronResetMsgReaction() {
 
 // Fonction de rappel automatique des inscriptions
 export async function cronRecallTw() {
-  console.log("call cronRecallTw");
-
   const db = await open({
     filename: adressdb,
     driver: sqlite3.Database,
