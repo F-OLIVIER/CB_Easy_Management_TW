@@ -55,8 +55,14 @@
     {
       "title": "Site Internet",
       "commands": [
-        ["Privé (utilisateur connecté)", "<span>Home (tableau de bord)</span><span>Fiche personnage (arme jouée, influence, niveau de héros & état de l'inscription TW).</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont).</span>"],
-        ["Privé (groupe gestionnaire)", "<span>Création des groupes en fonction des inscriptions et des unités (level & maîtrise) indiqué par les joueurs.</span><span>Statistiques des informations de la maison.</span><span>Gestion des casernes utilisateur (les gestionnaires ont accès aux casernes des utilisateurs).</span>"]
+        [
+          "Privé (utilisateur connecté)",
+          "<span>Home (tableau de bord)</span><span>Fiche personnage (arme jouée, influence, niveau de héros & état de l'inscription TW).</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont).</span>"
+        ],
+        [
+          "Privé (groupe gestionnaire)",
+          "<span>Création des groupes en fonction des inscriptions et des unités (level & maîtrise) indiqué par les joueurs.</span><span>Statistiques des informations de la maison.</span><span>Gestion des casernes utilisateur (les gestionnaires ont accès aux casernes des utilisateurs).</span>"
+        ]
       ],
       "images": [
         "img/description/site/dashboard1.png",
@@ -68,7 +74,12 @@
     },
     {
       "title": "Application Mobile",
-      "commands": [["Privé (utilisateur connecté)", "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage (arme jouée, influence & niveau de héros)</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont)</span>"]],
+      "commands": [
+        [
+          "Privé (utilisateur connecté)",
+          "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage (arme jouée, influence & niveau de héros)</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont)</span>"
+        ]
+      ],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],
@@ -341,6 +352,7 @@
       "title": "Accès aux applications",
       "content": [
         "L’accès aux services necessite internet. Les moyens d'accès à internet sont à la charge de l'utilisateur.",
+        "Ce site est destiné à un public âgé de 16 ans et plus, conformément à la classification PEGI 16 en Europe du jeu \"Conqueror's Blade\". En accédant à ce site, vous confirmez avoir au moins 16 ans.",
         "",
         "L’accès à l’application Discord requiert son installation sur la plateforme Discord (Discord Inc.). Ceci s’effectue en cliquant sur le bouton \"Ajouter à Discord\" sur la page d'acceuil de ce site internet. Une fois sur votre serveur Discord, la commande \"/config\" permet d'éffectuer les paramétrages nécessaire aux 3 applications.",
         "L’accès à l’application mobile ainsi qu'à la partie privée de ce site internet requiert l'installation et le paramétrage du bot Discord sur son serveur Discord.",
