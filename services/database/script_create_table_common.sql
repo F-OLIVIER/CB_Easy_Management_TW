@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS Houses (
     ID_Chan_GvG VARCHAR(30) NOT NULL,
     ID_Chan_Gestion VARCHAR(30) NOT NULL,
     ID_Chan_Users VARCHAR(30) NOT NULL,
+    Recall_GvG INTEGER DEFAULT 0,
     Allumage INTEGER DEFAULT 0, -- 0 on, 1 off
     ID_MessageGvG VARCHAR(30) NOT NULL
 );
