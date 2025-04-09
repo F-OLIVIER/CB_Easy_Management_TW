@@ -4,7 +4,7 @@ import { PlayerCreateOrUpdate, checkAllUser } from "./FuncData.js";
 import { deleteHouse, houseExist } from "./config_house.js";
 import { slash_interaction } from "./slashinteraction.js";
 import { createCommands } from "./slashcommand.js";
-import { cronResetMsgReaction } from "./Cronjob.js";
+import { cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
 import { client } from "./Constant.js";
 import { discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
 import { logToFile } from "./log.js";
@@ -234,6 +234,27 @@ client.on("messageCreate", async (message) => {
 // --------------------- Automatic function ---------------------
 // --------------------------------------------------------------
 function TaskHandle() {
+  //  ┌───────────── second (0)
+  //  │ ┌───────────── minute (0)
+  //  │ │ ┌───────────── hour (20)
+  //  │ │ │  ┌───────────── day of month (*)
+  //  │ │ │  │ ┌───────────── month (*)
+  //  │ │ │  │ │ ┌───────────── day of week (1,5)
+  //  │ │ │  │ │ │
+  //  0 0 20 * * 1,5
+
+  // fonction de rappel automatique d'inscription aux TW à 20h lundi et vendredi
+  let recalltw = new CronJob(
+    "0 0 20 * * 1,5",
+    function () {
+      cronRecallTw();
+    },
+    null,
+    true,
+    "Europe/Paris"
+  );
+  recalltw.start();
+
   // fonction de changement automatique du message de réaction à 21h mardi et samedi
   let resetmsgreact = new CronJob(
     "0 0 21 * * 2,6",

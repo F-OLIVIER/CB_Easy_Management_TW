@@ -55,6 +55,8 @@ export async function config_2_avertissement(interaction) {
     ID_Chan_GvG: "",
     ID_Chan_Gestion: "",
     ID_Chan_Users: "",
+    Recall_GvG: 0,
+    Allumage: 0,
     ID_MessageGvG: "",
   });
 
@@ -76,7 +78,7 @@ export async function config_3_ID_Chan_GvG(interaction) {
   return await list_discord_channels(interaction, translate.config.ID_Chan_GvG, "config_3_ID_Chan_GvG");
 }
 
-export async function config_4_ID_Chan_Gestion(interaction) {
+export async function config_4_recall(interaction) {
   const userId = interaction.user.id;
   // Mise à jour du cache
   let houseData = interactionsCache.get(userId);
@@ -88,7 +90,25 @@ export async function config_4_ID_Chan_Gestion(interaction) {
   const valid = await verif_perm_channel(houseData.ID_Chan_GvG);
   if (valid) {
     // Si le chan à les permissions continuer l'interaction
-    return await list_discord_channels(interaction, translate.config.ID_Chan_Gestion, "config_4_ID_Chan_Gestion");
+    const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("config_recall_yes")
+        .setLabel("✅ " + translate.yes)
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("config_recall_no")
+        .setLabel("✖️ " + translate.no)
+        .setStyle(ButtonStyle.Danger)
+    );
+
+    // Reponse à l'utilisateur
+    await interaction.deferUpdate();
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${userId}>\n${translate.config.Recall_GvG}`,
+      flags: MessageFlags.Ephemeral,
+      components: [buttons],
+    });
   } else {
     await interaction.deferUpdate();
     await interaction.deleteReply();
@@ -98,6 +118,17 @@ export async function config_4_ID_Chan_Gestion(interaction) {
       flags: MessageFlags.Ephemeral,
     });
   }
+}
+
+export async function config_4_ID_Chan_Gestion(interaction, option) {
+  const userId = interaction.user.id;
+  // Mise à jour du cache
+  let houseData = interactionsCache.get(userId);
+  houseData.Recall_GvG = option;
+  interactionsCache.set(userId, houseData);
+  // Reponse à l'utilisateur
+  const translate = await loadTranslations(houseData.Langage);
+  return await list_discord_channels(interaction, translate.config.ID_Chan_Gestion, "config_4_ID_Chan_Gestion");
 }
 
 export async function config_5_ID_Chan_Users(interaction) {
@@ -192,6 +223,7 @@ export async function config_finish(interaction) {
       houseData.ID_MessageGvG = await initial_msgreactgvg(houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users);
     } else {
       houseData.ID_MessageGvG = db_houseData.ID_Chan_GvG;
+      houseData.Allumage = db_houseData.Allumage;
     }
   }
 
@@ -207,13 +239,10 @@ export async function config_finish(interaction) {
     logToFile(`${translate.noperm} (channel ${houseData.ID_Chan_GvG})`);
     return;
   }
-
-  // Mise à jour du cache
   interactionsCache.set(userId, houseData);
 
   // Création de la maison dans la db
   await config_house_db(houseData, exist_id_house);
-
   // Ajout des utilisateurs des groupes selectionné à la db
   await createUserOneDiscord(houseData.ID_Server);
 
@@ -230,6 +259,7 @@ export async function config_finish(interaction) {
       .setLabel("✖️ " + translate.no)
       .setStyle(ButtonStyle.Danger)
   );
+
   // Reponse à l'utilisateur
   await interaction.deleteReply();
   if (exist_id_house == 0) {
@@ -264,7 +294,6 @@ export async function config_finish_yes(interaction) {
     content: "<@" + userId + ">\n" + translate.config.finish,
     flags: MessageFlags.Ephemeral,
   });
-  // Suppression du cache utilisateur
   interactionsCache.delete(userId);
 }
 
@@ -287,7 +316,6 @@ export async function config_finish_no(interaction) {
 // -------------------------------------------------------------------
 // ------------------------ Fonction commune -------------------------
 // -------------------------------------------------------------------
-
 // Affiche un menu de selection avec la liste des channels
 export async function list_discord_channels(interaction, custom_content, custom_name) {
   await interaction.deferUpdate();
@@ -339,7 +367,6 @@ export async function list_discord_roles(interaction, custom_content, custom_rol
 // -------------------------------------------------------------------
 // ---------------- Insertion Maison dans la database ----------------
 // -------------------------------------------------------------------
-
 async function config_house_db(houseData, exist_id_house) {
   // Ouvrir la base de données (par defaut en mode lecture/écriture)
   const db = await open({
@@ -351,7 +378,7 @@ async function config_house_db(houseData, exist_id_house) {
     if (exist_id_house == 0) {
       // Création de maison dans la table Houses car par d'ID trouvé
       const insertQuery_Houses = `INSERT INTO Houses 
-        (House_name, House_logo, Langage, ID_Server, ID_Group_Users, ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, ID_MessageGvG) 
+        (House_name, House_logo, Langage, ID_Server, ID_Group_Users, ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Recall_GvG, ID_MessageGvG) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
       const result_house = await db.run(insertQuery_Houses, [
@@ -364,6 +391,7 @@ async function config_house_db(houseData, exist_id_house) {
         houseData.ID_Chan_GvG,
         houseData.ID_Chan_Gestion,
         houseData.ID_Chan_Users,
+        houseData.Recall_GvG,
         houseData.ID_MessageGvG,
       ]);
 
@@ -384,7 +412,9 @@ async function config_house_db(houseData, exist_id_house) {
                                     ID_Chan_GvG = ?, 
                                     ID_Chan_Gestion = ?, 
                                     ID_Chan_Users = ?, 
-                                    ID_MessageGvG = ?
+                                    Recall_GvG = ?,
+                                    Allumage = ?,
+                                    ID_MessageGvG = ?,
                                   WHERE ID = ?;`;
 
       await db.run(updateQuery_house, [
@@ -396,6 +426,8 @@ async function config_house_db(houseData, exist_id_house) {
         houseData.ID_Chan_GvG,
         houseData.ID_Chan_Gestion,
         houseData.ID_Chan_Users,
+        houseData.Recall_GvG,
+        houseData.Allumage,
         houseData.ID_MessageGvG,
         exist_id_house,
       ]);

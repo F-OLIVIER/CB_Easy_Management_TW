@@ -28,6 +28,7 @@
     "noperm": "The bot does not have permission to send messages in the channel",
     "avertissement": "We're going to go over all the information needed for `Easy Management TW` applications to work properly.\nPlease read the explanations on the website before continuing, as you may need to make some Discord settings.\n\nLink to explanations on the website: ",
     "ID_Chan_GvG": "**In which Discord channel will users register for the TW?**",
+    "Recall_GvG": "**Would you like a reminder** to users who have not voted the day before each territorial war?",
     "ID_Chan_Gestion": "**In which Discord channel will information messages to TW managers be sent?**",
     "ID_Chan_Users": "**In which Discord channels will information messages to users (managers and members) be sent?**",
     "ID_Group_Users": "**Which Discord group (managers and members) will have access to the website to fill in their details?**",
@@ -56,6 +57,8 @@
     ],
     "finish": "Congratulations :tada:\nInteraction complete, bot operational."
   },
+
+  "recallTW": "If you have not yet registered for tomorrow's TW, please register in the chan Discord",
 
   "gestion": {
     "resetmanuelmsggvg": "has just manually reset the TW registration message.",

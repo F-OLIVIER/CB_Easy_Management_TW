@@ -26,8 +26,9 @@
 
   "config": {
     "noperm": "Le bot n'a pas la permission d'envoyer des messages dans le chan",
-    "avertissement": "Nous allons passer en revue toutes les informations nécessaires au bon fonctionnement des application de `Easy Management TW`.\nMerci de lire les explications sur le site internet avant de continuer, car vous avez éventuellement des paramétrages Discord à effectuer.\n\nLien des explications sur le site internet : ",
+    "avertissement": "Nous allons passer en revue toutes les informations nécessaires au bon fonctionnement des applications de `Easy Management TW`.\nMerci de lire les explications sur le site internet avant de continuer, car vous avez éventuellement des paramétrages Discord à effectuer.\n\nLien des explications sur le site internet : ",
     "ID_Chan_GvG": "**Dans quel channel Discord les utilisateurs vont s'inscrire au TW ?**",
+    "Recall_GvG": "**Souhaitez-vous un rappel** aux utilisateurs qui n'ont pas voté la veille de chaque guerre de territoire ?",
     "ID_Chan_Gestion": "**Dans quel channel Discord des messages d'information aux gestionnaires des TW seront envoyé ?**",
     "ID_Chan_Users": "**Dans quel channel Discord des messages d'information aux utilisateurs (gestionnaires et membres) seront envoyé ?**",
     "ID_Group_Users": "**Quel groupe Discord (gestionnaires et membres) aura accès au site internet pour remplir leurs informations ?**",
@@ -56,6 +57,8 @@
     ],
     "finish": "Félicitations :tada:\nInteraction terminée, bot opérationnel."
   },
+
+  "recallTW": "Vous n'avez pas encore indiqué votre présence pour la TW de demain, merci de vous inscrire dans le chan Discord",
 
   "gestion": {
     "resetmanuelmsggvg": "viens d'effectuer un reset manuel du message d'inscription au TW",

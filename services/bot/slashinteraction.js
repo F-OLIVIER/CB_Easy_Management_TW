@@ -5,6 +5,7 @@ import {
   config_2_avertissement,
   config_3_ID_Chan_GvG,
   config_4_ID_Chan_Gestion,
+  config_4_recall,
   config_5_ID_Chan_Users,
   config_6_ID_Group_Users,
   config_7_ID_Group_Officier,
@@ -108,9 +109,19 @@ export async function slash_interaction(interaction) {
       return true;
     }
     if (interaction.customId === "config_3_ID_Chan_GvG") {
-      await config_4_ID_Chan_Gestion(interaction);
+      await config_4_recall(interaction);
+      // await config_4_ID_Chan_Gestion(interaction);
       return true;
     }
+    if (interaction.customId === "config_recall_yes") {
+      await config_4_ID_Chan_Gestion(interaction, 1);
+      return true;
+    }
+    if (interaction.customId === "config_recall_no") {
+      await config_4_ID_Chan_Gestion(interaction, 0);
+      return true;
+    }
+
     if (interaction.customId === "config_4_ID_Chan_Gestion") {
       await config_5_ID_Chan_Users(interaction);
       return true;
