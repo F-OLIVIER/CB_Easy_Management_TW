@@ -1,20 +1,20 @@
-# Systéme de gestion GvG multiplateforme pour Conqueror's Blade
+# Système de gestion des guerres de territoire multi-plateforme pour le jeu Conqueror's Blade
 
 ## 📝 Descriptif
 
-Le projet permet de gérer de façon automatisée les inscriptions aux guerre de territoire (TW) des joueurs pour le jeu [Conqueror's Blade](https://www.conquerorsblade.com) et la préparation des batailles en créant les groupes à l'avance avec les informations nécessaires pour optimiser les groupes.<br>
-Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un site internet et une application mobile (Android), les 3 applications ont en commum une base de données SQL.
+Le projet permet de gérer de façon automatisée les inscriptions aux guerres de territoire (TW) des joueurs pour le jeu [Conqueror's Blade](https://www.conquerorsblade.com) et la préparation des batailles en créant les groupes à l'avance avec les informations nécessaires pour optimiser les groupes.
+Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un site internet et une application mobile (Android), les 3 applications ont en commun une base de données SQL.
 
-Deux langues sont prise en charge, le Français et l'Anglais.
+Deux langues sont prises en charge, le Français et l'Anglais.
 
 **Accès à la plateforme**
-- Le site internet est disponible a l'adresse suivante : <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
-- Le bot discord peut être inviter sur votre Discord directement depuis le site internet a l'adresse <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
-- L'application mobile est en phase de test sur le Google play store sous le nom `Easy Management TW` (en cour de deploiement)
+- Le site internet est disponible à l'adresse suivante : <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
+- Le bot Discord peut être inviter sur votre Discord directement depuis le site internet a l'adresse <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
+- L'application mobile est en phase de test sur le Google Play store sous le nom `Easy Management TW` (en cour de déploiement)
 
 
 **Partie 1 : le bot Discord** <br>
-Le bot Discord permet aux utilisateurs de s'inscrire via Discord. Les informations d'inscription des joueurs sont enregistré dans la base de donnée SQL, les joueurs peuvent ainsi donner la plupart des informations nécessaires à la préparation des TW.<br>
+Le bot Discord permet aux utilisateurs de s'inscrire via Discord. Les informations d'inscription des joueurs sont enregistrées dans la base de données SQL, les joueurs peuvent ainsi donner la plupart des informations nécessaires à la préparation des TW.</br>
 Les commandes sont enregistrées en tant que "Slash Command" Discord et sont accessibles avec une description aux utilisateurs directement sur Discord.
 
 <table align= "center" width="95%">
@@ -44,10 +44,10 @@ __Les permissions utilisé par l'application Discord sont :__
 
 
 **Partie 2 : le site internet** <br>
-Seul les utilisateurs presents sur le Discord associé peuvent se connecté au site internet. Les roles Discord permettent de gérer automatiquement les accées privilégier ou non au site.
-Les utilisateurs peuvent indiqué la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
+Seuls les utilisateurs présents sur le Discord associé peuvent se connecter au site internet. Les rôles Discord permettent de gérer automatiquement les accès privilégiés ou non au site.
+Les utilisateurs peuvent indiquer la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
 
-Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose pas un simple utilisateur, ils peuvent créer les groupes TW, ils accèdent également à une page de statistique des informations contenu dans la base de donnée.
+Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose pas un simple utilisateur, ils peuvent créer les groupes TW, ils accèdent également à une page de statistique des informations contenu dans la base de données.
 
 <table align= "center" width="95%">
     <tbody>
@@ -66,8 +66,8 @@ Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose p
 </table>
 
 **Partie 3 : l'application mobile** <br>
-Seul les utilisateurs presents sur le Discord associé peuvent récupérer un code d'application mobile avec la commande discord `/smartphone` pour ce connecté à l'application mobile.
-Les utilisateurs peuvent indiqué la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
+Seuls les utilisateurs présents sur le Discord associé peuvent récupérer un code d'application mobile avec la commande Discord `/smartphone` pour ce connecté à l'application mobile.
+Les utilisateurs peuvent indiquer la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
 
 <table align= "center" width="95%">
     <tbody>
