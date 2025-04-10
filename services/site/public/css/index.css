@@ -1177,7 +1177,7 @@
   text-align: left;
   margin-left: 7%;
   margin-bottom: 5px;
-  color: red;
+  color: #5BC0EB;
 }
 
 .divuser {
@@ -1330,21 +1330,11 @@
 }
 
 .groupimpair {
-  background-color: #b0b0b0;
+  background-color: #7c7c7c;
 }
 .grouppair {
   background-color: #555555;
 }
-
-/* .group1 {
-  color: white;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
-}
-
-.viewgroup1 {
-  color: white;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
-} */
 
 .consultOff {
   background-color: #f98348;
