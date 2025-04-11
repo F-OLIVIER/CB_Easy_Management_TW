@@ -19,9 +19,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Obtenir la largeur de l'écran
+    // Taille de l'écran
     double screenWidth = MediaQuery.of(context).size.width;
-    double containerWidth = screenWidth * 0.5;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       // En-tête
@@ -61,77 +61,170 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(height: 2),
-              ClipOval(
-                child: Image.asset(
-                  'assets/images/Logo_EMTW.webp',
-                  width: containerWidth,
-                  height: containerWidth,
-                  fit: BoxFit.cover,
-                ),
-              ),
-
-              const SizedBox(height: 3),
-
-              // Boîte 1 : instruction + lien de récupération du code de connexion
-              Card(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 10,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 8,
-                color: Color.fromARGB(50, 0, 0, 0),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
+              SizedBox(height: screenHeight * 0.05),
+              screenWidth > 700
+                  ? Row(
                     children: [
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          children: [
-                            const TextSpan(
-                              text:
-                                  'A connection code is required.\n\nYou can retrieve it on Discord with the command "/smartphone".\n\nwebsite : ',
+                      // Logo à gauche
+                      ClipOval(
+                        child: Image.asset(
+                          'assets/images/Logo_EMTW.webp',
+                          width: screenWidth * 0.3,
+                          height: screenWidth * 0.3,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      // Boîte 1 à droite
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                              vertical: 10,
                             ),
-                            TextSpan(
-                              text: Config.imgUrl,
-                              style: const TextStyle(
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 8,
+                            color: Color.fromARGB(50, 0, 0, 0),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                minHeight: screenWidth * 0.18,
                               ),
-                              recognizer:
-                                  TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      final Uri url = Uri.parse(Config.imgUrl);
-                                      if (await canLaunchUrl(url)) {
-                                        await launchUrl(
-                                          url,
-                                          mode: LaunchMode.externalApplication,
-                                        );
-                                      } else {
-                                        throw 'Impossible d\'ouvrir le lien';
-                                      }
-                                    },
+                              padding: const EdgeInsets.all(25.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                        color: Color.fromARGB(
+                                          255,
+                                          255,
+                                          255,
+                                          255,
+                                        ),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      children: [
+                                        const TextSpan(
+                                          text:
+                                              'A connection code is required.\n\nYou can retrieve it on Discord with the command "/smartphone".\n\nwebsite : ',
+                                        ),
+                                        TextSpan(
+                                          text: Config.imgUrl,
+                                          style: const TextStyle(
+                                            color: Colors.blue,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                          recognizer:
+                                              TapGestureRecognizer()
+                                                ..onTap = () async {
+                                                  final Uri url = Uri.parse(
+                                                    Config.imgUrl,
+                                                  );
+                                                  if (await canLaunchUrl(url)) {
+                                                    await launchUrl(
+                                                      url,
+                                                      mode:
+                                                          LaunchMode
+                                                              .externalApplication,
+                                                    );
+                                                  } else {
+                                                    throw 'Impossible d\'ouvrir le lien';
+                                                  }
+                                                },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  : Column(
+                    children: [
+                      // Logo centré pour les petits écrans
+                      ClipOval(
+                        child: Image.asset(
+                          'assets/images/Logo_EMTW.webp',
+                          width: screenWidth * 0.5,
+                          height: screenWidth * 0.5,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      // Boîte 1 centrée
+                      Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 10,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 8,
+                        color: Color.fromARGB(50, 0, 0, 0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(25.0),
+                          child: Column(
+                            children: [
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                      text:
+                                          'A connection code is required.\n\nYou can retrieve it on Discord with the command "/smartphone".\n\nwebsite : ',
+                                    ),
+                                    TextSpan(
+                                      text: Config.imgUrl,
+                                      style: const TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer:
+                                          TapGestureRecognizer()
+                                            ..onTap = () async {
+                                              final Uri url = Uri.parse(
+                                                Config.imgUrl,
+                                              );
+                                              if (await canLaunchUrl(url)) {
+                                                await launchUrl(
+                                                  url,
+                                                  mode:
+                                                      LaunchMode
+                                                          .externalApplication,
+                                                );
+                                              } else {
+                                                throw 'Impossible d\'ouvrir le lien';
+                                              }
+                                            },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
-
               const SizedBox(height: 1),
-
-              // Boîte 2 : Saisie du code
+              // Boîte 2 centrée
               Card(
                 margin: const EdgeInsets.symmetric(
                   horizontal: 20.0,
@@ -143,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                 elevation: 8,
                 color: Color.fromARGB(50, 0, 0, 0),
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(25.0),
                   child: Column(
                     children: [
                       TextField(
@@ -167,7 +260,6 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         onPressed: () async {
                           final code = _codeController.text;
-                          // print('Code de connexion: $code');
                           // envoie du code au serveur
                           await sendCodeToServer(
                             context,

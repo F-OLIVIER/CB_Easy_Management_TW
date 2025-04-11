@@ -78,12 +78,15 @@ class HomePageState extends State<HomePage> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          content: Text(
-            Config.language == "fr"
-                ? "Voulez-vous vous inscrire comme présent ou absent ?"
-                : "Do you want to register as present or absent?",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16),
+          content: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              Config.language == "fr"
+                  ? "Voulez-vous vous inscrire comme présent ou absent ?"
+                  : "Do you want to register as present or absent?",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
+            ),
           ),
           actionsAlignment: MainAxisAlignment.center,
           actions: [
@@ -195,109 +198,126 @@ class HomePageState extends State<HomePage> {
     };
   }
 
+  Widget buildMainContent(BuildContext context, double screenHeight) {
+    final buttonAppearance = _getButtonAppearance();
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          Config.language == "fr"
+              ? "Etat de votre inscription"
+              : "Status of your registration",
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            letterSpacing: 1.2,
+            shadows: [
+              Shadow(
+                offset: Offset(1.0, 1.0),
+                blurRadius: 4.0,
+                color: Colors.black,
+              ),
+            ],
+          ),
+        ),
+        Text(
+          Config.language == "fr"
+              ? "(cliquer dessus pour modifier)"
+              : "(click to modify)",
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.white,
+            letterSpacing: 1.2,
+            shadows: [
+              Shadow(
+                offset: Offset(1.0, 1.0),
+                blurRadius: 4.0,
+                color: Colors.black,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 40),
+        Container(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.5),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: buttonAppearance["color"],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(150),
+                offset: Offset(0, 8),
+                blurRadius: 20,
+                spreadRadius: 5,
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            onPressed: () => _handleBigButtonClick(context),
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              backgroundColor: buttonAppearance["color"],
+              padding: EdgeInsets.zero,
+              elevation: 0,
+            ),
+            child: SizedBox(
+              width: screenHeight * 0.6,
+              height: screenHeight * 0.6,
+              child: Center(
+                child: Text(
+                  buttonAppearance["text"],
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(2.0, 2.0),
+                        blurRadius: 5.0,
+                        color: Color.fromARGB(100, 0, 0, 0),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final buttonAppearance = _getButtonAppearance();
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: customAppBar(context, title: housename),
-      drawer: customAppDrawer(context),
+      drawer: screenWidth <= 700 ? customAppDrawer(context) : null,
       backgroundColor: Color.fromARGB(255, 115, 147, 214),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // Calculer 60 % de la largeur de l'écran
-            double buttonSize = constraints.maxWidth * 0.6;
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  Config.language == "fr"
-                      ? "Etat de votre inscription"
-                      : "Status of your registration",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(1.0, 1.0),
-                        blurRadius: 4.0,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  Config.language == "fr"
-                      ? "(cliquer dessus pour modifier)"
-                      : "(click to modify)",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(1.0, 1.0),
-                        blurRadius: 4.0,
-                        color: Colors.black,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 40),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: buttonAppearance["color"],
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(150),
-                        offset: Offset(0, 8),
-                        blurRadius: 20,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    onPressed: () => _handleBigButtonClick(context),
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: buttonAppearance["color"],
-                      padding: EdgeInsets.zero,
-                      elevation: 0,
-                    ),
-                    child: SizedBox(
-                      width: buttonSize,
-                      height: buttonSize,
-                      child: Center(
-                        child: Text(
-                          buttonAppearance["text"],
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(2.0, 2.0),
-                                blurRadius: 5.0,
-                                color: Color.fromARGB(100, 0, 0, 0),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+      body:
+          screenWidth > 700
+              ? Row(
+                children: [
+                  customAppDrawer(context),
+                  Expanded(
+                    child: Center(
+                      child: buildMainContent(context, screenHeight),
                     ),
                   ),
+                ],
+              )
+              : Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return buildMainContent(context, constraints.maxHeight);
+                  },
                 ),
-              ],
-            );
-          },
-        ),
-      ),
+              ),
     );
   }
 }

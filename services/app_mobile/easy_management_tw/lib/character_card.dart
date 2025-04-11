@@ -213,208 +213,217 @@ class FichePersonnagePageState extends State<FichePersonnagePage> {
     }
   }
 
+  Widget buildMainContent(BuildContext context, double screenHeight) {
+    if (classList.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          // Section Classe
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Config.language == "fr"
+                        ? 'Classe actuel :\n${actualClass ?? 'Non défini'}'
+                        : 'Current class :\n${actualClass ?? 'Not Defined'}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  DropdownButton<String>(
+                    value: selectedClass,
+                    onChanged: (String? newClass) {
+                      setState(() {
+                        selectedClass = newClass;
+                      });
+                    },
+                    items:
+                        classList.map<DropdownMenuItem<String>>((className) {
+                          return DropdownMenuItem<String>(
+                            value: className,
+                            child: Text(className),
+                          );
+                        }).toList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Section Level de héros
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Config.language == "fr"
+                        ? 'Level actuel : $userLevel'
+                        : 'Current level : $userLevel',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: levelController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText:
+                          Config.language == "fr"
+                              ? 'Changer de level'
+                              : 'Change level',
+                      hintText:
+                          Config.language == "fr"
+                              ? 'Entrez votre nouveau level'
+                              : 'Enter your new level',
+                      border: OutlineInputBorder(),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 15,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Section Influence
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    Config.language == "fr"
+                        ? 'Influence actuelle : $userInfluence'
+                        : 'Current influence : $userInfluence',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: influenceController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText:
+                          Config.language == "fr"
+                              ? 'Changer d\'influence'
+                              : 'Changing influence',
+                      hintText:
+                          Config.language == "fr"
+                              ? 'Entrez votre nouvelle influence'
+                              : 'Enter your new influence',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 15,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Bouton pour mettre à jour tous les champs
+          ElevatedButton(
+            onPressed: _updateAll,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              padding: EdgeInsets.zero,
+            ),
+            child: Ink(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue.shade400, Colors.blue.shade900],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                constraints: const BoxConstraints(minWidth: 150, minHeight: 50),
+                child: Text(
+                  Config.language == "fr"
+                      ? 'Valider les changements'
+                      : 'Validating changes',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: customAppBar(
         context,
         title: Config.language == "fr" ? "Fiche personnage" : "Character card",
       ),
-      drawer: customAppDrawer(context),
+      drawer: screenWidth <= 700 ? customAppDrawer(context) : null,
       backgroundColor: Color.fromARGB(255, 115, 147, 214),
       body:
-          classList == []
-              ? const Center(child: CircularProgressIndicator())
-              : Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: [
-                    // Section Classe
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              Config.language == "fr"
-                                  ? 'Classe actuel :\n${actualClass ?? 'Non défini'}'
-                                  : 'Current class :\n${actualClass ?? 'Not Defined'}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            DropdownButton<String>(
-                              value: selectedClass,
-                              onChanged: (String? newClass) {
-                                setState(() {
-                                  selectedClass = newClass;
-                                });
-                              },
-                              items:
-                                  classList.map<DropdownMenuItem<String>>((
-                                    className,
-                                  ) {
-                                    return DropdownMenuItem<String>(
-                                      value: className,
-                                      child: Text(className),
-                                    );
-                                  }).toList(),
-                            ),
-                          ],
-                        ),
-                      ),
+          screenWidth > 700
+              ? Row(
+                children: [
+                  customAppDrawer(context),
+                  Expanded(
+                    child: Center(
+                      child: buildMainContent(context, screenHeight),
                     ),
-
-                    const SizedBox(height: 10),
-
-                    // Section Level de héros
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              Config.language == "fr"
-                                  ? 'Level actuel : $userLevel'
-                                  : 'Current level : $userLevel',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              controller: levelController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText:
-                                    Config.language == "fr"
-                                        ? 'Changer de level'
-                                        : 'Change level',
-                                hintText:
-                                    Config.language == "fr"
-                                        ? 'Entrez votre nouveau level'
-                                        : 'Enter your new level',
-                                border: OutlineInputBorder(),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                  borderSide: const BorderSide(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                ),
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // Section Influence
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              Config.language == "fr"
-                                  ? 'Influence actuelle : $userInfluence'
-                                  : 'Current influence : $userInfluence',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            TextField(
-                              controller: influenceController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText:
-                                    Config.language == "fr"
-                                        ? 'Changer d\'influence'
-                                        : 'Changing influence',
-                                hintText:
-                                    Config.language == "fr"
-                                        ? 'Entrez votre nouvelle influence'
-                                        : 'Enter your new influence',
-                                border: OutlineInputBorder(),
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Bouton pour mettre à jour tous les champs
-                    ElevatedButton(
-                      onPressed: _updateAll,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.blue.shade400,
-                              Colors.blue.shade900,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          constraints: const BoxConstraints(
-                            minWidth: 150,
-                            minHeight: 50,
-                          ),
-                          child: Text(
-                            Config.language == "fr"
-                                ? 'Valider les changements'
-                                : 'Validating changes',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+              )
+              : Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return buildMainContent(context, constraints.maxHeight);
+                  },
                 ),
               ),
     );
