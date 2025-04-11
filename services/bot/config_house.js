@@ -414,7 +414,7 @@ async function config_house_db(houseData, exist_id_house) {
                                     ID_Chan_Users = ?, 
                                     Recall_GvG = ?,
                                     Allumage = ?,
-                                    ID_MessageGvG = ?,
+                                    ID_MessageGvG = ?
                                   WHERE ID = ?;`;
 
       await db.run(updateQuery_house, [

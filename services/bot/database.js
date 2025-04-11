@@ -228,7 +228,6 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
     const row = await db.get(selectUserQuery, [member.user.id, id_house]);
 
     if (row) {
-      // console.log(`Utilisateur ${row.DiscordName} supprimé, ID : ${member.user.id}`);.
       const translate = await loadTranslations(row.Langage);
       if (leaveDiscord) {
         UserLeave(row.ID_Chan_Gestion, member.user.displayName, member.user.username, translate.information.UserLeaveDiscord);
@@ -239,11 +238,11 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
       const userID = row.ID;
       // Suppression de l'utilisateur des table de la maison auquel il appartient
       const listQuery = [
-        `DELETE FROM Caserne${userID} WHERE User_ID = ?;`,
-        `DELETE FROM CaserneMaitrise${userID} WHERE User_ID = ?;`,
-        `DELETE FROM GroupGvG${userID} WHERE User_ID = ?;`,
-        `DELETE FROM GroupTypeAtt${userID} WHERE User_ID = ?;`,
-        `DELETE FROM GroupTypeDef${userID} WHERE User_ID = ?;`,
+        `DELETE FROM Caserne${id_house} WHERE User_ID = ?;`,
+        `DELETE FROM CaserneMaitrise${id_house} WHERE User_ID = ?;`,
+        `DELETE FROM GroupGvG${id_house} WHERE User_ID = ?;`,
+        `DELETE FROM GroupTypeAtt${id_house} WHERE User_ID = ?;`,
+        `DELETE FROM GroupTypeDef${id_house} WHERE User_ID = ?;`,
         `DELETE FROM Users WHERE ID = ?;`,
       ];
       // Exécuter toutes les suppressions
