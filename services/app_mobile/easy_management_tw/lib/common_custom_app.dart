@@ -135,7 +135,7 @@ Drawer customAppDrawer(BuildContext context) {
         if (ModalRoute.of(context)?.settings.name != '/setting')
           ListTile(
             title: Text(
-              Config.language == "fr" ? "Paramètre" : "Setting",
+              Config.language == "fr" ? "Paramètres" : "Settings",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,

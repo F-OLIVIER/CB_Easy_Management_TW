@@ -230,132 +230,138 @@ class Casernepage extends State<Caserne> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: customAppBar(
-        context,
-        title: Config.language == "fr" ? "Caserne" : "Barrack",
-      ),
-      drawer: customAppDrawer(context),
-      backgroundColor: Color.fromARGB(255, 115, 147, 214),
-      body: Center(
-        child:
-            (tabs.isEmpty)
-                ? CircularProgressIndicator()
-                : DefaultTabController(
-                  length: tabs.length,
-                  child: Column(
-                    children: [
-                      // Affichage conditionnel du bouton de validation
-                      ValueListenableBuilder<bool>(
-                        valueListenable: isButtonVisible,
-                        builder: (context, value, child) {
-                          return value
-                              ? Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 0,
-                                      horizontal: 20,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    elevation: 0,
-                                    backgroundColor: Colors.transparent,
-                                    shadowColor: Colors.transparent,
+  Widget buildMainContent(BuildContext context, double screenHeight) {
+    return Center(
+      child:
+          (tabs.isEmpty)
+              ? CircularProgressIndicator()
+              : DefaultTabController(
+                length: tabs.length,
+                child: Column(
+                  children: [
+                    // Affichage conditionnel du bouton de validation
+                    ValueListenableBuilder<bool>(
+                      valueListenable: isButtonVisible,
+                      builder: (context, value, child) {
+                        return value
+                            ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 0,
+                                    horizontal: 20,
                                   ),
-                                  onPressed:
-                                      () async => await sendinfoserver(context),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.blue.shade400,
-                                          Colors.blue.shade900,
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      borderRadius: BorderRadius.circular(30),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 0,
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                ),
+                                onPressed:
+                                    () async => await sendinfoserver(context),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.blue.shade400,
+                                        Colors.blue.shade900,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
                                     ),
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      constraints: const BoxConstraints(
-                                        minWidth: 150,
-                                        minHeight: 50,
-                                      ),
-                                      child: Text(
-                                        Config.language == "fr"
-                                            ? "Valider les changements"
-                                            : "Submit changes",
-                                        // 'Valider les changements',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    constraints: const BoxConstraints(
+                                      minWidth: 150,
+                                      minHeight: 50,
+                                    ),
+                                    child: Text(
+                                      Config.language == "fr"
+                                          ? "Valider les changements"
+                                          : "Submit changes",
+                                      // 'Valider les changements',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
-                              )
-                              : SizedBox.shrink();
-                        },
+                              ),
+                            )
+                            : SizedBox.shrink();
+                      },
+                    ),
+                    // Onglets
+                    TabBar(
+                      tabs: tabs,
+                      indicator: BoxDecoration(
+                        color: Color.fromARGB(255, 254, 244, 195),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      // Onglets
-                      TabBar(
-                        tabs: tabs,
-                        indicator: BoxDecoration(
-                          color: Color.fromARGB(255, 254, 244, 195),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        indicatorPadding: EdgeInsets.symmetric(
-                          horizontal: -10.0,
-                          vertical: 0.0,
-                        ),
-                        labelColor: Colors.black,
-                        unselectedLabelColor: Colors.white,
+                      indicatorPadding: EdgeInsets.symmetric(
+                        horizontal: -10.0,
+                        vertical: 0.0,
                       ),
-                      Expanded(
-                        child: TabBarView(
-                          children:
-                              tabs.map((tab) {
-                                String type = tab.text ?? '';
-                                List unitsForType = unitsByType[type] ?? [];
-                                return ListView.builder(
-                                  itemCount: unitsForType.length,
-                                  itemBuilder: (context, index) {
-                                    var unit = unitsForType[index];
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.white,
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        children:
+                            tabs.map((tab) {
+                              String type = tab.text ?? '';
+                              List unitsForType = unitsByType[type] ?? [];
+                              return GridView.builder(
+                                padding: EdgeInsets.all(16),
+                                itemCount: unitsForType.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 600,
+                                      mainAxisSpacing: 16,
+                                      mainAxisExtent: 220,
+                                      crossAxisSpacing: 16,
+                                    ),
 
-                                    // Conversion des champs en int
-                                    int unitMaitrise =
-                                        int.tryParse(
-                                          unit['Unit_maitrise'] ?? '0',
-                                        ) ??
-                                        0;
-                                    int userMaitrise =
-                                        int.tryParse(
-                                          unit['UserMaitrise'] ?? '0',
-                                        ) ??
-                                        0;
-                                    int unitLvl =
-                                        int.tryParse(unit['Unit_lvl'] ?? '0') ??
-                                        0;
-                                    int unitLvlMax =
-                                        int.tryParse(
-                                          unit['Unit_lvlMax'] ?? '1',
-                                        ) ??
-                                        1;
-                                    String imagePath = unit['Unit_img'] ?? '';
-                                    String imageUrl =
-                                        '${Config.imgUrl}${imagePath.startsWith('./') ? imagePath.replaceFirst('.', '') : imagePath}';
-                                    String unitName =
-                                        '${utf8.decode(unit['Unit_name'][Config.language].runes.toList())} (${unit['Unit_tier']})';
+                                itemBuilder: (context, index) {
+                                  var unit = unitsForType[index];
 
-                                    return Card(
+                                  // Conversion des champs en int
+                                  int unitMaitrise =
+                                      int.tryParse(
+                                        unit['Unit_maitrise'] ?? '0',
+                                      ) ??
+                                      0;
+                                  int userMaitrise =
+                                      int.tryParse(
+                                        unit['UserMaitrise'] ?? '0',
+                                      ) ??
+                                      0;
+                                  int unitLvl =
+                                      int.tryParse(unit['Unit_lvl'] ?? '0') ??
+                                      0;
+                                  int unitLvlMax =
+                                      int.tryParse(
+                                        unit['Unit_lvlMax'] ?? '1',
+                                      ) ??
+                                      1;
+                                  String imagePath = unit['Unit_img'] ?? '';
+                                  String imageUrl =
+                                      '${Config.imgUrl}${imagePath.startsWith('./') ? imagePath.replaceFirst('.', '') : imagePath}';
+                                  String unitName =
+                                      '${utf8.decode(unit['Unit_name'][Config.language].runes.toList())} (${unit['Unit_tier']})';
+
+                                  return Container(
+                                    constraints: BoxConstraints(
+                                      minWidth: 500,
+                                      maxWidth: 600,
+                                    ),
+                                    child: Card(
                                       elevation: 4,
                                       margin: EdgeInsets.all(16),
                                       child: Padding(
@@ -466,11 +472,20 @@ class Casernepage extends State<Caserne> {
                                                                     ) ??
                                                                     (unitLvl ==
                                                                             0
-                                                                        ? null
-                                                                        : unitLvl)
+                                                                        ? 0
+                                                                        : (unitLvl % 5 ==
+                                                                                0
+                                                                            ? unitLvl
+                                                                            : (unitLvl ~/ 5) * 5))
                                                                 : (unitLvl == 0
-                                                                    ? null
-                                                                    : unitLvl),
+                                                                    ? 0
+                                                                    : (unitLvl ==
+                                                                            unitLvlMax
+                                                                        ? unitLvl
+                                                                        : (unitLvl % 5 ==
+                                                                                0
+                                                                            ? unitLvl
+                                                                            : (unitLvl ~/ 5) * 5))),
                                                         hint:
                                                             (unitLvl == 0)
                                                                 ? Text(
@@ -514,27 +529,50 @@ class Casernepage extends State<Caserne> {
                                                             ),
                                                           ),
                                                           ...List.generate(unitLvlMax, (
-                                                            index,
-                                                          ) {
-                                                            int level =
-                                                                index + 1;
-                                                            return DropdownMenuItem<
-                                                              int
-                                                            >(
-                                                              value: level,
-                                                              child: Text(
-                                                                level ==
-                                                                        unitLvlMax
-                                                                    ? 'Level max'
-                                                                    : 'Level $level',
-                                                                style: TextStyle(
-                                                                  color:
-                                                                      Colors
-                                                                          .black,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          }),
+                                                                index,
+                                                              ) {
+                                                                int level =
+                                                                    index + 1;
+                                                                if (level ==
+                                                                        0 ||
+                                                                    level % 5 ==
+                                                                        0 ||
+                                                                    level ==
+                                                                        unitLvlMax) {
+                                                                  String text =
+                                                                      level ==
+                                                                              unitLvlMax
+                                                                          ? 'Niveau max'
+                                                                          : 'Level $level';
+                                                                  if (text
+                                                                      .isNotEmpty) {
+                                                                    return DropdownMenuItem<
+                                                                      int
+                                                                    >(
+                                                                      value:
+                                                                          level,
+                                                                      child: Text(
+                                                                        text,
+                                                                        style: TextStyle(
+                                                                          color:
+                                                                              Colors.black,
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                }
+                                                                return null;
+                                                              })
+                                                              .where(
+                                                                (item) =>
+                                                                    item !=
+                                                                    null,
+                                                              )
+                                                              .cast<
+                                                                DropdownMenuItem<
+                                                                  int
+                                                                >
+                                                              >(),
                                                         ],
                                                         onChanged: (value) {
                                                           if (value != null) {
@@ -668,16 +706,50 @@ class Casernepage extends State<Caserne> {
                                           ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                );
-                              }).toList(),
-                        ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      appBar: customAppBar(
+        context,
+        title: Config.language == "fr" ? "Caserne" : "Barrack",
       ),
+      drawer: screenWidth <= 700 ? customAppDrawer(context) : null,
+      backgroundColor: Color.fromARGB(255, 115, 147, 214),
+      body:
+          screenWidth > 700
+              ? Row(
+                children: [
+                  customAppDrawer(context),
+                  Expanded(
+                    child: Center(
+                      child: buildMainContent(context, screenHeight),
+                    ),
+                  ),
+                ],
+              )
+              : Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return buildMainContent(context, constraints.maxHeight);
+                  },
+                ),
+              ),
     );
   }
 }
