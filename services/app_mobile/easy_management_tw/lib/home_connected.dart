@@ -239,7 +239,7 @@ class HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        SizedBox(height: 40),
+        SizedBox(height: 20),
         Container(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.5),
           decoration: BoxDecoration(
