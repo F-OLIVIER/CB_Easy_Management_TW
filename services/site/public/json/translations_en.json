@@ -68,7 +68,23 @@
     },
     {
       "title": "Mobile Application",
-      "commands": [["Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card (weapon played, influence & hero level)</span><span>Barracks (allows players to indicate which units they have)</span>"]],
+      "commands": [
+        [
+          "Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card (weapon played, influence & hero level)</span><span>Barracks (allows players to indicate which units they have)</span>"
+        ],
+        [
+          "Android",
+          "<span>The application is available on the Google Play store at the following address:</br><a href=\"\">Currently being deployed</a></span>"
+        ],
+        [
+          "iOS",
+          "<span>The application is planned for the future.</span>"
+        ],
+        [
+          "Windows",
+          "<span>The application installer is available at the following address: :</br><a href=\"https://easymanagementtw.fr/download/easy_management_tw_v1.0.0_installer.exe\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>WARNING</u> : This application is offered free of charge and is not digitally signed. As a result, Windows may display a warning message, and some antivirus software may incorrectly report it as a threat (false positive). We assure you that it is harmless.</span>"
+        ]
+        ],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],
