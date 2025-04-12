@@ -68,7 +68,8 @@ func CharactercardApp(uuidApp string, login bool, database *sql.DB) (userInfo da
 		} else {
 			var noUserInfo data.UserInfo
 			noUserInfo.CodeApp = uuidApp
-			return noUserInfo
+			userInfo = noUserInfo
+			return userInfo
 		}
 	}
 
