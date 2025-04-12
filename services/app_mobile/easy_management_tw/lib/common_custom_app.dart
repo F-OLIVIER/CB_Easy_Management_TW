@@ -67,29 +67,37 @@ Drawer customAppDrawer(BuildContext context) {
     child: ListView(
       padding: EdgeInsets.zero,
       children: [
-        DrawerHeader(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 63, 85, 116),
-                Color.fromARGB(255, 115, 147, 214),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        SizedBox(
+          height: 80.0,
+          child: DrawerHeader(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 63, 85, 116),
+                  Color.fromARGB(255, 115, 147, 214),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
-          ),
-          child: Text(
-            Config.language == "fr" ? "Menu" : "Menu",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              shadows: [
-                Shadow(
-                  offset: Offset(2.0, 2.0),
-                  blurRadius: 4.0,
-                  color: Colors.black,
+            margin: EdgeInsets.zero,
+            padding: EdgeInsets.zero,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                Config.language == "fr" ? "Menu" : "Menu",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  shadows: [
+                    Shadow(
+                      offset: Offset(2.0, 2.0),
+                      blurRadius: 4.0,
+                      color: Colors.black,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
