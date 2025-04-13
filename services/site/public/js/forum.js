@@ -585,7 +585,7 @@ async function sendData(option, dataToSend) {
       console.error("Erreur avec les données:", error);
     });
 
-  if (update.Gestion.Logged && update.Gestion.Admin) {
+  if (update.Gestion.Logged) {
     if (update.Gestion.Notification.Notif == true && update.Gestion.Notification.Type == "error") {
       showNotification(update.Gestion.Notification.content[update.UserInfo.Language], update.Gestion.Notification.Type);
       return;
