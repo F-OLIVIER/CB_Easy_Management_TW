@@ -67,7 +67,7 @@
       ]
     },
     {
-      "title": "Mobile Application",
+      "title": "Mobile application (Android, iOS) & desktop (Windows)",
       "commands": [
         [
           "Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card (weapon played, influence & hero level)</span><span>Barracks (allows players to indicate which units they have)</span>"
