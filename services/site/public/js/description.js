@@ -22,16 +22,39 @@ export async function description() {
   title.className = "descriptionIntroTitle";
   sectionDiv.appendChild(title);
 
-  translate.descriptionIntro.content.forEach(line => {
+  translate.descriptionIntro.content.forEach((line) => {
     if (line.trim() === "") {
-        sectionDiv.appendChild(document.createElement("br"));
+      sectionDiv.appendChild(document.createElement("br"));
     } else {
-        let content = document.createElement("div");
-        content.textContent = line;
-        content.className = "descriptionIntroContent";
-        sectionDiv.appendChild(content);
+      let content = document.createElement("div");
+      content.textContent = line;
+      content.className = "descriptionIntroContent";
+      sectionDiv.appendChild(content);
     }
-});
+  });
+
+  const br = document.createElement("br");
+  sectionDiv.appendChild(br);
+
+  // Vidéo de presentation
+  let video = document.createElement("video");
+  video.width = 800;
+  video.controls = true;
+  video.playsInline = true;
+  video.style.display = "block";
+  video.style.margin = "0 auto";
+  let source = document.createElement("source");
+  source.src = "./video/presentation_emtw.mp4";
+  source.type = "video/mp4";
+  video.appendChild(source);
+  sectionDiv.appendChild(video);
+
+  // <video width="800" controls>
+  //   <source src="video.mp4" type="video/mp4">
+  //   <source src="video.webm" type="video/webm">
+  //   Votre navigateur ne supporte pas la balise vidéo HTML5.
+  // </video>
+
   containerDescription.appendChild(sectionDiv);
 
   translate.descriptionSections.forEach((section, index) => {

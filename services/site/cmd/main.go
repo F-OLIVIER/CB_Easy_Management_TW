@@ -84,6 +84,7 @@ func main() {
 	mux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./public/img"))))
 	mux.Handle("/json/", http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json"))))
 	mux.Handle("/download/", http.StripPrefix("/download/", http.FileServer(http.Dir("./public/download"))))
+	mux.Handle("/video/", http.StripPrefix("/video/", http.FileServer(http.Dir("./public/video"))))
 
 	fmt.Println("Server started at : http://" + data.SITE_DOMAIN + ":" + data.PORT)
 
