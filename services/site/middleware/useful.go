@@ -88,7 +88,7 @@ func RegistrationAuthorised() bool {
 	weekday := now.Weekday()
 	isSaturdayOrTuesday := weekday == time.Saturday || weekday == time.Tuesday
 	hour := now.Hour()
-	isBetween17And21 := hour > 17 && hour < 21
+	isBetween17And21 := hour >= 17 && hour < 21
 
 	if isSaturdayOrTuesday && isBetween17And21 {
 		return false
