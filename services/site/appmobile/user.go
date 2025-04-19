@@ -89,13 +89,17 @@ func CharactercardApp(uuidApp string, login bool, database *sql.DB) (userInfo da
 
 func UpdateInscription(newUserInfo data.UserInfo, database *sql.DB) bool {
 	if newUserInfo.EtatInscription == 1 || newUserInfo.EtatInscription == 3 { // 1: s'incrit present, 3: s'inscrit absent
-		stmt3, errdb := database.Prepare("UPDATE Users SET EtatInscription = ? WHERE uuidApp = ?")
-		if errdb != nil {
-			utils.CheckErr("9- Requete DB UpdateCharacterApp", errdb)
+		if utils.RegistrationAuthorised() {
+			stmt3, errdb := database.Prepare("UPDATE Users SET EtatInscription = ? WHERE uuidApp = ?")
+			if errdb != nil {
+				utils.CheckErr("9- Requete DB UpdateCharacterApp", errdb)
+				return false
+			}
+			stmt3.Exec(newUserInfo.EtatInscription, newUserInfo.CodeApp)
+			return true
+		} else {
 			return false
 		}
-		stmt3.Exec(newUserInfo.EtatInscription, newUserInfo.CodeApp)
-		return true
 	}
 	return false
 }

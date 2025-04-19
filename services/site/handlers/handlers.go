@@ -466,11 +466,9 @@ func AppMobileHandler(w http.ResponseWriter, r *http.Request) {
 
 				// retour nouvelle information
 				sendHTML.Gestion = *gestion
-				// sendHTML.UserInfo = appmobile.CharactercardApp(userInfo.CodeApp, false, database)
 
 			case "/app/updateinscription":
 				gestion.Valid = appmobile.UpdateInscription(userInfo, database)
-				// sendHTML.UserInfo = appmobile.CharactercardApp(userInfo.CodeApp, false, database)
 				sendHTML.Gestion = *gestion
 
 			default:

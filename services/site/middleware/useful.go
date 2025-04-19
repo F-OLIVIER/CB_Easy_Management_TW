@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"os"
 	"strings"
+	"time"
 )
 
 // Vérificateur d'erreurs
@@ -80,4 +81,17 @@ func UploadPicture(fileUpload multipart.File, header *multipart.FileHeader, file
 		return true
 	}
 	return false
+}
+
+func RegistrationAuthorised() bool {
+	now := time.Now()
+	weekday := now.Weekday()
+	isSaturdayOrTuesday := weekday == time.Saturday || weekday == time.Tuesday
+	hour := now.Hour()
+	isBetween17And21 := hour > 17 && hour < 21
+
+	if isSaturdayOrTuesday && isBetween17And21 {
+		return false
+	}
+	return true
 }

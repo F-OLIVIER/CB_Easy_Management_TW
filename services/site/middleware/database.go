@@ -191,20 +191,28 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 	}
 
 	if newUserInfo.EtatInscription == 1 || newUserInfo.EtatInscription == 3 { // 1: s'incrit present, 3: s'inscrit absent
-		stmt3, errdb := database.Prepare("UPDATE Users SET EtatInscription = ? WHERE ID = ?")
-		CheckErr("9- Requete DB UpdateCharacter", errdb)
-		stmt3.Exec(newUserInfo.EtatInscription, currentUser.User_id)
+		if RegistrationAuthorised() {
+			stmt3, errdb := database.Prepare("UPDATE Users SET EtatInscription = ? WHERE ID = ?")
+			CheckErr("9- Requete DB UpdateCharacter", errdb)
+			stmt3.Exec(newUserInfo.EtatInscription, currentUser.User_id)
 
-		notif.Type = "success"
-		if newUserInfo.EtatInscription == 1 {
-			notif.Content = data.ListLanguage{
-				FR: "Vous êtes inscrit présent pour la prochaine guerre de territoire.",
-				EN: "You are registered present for the next territorial war.",
+			notif.Type = "success"
+			if newUserInfo.EtatInscription == 1 {
+				notif.Content = data.ListLanguage{
+					FR: "Vous êtes inscrit présent pour la prochaine guerre de territoire.",
+					EN: "You are registered present for the next territorial war.",
+				}
+			} else if newUserInfo.EtatInscription == 3 {
+				notif.Content = data.ListLanguage{
+					FR: "Vous êtes inscrit absent pour la prochaine guerre de territoire.",
+					EN: "You are registered absent for the next territorial war.",
+				}
 			}
-		} else if newUserInfo.EtatInscription == 3 {
+		} else {
+			notif.Type = "error"
 			notif.Content = data.ListLanguage{
-				FR: "Vous êtes inscrit absent pour la prochaine guerre de territoire.",
-				EN: "You are registered absent for the next territorial war.",
+				FR: "Les inscriptions à la guerre de territoire sont fermées.",
+				EN: "Registration for the territorial war is closed.",
 			}
 		}
 	}
