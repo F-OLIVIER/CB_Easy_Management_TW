@@ -1,5 +1,5 @@
 // Fichier annexe
-import { msgreactgvg } from "./Embed_gvg.js";
+import { ButtonNotActifEmbedInscription, EmbedInscription, msgreactgvg } from "./Embed_gvg.js";
 import { Resetac } from "./FuncRaid.js";
 import { adressdb } from "./config.js";
 import { client } from "./Constant.js";
@@ -9,6 +9,76 @@ import { loadTranslations } from "./language.js";
 // module nodejs et npm
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+
+// fonction de changement automatique du message de réaction à 21h mardi et samedi
+export async function cronDesactivateButtonMsgreact() {
+  const db = await open({
+    filename: adressdb,
+    driver: sqlite3.Database,
+    mode: sqlite3.OPEN_READONLY,
+  });
+
+  try {
+    const requestQuery = `SELECT ID_Server, ID_Chan_GvG, ID_MessageGvG, Langage FROM Houses WHERE Allumage = 0;`;
+    const rows = await db.all(requestQuery);
+
+    if (!rows || rows.length === 0) return;
+
+    for (const row of rows) {
+      const requestQueries = [
+        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 1 AND Houses.ID_Server = ?;`, // List present
+        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 3 AND Houses.ID_Server = ?;`, // List absent
+      ];
+      const playerLists = await Promise.all(requestQueries.map((query) => db.all(query, [row.ID_Server])));
+      const listinscrit = playerLists.map((rowslist) => rowslist.map((rowlist) => rowlist.DiscordID));
+
+      let presentList = [];
+      if (listinscrit[0] !== undefined) {
+        presentList = await Promise.all(
+          listinscrit[0].map(async (id) => {
+            const userId = BigInt(id);
+            return "<@" + userId.toString() + ">";
+          })
+        );
+      }
+
+      let absentList = [];
+      if (listinscrit[1] !== undefined) {
+        absentList = await Promise.all(
+          listinscrit[1].map(async (id) => {
+            const userId = BigInt(id);
+            return "<@" + userId.toString() + ">";
+          })
+        );
+      }
+
+      const chan = await client.channels.fetch(row.ID_Chan_GvG);
+      if (!chan) {
+        logToFile(`Chan TW ${row.ID_Chan_GvG} innexistant pour la maison ${row.ID_Server}`, "errors_bot.log");
+        return;
+      }
+      const message = await chan.messages.fetch(row.ID_MessageGvG);
+      if (!message) {
+        logToFile(`Message TW ${row.ID_MessageGvG} innexistant`, "errors_bot.log");
+        return;
+      }
+
+      await message
+        .edit({
+          embeds: [await EmbedInscription(row.Langage, presentList, absentList)],
+          components: [await ButtonNotActifEmbedInscription(row.Langage)],
+        })
+        .catch((err) => {
+          logToFile(`Error edit Embed EmbedInscription \nhouseData : ${row.ID_Server}\n${err}`, "errors_bot.log");
+        });
+    }
+  } catch (err) {
+    logToFile(`Erreur lors du cronjob DesactivateButton TW (cronDesactivateButtonMsgreact) :\n${err.message}`, "errors_bot.log");
+    throw err;
+  } finally {
+    await db.close();
+  }
+}
 
 // fonction de changement automatique du message de réaction à 21h mardi et samedi
 export async function cronResetMsgReaction() {
@@ -21,7 +91,7 @@ export async function cronResetMsgReaction() {
     const requestQuery = `SELECT ID_Server, ID_MessageGvG, Langage, ID_Chan_GvG, ID_Group_Users FROM Houses WHERE Allumage = 0;`;
     const rows = await db.all(requestQuery);
 
-    if (!rows || rows.length === 0) return; // Vérifie s'il y a des résultats
+    if (!rows || rows.length === 0) return;
 
     for (const row of rows) {
       await Resetac(db);

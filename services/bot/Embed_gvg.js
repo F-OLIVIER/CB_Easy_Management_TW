@@ -110,6 +110,20 @@ export async function ButtonEmbedInscription(Langage) {
   return buttons;
 }
 
+export async function ButtonNotActifEmbedInscription(Langage) {
+  const translate = await loadTranslations(Langage);
+
+  const buttons = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+    .setCustomId("close")
+    .setLabel(translate.EmbedGvG.button_close)
+    .setStyle(ButtonStyle.Secondary)
+    .setDisabled(true)
+  );
+
+  return buttons;
+}
+
 export async function noGvGReactMsgGvG(houseData) {
   const chan = client.channels.cache.get(houseData.ID_Chan_GvG);
   if (!chan) {
@@ -125,7 +139,6 @@ export async function noGvGReactMsgGvG(houseData) {
   if (message) {
     await message.delete();
   }
-
 
   const translate = await loadTranslations(houseData.Langage);
 

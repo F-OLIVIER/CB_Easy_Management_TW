@@ -71,7 +71,6 @@ export async function slash_interaction(interaction) {
       if (listinscrit[1] !== undefined) {
         absentList = await Promise.all(
           listinscrit[1]
-            .filter((id) => BigInt(id) !== BigInt(0)) // Filtrer les id égaux à 0 (user de test)
             .map(async (id) => {
               const userId = BigInt(id);
               return "<@" + userId.toString() + ">";

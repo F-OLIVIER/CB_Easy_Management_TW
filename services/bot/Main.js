@@ -4,7 +4,7 @@ import { PlayerCreateOrUpdate, checkAllUser } from "./FuncData.js";
 import { deleteHouse, houseExist } from "./config_house.js";
 import { slash_interaction } from "./slashinteraction.js";
 import { createCommands } from "./slashcommand.js";
-import { cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
+import { cronDesactivateButtonMsgreact, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
 import { client } from "./Constant.js";
 import { discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
 import { logToFile } from "./log.js";
@@ -244,7 +244,7 @@ function TaskHandle() {
   //  0 0 20 * * 1,5
 
   // fonction de rappel automatique d'inscription aux TW à 20h lundi et vendredi
-  let recalltw = new CronJob(
+  let recallTw = new CronJob(
     "0 0 20 * * 1,5",
     function () {
       cronRecallTw();
@@ -253,10 +253,22 @@ function TaskHandle() {
     true,
     "Europe/Paris"
   );
-  recalltw.start();
+  recallTw.start();
+
+  // fonction de désactivation automatique des button du message de réaction à 17h mardi et samedi
+  let desactivateButtonMsgreact = new CronJob(
+    "0 0 17 * * 2,6",
+    function () {
+      cronDesactivateButtonMsgreact();
+    },
+    null,
+    true,
+    "Europe/Paris"
+  );
+  desactivateButtonMsgreact.start();
 
   // fonction de changement automatique du message de réaction à 21h mardi et samedi
-  let resetmsgreact = new CronJob(
+  let resetMsgreact = new CronJob(
     "0 0 21 * * 2,6",
     function () {
       cronResetMsgReaction();
@@ -265,5 +277,5 @@ function TaskHandle() {
     true,
     "Europe/Paris"
   );
-  resetmsgreact.start();
+  resetMsgreact.start();
 }

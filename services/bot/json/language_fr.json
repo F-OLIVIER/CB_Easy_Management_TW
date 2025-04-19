@@ -129,6 +129,7 @@
   "EmbedGvG": {
     "button_present": "Présent",
     "button_absent": "Absent",
+    "button_close": "Inscription fermée",
     "title": "🇮 🇳 🇸 🇨 🇷 🇮 🇵 🇹 🇮 🇴 🇳    🇹 🇼",
     "description": "Veuillez indiquer votre présence pour la prochaine TW.",
     "description_nogvg": "La prochaine TW sera une TW d'entrainement (aussi appelée drill).\nPar conséquent, les inscriptions ne sont pas demandées.",
