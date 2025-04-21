@@ -1835,8 +1835,10 @@
 }
 
 .statclass {
-  width: 18px;
-  height: 24px;
+  width: auto;
+  max-width: 18px;
+  height: auto;
+  max-height: 30px;
 }
 
 .titlestatComment {
