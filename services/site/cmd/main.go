@@ -3,6 +3,7 @@ package main
 import (
 	handlers "botgvg/handlers"
 	data "botgvg/internal"
+	utils "botgvg/middleware"
 	"flag"
 	"fmt"
 	"net/http"
@@ -80,6 +81,7 @@ func main() {
 		w.Header().Set("Content-Type", "text/css")
 		http.StripPrefix("/css/", http.FileServer(http.Dir("public/css"))).ServeHTTP(w, r)
 	})
+	utils.ObfuscateAllFiles("./src/js", "./public/js")
 	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
 	mux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./public/img"))))
 	mux.Handle("/json/", http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json"))))
