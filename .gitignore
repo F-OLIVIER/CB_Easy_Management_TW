@@ -6,6 +6,7 @@
 /server
 ***/download
 ***/video
+services/site/public/js
 
 # fichier build
 ***main
