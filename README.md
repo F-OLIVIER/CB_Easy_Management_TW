@@ -3,7 +3,7 @@
 ## 📝 Descriptif
 
 Le projet permet de gérer de façon automatisée les inscriptions aux guerres de territoire (TW) des joueurs pour le jeu [Conqueror's Blade](https://www.conquerorsblade.com) et la préparation des batailles en créant les groupes à l'avance avec les informations nécessaires pour optimiser les groupes.</br>
-Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un site internet et une application mobile (Android), les 3 applications ont en commun une base de données SQL.
+Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un site internet et une application multi-plateforme (Android, IOS et Destop), les 3 applications ont en commun une base de données SQL.
 
 Deux langues sont prises en charge, le Français et l'Anglais.
 
@@ -65,8 +65,8 @@ Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose p
     </tbody>
 </table>
 
-**Partie 3 : l'application mobile** <br>
-Seuls les utilisateurs présents sur le Discord associé peuvent récupérer un code d'application mobile avec la commande Discord `/smartphone` pour ce connecté à l'application mobile.
+**Partie 3 : l'application multi-plateforme** <br>
+Seuls les utilisateurs présents sur le Discord associé peuvent récupérer un code d'application multi-plateforme avec la commande Discord `/smartphone` pour ce connecté à l'application multi-plateforme.
 Les utilisateurs peuvent indiquer la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
 
 <table align= "center" width="95%">
@@ -84,14 +84,49 @@ ___
 ## ⚙️ Installation & usage
 
 **Avant de pouvoir exécuter le programme :**<br>
-- Crée votre application Discord sur la [plateforme de développement Discord](https://discord.com/developers/applications).
-- Pour votre application : générer le lien d'invitation et ajouté votre bot à votre serveur Discord.
-- Pour votre application : ajouter le lien redirect de votre serveur puis générer le lien OAuth2 pour le scope `identify` et mettez-le dans la variable `LINK_DISCORD` puis modofier le `response_type=code` en `response_type=token` dans le fichier `./services/site/js/config.js`, mettez y également l'adresse de votre site internet dans la variable `adressAPI`.
-- Crée le fichier (variable d'environnement) `.env` pour le bot discord, dossier `./services/bot`. Dans ce fichier, mettez le `TOKEN` de l'application Discord.
-- Vous devez créer les variables globale dans les fichiers `config` pour adapter le code. Voici les emplacements des fichiers config :</br>
-    - `./services/bot/config.js`
-    - `./services/site/internal/config.go`
-    - `./services/site/js/config.js`
+Crée votre application Discord sur la [plateforme de développement Discord](https://discord.com/developers/applications) et aprés avoir crée le bot Discord, effectué les actions suivantes :
+  - Générer le lien d'invitation Discord et inscrivez le dans le fichier `./services/site/src/js/config.js`.
+  - Ajouter le lien de redirection de votre serveur puis générer le lien OAuth2 pour le scope `identify` et mettez-le dans le fichier `./services/site/src/js/config.js` en modifiant le `response_type=code` en `response_type=token`.
+
+
+Créer est complété les 4 fichiers de configurations suivant :</br>
+```js
+// Fichier `./services/bot/env`
+TOKEN = "<TOKEN DU BOT DISCORD>"
+ID_APP = "<ID DE L'APPLICATION DU BOT DISCORD>"
+```
+
+```js
+// Fichier `./services/bot/config.js`
+export const adressdb = "../database/databaseGvG.db";
+export const siteInternet = "<NOM DE DOMAINE OU IP DU SITE INTERNET>";
+export const store_app_android = "<ADRESSE DE L'APPLICATION SUR LE GOOGLE PLAY STORE>";
+export const store_app_ios = "<ADRESSE DE L'APPLICATION SUR L'APPLE STORE>";
+export const ListAdmin = ["<VOS ID DISCORD>"];
+export const listUserBan = ["<LES ID DISCORD>"];
+
+// Configuration des paramétres du Discord développeur
+export const discordTest_id = "<ID SERVER DISCORD>";
+export const discordTest_groupAdminForum = "<ID GROUPE DISCORD>";
+export const discordTest_chanForum = "<ID CHAN DISCORD POUR LES NOTIFICATIONS DU FORUM>";
+export const discordTest_chanDM = "<ID CHAN DISCORD POUR LES MESSAGES PRIVEE>";
+```
+```go
+// Fichier `./services/site/internal/config.go`
+const PORT = "8080"
+const SITE_DOMAIN = "localhost"
+const ADRESS_DB = "../database/databaseGvG.db"
+const OWNER = "179655652153491456"
+```
+
+```js
+// Fichier `./services/site/src/js/config.js`
+export const cookieName = "user_token";
+export const domain = "<NOM DE DOMAINE OU ADRESSE IP DU SITE>";
+export const LINK_INVITE_BOT = "<LIEN GENERE SUR LA PLATEFORME DE DEVELOPPEMENT DISCORD>";
+export const LINK_DISCORD = "<LIEN GENERE SUR LA PLATEFORME DE DEVELOPPEMENT DISCORD>"
+export const adressAPI = "http://<VOTRE ADRESSE>/api/";
+```
 
 **Méthode d'éxécution :** <br>
 Une méthode d'éxécutions possible sur un serveur ce fais via [Screen](https://doc.ubuntu-fr.org/screen)</br>
@@ -135,8 +170,11 @@ Le back utilise un serveur en `go version 1.21` et les librairies suivante :
 - [uuid](https://github.com/gofrs/uuid)
 - [go-sqlite3](https://github.com/mattn/go-sqlite3)
 
+Une dépense NodeJS est utilisé par le back
+- [javascript-obfuscator](https://www.npmjs.com/package/javascript-obfuscator)
 
-**Partie 3 : l'application mobile** <br>
+
+**Partie 3 : l'application multi-plateforme** <br>
 Réaliser en [Flutter](https://flutter.dev) qui utilise le language [dart](https://dart.dev) et les dépendances suivante :
 - [cupertino_icons](https://pub.dev/packages/cupertino_icons)
 - [http](https://pub.dev/packages/http)
