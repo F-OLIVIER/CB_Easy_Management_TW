@@ -14,7 +14,7 @@ type TokenBucket struct {
 	lastRefillTime time.Time
 }
 
-// NewTokenBucket creates a new TokenBucket instance.
+// NewTokenBucket crée une nouvelle instance TokenBucket.
 func NewTokenBucket(maxTokens float64, refillRate float64) *TokenBucket {
 	return &TokenBucket{
 		tokens:         maxTokens,
@@ -24,7 +24,7 @@ func NewTokenBucket(maxTokens float64, refillRate float64) *TokenBucket {
 	}
 }
 
-// refill refills the token bucket based on the elapsed time since the last refill.
+// recharge remplit le seau de jetons en fonction du temps écoulé depuis la dernière recharge.
 func (tb *TokenBucket) refill() {
 	now := time.Now()
 	duration := now.Sub(tb.lastRefillTime)
@@ -33,7 +33,7 @@ func (tb *TokenBucket) refill() {
 	tb.lastRefillTime = now
 }
 
-// Request checks if the token bucket has enough tokens for a request ? deducts the tokens and returns true : false
+// La requête vérifie si le bucket de jetons contient suffisamment de jetons pour une requête ?
 func (tb *TokenBucket) Request(tokens float64) bool {
 	tb.mu.Lock()
 	defer tb.mu.Unlock()
