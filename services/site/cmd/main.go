@@ -10,7 +10,12 @@ import (
 )
 
 func main() {
+	fmt.Println(`╭─────────────────────────────────────────────────╮
+│       Server starting up, please wait ...       │
+│─────────────────────────────────────────────────│`)
+
 	// Initialisation de la database
+	fmt.Println("│ • Create db in process                          │")
 	data.Createdb()
 
 	flag.Parse()
@@ -61,7 +66,7 @@ func main() {
 		mux.HandleFunc(route, handlers.ApiHandler)
 	}
 
-	// page Application mobile
+	// page Application multi-plateforme
 	mux.HandleFunc("/app/updatecaserne", handlers.AppMajCaserneHandler)
 	routes_AppMobile := []string{
 		"/app/login",
@@ -76,19 +81,23 @@ func main() {
 		mux.HandleFunc(route, handlers.AppMobileHandler)
 	}
 
-	// Fichiers statiques avec cache
+	fmt.Println("│ • Initializing obfuscation file JS              │")
+	utils.ObfuscateAllFiles("./src/js", "./public/js")
+	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
 	mux.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 		http.StripPrefix("/css/", http.FileServer(http.Dir("public/css"))).ServeHTTP(w, r)
 	})
-	utils.ObfuscateAllFiles("./src/js", "./public/js")
-	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
 	mux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./public/img"))))
 	mux.Handle("/json/", http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json"))))
 	mux.Handle("/download/", http.StripPrefix("/download/", http.FileServer(http.Dir("./public/download"))))
 	mux.Handle("/video/", http.StripPrefix("/video/", http.FileServer(http.Dir("./public/video"))))
 
-	fmt.Println("Server started at : http://" + data.SITE_DOMAIN + ":" + data.PORT)
+	fmt.Println(`│─────────────────────────────────────────────────│
+│               Start-up completed                │
+│          Server ready : start listening         │
+╰─────────────────────────────────────────────────╯`)
+	fmt.Println("Server listen at : http://" + data.SITE_DOMAIN + ":" + data.PORT)
 
 	// Mise en écoute du serveur HTTP
 	err := http.ListenAndServe(":"+data.PORT, securityHeadersMiddleware(mux))

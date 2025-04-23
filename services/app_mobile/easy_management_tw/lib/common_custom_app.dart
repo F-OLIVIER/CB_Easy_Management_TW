@@ -7,9 +7,7 @@ import 'package:easy_management_tw/home_not_connected.dart';
 import 'package:easy_management_tw/storage.dart';
 
 Future<void> logout(BuildContext context) async {
-  // Nettoyage du stockage
   await clearStorage();
-  // Redirection
   if (context.mounted) {
     Navigator.pushReplacement(
       context,
@@ -52,17 +50,25 @@ AppBar customAppBar(
         ),
       ),
     ),
-    actions: [
-      if (ModalRoute.of(context)?.settings.name != '/no_internet')
-        IconButton(
-          icon: const Icon(Icons.logout, color: Colors.white),
-          onPressed: () async => await logout(context),
-        ),
-    ],
   );
 }
 
 Drawer customAppDrawer(BuildContext context) {
+  String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
+
+  Widget buildTile(String route, String fr, String en) {
+    if (currentRoute == route) return SizedBox.shrink();
+    return ListTile(
+      title: Text(
+        Config.language == "fr" ? fr : en,
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      ),
+      onTap: () {
+        Navigator.pushReplacementNamed(context, route);
+      },
+    );
+  }
+
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
@@ -101,58 +107,19 @@ Drawer customAppDrawer(BuildContext context) {
             ),
           ),
         ),
-        if (ModalRoute.of(context)?.settings.name != '/home')
-          ListTile(
-            title: Text(
-              Config.language == "fr" ? "Home" : "Home",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/home');
-            },
+        buildTile('/home', "Accueil", "Home"),
+        buildTile('/fichepersonnage', "Fiche personnage", "Character card"),
+        buildTile('/caserne', "Caserne", "Barrack"),
+        buildTile('/setting', "Paramètres", "Settings"),
+        ListTile(
+          title: Text(
+            Config.language == "fr" ? "Déconnexion" : "Logout",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
           ),
-        if (ModalRoute.of(context)?.settings.name != '/fichepersonnage')
-          ListTile(
-            title: Text(
-              Config.language == "fr" ? "Fiche personnage" : "Character card",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/fichepersonnage');
-            },
-          ),
-        if (ModalRoute.of(context)?.settings.name != '/caserne')
-          ListTile(
-            title: Text(
-              Config.language == "fr" ? "Caserne" : "Barrack",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/caserne');
-            },
-          ),
-        if (ModalRoute.of(context)?.settings.name != '/setting')
-          ListTile(
-            title: Text(
-              Config.language == "fr" ? "Paramètres" : "Settings",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, '/setting');
-            },
-          ),
+          onTap: () async {
+            await logout(context);
+          },
+        ),
       ],
     ),
   );

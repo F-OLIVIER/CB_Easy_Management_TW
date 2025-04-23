@@ -22,8 +22,6 @@ export function showNotification(message, type = "success", duration = 3000) {
   closeButton.onclick = () => notification.remove();
 
   notification.appendChild(closeButton);
-
-  // Ajouter la notification au conteneur
   notificationContainer.appendChild(notification);
 
   // Supprimer la notification après x ms

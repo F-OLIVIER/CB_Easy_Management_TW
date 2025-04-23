@@ -105,7 +105,11 @@ class _SplashScreenState extends State<SplashScreen> {
     } catch (e) {
       // print('Error during login check: $e');
       if (mounted) {
-        showErrorNotification(context, 'Erreur interne');
+        showNotification(
+          context,
+          'Erreur interne',
+          type: NotificationType.error,
+        );
       }
     }
   }

@@ -190,7 +190,6 @@ export async function confirmwindows(message) {
 
 function createFooter(translate) {
   if (!document.getElementById("footer")) {
-    // Créer l'élément footer
     const footer = document.createElement("footer");
     footer.id = "footer";
 
@@ -218,8 +217,6 @@ function createFooter(translate) {
     // Ajouter les éléments au footer
     footer.appendChild(footerContainer);
     footer.appendChild(footerBottom);
-
-    // Ajouter le footer au document
     document.body.appendChild(footer);
   }
 }

@@ -1177,7 +1177,7 @@
   text-align: left;
   margin-left: 7%;
   margin-bottom: 5px;
-  color: #5BC0EB;
+  color: #5bc0eb;
 }
 
 .divuser {
@@ -2068,27 +2068,22 @@
 /* --------------------------------------------- */
 /* -------------------- @media ----------------- */
 /* --------------------------------------------- */
-@media (max-width: 600px) {
-  .banner {
-    display: none;
-  }
-
-  .Title {
-    font-size: x-large;
-  }
-
-  .UsernameBandeau {
-    font-size: 15px;
-  }
-
-  .changeInfo {
+@media (max-width: 1000px) {
+  .divMAJ {
     flex-direction: column;
   }
 
-  .house {
-    min-width: 0;
+  .personnage,
+  .infoGvG {
+    width: 100%;
   }
 
+  .personnage {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 600px) {
   .buttoncharacterCard,
   .buttonCaserne,
   .buttonCreateGroup,
@@ -2103,27 +2098,25 @@
     font-size: 25px;
   }
 
-  .unit > img {
-    height: 150px;
-    width: auto;
+  .banner {
+    display: none;
   }
 
+  .UsernameBandeau {
+    font-size: 15px;
+  }
+
+  .changeInfo,
   .listhouse {
     flex-direction: column;
   }
-}
 
-@media (max-width: 1000px) {
-  .divMAJ {
-    flex-direction: column;
+  .house {
+    min-width: 0;
   }
 
-  .personnage,
-  .infoGvG {
-    width: 100%;
-  }
-
-  .personnage {
-    margin-bottom: 20px;
+  .unit > img {
+    height: 150px;
+    width: auto;
   }
 }

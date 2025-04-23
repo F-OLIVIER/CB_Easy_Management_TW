@@ -10,8 +10,6 @@ import (
 
 // Fonction pour obfusquer tous les fichiers JavaScript dans un répertoire
 func ObfuscateAllFiles(srcDir, destDir string) {
-	fmt.Println("Initialisation obfuscation fichier JS")
-
 	files, err := os.ReadDir(srcDir)
 	if err != nil {
 		log.Fatalf("Erreur répertoire (ObfuscateAllFiles) : %v", err)

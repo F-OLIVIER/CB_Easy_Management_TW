@@ -87,11 +87,12 @@ class Casernepage extends State<Caserne> {
     // Vérifier si allUnits est null ou vide
     if (allUnits.isEmpty) {
       // Aucun changement à valider
-      showErrorNotification(
+      showNotification(
         context,
         Config.language == "fr"
             ? "Aucun changement à valider !!!"
             : "No changes to validate !!!",
+        type: NotificationType.error,
       );
       return;
     }
@@ -108,7 +109,7 @@ class Casernepage extends State<Caserne> {
           if (success) {
             // Afficher une notification de succès
             if (context.mounted) {
-              showSuccessNotification(
+              showNotification(
                 context,
                 Config.language == "fr"
                     ? "Changements validés avec succès !"
@@ -122,22 +123,24 @@ class Casernepage extends State<Caserne> {
           } else {
             // Afficher une notification d'échec
             if (context.mounted) {
-              showErrorNotification(
+              showNotification(
                 context,
                 Config.language == "fr"
                     ? "Erreur interne, contactez un administrateur"
                     : "Internal error, contact an administrator",
+                type: NotificationType.error,
               );
             }
           }
         })
         .catchError((e) {
           if (context.mounted) {
-            showErrorNotification(
+            showNotification(
               context,
               Config.language == "fr"
                   ? "Une erreur est survenue, veuillez réessayer."
                   : "An error has occurred, please try again.",
+              type: NotificationType.error,
             );
           }
         });

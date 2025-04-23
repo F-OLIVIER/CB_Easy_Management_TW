@@ -143,22 +143,28 @@ class FichePersonnagePageState extends State<FichePersonnagePage> {
     // Vérifier si tous les champs sont vides ou invalides
     if ((level == null) && (influence == null) && (selectedClass == null)) {
       // Si tous les champs sont vides ou invalides, ne faire aucune mise à jour
-      showErrorNotification(context, 'Aucun champs modifier !');
+      showNotification(
+        context,
+        'Aucun champs modifier !',
+        type: NotificationType.error,
+      );
       return;
     }
     if ((level != null && (level <= 0 || level > 10000))) {
       // Si tous les champs sont vides ou invalides, ne faire aucune mise à jour
-      showErrorNotification(
+      showNotification(
         context,
         Config.language == "fr" ? "Level incorrect" : "Wrong level",
+        type: NotificationType.error,
       );
       return;
     }
     if ((influence != null && (influence < 700 || influence > 1000))) {
       // Si tous les champs sont vides ou invalides, ne faire aucune mise à jour
-      showErrorNotification(
+      showNotification(
         context,
         Config.language == "fr" ? "Influence incorrect" : "Wrong influence",
+        type: NotificationType.error,
       );
       return;
     }
@@ -197,7 +203,7 @@ class FichePersonnagePageState extends State<FichePersonnagePage> {
     // Affichage de la notification
     if (mounted) {
       if (sendok == true) {
-        showSuccessNotification(
+        showNotification(
           context,
           Config.language == "fr"
               ? "Changement validés avec succées !"
@@ -205,9 +211,10 @@ class FichePersonnagePageState extends State<FichePersonnagePage> {
         );
         Navigator.pushNamed(context, '/fichepersonnage');
       } else {
-        showErrorNotification(
+        showNotification(
           context,
           "Erreur interne, contactez un administrateur",
+          type: NotificationType.error,
         );
       }
     }

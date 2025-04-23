@@ -14,7 +14,6 @@ Future<Map<String, dynamic>> fetchData({String tofetch = ''}) async {
     );
   }
 
-  // Vérifiez si l'utilisateur a une connexion Internet
   bool isConnected = await InternetConnection().hasInternetAccess;
   if (isConnected == false) {
     return {'Logged': false, 'Internet': false};

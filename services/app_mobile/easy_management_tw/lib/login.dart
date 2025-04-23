@@ -52,7 +52,7 @@ Future<Map<String, bool>?> sendCodeToServer(
 
         return {'Logged': true, 'Internet': true};
       } else if (context.mounted && tofetch == 'login') {
-        showErrorNotification(context, 'Invalid code');
+        showNotification(context, 'Invalid code', type: NotificationType.error);
 
         await clearStorage();
         return {'Logged': false, 'Internet': true};
@@ -64,7 +64,11 @@ Future<Map<String, bool>?> sendCodeToServer(
       // print('Server error: ${response.statusCode}');
       // print('Message: ${response.body}');
       if (context.mounted) {
-        showErrorNotification(context, 'Internal error (code Lo_01)');
+        showNotification(
+          context,
+          'Internal error (code Lo_01)',
+          type: NotificationType.error,
+        );
       }
       return {'Logged': false, 'Internet': true};
     }
@@ -72,7 +76,11 @@ Future<Map<String, bool>?> sendCodeToServer(
     // Gestion des erreurs réseau ou autres
     // print('\n\nError sending code: $e');
     if (context.mounted) {
-      showErrorNotification(context, 'Internal error (code Lo_02)');
+      showNotification(
+        context,
+        'Internal error (code Lo_02)',
+        type: NotificationType.error,
+      );
     }
     return {'Logged': false, 'Internet': true};
   }
