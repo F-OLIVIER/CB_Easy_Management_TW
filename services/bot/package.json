@@ -1,11 +1,15 @@
 {
   "name": "plateforme_cb_easy_management_gvg",
+  "author": "OLIVIER Fabien",
+  "main": "Main.js",
   "version": "3.0.0",
+  "license": "MIT",
   "description": "Bot Discord pour le jeux Conqueror's Blade",
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "node ./Main.js"
+    "start": "node ./Main.js",
+    "test": "jest"
   },
   "dependencies": {
     "cron": "^4.3.0",
@@ -18,11 +22,14 @@
     "uuid": "^11.1.0",
     "ws": "^8.18.1"
   },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
   "engines": {
     "node": "^23.x.x",
     "npm": "^11.x.x"
   },
-  "license": "MIT",
-  "author": "OLIVIER Fabien",
-  "main": "Main.js"
+  "jest": {
+  "testEnvironment": "node"
+}
 }

@@ -1,8 +1,8 @@
 package utils
 
 import (
-	data "botgvg/internal"
 	"database/sql"
+	data "easemanagementtw/internal"
 	"encoding/json"
 	"fmt"
 	"log"

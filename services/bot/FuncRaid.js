@@ -24,16 +24,8 @@ export async function Resetsc() {
   }
 }
 
-export async function Resetac(db) {
-  const dateformate = new Date();
-  const jour = dateformate.getDate().toString().padStart(2, "0");
-  const mois = (dateformate.getMonth() + 1).toString().padStart(2, "0");
-  const annee = dateformate.getFullYear();
-  const dateFrenchFormat = `${jour}/${mois}/${annee}`;
-  const dateEnglishFormat = `${annee}/${mois}/${jour}`;
-
+export async function Resetac(db, arrayDate) {
   try {
-    //Mise a jour de la table User
     const updateQuery = `UPDATE Users
                       SET
                         DateLastGvGParticiped_FR = CASE
@@ -51,7 +43,7 @@ export async function Resetac(db) {
                         EtatInscription = 0,
                         NbTotalGvG = NbTotalGvG + 1;`;
 
-    await db.run(updateQuery, [dateFrenchFormat, dateEnglishFormat]);
+    await db.run(updateQuery, arrayDate);
 
     deleteGroupGvG(db);
   } catch (err) {
@@ -83,7 +75,7 @@ async function deleteGroupGvG(db) {
     `);
 
     if (tables.length === 0) {
-      console.log("Aucune table GroupGvG trouvée.");
+      logToFile(`Aucune table GroupGvG trouvée (fonction deleteGroupGvG).`);
       return;
     }
 
@@ -96,15 +88,15 @@ async function deleteGroupGvG(db) {
   }
 }
 
-export async function MAJinscription(DiscordID, etatInscription) {
+export async function MAJinscription(DiscordID, etatInscription, ID_House) {
   const db = await open({
     filename: adressdb,
     driver: sqlite3.Database,
   });
 
   try {
-    const updateQuery = `UPDATE Users SET EtatInscription = ? WHERE DiscordID = ?;`;
-    await db.run(updateQuery, [etatInscription, DiscordID]);
+    const updateQuery = `UPDATE Users SET EtatInscription = ? WHERE DiscordID = ? AND ID_House = ?;`;
+    await db.run(updateQuery, [etatInscription, DiscordID, ID_House]);
   } catch (err) {
     logToFile(`Erreur lors de la mise a jour de l'etat d'inscription de ${DiscordID} :\n${err.message}`, "errors_bot.log");
   } finally {

@@ -24,7 +24,7 @@ export async function checkAllUser() {
       const members = await serv.members.fetch();
 
       for (const member of members.values()) {
-        if (!member.user.bot && !listUserBan.includes(member.user.id)) {
+        if (!member.user.bot) {
           await PlayerCreateOrUpdate(ID_Server, member.user.id);
         }
       }
@@ -53,11 +53,8 @@ export async function createUserOneDiscord(ID_Server) {
 // fonction de creation et de mise a jour d'un utilisateur de la base de donnée lowdb
 export async function PlayerCreateOrUpdate(ServerID, MemberID) {
   if (await isMember(ServerID, MemberID)) {
-    // Récupération des infos serveur
     const serv = await client.guilds.fetch(ServerID);
-    // Liste des roles autorisé sur le server
     const list_role = await getUserDiscordRole(ServerID);
-    // Récupération des infos du joueur ayant l'id "MemberID"
     const guildMember = await serv.members.fetch(MemberID);
     let allListRole = [];
     guildMember.roles.cache.forEach((role) => {

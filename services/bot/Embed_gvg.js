@@ -86,8 +86,16 @@ export async function EmbedInscription(Langage, presents = [], absents = []) {
     .setThumbnail(siteInternet + "/img/imgdiscord/heros_att.webp")
     .addFields(
       { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
-      { name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__", value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit, inline: true },
-      { name: "❌ " + nbabsents + " __" + translate.EmbedGvG.nbabsent + "__", value: absents.length ? absents.join("\n") : translate.EmbedGvG.noinscrit, inline: true }
+      {
+        name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__",
+        value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit,
+        inline: true,
+      },
+      {
+        name: "❌ " + nbabsents + " __" + translate.EmbedGvG.nbabsent + "__",
+        value: absents.length ? absents.join("\n") : translate.EmbedGvG.noinscrit,
+        inline: true,
+      }
     );
 
   return embedData;
@@ -113,13 +121,7 @@ export async function ButtonEmbedInscription(Langage) {
 export async function ButtonNotActifEmbedInscription(Langage) {
   const translate = await loadTranslations(Langage);
 
-  const buttons = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-    .setCustomId("close")
-    .setLabel(translate.EmbedGvG.button_close)
-    .setStyle(ButtonStyle.Secondary)
-    .setDisabled(true)
-  );
+  const buttons = new ActionRowBuilder().addComponents(new ButtonBuilder().setCustomId("close").setLabel(translate.EmbedGvG.button_close).setStyle(ButtonStyle.Secondary).setDisabled(true));
 
   return buttons;
 }

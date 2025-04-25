@@ -93,8 +93,15 @@ export async function cronResetMsgReaction() {
 
     if (!rows || rows.length === 0) return;
 
+    const dateformate = new Date();
+    const jour = dateformate.getDate().toString().padStart(2, "0");
+    const mois = (dateformate.getMonth() + 1).toString().padStart(2, "0");
+    const annee = dateformate.getFullYear();
+    // arrayDate = Date au format [français, anglais]
+    let arrayDate = [`${jour}/${mois}/${annee}`, `${annee}/${mois}/${jour}`]
+
     for (const row of rows) {
-      await Resetac(db);
+      await Resetac(db, arrayDate);
       await msgreactgvg(db, row.ID_Server, row.ID_MessageGvG, row.Langage, row.ID_Chan_GvG, row.ID_Group_Users);
     }
   } catch (err) {

@@ -1,9 +1,9 @@
 package appmobile
 
 import (
-	data "botgvg/internal"
-	utils "botgvg/middleware"
 	"database/sql"
+	data "easemanagementtw/internal"
+	utils "easemanagementtw/middleware"
 )
 
 func UserInfoApp(uuidApp string, database *sql.DB) (user_id, id_House, langage string, exist, officier bool) {

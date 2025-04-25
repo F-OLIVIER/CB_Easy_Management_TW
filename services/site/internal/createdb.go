@@ -6,23 +6,23 @@ import (
 	"os"
 )
 
-func Createdb() {
-	database, err := sql.Open("sqlite3", "../database/databaseGvG.db")
+func Createdb(adressdb, pathfolderdb string) {
+	database, err := sql.Open("sqlite3", adressdb)
 	CheckErr(err, "1- Err open db in Createdb")
 
 	// Création des tables de gestion
-	ExecuteSQLScript(database, "../database/script_create_table_gestion.sql", "2- Création des tables de gestion")
+	ExecuteSQLScript(database, pathfolderdb+"/script_create_table_gestion.sql", "2- Création des tables de gestion")
 	// Création des tables d'information du jeu
-	ExecuteSQLScript(database, "../database/script_create_table_infogame.sql", "2- Création des tables d'information du jeu")
+	ExecuteSQLScript(database, pathfolderdb+"/script_create_table_infogame.sql", "2- Création des tables d'information du jeu")
 	// Création des tables du forum
-	ExecuteSQLScript(database, "../database/script_create_table_forum.sql", "3- Création des tables du forum")
+	ExecuteSQLScript(database, pathfolderdb+"/script_create_table_forum.sql", "3- Création des tables du forum")
 
 	// Elément de base : typeUnit
-	InsertIfNotExists(database, "SELECT ID FROM ListTypeUnit WHERE TypeFR = 'Cavalerie'", "../database/script_INSERT_ListTypeUnit.sql", "4- Insertion type d’unité")
+	InsertIfNotExists(database, "SELECT ID FROM ListTypeUnit WHERE TypeFR = 'Cavalerie'", pathfolderdb+"/script_INSERT_ListTypeUnit.sql", "4- Insertion type d’unité")
 	// Insertion d'élément de base : classe (weapon)
-	InsertIfNotExists(database, "SELECT ID FROM ListGameCharacter WHERE ClasseFR = 'Mousquet'", "../database/script_INSERT_ListGameCharacter.sql", "5- Insertion classe (arme)")
+	InsertIfNotExists(database, "SELECT ID FROM ListGameCharacter WHERE ClasseFR = 'Mousquet'", pathfolderdb+"/script_INSERT_ListGameCharacter.sql", "5- Insertion classe (arme)")
 	// Insertion d'élément de base : list des unités
-	InsertIfNotExists(database, "SELECT ID FROM ListUnit WHERE UnitFR = 'khorchins'", "../database/script_INSERT_ListUnit.sql", "6- Insertion unité de base")
+	InsertIfNotExists(database, "SELECT ID FROM ListUnit WHERE UnitFR = 'khorchins'", pathfolderdb+"/script_INSERT_ListUnit.sql", "6- Insertion unité de base")
 
 	database.Close()
 }

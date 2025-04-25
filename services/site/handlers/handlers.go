@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"botgvg/appmobile"
-	data "botgvg/internal"
-	utils "botgvg/middleware"
 	"database/sql"
+	"easemanagementtw/appmobile"
+	data "easemanagementtw/internal"
+	utils "easemanagementtw/middleware"
 	"encoding/json"
 	"fmt"
 	"log"

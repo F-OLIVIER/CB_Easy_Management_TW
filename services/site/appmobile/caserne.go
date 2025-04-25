@@ -1,9 +1,9 @@
 package appmobile
 
 import (
-	data "botgvg/internal"
-	utils "botgvg/middleware"
 	"database/sql"
+	data "easemanagementtw/internal"
+	utils "easemanagementtw/middleware"
 	"strings"
 )
 

@@ -368,7 +368,6 @@ export async function list_discord_roles(interaction, custom_content, custom_rol
 // ---------------- Insertion Maison dans la database ----------------
 // -------------------------------------------------------------------
 async function config_house_db(houseData, exist_id_house) {
-  // Ouvrir la base de données (par defaut en mode lecture/écriture)
   const db = await open({
     filename: adressdb,
     driver: sqlite3.Database,

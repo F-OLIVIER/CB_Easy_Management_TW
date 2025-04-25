@@ -1,7 +1,7 @@
 package utils
 
 import (
-	data "botgvg/internal"
+	data "easemanagementtw/internal"
 	"encoding/json"
 
 	"github.com/gorilla/websocket"

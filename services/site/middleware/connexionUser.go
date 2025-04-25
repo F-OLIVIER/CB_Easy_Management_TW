@@ -1,8 +1,8 @@
 package utils
 
 import (
-	data "botgvg/internal"
 	"database/sql"
+	data "easemanagementtw/internal"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -12,7 +12,6 @@ import (
 )
 
 func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
-	// Récupération des informations du post
 	var discordUser data.DiscordUser
 	err := json.NewDecoder(r.Body).Decode(&discordUser)
 	CheckErr("Erreur de décodage JSON CheckUser", err)
@@ -22,7 +21,6 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 		stmt, err := database.Prepare("SELECT ID FROM Users WHERE DiscordID = ?")
 		CheckErr("db Prepare user_db_uuid : ", err)
 		err1 := stmt.QueryRow(discordUser.Id).Scan(&id)
-		// fmt.Println("err1 : ", err1)
 
 		if err1 == nil {
 			userUUID := uuid.Must(uuid.NewV4())
@@ -49,7 +47,7 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 	return false
 }
 
-// Fonction qui crée le cookie et sa correspondance dans la db ainsi que dans la map
+// Fonction qui crée le cookie et sa correspondance dans la db
 func SessionLogger(w http.ResponseWriter, discordId string, cookie *http.Cookie, database *sql.DB) {
 	// Convertir en string avec un format spécifique
 	layout := "2006-01-02 15:04:05"
@@ -69,7 +67,6 @@ func CheckToken(c *http.Cookie, database *sql.DB) bool {
 	stmt, err := database.Prepare("SELECT ID, uuid, DateCookie FROM Users WHERE uuid = ?")
 	CheckErr("db Prepare user_db_uuid : ", err)
 	err1 := stmt.QueryRow(c.Value).Scan(&id, &uuid, &dateCookie)
-	// fmt.Println("err1 : ", err1)
 
 	if err1 == nil && dateCookie != "" {
 		// Format de date pour convertir en time.Time
@@ -94,7 +91,7 @@ func Logout(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	if err == http.ErrNoCookie {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	// CheckErr("1- logout : ", err)
+
 	stmt, err := database.Prepare("UPDATE Users SET uuid = '', DateCookie = '' WHERE uuid = ?")
 	CheckErr("2- logout :", err)
 	stmt.Exec(c.Value)
@@ -108,5 +105,4 @@ func Logout(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		Path:    "/",
 	}
 	http.SetCookie(w, cookie)
-	// fmt.Println("Logged out successfully")
 }

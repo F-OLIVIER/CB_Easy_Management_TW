@@ -46,13 +46,14 @@ export async function slash_interaction(interaction) {
 
     // Gestion des boutons d'inscription au GvG
     if (interaction.customId === "present" || interaction.customId === "absent") {
+      const houseData = await get_houseData(interaction.guildId);
+
       if (interaction.customId === "present") {
-        await MAJinscription(userId, 1);
+        await MAJinscription(userId, 1, houseData.ID);
       } else if (interaction.customId === "absent") {
-        await MAJinscription(userId, 3);
+        await MAJinscription(userId, 3, houseData.ID);
       }
 
-      const houseData = await get_houseData(interaction.guildId);
       const listinscrit = await listInscription(houseData.ID);
 
       let presentList = [];

@@ -1,9 +1,9 @@
 package main
 
 import (
-	handlers "botgvg/handlers"
-	data "botgvg/internal"
-	utils "botgvg/middleware"
+	handlers "easemanagementtw/handlers"
+	data "easemanagementtw/internal"
+	utils "easemanagementtw/middleware"
 	"flag"
 	"fmt"
 	"net/http"
@@ -16,7 +16,7 @@ func main() {
 
 	// Initialisation de la database
 	fmt.Println("│ • Create db in process                          │")
-	data.Createdb()
+	data.Createdb(data.ADRESS_DB, "../database")
 
 	flag.Parse()
 

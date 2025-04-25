@@ -163,7 +163,6 @@ export async function updateclass(ID_Server, AuthorID, GameCharacter_ID) {
   } catch (err) {
     logToFile(`Erreur lors de la mise à jour de la classe de ${AuthorID} :\n ${err.message}`, "errors_bot.log");
     return false;
-  } finally {
   }
 }
 
@@ -184,7 +183,6 @@ export async function updateLvl(ID_Server, AuthorID, lvl) {
     logToFile(`Erreur lors de la mise à jour du niveau de ${AuthorID} :\n ${err.message}`, "errors_bot.log");
     await db.close();
     return false;
-  } finally {
   }
 }
 
@@ -286,7 +284,6 @@ export async function getUserDiscordRole(ID_Server) {
     logToFile(`Erreur lors de la récupération des rôles (getUserDiscordRole) :\n${err.message}`, "errors_bot.log");
     await db.close();
     return null;
-  } finally {
   }
 }
 
@@ -339,7 +336,6 @@ export async function listclass(language) {
     logToFile(`Erreur lors de la récupération des classes (listclass) :\n${err.message}`, "errors_bot.log");
     await db.close();
     throw err;
-  } finally {
   }
 }
 
