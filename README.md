@@ -151,7 +151,7 @@ ___
 ## 🔗 Dépendences
 
 **Partie 1 : le bot Discord** <br>
-Le serveur utilise la version 22 de [nodeJS](https://nodejs.org/en) est les modules (dépendence) [npm](https://www.npmjs.com) version 11 suivants :<br>
+Le serveur utilise la version 23 de [nodeJS](https://nodejs.org/en) est les modules (dépendence) [npm](https://www.npmjs.com) version 11 suivants :<br>
 - [cron](https://www.npmjs.com/package/cron)
 - [date-fns](https://www.npmjs.com/package/date-fns)
 - [discord.js](https://www.npmjs.com/package/discord.js)
