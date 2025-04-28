@@ -82,7 +82,7 @@
         ],
         [
           "Windows",
-          "<span>The application installer is available at the following address: :</br><a href=\"https://easymanagementtw.fr/download/easy_management_tw_v1.0.0_installer.exe\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>WARNING</u> : This application is offered free of charge and is not digitally signed. As a result, Windows may display a warning message, and some antivirus software may incorrectly report it as a threat (false positive). We assure you that it is harmless.</span>"
+          "<span>The application installer is available at the following address: :</br><a href=\"https://easymanagementtw.fr/download/EasyManagementTW.zip\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>WARNING</u> : This application is offered free of charge and is not digitally signed. As a result, Windows may display a warning message, and some antivirus software may incorrectly report it as a threat (false positive). We assure you that it is harmless.</span>"
         ]
         ],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
