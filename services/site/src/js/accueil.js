@@ -66,32 +66,32 @@ export async function accueil() {
   // #############################################################
   // ###################### Badge beta Test ######################
   // #############################################################
-  const betaBadge = document.createElement("div");
-  betaBadge.id = "beta-badge";
-  betaBadge.textContent = "BETA TEST";
+  // const betaBadge = document.createElement("div");
+  // betaBadge.id = "beta-badge";
+  // betaBadge.textContent = "BETA TEST";
 
-  // Div d'information
-  const infoBox = document.createElement("div");
-  infoBox.id = "infoBox";
-  infoBox.style.opacity = "0"; // Caché par défaut
-  infoBox.style.transition = "opacity 0.5s ease-out";
-  if (language == "fr") {
-    infoBox.innerHTML =
-      "Jusqu'au 30 avril 2025, ce système est en phase de test.</br>Cela implique des bugs, suppression possible de la base de données ou autres instabilités.</br></br>Si vous souhaitez nous aider, n'hésitez pas à nous remonter des informations (bug ou amélioration possible).";
-  } else {
-    infoBox.innerHTML =
-      "Until 30 April 2025, this system is in a test phase.</br>This may involve bugs, possible deletion of the database or other instabilities.</br></br>If you would like to help us, please do not hesitate to send us information (bug or possible improvement).";
-  }
-  Container.appendChild(betaBadge);
-  Container.appendChild(infoBox);
+  // // Div d'information
+  // const infoBox = document.createElement("div");
+  // infoBox.id = "infoBox";
+  // infoBox.style.opacity = "0"; // Caché par défaut
+  // infoBox.style.transition = "opacity 0.5s ease-out";
+  // if (language == "fr") {
+  //   infoBox.innerHTML =
+  //     "Jusqu'au 30 avril 2025, ce système est en phase de test.</br>Cela implique des bugs, suppression possible de la base de données ou autres instabilités.</br></br>Si vous souhaitez nous aider, n'hésitez pas à nous remonter des informations (bug ou amélioration possible).";
+  // } else {
+  //   infoBox.innerHTML =
+  //     "Until 30 April 2025, this system is in a test phase.</br>This may involve bugs, possible deletion of the database or other instabilities.</br></br>If you would like to help us, please do not hesitate to send us information (bug or possible improvement).";
+  // }
+  // Container.appendChild(betaBadge);
+  // Container.appendChild(infoBox);
 
-  // Afficher au survol
-  betaBadge.addEventListener("mouseenter", () => {
-    infoBox.style.opacity = "1"; // Rendre visible avec une transition
-  });
+  // // Afficher au survol
+  // betaBadge.addEventListener("mouseenter", () => {
+  //   infoBox.style.opacity = "1"; // Rendre visible avec une transition
+  // });
 
-  // Cacher quand la souris quitte
-  betaBadge.addEventListener("mouseleave", () => {
-    infoBox.style.opacity = "0"; // Rendre invisible
-  });
+  // // Cacher quand la souris quitte
+  // betaBadge.addEventListener("mouseleave", () => {
+  //   infoBox.style.opacity = "0"; // Rendre invisible
+  // });
 }
