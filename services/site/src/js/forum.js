@@ -210,7 +210,7 @@ export function loadQuillAndInit(translate) {
   quillScript.src = "https://cdn.quilljs.com/1.3.6/quill.js";
   quillScript.onload = () => {
     // Initialisation de Quill se fait après le chargement du DOM
-    if (document.readyState === 'loading') {
+    if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () => {
         initQuill(translate);
       });
@@ -279,7 +279,7 @@ function initQuill(translate) {
 // -------------------------------------------------------
 function displayListPost(admin, listPost, language, optionvalidation, optionarchivage, translate) {
   let contentpostsForum = createHTMLElement("div", "contentpostsForum");
-  if (listPost == null) return contentpostsForum
+  if (listPost == null) return contentpostsForum;
 
   for (let index = 0; index < listPost.length; index++) {
     const currentPost = listPost[index];
@@ -305,7 +305,7 @@ function displayListPost(admin, listPost, language, optionvalidation, optionarch
       post.addEventListener("click", function () {
         const modal = document.getElementById("modalpost");
         modal.style.display = "flex";
-        showmodal(currentPost, admin, language, translate);
+        const commentClickListener = showmodal(currentPost, admin, language, translate);
 
         const closeBtn = document.getElementById("modalpostclose");
         closeBtn.addEventListener("click", function () {
@@ -318,6 +318,18 @@ function displayListPost(admin, listPost, language, optionvalidation, optionarch
             document.getElementById("buttondivCreateComment").textContent = "》 " + translate.forum.comment.display;
           } else {
             document.getElementById("buttondivCreateComment").style.display = "flex";
+          }
+
+          document.getElementById("buttonNewComment").removeEventListener("click", commentClickListener);
+
+          // Supprimer l'éditeur comment s'il existe
+          const oldEditor = document.getElementById("editorcomment");
+          if (oldEditor) {
+            // Supprimer aussi la toolbar si elle existe juste avant
+            if (oldEditor.previousSibling && oldEditor.previousSibling.classList.contains("ql-toolbar")) {
+              oldEditor.previousSibling.remove();
+            }
+            oldEditor.remove();
           }
         });
       });
@@ -388,8 +400,6 @@ function showmodal(post, admin, language, translate) {
     }
   }
 
-  showButton(post.ID, admin, post.Valid, post.Archive, translate);
-
   // Supprimer l'ancien éditeur s'il existe
   const oldEditor = document.getElementById("editorcomment");
   if (oldEditor) {
@@ -400,9 +410,12 @@ function showmodal(post, admin, language, translate) {
     oldEditor.remove();
   }
 
+  showButton(post.ID, admin, post.Valid, post.Archive, translate);
+  let commentClickListener;
+
   if (!post.Archive && post.Valid) {
     document.getElementById("buttondivCreateComment").style.display = "flex";
-    initQuillComment(post.ID);
+    commentClickListener = initQuillComment(post.ID);
 
     document.getElementById("buttondivCreateComment").addEventListener("click", () => {
       const now = new Date();
@@ -422,6 +435,7 @@ function showmodal(post, admin, language, translate) {
   } else {
     document.getElementById("buttondivCreateComment").style.display = "none";
   }
+  return commentClickListener;
 }
 
 function formatDate(dateStr, language) {
@@ -544,7 +558,8 @@ function initQuillComment(id) {
     },
   });
 
-  document.getElementById("buttonNewComment").addEventListener("click", async () => {
+  // Définir la fonction d'événement
+  const commentClickListener = async () => {
     const now = new Date();
     if (now - timerThrottlebutton > 500) {
       timerThrottlebutton = now;
@@ -562,7 +577,31 @@ function initQuillComment(id) {
 
       await sendData("newcommentforum", dataToSend);
     }
-  });
+  };
+
+  // Ajouter l'event listener
+  document.getElementById("buttonNewComment").addEventListener("click", commentClickListener);
+  return commentClickListener;
+
+  // document.getElementById("buttonNewComment").addEventListener("click", async () => {
+  //   const now = new Date();
+  //   if (now - timerThrottlebutton > 500) {
+  //     timerThrottlebutton = now;
+
+  //     const postContent = quill.root.innerHTML;
+  //     if (postContent.includes("<script>") || postContent.includes("</script>")) {
+  //       showNotification(translate.forum.error.prohibe, "error");
+  //       return;
+  //     }
+
+  //     let dataToSend = {
+  //       ID: id,
+  //       Content: postContent,
+  //     };
+
+  //     await sendData("newcommentforum", dataToSend);
+  //   }
+  // });
 }
 
 async function sendData(option, dataToSend) {
