@@ -23,10 +23,19 @@ export const client = new Client({
 
 // Réponse d'interaction à l'utilisateur
 export async function reponseUserInteraction(interaction, msg) {
-  await interaction.reply({
-    content: "<@" + interaction.user.id + ">\n" + msg,
-    flags: MessageFlags.Ephemeral,
-  });
+  try {
+    if (!interaction || interaction.replied || interaction.deferred) {
+      logToFile(`Interaction invalide ou déjà répondue.`, "errors_bot.log");
+      return;
+    }
+
+    await interaction.reply({
+      content: "<@" + interaction.user.id + ">\n" + msg,
+      flags: MessageFlags.Ephemeral,
+    });
+  } catch (error) {
+    logToFile(`Erreur lors de la réponse à l'interaction : ${error}`, "errors_bot.log");
+  }
 }
 
 // Log dans un chan Discord (chan utilisateur ou chan de gestion)

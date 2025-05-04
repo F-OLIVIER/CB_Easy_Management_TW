@@ -260,7 +260,7 @@ export async function botActivation(interaction) {
     if (houseData.Allumage == "0") {
       await updateBotActivation(interaction.guildId, "1");
       await noGvGReactMsgGvG(houseData);
-      msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.updateBotActivation);
+      await msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, "<@" + interaction.user.id + "> " + translate.gestion.updateBotActivation);
       await reponseUserInteraction(interaction, translate.gestion.botActivation.ok);
     } else {
       await reponseUserInteraction(interaction, translate.gestion.botActivation.notok);
