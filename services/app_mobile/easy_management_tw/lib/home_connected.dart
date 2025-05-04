@@ -241,6 +241,7 @@ class HomePageState extends State<HomePage> {
         ),
         SizedBox(height: 20),
         Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
           constraints: BoxConstraints(maxHeight: screenHeight * 0.5),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
