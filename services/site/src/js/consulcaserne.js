@@ -33,28 +33,12 @@ function containerconsulcaserne(data, translate) {
   title.textContent = translate.caserne.consulcaserne;
   selectusercaserne.appendChild(title);
 
-  // let selectusertosee = createHTMLElement("select", "selectusertosee");
-  // let defaultusertosee = document.createElement("option");
-  // defaultusertosee.value = "";
-  // defaultusertosee.text = translate.caserne.select;
-  // selectusertosee.appendChild(defaultusertosee);
-  // for (let i = 0; i < data.ListInscripted.length; i++) {
-  //   const currentUser = data.ListInscripted[i];
-  //   let option = document.createElement("option");
-  //   option.value = currentUser.ID;
-  //   option.text = currentUser.Username;
-  //   selectusertosee.appendChild(option);
-  // }
-  // selectusercaserne.appendChild(selectusertosee);
-  // entetecaserne.appendChild(selectusercaserne);
-  // Container.appendChild(entetecaserne);
-
   let selectusertosee = createHTMLElement("select", "selectusertosee");
   let defaultusertosee = document.createElement("option");
   defaultusertosee.value = "";
   defaultusertosee.text = translate.caserne.select;
   selectusertosee.appendChild(defaultusertosee);
-  
+
   let options = [];
   for (let i = 0; i < data.ListInscripted.length; i++) {
     const currentUser = data.ListInscripted[i];
@@ -65,8 +49,8 @@ function containerconsulcaserne(data, translate) {
   }
   // Trier les options par ordre alphabétique
   options.sort((a, b) => a.text.localeCompare(b.text));
-    options.forEach(option => selectusertosee.appendChild(option));
-  
+  options.forEach((option) => selectusertosee.appendChild(option));
+
   selectusercaserne.appendChild(selectusertosee);
   entetecaserne.appendChild(selectusercaserne);
   Container.appendChild(entetecaserne);
@@ -210,6 +194,29 @@ function addUnit(caserne, listUnitInfanterie, listUnitDistant, listUnitCav, tier
       let info = document.createElement("div");
       info.textContent = translate.caserne.influence + " : " + Currentunit.Unit_influence + " (" + Currentunit.Unit_tier + ")";
       unit.appendChild(info);
+
+      // Doctrine d'influence
+      const doctrine = createHTMLElement("div", "checkbox");
+      const checkbox = createHTMLElement("input", `influence_unit_${Currentunit.Unit_id}`);
+      checkbox.type = "checkbox";
+      if (Currentunit.DoctrineInflu) {
+        checkbox.checked = true;
+      }
+      // Label curseur (switch visuel)
+      const sliderLabel = document.createElement("label");
+      sliderLabel.className = "switch";
+      const slider = document.createElement("span");
+      slider.className = "slider";
+      sliderLabel.appendChild(checkbox);
+      sliderLabel.appendChild(slider);
+      // Texte à côté du switch
+      const textLabel = document.createElement("span");
+      textLabel.className = "switch-text";
+      textLabel.textContent = "Doctrine d'influence :";
+      doctrine.appendChild(textLabel);
+      doctrine.appendChild(sliderLabel);
+      unit.appendChild(doctrine);
+
       let selecctlvl = document.createElement("select");
       selecctlvl.className = "selecctLevelCaserne";
       selecctlvl.name = "Unit" + Currentunit.Unit_id;
@@ -315,6 +322,10 @@ async function sendDataMAJCaserne(nbunit, iduser) {
     } else {
       majUnit.push("");
     }
+
+    const doctrineInflu = document.getElementById("influence_unit_" + (i + 1));
+    majUnit.push(doctrineInflu && doctrineInflu.checked ? "0" : "1");
+
     listNewLvlUnitCaserne.push(majUnit);
   }
 

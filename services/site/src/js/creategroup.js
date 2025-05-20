@@ -23,6 +23,8 @@ let listUserSelect = [];
 let timerThrottlebutton = 0;
 let eventListenersMap = new Map();
 export async function containercreategroup(data, translate) {
+  console.log("data : ", data);
+
   await communBlock(data, translate);
 
   let containerGroupe = await createHTMLElement("div", "containerGroupe");
@@ -1393,7 +1395,13 @@ function changeInfluUnit(UserCaserne, username, Language) {
     for (let j = 0; j < UserCaserne.length; j++) {
       const current_unit = UserCaserne[j];
       if (current_unit.Unit_name[Language] != "" && unitValues.includes(current_unit.Unit_name[Language])) {
-        newValue += parseInt(current_unit.Unit_influence, 10) || 0;
+        console.log("current_unit : ", current_unit);
+        if (current_unit.DoctrineInflu) {
+          // Si doctrine d'influence, on retire 16% de l'influence
+          newValue += Math.floor((parseInt(current_unit.Unit_influence, 10) || 0) * 0.84);
+        } else {
+          newValue += parseInt(current_unit.Unit_influence, 10) || 0;
+        }
       }
     }
   }

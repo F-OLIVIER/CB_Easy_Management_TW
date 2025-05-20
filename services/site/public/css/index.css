@@ -930,6 +930,9 @@
   align-items: center;
   font-size: 18px;
 }
+.unit .checkbox {
+  font-size: medium;
+}
 
 .selecctLevelCaserne,
 .selecctMaitriseCaserne {

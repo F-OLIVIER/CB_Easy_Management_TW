@@ -141,6 +141,25 @@ func CaserneUser(userID, id_house string, database *sql.DB) (ListUnit []data.Uni
 		}
 	}
 
+	// Récupération de la liste des doctrines d'influence
+	var doctrineRaw string
+	stmtdoctrineInflu, err := database.Prepare("SELECT DoctrineInflu FROM Users WHERE ID = ?")
+	CheckErr("Erreur db prepare stmtdoctrineInflu (CaserneUser)", err)
+	err = stmtdoctrineInflu.QueryRow(userID).Scan(&doctrineRaw)
+	CheckErr("Erreur lors du scan des résultats stmtdoctrineInflu (CaserneUser)", err)
+	doctrineInflu := strings.Split(doctrineRaw, ",")
+	for _, value := range doctrineInflu {
+		if value != "" {
+
+			unitID, err := strconv.Atoi(value)
+			if err != nil {
+				fmt.Println("Erreur de conversion (doctrineRaw) :", value, err)
+				continue
+			}
+			ListUnit[unitID-1].DoctrineInflu = true
+		}
+	}
+
 	return ListUnit
 }
 
@@ -157,6 +176,7 @@ func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (use
 	var setConditionslevel, setConditionsmaitrise []string // Liste des colonnes à set
 	var updateLevel []interface{}                          // Liste des valeurs des colonnes Caserne
 	var updateMaitrise []interface{}                       // Liste des valeurs des colonnes CaserneMaitrise
+	var doctrineInfluence []string
 
 	for _, unit := range newCaserne.NewLvlUnitCaserne {
 		// mise à jour du level
@@ -179,6 +199,11 @@ func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (use
 				setConditionsmaitrise = append(setConditionsmaitrise, unit[0]+" = ?") // Liste des colonnes à set
 				updateMaitrise = append(updateMaitrise, unit[2])                      // Liste des valeur des colonnes CaserneMaitrise
 			}
+		}
+
+		// Mise a jour doctrine d'influence
+		if unit[3] == "0" {
+			doctrineInfluence = append(doctrineInfluence, strings.TrimPrefix(unit[0], "Unit"))
 		}
 	}
 
@@ -203,6 +228,12 @@ func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (use
 		updateMaitrise = append(updateMaitrise, userID)
 		stmtMaitrise.Exec(updateMaitrise...)
 	}
+
+	// Mise à jours de la liste des doctrines d'influence
+	stmtDoctrineInflu, err := database.Prepare("UPDATE Users SET DoctrineInflu = ? WHERE ID = ?")
+	CheckErr("Requete db DoctrineInflu MAJCaserne :", err)
+	_, err = stmtDoctrineInflu.Exec(strings.Join(doctrineInfluence, ","), userID)
+	CheckErr("Execution update doctrineInflu (MAJCaserne) :", err)
 
 	return usermaj
 }

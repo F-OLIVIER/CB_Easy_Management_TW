@@ -154,6 +154,30 @@ function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier, t
       let info = document.createElement("div");
       info.textContent = translate.caserne.influence + " : " + Currentunit.Unit_influence + " (" + Currentunit.Unit_tier + ")";
       unit.appendChild(info);
+
+      // Doctrine d'influence
+      const doctrine = createHTMLElement("div", "checkbox");
+      const checkbox = createHTMLElement("input", `influence_unit_${Currentunit.Unit_id}`);
+      checkbox.type = "checkbox";
+      if (Currentunit.DoctrineInflu) {
+        checkbox.checked = true;
+      }
+      // Label curseur (switch visuel)
+      const sliderLabel = document.createElement("label");
+      sliderLabel.className = "switch";
+      const slider = document.createElement("span");
+      slider.className = "slider";
+      sliderLabel.appendChild(checkbox);
+      sliderLabel.appendChild(slider);
+      // Texte à côté du switch
+      const textLabel = document.createElement("span");
+      textLabel.className = "switch-text";
+      textLabel.textContent = "Doctrine d'influence :";
+      doctrine.appendChild(textLabel);
+      doctrine.appendChild(sliderLabel);
+      unit.appendChild(doctrine);
+
+      // Level de l'unité
       let selecctlvl = document.createElement("select");
       selecctlvl.className = "selecctLevelCaserne";
       selecctlvl.name = "Unit" + Currentunit.Unit_id;
@@ -181,8 +205,7 @@ function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier, t
         selecctlvl.appendChild(optionAbsent);
       }
       for (let j = 1; j <= Currentunit.Unit_lvlMax; j++) {
-        if (j%5 == 0 || j == Currentunit.Unit_lvlMax) {
-
+        if (j % 5 == 0 || j == Currentunit.Unit_lvlMax) {
           let option = document.createElement("option");
           option.value = j;
           option.text = translate.caserne.level + " " + j;
@@ -191,7 +214,7 @@ function addUnit(data, listUnitInfanterie, listUnitDistant, listUnitCav, tier, t
           } else {
             option.style.backgroundColor = "green";
           }
-          
+
           selecctlvl.appendChild(option);
         }
       }
@@ -249,17 +272,21 @@ async function sendDataMAJCaserne(nbunit) {
   // récupération de toutes les valeurs
   let listNewLvlUnitCaserne = [];
   for (let i = 0; i < nbunit; i++) {
-    var selectElement = document.getElementById("lvl-unit" + (i + 1));
+    const selectElement = document.getElementById("lvl-unit" + (i + 1));
     let majUnit = [];
     majUnit.push("Unit" + (i + 1));
     majUnit.push(selectElement.value);
 
     if (document.getElementById("maitrise-unit" + (i + 1))) {
-      var selectMaitrise = document.getElementById("maitrise-unit" + (i + 1));
+      const selectMaitrise = document.getElementById("maitrise-unit" + (i + 1));
       majUnit.push(selectMaitrise.value);
     } else {
       majUnit.push("");
     }
+
+    const doctrineInflu = document.getElementById("influence_unit_" + (i + 1));
+    majUnit.push(doctrineInflu && doctrineInflu.checked ? "0" : "1");
+
     listNewLvlUnitCaserne.push(majUnit);
   }
 
