@@ -19,7 +19,7 @@ func TestForum(t *testing.T) {
 	}
 	postBody, err := json.Marshal(postData)
 	if err != nil {
-		t.Fatalf("Erreur lors de la création du corps de la requête : %v", err)
+		t.Fatalf("Erreur lors de la création du corps de la requête (postBody) : %v", err)
 	}
 	reqPost := httptest.NewRequest("POST", "/new-post", bytes.NewBuffer(postBody))
 	reqPost.Header.Set("Content-Type", "application/json")
@@ -27,6 +27,22 @@ func TestForum(t *testing.T) {
 	// TEST FONCTION : Appeler la fonction NewPost avec la requête simulée
 	notifpost := utils.NewPost(reqPost, "1", DB_test)
 	assert.Equal(t, "success", notifpost.Type)
+
+	// Création d'une requête HTTP simulée pour insérer un post
+	postDataScript := map[string]string{
+		"Title":   "Test Script",
+		"Content": "<script>Failure</script>",
+	}
+	postBodyScript, err := json.Marshal(postDataScript)
+	if err != nil {
+		t.Fatalf("Erreur lors de la création du corps de la requête (postBodyScript) : %v", err)
+	}
+	reqPostScript := httptest.NewRequest("POST", "/new-post", bytes.NewBuffer(postBodyScript))
+	reqPostScript.Header.Set("Content-Type", "application/json")
+
+	// TEST FONCTION : Fonction NewPost avec une balise Script
+	notifpostScript := utils.NewPost(reqPostScript, "1", DB_test)
+	assert.Equal(t, "error", notifpostScript.Type)
 
 	// Création d'une requête HTTP simulée pour insérer une réponse à un post
 	commentData := map[string]string{
@@ -44,7 +60,7 @@ func TestForum(t *testing.T) {
 	notifComment := utils.NewComment(reqComment, "2", DB_test)
 	assert.Equal(t, "success", notifComment.Type)
 
-	//  TEST FONCTION : Appelle la fonction de récupération des posts et commentaires
+	// TEST FONCTION : Appelle la fonction de récupération des posts et commentaires
 	posts := utils.Forum(DB_test)
 
 	// Test des résultats de la fonction "Forum"
