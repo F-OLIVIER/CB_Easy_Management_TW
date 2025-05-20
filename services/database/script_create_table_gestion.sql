@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS Users (
     GameCharacter_ID INTEGER DEFAULT 0,
     Lvl INTEGER DEFAULT 0,
     Influence INTEGER DEFAULT 700,
+    DoctrineInflu VARCHAR(5000) DEFAULT "",
     EtatInscription INTEGER DEFAULT 0,
     NbGvGParticiped INTEGER DEFAULT 0,
     NbTotalGvG INTEGER DEFAULT 0,
