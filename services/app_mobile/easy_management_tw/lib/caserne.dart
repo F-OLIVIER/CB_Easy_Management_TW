@@ -40,6 +40,7 @@ class Casernepage extends State<Caserne> {
       allUnits.add({
         'Unit_id': unit['Unit_id'].toString(),
         'Unit_lvl': unit['Unit_lvl'].toString(),
+        'DoctrineInflu': unit['Unit_doctrine_influ'],
       });
     } else {
       // Si l'Unit_id existe, mettre à jour Unit_lvl avec la nouvelle valeur
@@ -71,6 +72,7 @@ class Casernepage extends State<Caserne> {
       allUnits.add({
         'Unit_id': unit['Unit_id'].toString(),
         'UserMaitrise': unit['UserMaitrise'].toString(),
+        'DoctrineInflu': unit['Unit_doctrine_influ'],
       });
     } else {
       // Si l'Unit_id existe, mettre à jour UserMaitrise avec la nouvelle valeur
@@ -83,7 +85,40 @@ class Casernepage extends State<Caserne> {
     }
   }
 
+  void doctrineInfluence(
+    List<Map<String, dynamic>> allUnits,
+    Map<String, dynamic> unit,
+  ) {
+    // Affichage du boutton
+    if (isButtonVisible.value == false) {
+      isButtonVisible.value = true;
+    }
+
+    // Vérifier si l'Unit_id existe déjà dans allUnits
+    bool exists = allUnits.any(
+      (existingUnit) => existingUnit['Unit_id'] == unit['Unit_id'],
+    );
+
+    if (!exists) {
+      // Si l'Unit_id n'existe pas encore, l'ajouter
+      allUnits.add({
+        'Unit_id': unit['Unit_id'].toString(),
+        'Unit_lvl': unit['Unit_lvl'].toString(),
+        'DoctrineInflu': unit['Unit_doctrine_influ'],
+      });
+    } else {
+      // Si l'Unit_id existe, mettre à jour Unit_doctrine_influ avec la nouvelle valeur
+      for (var existingUnit in allUnits) {
+        if (existingUnit['Unit_id'] == unit['Unit_id']) {
+          existingUnit['DoctrineInflu'] = unit['Unit_doctrine_influ'];
+          break;
+        }
+      }
+    }
+  }
+
   Future<void> sendinfoserver(BuildContext context) async {
+    print('allUnits : $allUnits');
     // Vérifier si allUnits est null ou vide
     if (allUnits.isEmpty) {
       // Aucun changement à valider
@@ -157,7 +192,7 @@ class Casernepage extends State<Caserne> {
       var data = await fetchData(tofetch: 'caserne');
 
       // print(
-      //   '\n------------------------------------------\nData receive :\n$data\n------------------------------------------\n',
+      //   "\n------------------------------------------\nData receive :\n$data\n------------------------------------------\n",
       // );
 
       if (data['Internet'] != null && data['Internet'] == false) {
@@ -327,7 +362,7 @@ class Casernepage extends State<Caserne> {
                                     SliverGridDelegateWithMaxCrossAxisExtent(
                                       maxCrossAxisExtent: 600,
                                       mainAxisSpacing: 16,
-                                      mainAxisExtent: 220,
+                                      mainAxisExtent: 280, // Hauteur card
                                       crossAxisSpacing: 16,
                                     ),
 
@@ -361,8 +396,8 @@ class Casernepage extends State<Caserne> {
 
                                   return Container(
                                     constraints: BoxConstraints(
-                                      minWidth: 500,
-                                      maxWidth: 600,
+                                      minWidth: 350,
+                                      maxWidth: 400,
                                     ),
                                     child: Card(
                                       elevation: 4,
@@ -373,6 +408,8 @@ class Casernepage extends State<Caserne> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             // Nom de l'unité
                                             Center(
@@ -410,13 +447,90 @@ class Casernepage extends State<Caserne> {
                                                 ),
                                                 SizedBox(width: 10),
 
-                                                // Sélection du niveau et de la maîtrise
+                                                // Sélection doctrine d'influence, niveau et maîtrise d'unité
                                                 Expanded(
                                                   child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
+                                                      // Switch doctrine d'influence
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.symmetric(
+                                                              horizontal: 16,
+                                                              vertical: 12,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          color:
+                                                              Colors.grey[200],
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                        ),
+                                                        width: double.infinity,
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Flexible(
+                                                              child: Text(
+                                                                Config.language ==
+                                                                        "fr"
+                                                                    ? "Doctrine d'influence"
+                                                                    : "Influence doctrine",
+                                                                style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                            Switch(
+                                                              value:
+                                                                  unit['DoctrineInflu'],
+                                                              activeColor:
+                                                                  Colors.green,
+                                                              activeTrackColor:
+                                                                  Colors
+                                                                      .green[200],
+                                                              inactiveThumbColor:
+                                                                  Colors.red,
+                                                              inactiveTrackColor:
+                                                                  Colors
+                                                                      .red[200],
+                                                              onChanged: (
+                                                                bool value,
+                                                              ) {
+                                                                setState(() {
+                                                                  unit['DoctrineInflu'] =
+                                                                      value;
+                                                                });
+                                                                doctrineInfluence(
+                                                                  allUnits,
+                                                                  {
+                                                                    'Unit_id':
+                                                                        unit['Unit_id'],
+                                                                    'Unit_lvl':
+                                                                        unit['Unit_lvl']
+                                                                            .toString(),
+                                                                    'Unit_doctrine_influ':
+                                                                        value,
+                                                                  },
+                                                                );
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+
                                                       // Dropdown pour le niveau
                                                       DropdownButtonFormField<
                                                         int
@@ -585,6 +699,8 @@ class Casernepage extends State<Caserne> {
                                                               'Unit_lvl':
                                                                   value
                                                                       .toString(),
+                                                              'Unit_doctrine_influ':
+                                                                  unit['DoctrineInflu'],
                                                             });
                                                           }
                                                         },
@@ -688,16 +804,15 @@ class Casernepage extends State<Caserne> {
                                                           ],
                                                           onChanged: (value) {
                                                             if (value != null) {
-                                                              addUnitMaitrise(
-                                                                allUnits,
-                                                                {
-                                                                  'Unit_id':
-                                                                      unit['Unit_id'],
-                                                                  'UserMaitrise':
-                                                                      value
-                                                                          .toString(),
-                                                                },
-                                                              );
+                                                              addUnitMaitrise(allUnits, {
+                                                                'Unit_id':
+                                                                    unit['Unit_id'],
+                                                                'UserMaitrise':
+                                                                    value
+                                                                        .toString(),
+                                                                'Unit_doctrine_influ':
+                                                                    unit['DoctrineInflu'],
+                                                              });
                                                             }
                                                           },
                                                         ),
