@@ -1062,7 +1062,7 @@ function createFilter(listLegend, name) {
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    if (i == 0) {
+    if (i === 0) {
       checkbox.id = `checkboxAll`;
       checkbox.value = `checkboxAll`;
     } else {
@@ -1071,12 +1071,23 @@ function createFilter(listLegend, name) {
     }
     checkbox.checked = true;
 
-    const label = document.createElement("label");
-    label.htmlFor = checkbox.id;
-    label.textContent = listLegend[i];
+    // Création du label curseur (switch visuel)
+    const sliderLabel = document.createElement("label");
+    sliderLabel.className = "switch";
 
-    container.appendChild(checkbox);
-    container.appendChild(label);
+    const slider = document.createElement("span");
+    slider.className = "slider";
+
+    sliderLabel.appendChild(checkbox);
+    sliderLabel.appendChild(slider);
+
+    // Ajout du texte à côté du switch
+    const textLabel = document.createElement("span");
+    textLabel.className = "switch-text";
+    textLabel.textContent = listLegend[i];
+
+    container.appendChild(textLabel);
+    container.appendChild(sliderLabel);
     legend.appendChild(container);
   }
 

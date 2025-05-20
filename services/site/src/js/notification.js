@@ -1,7 +1,7 @@
 // showNotification("Erreur lors du traitement ❌", "error");
 // showNotification("Opération réussie ! ✅", "success");
 
-export function showNotification(message, type = "success", duration = 3000) {
+export function showNotification(message, type = "success", duration = 5000) {
   // Vérifier si un conteneur de notifications existe déjà
   let notificationContainer = document.getElementById("notification-container");
   if (!notificationContainer) {
@@ -27,5 +27,5 @@ export function showNotification(message, type = "success", duration = 3000) {
   // Supprimer la notification après x ms
   setTimeout(() => {
     notification.remove();
-  }, 5000);
+  }, duration);
 }
