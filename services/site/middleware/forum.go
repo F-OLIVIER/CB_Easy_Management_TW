@@ -169,10 +169,22 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 	stmt1, errdb := database.Prepare(`SELECT Forum.ID, Forum.Title, Users.DiscordID, Users.DiscordName, Users.userLangage FROM Forum 
 										INNER JOIN Users ON Users.ID = Forum.Author 
 										WHERE Forum.ID = ?`)
-	if errdb != sql.ErrNoRows {
-		CheckErr("1- Requete DB Modifpost", errdb)
+	CheckErr("1- Requete DB prepare Modifpost", errdb)
+	errdb = stmt1.QueryRow(modifpost.ID).Scan(&exist, &titlepost, &discordID, &discordName, &userLangage)
+
+	if errdb == sql.ErrNoRows {
+		// Gestion du user delete
+		stmtNoUser, errdb := database.Prepare(`SELECT Forum.ID, Forum.Title FROM Forum WHERE Forum.ID = ?`)
+		if errdb != sql.ErrNoRows {
+			CheckErr("1- Requete DB Modifpost", errdb)
+		}
+		stmtNoUser.QueryRow(modifpost.ID).Scan(&exist, &titlepost)
+		discordID = "0000"
+		discordName = "user delete"
+		userLangage = "en"
+	} else {
+		CheckErr("1- Requete QueryRow Modifpost", errdb)
 	}
-	stmt1.QueryRow(modifpost.ID).Scan(&exist, &titlepost, &discordID, &discordName, &userLangage)
 
 	if exist == 0 {
 		notif.Type = "error"
@@ -181,13 +193,15 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 			EN: "500 error, post does not exist.",
 		}
 
-	} else if modifpost.Content == "report" {
-		LogFile("Post id " + modifpost.ID + " signaler par : " + discordName + " (" + discordID + ")\nTitre : " + titlepost)
+	}
+
+	if modifpost.Content == "report" {
+		LogFile("Post id " + modifpost.ID + " signaler par : " + author + "\nTitre : " + titlepost)
 
 		message := data.SocketMessage{
 			Type: "report",
 			Content: map[string]string{
-				"msg": "Post **report** on forum\nPost id `" + modifpost.ID + "`\nReport by : `" + discordName + "` (" + discordID + ")\nPost title : `" + titlepost + "`",
+				"msg": "Post **report** on forum\nPost id `" + modifpost.ID + "`\nReport by : `" + author + "\nPost title : `" + titlepost + "`",
 			},
 		}
 		SendMessage(message)
@@ -267,7 +281,6 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 			CheckErr("3- Update Modifpost", err)
 			stmtforum.Exec(modifpost.ID)
 		}
-
 	}
 
 	notif.Notif = true
