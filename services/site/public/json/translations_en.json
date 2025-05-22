@@ -1,5 +1,6 @@
 {
   "commun": {
+    "connect": "Login with Discord",
     "disconnected": "Disconnecting",
     "err_no_fields": "No fields changed !!!"
   },

@@ -65,7 +65,7 @@ export async function communBlock_notconnected(translate = "") {
 
   let loginButton = createHTMLElement("button", "loginButton");
   loginButton.type = "submit";
-  loginButton.textContent = "Login with Discord";
+  loginButton.textContent = translate.commun.connect;
 
   // Lien vers l'authentification Discord
   loginButton.onclick = function () {

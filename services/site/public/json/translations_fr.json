@@ -1,5 +1,6 @@
 {
   "commun": {
+    "connect": "Connexion avec Discord",
     "disconnected": "Se déconnecter",
     "err_no_fields": "Aucun champ modifié !!!"
   },
