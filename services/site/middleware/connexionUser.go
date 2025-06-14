@@ -37,7 +37,8 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 
 			err := cookie.Valid()
 			if err != nil {
-				fmt.Printf("invalid cookie: %v\n", err)
+				CheckErr("invalid cookie: ", err)
+				return false
 			}
 
 			SessionLogger(w, discordUser.Id, cookie, database)
