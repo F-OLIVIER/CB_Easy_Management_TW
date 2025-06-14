@@ -707,6 +707,16 @@ async function adminitrateBot(option) {
 
       let input_new_img = document.getElementById("imgNewUnit");
       if (input_new_img.files && input_new_img.files[0]) {
+        let file = input_new_img.files[0];
+        let fileName = file.name;
+
+        // Vérification du nom de fichier : autorise lettres, chiffres, -, _, .
+        let validFileName = /^[a-zA-Z0-9_.-]+$/.test(fileName);
+        if (!validFileName) {
+          showNotification("The image file name must not contain special characters.", "error");
+          return;
+        }
+
         var reader = new FileReader();
 
         reader.onload = function (e) {
@@ -773,6 +783,16 @@ async function adminitrateBot(option) {
 
       let input_change_img = document.getElementById("changeUnitimg");
       if (input_change_img.files && input_change_img.files[0]) {
+        let file = input_change_img.files[0];
+        let fileName = file.name;
+
+        // Vérification du nom de fichier : autorise lettres, chiffres, -, _, .
+        let validFileName = /^[a-zA-Z0-9_.-]+$/.test(fileName);
+        if (!validFileName) {
+          showNotification("The image file name must not contain special characters.", "error");
+          return;
+        }
+
         var reader = new FileReader();
 
         reader.onload = function (e) {
