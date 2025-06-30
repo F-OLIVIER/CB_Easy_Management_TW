@@ -121,6 +121,10 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 	if len(listGroup.Namegroup) > 0 && len(listGroup.Namegroup[0]) > 0 {
 		// fmt.Println("listGroup : ", listGroup.Namegroup)
 		for _, arrayGroup := range listGroup.Namegroup {
+			if len(arrayGroup) == 0 {
+				continue
+			}
+
 			currentID := 0
 			requeststmtID := fmt.Sprintf("SELECT ID FROM NameGroupGvG%s WHERE GroupNumber = ?", id_House)
 			stmtID, errdb := database.Prepare(requeststmtID)
