@@ -50,8 +50,8 @@ function containerAppAdmin(data, translate) {
 
     stathouses.appendChild(stathouse);
 
-    for (let index = 0; index < .Houses.length; index++) {
-      const house = .Houses[index];
+    for (let index = 0; index < data.Statistique.Houses.length; index++) {
+      const house = data.Statistique.Houses[index];
       let stathouse = createHTMLElement("div", "stathouse");
 
       let statname = createHTMLElement("div", "statname");
