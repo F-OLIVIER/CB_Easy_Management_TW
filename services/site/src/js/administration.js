@@ -21,6 +21,7 @@ export async function administration() {
 let checkedRadioValue_Unit_maitrise = "";
 function containerAppAdmin(data, translate) {
   communBlock(data, translate);
+  console.log("data", data);
 
   const subContainer = createHTMLElement("div", "subContainerbotEtat");
 
