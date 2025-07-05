@@ -28,7 +28,7 @@ function containerAppAdmin(data, translate) {
   // -----------------------------------------------
   // ----------------- Statistique -----------------
   // -----------------------------------------------
-  if (data.Statistique) {
+  if (data.Statistique.Houses) {
     let divstatdb = createHTMLElement("div", "divstatdb");
 
     let stathouses = createHTMLElement("div", "stathouses");
@@ -50,8 +50,8 @@ function containerAppAdmin(data, translate) {
 
     stathouses.appendChild(stathouse);
 
-    for (let index = 0; index < data.Statistique.Houses.length; index++) {
-      const house = data.Statistique.Houses[index];
+    for (let index = 0; index < .Houses.length; index++) {
+      const house = .Houses[index];
       let stathouse = createHTMLElement("div", "stathouse");
 
       let statname = createHTMLElement("div", "statname");
@@ -334,7 +334,7 @@ function containerAppAdmin(data, translate) {
   // -----------------------------------------------
   // -------- Message d'information Discord --------
   // -----------------------------------------------
-  if (data.Statistique) {
+  if (data.Statistique.Houses) {
     let divinformationDiscord = createHTMLElement("div", "divinformationDiscord");
     let titleinformationDiscord = createHTMLElement("div", "titleinformationDiscord");
     titleinformationDiscord.textContent = "Send information Discord";
