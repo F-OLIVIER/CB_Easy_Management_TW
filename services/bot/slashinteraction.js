@@ -50,45 +50,46 @@ export async function slash_interaction(interaction) {
 
       console.log("houseData : ", houseData);
 
-      if (interaction.customId === "present") {
-        await MAJinscription(userId, 1, houseData.ID);
-      } else if (interaction.customId === "absent") {
-        await MAJinscription(userId, 3, houseData.ID);
+      if (houseData.ID) { // if anticrash temporaire
+        if (interaction.customId === "present") {
+          await MAJinscription(userId, 1, houseData.ID);
+        } else if (interaction.customId === "absent") {
+          await MAJinscription(userId, 3, houseData.ID);
+        }
+
+        const listinscrit = await listInscription(houseData.ID);
+
+        let presentList = [];
+        if (listinscrit[0] !== undefined) {
+          presentList = await Promise.all(
+            listinscrit[0]
+              .filter((id) => BigInt(id) !== BigInt(0)) // Filtrer les id égaux à 0 (user de test)
+              .map(async (id) => {
+                const userId = BigInt(id);
+                return "<@" + userId.toString() + ">";
+              })
+          );
+        }
+
+        let absentList = [];
+        if (listinscrit[1] !== undefined) {
+          absentList = await Promise.all(
+            listinscrit[1]
+              .map(async (id) => {
+                const userId = BigInt(id);
+                return "<@" + userId.toString() + ">";
+              })
+          );
+        }
+
+        await interaction
+          .update({
+            embeds: [await EmbedInscription(houseData.Langage, presentList, absentList)],
+          })
+          .catch((err) => {
+            logToFile(`Error update Embed EmbedInscription \nhouseData : ${houseData}\n${err}`, "errors_bot.log");
+          });
       }
-
-      const listinscrit = await listInscription(houseData.ID);
-
-      let presentList = [];
-      if (listinscrit[0] !== undefined) {
-        presentList = await Promise.all(
-          listinscrit[0]
-            .filter((id) => BigInt(id) !== BigInt(0)) // Filtrer les id égaux à 0 (user de test)
-            .map(async (id) => {
-              const userId = BigInt(id);
-              return "<@" + userId.toString() + ">";
-            })
-        );
-      }
-
-      let absentList = [];
-      if (listinscrit[1] !== undefined) {
-        absentList = await Promise.all(
-          listinscrit[1]
-            .map(async (id) => {
-              const userId = BigInt(id);
-              return "<@" + userId.toString() + ">";
-            })
-        );
-      }
-
-      await interaction
-        .update({
-          embeds: [await EmbedInscription(houseData.Langage, presentList, absentList)],
-        })
-        .catch((err) => {
-          logToFile(`Error update Embed EmbedInscription \nhouseData : ${houseData}\n${err}`, "errors_bot.log");
-        });
-
       return;
     }
   }
