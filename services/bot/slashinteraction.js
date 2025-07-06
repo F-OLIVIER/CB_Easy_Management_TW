@@ -48,7 +48,7 @@ export async function slash_interaction(interaction) {
     if (interaction.customId === "present" || interaction.customId === "absent") {
       const houseData = await get_houseData(interaction.guildId);
 
-      console.log("houseData : ", houseData);
+      // console.log("houseData : ", houseData);
 
       if (houseData.ID) { // if anticrash temporaire
         if (interaction.customId === "present") {
