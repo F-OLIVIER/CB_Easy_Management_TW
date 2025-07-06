@@ -48,6 +48,8 @@ export async function slash_interaction(interaction) {
     if (interaction.customId === "present" || interaction.customId === "absent") {
       const houseData = await get_houseData(interaction.guildId);
 
+      console.log("houseData : ", houseData);
+
       if (interaction.customId === "present") {
         await MAJinscription(userId, 1, houseData.ID);
       } else if (interaction.customId === "absent") {
