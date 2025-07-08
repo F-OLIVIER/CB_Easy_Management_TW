@@ -152,7 +152,7 @@ export async function createCommands() {
 
 export async function slashHelp(interaction) {
   const houseData = await get_houseData(interaction.guildId);
-  console.log("houseData", houseData);
+  // console.log("houseData", houseData);
 
   if (houseData.Langage) {
     const translate = await loadTranslations(houseData.Langage);
