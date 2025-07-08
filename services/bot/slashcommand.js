@@ -152,8 +152,15 @@ export async function createCommands() {
 
 export async function slashHelp(interaction) {
   const houseData = await get_houseData(interaction.guildId);
-  const translate = await loadTranslations(houseData.Langage);
-  await reponseUserInteraction(interaction, translate.help.join("\n"));
+  console.log("houseData", houseData);
+
+  if (houseData.Langage) {
+    const translate = await loadTranslations(houseData.Langage);
+    await reponseUserInteraction(interaction, translate.help.join("\n"));
+  } else {
+    const translate = await loadTranslations('en');
+    await reponseUserInteraction(interaction, translate.help.join("\n"));
+  }
   return true;
 }
 

@@ -177,7 +177,7 @@ export async function slash_interaction(interaction) {
     }
   }
 
-  // interaction changement de level du héros, Command /visite
+  // interaction commande d'aide, Command /help
   if (interaction.commandName === "help") {
     return await slashHelp(interaction);
   }

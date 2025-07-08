@@ -3,7 +3,7 @@
 // module nodejs et npm
 import { readFile } from "fs/promises";
 
-export async function loadTranslations(language) {
+export async function loadTranslations(language = 'en') {
   const data = await readFile(new URL(`./json/language_${language}.json`, import.meta.url), "utf8");
   return JSON.parse(data);
 }
