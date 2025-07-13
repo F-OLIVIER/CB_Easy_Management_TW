@@ -23,7 +23,7 @@ let listUserSelect = [];
 let timerThrottlebutton = 0;
 let eventListenersMap = new Map();
 export async function containercreategroup(data, translate) {
-  console.log("data : ", data);
+  // console.log("data : ", data);
 
   await communBlock(data, translate);
 
@@ -1395,7 +1395,6 @@ function changeInfluUnit(UserCaserne, username, Language) {
     for (let j = 0; j < UserCaserne.length; j++) {
       const current_unit = UserCaserne[j];
       if (current_unit.Unit_name[Language] != "" && unitValues.includes(current_unit.Unit_name[Language])) {
-        console.log("current_unit : ", current_unit);
         if (current_unit.DoctrineInflu) {
           // Si doctrine d'influence, on retire 16% de l'influence
           newValue += Math.floor((parseInt(current_unit.Unit_influence, 10) || 0) * 0.84);
@@ -1537,6 +1536,8 @@ function updateSelectUnit(data, selectunit1, selectunit2, selectunit3, selectuni
     insertSelectUnit(unit, infoUsersave.UserCaserne, "", 0, data.Gestion.ListUnitType, data.UserInfo.Language, translate);
     unit.id = `unit${index + 1}${usernameSansEspaces}`;
   });
+
+  filterUnitOptions();
 }
 
 function groupType(translate) {
