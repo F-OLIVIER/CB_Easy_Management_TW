@@ -151,17 +151,18 @@ export async function createCommands() {
 // -------------------------------------------------------------------
 
 export async function slashHelp(interaction) {
-  const houseData = await get_houseData(interaction.guildId);
-  // console.log("houseData", houseData);
+  try {
+    const houseData = await get_houseData(interaction.guildId);
+    const lang = houseData?.Langage || "en";
+    const translate = await loadTranslations(lang);
 
-  if (houseData.Langage) {
-    const translate = await loadTranslations(houseData.Langage);
     await reponseUserInteraction(interaction, translate.help.join("\n"));
-  } else {
-    const translate = await loadTranslations('en');
-    await reponseUserInteraction(interaction, translate.help.join("\n"));
+    return true;
+  } catch (err) {
+    logToFile(`Error slashHelp commands :\n ${err}`, "errors_bot.log");
+    await reponseUserInteraction(interaction, "An error occurred while processing the help command.");
+    return false;
   }
-  return true;
 }
 
 export async function slashLevel(interaction) {

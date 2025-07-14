@@ -151,6 +151,16 @@ client.on("messageCreate", async (message) => {
 
   // ! Commande réservé aux admin du Bot
   const AuthorID = message.author.id;
+  if (MC.startsWith("!list_admin_site")) {
+    const list = await list_admin();
+    await message.reply({
+      content: `<@${AuthorID}>, Liste des admin du site internet :\n${list.join("")}`,
+    });
+    await message.delete();
+  }
+
+  // --------------------------------------------
+  // ---------- Supression d'un admin --------
   if (!ListAdmin.includes(AuthorID)) return;
 
   const MC = message.content;
@@ -168,6 +178,16 @@ client.on("messageCreate", async (message) => {
   if (MC.startsWith("!create_admin_db")) {
     const id_new_admin = MC.replace("!create_admin_db", "").trim();
     const valid = await change_admin(id_new_admin, 1);
+  if (MC.startsWith("!list_admin_site")) {
+    const list = await list_admin();
+    await message.reply({
+      content: `<@${AuthorID}>, Liste des admin du site internet :\n${list.join("")}`,
+    });
+    await message.delete();
+  }
+
+  // --------------------------------------------
+  // ---------- Supression d'un admin --------
     if (valid) {
       await message.reply({
         content: `<@${AuthorID}>, admin ajouté`,
