@@ -640,9 +640,8 @@ function addEventOnAllButton(listUnit, ListUnitType, acces) {
 
 // option et le name du button cliquer
 async function adminitrateBot(option) {
-  let dataToSend = {};
-
   if (option === "buttonNewclass") {
+    let dataToSend = {};
     dataToSend.newWeapon = {};
     dataToSend.informationDiscord = false;
     dataToSend.newWeapon.en = document.getElementById("nameNewclassEN").value.trim();
@@ -653,6 +652,7 @@ async function adminitrateBot(option) {
     }
     sendData(dataToSend);
   } else if (option === "buttoninformationDiscord") {
+    let dataToSend = {};
     dataToSend.newWeapon = {};
     dataToSend.informationDiscord = true;
     dataToSend.newWeapon.en = document.getElementById("informationDiscordEN").value.trim();
@@ -663,6 +663,7 @@ async function adminitrateBot(option) {
     }
     sendData(dataToSend);
   } else if (option === "buttonDmDiscord") {
+    let dataToSend = {};
     dataToSend.newWeapon = {};
     dataToSend.dmDiscord = true;
     dataToSend.newWeapon.en = document.getElementById("inputDmDiscord").value.trim();
@@ -673,10 +674,10 @@ async function adminitrateBot(option) {
     }
     sendData(dataToSend);
   } else {
-    let formData = new FormData();
-
     // create Unit
     if (option === "buttonNewUnit") {
+      let dataToSend = {};
+      let formData = new FormData();
       let createUnit = {
         Unit_name: {},
         Unit_type: {},
@@ -736,12 +737,14 @@ async function adminitrateBot(option) {
         // Démarrer la lecture du fichier
         reader.readAsDataURL(input_new_img.files[0]);
       } else {
-        showNotification("Please fill in all the fields and add the image to create the new unit.", "error");
+        showNotification("Please fill in all the fields and add the image to create the new unit", "error");
       }
     }
 
     // change Unit
     if (option === "buttonChangeUnit") {
+      let dataToSend = {};
+      let formData = new FormData();
       let changeUnit = {
         Unit_name: {},
         New_unit_name: {},
