@@ -149,6 +149,8 @@ client.on("messageCreate", async (message) => {
     }
   }
 
+  const MC = message.content;
+
   // ! Commande réservé aux admin du Bot
   const AuthorID = message.author.id;
   if (MC.startsWith("!list_admin_site")) {
@@ -162,8 +164,6 @@ client.on("messageCreate", async (message) => {
   // --------------------------------------------
   // ---------- Supression d'un admin --------
   if (!ListAdmin.includes(AuthorID)) return;
-
-  const MC = message.content;
 
   // --------------------------------------------
   // ------------- Fonction de Test -------------
