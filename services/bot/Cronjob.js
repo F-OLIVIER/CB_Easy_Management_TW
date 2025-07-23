@@ -55,12 +55,26 @@ export async function cronDesactivateButtonMsgreact() {
       const chan = await client.channels.fetch(row.ID_Chan_GvG);
       if (!chan) {
         logToFile(`Chan TW ${row.ID_Chan_GvG} innexistant pour la maison ${row.ID_Server}`, "errors_bot.log");
-        return;
+        continue;
       }
-      const message = await chan.messages.fetch(row.ID_MessageGvG);
-      if (!message) {
-        logToFile(`Message TW ${row.ID_MessageGvG} innexistant`, "errors_bot.log");
-        return;
+
+      // const message = await chan.messages.fetch(row.ID_MessageGvG);
+      let message;
+      try {
+        if (!chan.viewable || !chan.permissionsFor(client.user).has("ReadMessageHistory")) {
+          logToFile(`Le Bot ne peut pas accéder au chan ${row.ID_Chan_GvG}`, "errors_bot.log");
+          continue;
+        }
+
+        message = await chan.messages.fetch(row.ID_MessageGvG);
+      } catch (err) {
+        if (err.code === 10008) {
+          // Discord API: Unknown Message (message supprimer)
+          logToFile(`Message introuvable (peut-être supprimé) : ${row.ID_MessageGvG} dans chan ${row.ID_Chan_GvG}`, "errors_bot.log");
+          continue;
+        } else {
+          throw err;
+        }
       }
 
       await message
@@ -98,7 +112,7 @@ export async function cronResetMsgReaction() {
     const mois = (dateformate.getMonth() + 1).toString().padStart(2, "0");
     const annee = dateformate.getFullYear();
     // arrayDate = Date au format [français, anglais]
-    let arrayDate = [`${jour}/${mois}/${annee}`, `${annee}/${mois}/${jour}`]
+    let arrayDate = [`${jour}/${mois}/${annee}`, `${annee}/${mois}/${jour}`];
 
     for (const row of rows) {
       await Resetac(db, arrayDate);
