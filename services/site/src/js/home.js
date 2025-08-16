@@ -149,6 +149,14 @@ function listLink(Container, data, translate) {
     linkconsulcaserne.appendChild(buttonconsulcaserne);
     subcontainerOfficier.appendChild(linkconsulcaserne);
 
+    // page de paramétrage du bot
+    let linksettingbot = createHTMLElement("a", "no-style-link");
+    linksettingbot.href = "/settingbot";
+    let buttonsettingbot = createHTMLElement("div", "buttonsettingbot");
+    buttonsettingbot.textContent = translate.home.settingbot;
+    linksettingbot.appendChild(buttonsettingbot);
+    subcontainerOfficier.appendChild(linksettingbot);
+
     subContainer.appendChild(subcontainerOfficier);
   }
 

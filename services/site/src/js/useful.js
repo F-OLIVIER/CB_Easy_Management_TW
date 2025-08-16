@@ -220,3 +220,16 @@ function createFooter(translate) {
     document.body.appendChild(footer);
   }
 }
+
+export function houseLate(listHouse, currenthouse) {
+  for (let i = 0; i < listHouse.length; i++) {
+    if (listHouse[i].Discord == currenthouse) {
+      if (listHouse[i].Late == 1) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+  return false;
+}

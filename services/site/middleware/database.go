@@ -52,7 +52,7 @@ func SpecificUserInfo(userID string, database *sql.DB) (username string) {
 
 // Récupére l'ID du/des server discord de l'utilisateur
 func get_user_house(uuid string, database *sql.DB) (list_houses []data.Houses) {
-	listhouse, err := database.Prepare(`SELECT Houses.ID, Houses.House_name, Houses.House_logo, Houses.Langage, Houses.ID_Server 
+	listhouse, err := database.Prepare(`SELECT Houses.ID, Houses.House_name, Houses.House_logo, Houses.Langage, Houses.ID_Server, Houses.Late
 										FROM Houses 
 										INNER JOIN Users ON Houses.ID = Users.ID_House
 										WHERE uuid = ?;`)
@@ -61,7 +61,7 @@ func get_user_house(uuid string, database *sql.DB) (list_houses []data.Houses) {
 	CheckErr("2- Requete DB fonction Get_user_house", err)
 	for rows.Next() {
 		var house data.Houses
-		err = rows.Scan(&house.ID, &house.House_name, &house.House_logo, &house.Langage, &house.ID_Server)
+		err = rows.Scan(&house.ID, &house.House_name, &house.House_logo, &house.Langage, &house.ID_Server, &house.Late)
 		CheckErr("3- Requete DB fonction Get_user_house", err)
 
 		list_houses = append(list_houses, house)
@@ -190,19 +190,25 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		}
 	}
 
-	if newUserInfo.EtatInscription == 1 || newUserInfo.EtatInscription == 3 { // 1: s'incrit present, 3: s'inscrit absent
+	if newUserInfo.EtatInscription == 1 || newUserInfo.EtatInscription == 2 || newUserInfo.EtatInscription == 3 { // 1: s'incrit present, 2: s'inscrit en retard, 3: s'inscrit absent
 		if RegistrationAuthorised() {
 			stmt3, errdb := database.Prepare("UPDATE Users SET EtatInscription = ? WHERE ID = ?")
 			CheckErr("9- Requete DB UpdateCharacter", errdb)
 			stmt3.Exec(newUserInfo.EtatInscription, currentUser.User_id)
 
 			notif.Type = "success"
-			if newUserInfo.EtatInscription == 1 {
+			switch newUserInfo.EtatInscription {
+			case 1:
 				notif.Content = data.ListLanguage{
 					FR: "Vous êtes inscrit présent pour la prochaine guerre de territoire.",
 					EN: "You are registered present for the next territorial war.",
 				}
-			} else if newUserInfo.EtatInscription == 3 {
+			case 2:
+				notif.Content = data.ListLanguage{
+					FR: "Vous êtes inscrit en retard pour la prochaine guerre de territoire.",
+					EN: "You are registered late for the next territorial war.",
+				}
+			case 3:
 				notif.Content = data.ListLanguage{
 					FR: "Vous êtes inscrit absent pour la prochaine guerre de territoire.",
 					EN: "You are registered absent for the next territorial war.",
@@ -222,16 +228,16 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 }
 
 func ListInscriptedUsers(id_House string, database *sql.DB) (UsersIncripted []data.UserInfo) {
-	listUnit, err := database.Prepare(`SELECT ID, ID_House, GameCharacter_ID, DiscordName, Lvl, Influence, NbGvGParticiped, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN
+	listUnit, err := database.Prepare(`SELECT ID, ID_House, GameCharacter_ID, DiscordName, Lvl, Influence, EtatInscription, NbGvGParticiped, DateLastGvGParticiped_FR, DateLastGvGParticiped_EN
 										FROM Users
-										WHERE Users.EtatInscription = 1 AND ID_House = ?;
+										WHERE Users.EtatInscription IN (1, 2) AND ID_House = ?;
 										`)
 	CheckErr("1- Requete DB fonction ListInscriptedusers", err)
 	rows, err := listUnit.Query(id_House)
 	CheckErr("2- Requete DB fonction ListInscriptedusers", err)
 	for rows.Next() {
 		var user data.UserInfo
-		err = rows.Scan(&user.ID, &user.ID_House, &user.GameCharacter_ID, &user.DiscordUsername, &user.Lvl, &user.Influence, &user.NbGvGParticiped, &user.DateLastGvGParticiped.FR, &user.DateLastGvGParticiped.EN)
+		err = rows.Scan(&user.ID, &user.ID_House, &user.GameCharacter_ID, &user.DiscordUsername, &user.Lvl, &user.Influence, &user.EtatInscription, &user.NbGvGParticiped, &user.DateLastGvGParticiped.FR, &user.DateLastGvGParticiped.EN)
 		CheckErr("3- Requete DB fonction ListInscriptedusers", err)
 
 		if user.GameCharacter_ID != 0 {
@@ -280,7 +286,7 @@ func AllCaserne(id_House string, database *sql.DB) (ListInscripted []data.UserIn
 	return ListInscripted
 }
 
-func GroupGvG(database *sql.DB, nameTable string) (listUserAlreadyRegistered []data.UserGvG) {
+func GroupGvG(database *sql.DB, listInscripted []data.UserInfo, nameTable string) (listUserAlreadyRegistered []data.UserGvG) {
 	listUnit, err := database.Prepare("SELECT User_ID, GroupNumber, Unit1, Unit2, Unit3, Unit4, Comment FROM " + nameTable)
 	CheckErr("1- Requete DB fonction GroupGvG", err)
 	rows, err := listUnit.Query()
@@ -293,6 +299,15 @@ func GroupGvG(database *sql.DB, nameTable string) (listUserAlreadyRegistered []d
 		stmt, errdb := database.Prepare("SELECT DiscordName FROM Users WHERE ID = ?")
 		CheckErr("4- Requete DB fonction GroupGvG", errdb)
 		stmt.QueryRow(user.User_ID).Scan(&user.Username)
+
+		for i := 0; i < len(listInscripted); i++ {
+			if listInscripted[i].ID == user.User_ID {
+				if listInscripted[i].EtatInscription == 2 {
+					user.Late = true
+				}
+				break
+			}
+		}
 
 		listUserAlreadyRegistered = append(listUserAlreadyRegistered, user)
 	}
@@ -568,7 +583,7 @@ func updateImgUnit(dataCreateUnit data.Unit, filepath string, database *sql.DB) 
 	if dataCreateUnit.Name.FR != "" {
 		stmt, err := database.Prepare(`UPDATE ListUnit SET Img = ? WHERE UnitFR = ?;`)
 		CheckErr("Update Allumage ActivateOrNotBotInDB ", err)
-		fmt.Println("filepath, dataCreateUnit.ID", filepath, dataCreateUnit.ID)
+		// fmt.Println("filepath, dataCreateUnit.ID", filepath, dataCreateUnit.ID)
 		stmt.Exec(filepath, dataCreateUnit.Name.FR)
 	}
 }

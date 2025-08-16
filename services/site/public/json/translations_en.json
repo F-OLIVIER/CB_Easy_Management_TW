@@ -2,7 +2,11 @@
   "commun": {
     "connect": "Login with Discord",
     "disconnected": "Disconnecting",
-    "err_no_fields": "No fields changed !!!"
+    "err_no_fields": "No fields changed !!!",
+    "Langage": {
+      "fr": ["fr", "🇫🇷 Français"],
+      "en": ["en", "🇬🇧 English"]
+    }
   },
 
   "descriptionIntro": {
@@ -56,8 +60,14 @@
     {
       "title": "Website",
       "commands": [
-        ["Private (user connected)", "<span>Home (dashboard)</span><span>Character card (weapon played, influence, hero level, TW registration status)</span><span>Barracks (allows players to indicate which units they have)</span>"],
-        ["Private (manager group)", "<span>Creation of groups based on registrations and units (level & mastery) indicated by players</span><span>Home information statistics</span><span>Managing user barracks (managers have access to users' barracks)</span>"]
+        [
+          "Private (user connected)",
+          "<span>Home (dashboard)</span><span>Character card (weapon played, influence, hero level, TW registration status)</span><span>Barracks (allows players to indicate which units they have)</span>"
+        ],
+        [
+          "Private (manager group)",
+          "<span>Creation of groups based on registrations and units (level & mastery) indicated by players</span><span>Home information statistics</span><span>Managing user barracks (managers have access to users' barracks)</span>"
+        ]
       ],
       "images": [
         "img/description/site/dashboard1.png",
@@ -71,21 +81,16 @@
       "title": "Mobile application (Android, iOS) & desktop (Windows)",
       "commands": [
         [
-          "Private (user connected)", "<span>Login page</span><span>TW registration page</span><span>Character card (weapon played, influence & hero level)</span><span>Barracks (allows players to indicate which units they have)</span>"
+          "Private (user connected)",
+          "<span>Login page</span><span>TW registration page</span><span>Character card (weapon played, influence & hero level)</span><span>Barracks (allows players to indicate which units they have)</span>"
         ],
-        [
-          "Android",
-          "<span>The application is available on the Google Play store at the following address:</br><a href=\"\">Currently being deployed</a></span>"
-        ],
-        [
-          "iOS",
-          "<span>The application is planned for the future.</span>"
-        ],
+        ["Android", "<span>The application is available on the Google Play store at the following address:</br><a href=\"\">Currently being deployed</a></span>"],
+        ["iOS", "<span>The application is planned for the future.</span>"],
         [
           "Windows",
           "<span>The application installer is available at the following address: :</br><a href=\"https://easymanagementtw.fr/download/EasyManagementTW.zip\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>WARNING</u> : This application is offered free of charge and is not digitally signed. As a result, Windows may display a warning message, and some antivirus software may incorrectly report it as a threat (false positive). We assure you that it is harmless.</span>"
         ]
-        ],
+      ],
       "images": ["img/description/smartphone/flutter_01.png", "img/description/smartphone/flutter_02.png", "img/description/smartphone/flutter_03.png", "img/description/smartphone/flutter_04.png"]
     }
   ],
@@ -108,6 +113,7 @@
     "groupGvG": "Create TW groups",
     "stat": "Statistics",
     "caserne_other": "Consult a barracks",
+    "settingbot": "Discord bot settings",
     "zone_admin": "Administrators only",
     "admin": "Administration page",
     "commun_zone": "Multi-house space",
@@ -141,10 +147,12 @@
       "inscripted": {
         "nodata": "⁉️ You are not registered for the next TW",
         "present": "✅ Present from next TW",
+        "late": "🕐 Late from the next TW",
         "absent": "❌ Absent from next TW"
       },
       "button": {
         "present": "Register me present",
+        "late": "Register late",
         "absent": "Register me absent"
       },
       "nbGvG": "Number of TW participating",
@@ -335,6 +343,28 @@
     "error": {
       "notext": "Please complete all fields",
       "prohibe": "Banned content !!!"
+    }
+  },
+
+  "settingbot": {
+    "name": "Name of the house",
+    "ID_Chan_Gestion": "Discord channel ID for information for Managers",
+    "ID_Chan_GvG": "Discord channel ID where users vote",
+    "ID_Chan_Users": "Discord channel ID for user information",
+    "ID_Group_Officier": "Discord group ID for managers",
+    "ID_Group_Users": "Discord group ID of users",
+    "Langage": "Discord bot language",
+    "Late": "Display of the \"Late\" button for votes",
+    "Recall_GvG": "Enabling automatic voting reminders for users",
+    "Allumage": "Voting activation",
+    "tutoID": "Here is a tutorial on how to retrieve Discord ID: ",
+    "explainLate": "To see where to remove the \"Late\" button on Discord, press one of the buttons in the registration message to update after changing the setting.",
+    "explainRecall_GvG": "Automatic reminders are sent out at 8 p.m. on the day before each TW.",
+    "explainAllumage": "Disabling voting prevents users from being spammed on Discord during off-season periods.",
+    "updateButton": "Apply the Discord bot settings update.",
+    "notif": {
+      "idDiscord": "A field does not contain a valid Discord ID",
+      "empty": "No changes detected"
     }
   },
 

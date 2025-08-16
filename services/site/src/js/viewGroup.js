@@ -103,20 +103,20 @@ function containerviewGroup(data, translate) {
 
     for (let j = 0; j < currentGroupe.length; j++) {
       const currentPlayer = currentGroupe[j];
-
       let divuser = document.createElement("div");
       divuser.classList.add(groupName);
       divuser.classList.add("divuserviewgroup");
 
       // pseudo player
       let name = createHTMLElement("div", "viewusername");
-      name.textContent = currentPlayer.Username;
+      if (currentPlayer.Late) {
+        name.textContent = `🕐 ${currentPlayer.Username}`;
+      } else {
+        name.textContent = currentPlayer.Username;
+      }
       divuser.appendChild(name);
 
       // classe player
-      // let classplayer = createHTMLElement("div", "classplayer");
-      // classplayer.textContent = currentPlayer.class[data.UserInfo.Language];
-      // divuser.appendChild(classplayer);
       let zoneWeapon = createHTMLElement("div", "zoneWeapon");
       let cadre = createHTMLElement("img", "cadreweapon");
       cadre.src = "./img/weapon/cadre.png";

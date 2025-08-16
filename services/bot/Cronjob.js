@@ -9,6 +9,7 @@ import { loadTranslations } from "./language.js";
 // module nodejs et npm
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { updateHouseLogo } from "./database.js";
 
 // fonction de changement automatique du message de réaction à 21h mardi et samedi
 export async function cronDesactivateButtonMsgreact() {
@@ -26,8 +27,9 @@ export async function cronDesactivateButtonMsgreact() {
 
     for (const row of rows) {
       const requestQueries = [
-        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 1 AND Houses.ID_Server = ?;`, // List present
-        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 3 AND Houses.ID_Server = ?;`, // List absent
+        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 1 AND Houses.ID_Server = ?;`, // List "Present"
+        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 2 AND Houses.ID_Server = ?;`, // List "En retard"
+        `SELECT DiscordID FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Users.EtatInscription = 3 AND Houses.ID_Server = ?;`, // List "Absent"
       ];
       const playerLists = await Promise.all(requestQueries.map((query) => db.all(query, [row.ID_Server])));
       const listinscrit = playerLists.map((rowslist) => rowslist.map((rowlist) => rowlist.DiscordID));
@@ -42,10 +44,20 @@ export async function cronDesactivateButtonMsgreact() {
         );
       }
 
-      let absentList = [];
+      let lateList = [];
       if (listinscrit[1] !== undefined) {
-        absentList = await Promise.all(
+        presentList = await Promise.all(
           listinscrit[1].map(async (id) => {
+            const userId = BigInt(id);
+            return "<@" + userId.toString() + ">";
+          })
+        );
+      }
+
+      let absentList = [];
+      if (listinscrit[2] !== undefined) {
+        absentList = await Promise.all(
+          listinscrit[2].map(async (id) => {
             const userId = BigInt(id);
             return "<@" + userId.toString() + ">";
           })
@@ -79,8 +91,8 @@ export async function cronDesactivateButtonMsgreact() {
 
       await message
         .edit({
-          embeds: [await EmbedInscription(row.Langage, presentList, absentList)],
-          components: [await ButtonNotActifEmbedInscription(row.Langage)],
+          embeds: [await EmbedInscription(row.Langage, presentList, lateList, absentList, row.Late)],
+          components: [await ButtonNotActifEmbedInscription(row.Langage, row.Late)],
         })
         .catch((err) => {
           logToFile(`Error edit Embed EmbedInscription \nhouseData : ${row.ID_Server}\n${err}`, "errors_bot.log");
@@ -102,7 +114,7 @@ export async function cronResetMsgReaction() {
   });
 
   try {
-    const requestQuery = `SELECT ID_Server, ID_MessageGvG, Langage, ID_Chan_GvG, ID_Group_Users FROM Houses WHERE Allumage = 0;`;
+    const requestQuery = `SELECT ID_Server, ID_MessageGvG, Langage, ID_Chan_GvG, ID_Group_Users, House_logo, Late FROM Houses WHERE Allumage = 0;`;
     const rows = await db.all(requestQuery);
 
     if (!rows || rows.length === 0) return;
@@ -116,7 +128,24 @@ export async function cronResetMsgReaction() {
 
     for (const row of rows) {
       await Resetac(db, arrayDate);
-      await msgreactgvg(db, row.ID_Server, row.ID_MessageGvG, row.Langage, row.ID_Chan_GvG, row.ID_Group_Users);
+      await msgreactgvg(db, row.ID_Server, row.ID_MessageGvG, row.Langage, row.ID_Chan_GvG, row.ID_Group_Users, row.Late);
+
+      // Mise à jour du logo de maison
+      try {
+        // Récupérer la guild
+        const guild = await client.guilds.fetch(row.ID_Server);
+        if (!guild) {
+          logToFile(`Serveur ${row.ID_Server} introuvable.`, "errors_bot.log");
+          continue;
+        }
+
+        const iconURL = guild.iconURL();
+        if (iconURL && row.House_logo !== iconURL) {
+          await updateHouseLogo(row.ID_Server, iconURL);
+        }
+      } catch (err) {
+        logToFile(`Erreur lors du cronjob reset TW (cronResetMsgReaction) :\n${err.message}`, "errors_bot.log");
+      }
     }
   } catch (err) {
     logToFile(`Erreur lors du cronjob reset TW (cronResetMsgReaction) :\n${err.message}`, "errors_bot.log");

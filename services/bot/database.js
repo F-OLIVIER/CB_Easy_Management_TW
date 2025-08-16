@@ -296,8 +296,9 @@ export async function listInscription(ID_House) {
 
   try {
     const requestQueries = [
-      `SELECT DiscordID FROM Users WHERE EtatInscription = 1 AND ID_House = ?;`, // List present
-      `SELECT DiscordID FROM Users WHERE EtatInscription = 3 AND ID_House = ?;`, // List absent
+      `SELECT DiscordID FROM Users WHERE EtatInscription = 1 AND ID_House = ?;`, // List "Present"
+      `SELECT DiscordID FROM Users WHERE EtatInscription = 2 AND ID_House = ?;`, // List "En retard"
+      `SELECT DiscordID FROM Users WHERE EtatInscription = 3 AND ID_House = ?;`, // List "Absent"
     ];
 
     const playerLists = await Promise.all(requestQueries.map((query) => db.all(query, [ID_House])));
@@ -395,7 +396,7 @@ export async function resetManuelMsgGvG(houseData) {
 
   try {
     await ResetHousesc(db, houseData.ID);
-    await msgreactgvg(db, houseData.ID_Server, houseData.ID_MessageGvG, houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users);
+    await msgreactgvg(db, houseData.ID_Server, houseData.ID_MessageGvG, houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users, houseData.Late);
   } catch (err) {
     logToFile(`Erreur lors du reset du message GvG (resetmsgGvG) :\n${err.message}`, "errors_bot.log");
     throw err;
@@ -445,5 +446,22 @@ export async function list_admin() {
     logToFile(`Erreur (list_admin) :\n${err.message}`, "errors_bot.log");
     await db.close();
     throw err;
+  }
+}
+
+export async function updateHouseLogo(ID_Server, newURLlogo) {
+  const db = await open({
+    filename: adressdb,
+    driver: sqlite3.Database,
+  });
+
+  try {
+    const updateQuery = `UPDATE Houses SET House_logo = ? WHERE ID_Server = ?;`;
+    await db.run(updateQuery, [newURLlogo, ID_Server]);
+    logToFile(`House_logo mis à jour pour ${ID_Server}`);
+  } catch (err) {
+    logToFile(`Erreur (updateHouseLogo) ID_Server=${ID_Server}, newURLlogo=${newURLlogo} :\n${err.message}`, "errors_bot.log");
+  } finally {
+    await db.close();
   }
 }

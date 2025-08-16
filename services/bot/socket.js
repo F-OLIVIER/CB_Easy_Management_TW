@@ -1,13 +1,17 @@
 // fichier annexe
-import { msgChanDiscord, sendPrivateMsg } from "./Constant.js";
+import { client, msgChanDiscord, sendPrivateMsg } from "./Constant.js";
 import { loadTranslations } from "./language.js";
-import { adressdb, discordTest_chanDM, discordTest_chanForum, discordTest_groupAdminForum } from "./config.js";
+import { adressdb, discordTest_chanForum, discordTest_groupAdminForum } from "./config.js";
+import { resetManuelMsgGvG } from "./database.js";
+import { initial_msgreactgvg, noGvGReactMsgGvG } from "./Embed_gvg.js";
+import { deleteHouse, get_houseData } from "./config_house.js";
 import { logToFile } from "./log.js";
 
 // module nodejs et npm
 import WebSocket from "ws";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { PlayerCreateOrUpdate } from "./FuncData.js";
 
 const wss = new WebSocket.Server({ port: 8081 });
 
@@ -20,7 +24,7 @@ export function socket() {
       try {
         const jsonMessage = JSON.parse(message);
         // console.log("jsonMessage : ", jsonMessage);
-        logToFile(`Socket Message reçu : ${jsonMessage}`);
+        logToFile(`Socket Message reçu :\n ${JSON.stringify(jsonMessage.content, null, 2)}`);
 
         switch (jsonMessage.type) {
           case "newunit":
@@ -49,6 +53,10 @@ export function socket() {
 
           case "dm_discord":
             sendPrivateMsg(jsonMessage.content.userid, jsonMessage.content.msg);
+            break;
+
+          case "update_setting_bot":
+            updateSettingBot(jsonMessage.content);
             break;
 
           default:
@@ -105,6 +113,45 @@ async function new_information(content) {
       await msgChanDiscord(house.ID_Group_Users, house.ID_Chan_Users, message);
     })
   );
+}
+
+async function updateSettingBot(jsonMessage) {
+  const houseData = await get_houseData(jsonMessage.ID_Server);
+  // Envoi du message à Discord
+  await msgChanDiscord(houseData.ID_Group_Officier, houseData.ID_Chan_Gestion, jsonMessage.msgDiscord);
+
+  // Allumage : 0 = on, 1 = off
+  if (jsonMessage.Allumage == "0") {
+    // Activation des inscriptions GvG
+    await resetManuelMsgGvG(houseData);
+  } else if (jsonMessage.Allumage == "1") {
+    // Désactivation des inscriptions GvG
+    await noGvGReactMsgGvG(houseData);
+  }
+
+  // Changement de chan GvG
+  if (jsonMessage.ID_Chan_GvG != "-1") {
+    const newID_MessageGvG = await initial_msgreactgvg(houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users, houseData.Late);
+    const updateQuery_house = `UPDATE Houses SET ID_MessageGvG = ? WHERE ID = ?;`;
+    await db.run(updateQuery_house, [newID_MessageGvG, houseData.ID]);
+  }
+
+  // Mise à jour des membres du serveur
+  const serv = client.guilds.cache.get(jsonMessage.ID_Server);
+  if (!serv) {
+    logToFile(`Serveur introuvable : ${ID_Server}, suppression de la db.`, "errors_bot.log");
+    await deleteHouse(ID_Server);
+  }
+  try {
+    const members = await serv.members.fetch();
+    for (const member of members.values()) {
+      if (!member.user.bot) {
+        await PlayerCreateOrUpdate(jsonMessage.ID_Server, member.user.id);
+      }
+    }
+  } catch (err) {
+    logToFile(`Erreur lors de la récupération des membres pour ${jsonMessage.ID_Server} (updateSettingBot) :\n${err}`, "errors_bot.log");
+  }
 }
 
 // ------------------------------------------------------------

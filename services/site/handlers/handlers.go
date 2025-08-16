@@ -251,7 +251,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						// --------------------------------------------------
 						case "/api/creategroup/":
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
-							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupGvG"+id_House)
+							sendHTML.GroupGvG = utils.GroupGvG(database, sendHTML.ListInscripted, "GroupGvG"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
 							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							gestion.ListUnitType = utils.ListUnitType(database)
@@ -261,14 +261,14 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 							gestion.Notification = notif
 
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
-							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupGvG"+id_House)
+							sendHTML.GroupGvG = utils.GroupGvG(database, sendHTML.ListInscripted, "GroupGvG"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
 							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							gestion.ListUnitType = utils.ListUnitType(database)
 
 						case "/api/chargergrouptypeatt/":
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
-							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupTypeAtt"+id_House)
+							sendHTML.GroupGvG = utils.GroupGvG(database, sendHTML.ListInscripted, "GroupTypeAtt"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
 							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							gestion.ListUnitType = utils.ListUnitType(database)
@@ -284,7 +284,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 
 						case "/api/chargergrouptypedef/":
 							sendHTML.ListInscripted = utils.ListInscriptedUsers(id_House, database)
-							sendHTML.GroupGvG = utils.GroupGvG(database, "GroupTypeDef"+id_House)
+							sendHTML.GroupGvG = utils.GroupGvG(database, sendHTML.ListInscripted, "GroupTypeDef"+id_House)
 							sendHTML.NameGroupGvG = utils.NameGroupGvG(database, id_House)
 							sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
 							gestion.ListUnitType = utils.ListUnitType(database)
@@ -335,6 +335,16 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 							} else {
 								return
 							}
+
+						// --------------------------------------------------
+						// ----------- Paramétrage du bot Discord -----------
+						// --------------------------------------------------
+						case "/api/settingbot/":
+							sendHTML.Settingbot = utils.Settingbot(currentUser.ID_House, database)
+
+						case "/api/updatesettingbot/":
+							gestion.Notification = utils.UpdateSettingbot(r, currentUser.User_id, currentUser.ID_House, database)
+							sendHTML.Settingbot = utils.Settingbot(currentUser.ID_House, database)
 
 						default:
 							// Ne rien faire

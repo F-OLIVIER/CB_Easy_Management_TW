@@ -52,6 +52,8 @@ func main() {
 		"/api/statGvG/",
 		"/api/updatestatGvG/",
 		"/api/consulcaserne/",
+		"/api/settingbot/",
+		"/api/updatesettingbot/",
 		"/api/majspecificcaserne/",
 		"/api/UpdateAdmin/",
 		"/api/CheckAppAdmin/",

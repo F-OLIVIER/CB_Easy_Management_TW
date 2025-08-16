@@ -11,6 +11,7 @@ import { accueil } from "./accueil.js";
 import { description } from "./description.js";
 import { mention } from "./mentionlegale.js";
 import { forum } from "./forum.js";
+import { settingbot } from "./settingbot.js";
 
 let path = window.location.pathname;
 switch (path) {
@@ -34,7 +35,7 @@ switch (path) {
   case "/discord":
     // page géré de façon externe
     break;
-
+containerCharacterCard
   case "/home":
     // Home connected
     home();
@@ -72,6 +73,10 @@ switch (path) {
 
   case "/consulcaserne":
     consulcaserne();
+    break;
+
+  case "/settingbot":
+    settingbot();
     break;
 
   case "/Appforum":

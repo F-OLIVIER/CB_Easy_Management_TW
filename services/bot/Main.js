@@ -1,20 +1,21 @@
 // Fichier annexe
+import { discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
+import { cronDesactivateButtonMsgreact, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
 import { change_admin, deleteUser, getUserDiscordRole, list_admin } from "./database.js";
 import { PlayerCreateOrUpdate, checkAllUser } from "./FuncData.js";
 import { deleteHouse, houseExist } from "./config_house.js";
 import { slash_interaction } from "./slashinteraction.js";
 import { createCommands } from "./slashcommand.js";
-import { cronDesactivateButtonMsgreact, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
 import { client } from "./Constant.js";
-import { discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
 import { logToFile } from "./log.js";
 import { socket } from "./socket.js";
 
 // Module nodejs et npm
-import { MessageFlags, PermissionsBitField } from "discord.js";
+import { PermissionsBitField } from "discord.js";
 import {} from "dotenv/config";
 import { CronJob } from "cron";
 
+// Connexion du client et gestion d'erreur
 client.login(process.env.TOKEN);
 client.on("error", (error) => {
   console.error("\nUne erreur est survenue :\n", error);
@@ -150,9 +151,12 @@ client.on("messageCreate", async (message) => {
   }
 
   const MC = message.content;
+  const AuthorID = message.author.id;
 
   // ! Commande réservé aux admin du Bot
-  const AuthorID = message.author.id;
+  if (!ListAdmin.includes(AuthorID)) return;
+
+  // ! Liste des admin du Bot
   if (MC.startsWith("!list_admin_site")) {
     const list = await list_admin();
     await message.reply({
@@ -160,10 +164,6 @@ client.on("messageCreate", async (message) => {
     });
     await message.delete();
   }
-
-  // --------------------------------------------
-  // ---------- Supression d'un admin --------
-  if (!ListAdmin.includes(AuthorID)) return;
 
   // --------------------------------------------
   // ------------- Fonction de Test -------------
@@ -178,16 +178,17 @@ client.on("messageCreate", async (message) => {
   if (MC.startsWith("!create_admin_db")) {
     const id_new_admin = MC.replace("!create_admin_db", "").trim();
     const valid = await change_admin(id_new_admin, 1);
-  if (MC.startsWith("!list_admin_site")) {
-    const list = await list_admin();
-    await message.reply({
-      content: `<@${AuthorID}>, Liste des admin du site internet :\n${list.join("")}`,
-    });
-    await message.delete();
-  }
+    if (MC.startsWith("!list_admin_site")) {
+      const list = await list_admin();
+      await message.reply({
+        content: `<@${AuthorID}>, Liste des admin du site internet :\n${list.join("")}`,
+      });
+      await message.delete();
+    }
 
-  // --------------------------------------------
-  // ---------- Supression d'un admin --------
+    // --------------------------------------------
+    // ----------- Supression d'un admin ----------
+    // --------------------------------------------
     if (valid) {
       await message.reply({
         content: `<@${AuthorID}>, admin ajouté`,
@@ -197,18 +198,6 @@ client.on("messageCreate", async (message) => {
         content: `<@${AuthorID}>, Erreur`,
       });
     }
-    await message.delete();
-  }
-
-  // --------------------------------------------
-  // ----------- Création d'un admin ------------
-  // --------------------------------------------
-  // !list_admin_site
-  if (MC.startsWith("!list_admin_site")) {
-    const list = await list_admin();
-    await message.reply({
-      content: `<@${AuthorID}>, Liste des admin du site internet :\n${list.join("")}`,
-    });
     await message.delete();
   }
 
@@ -235,19 +224,19 @@ client.on("messageCreate", async (message) => {
   // permet de vérifier les autorisations du bot
   // --------------------------------------------
   // !check_perms
-  // if (message.content === "!check_perms") {
-  //   const botMember = await message.guild.members.fetch(client.user.id);
-  //   const requiredPerms = [PermissionsBitField.Flags.Administrator, PermissionsBitField.Flags.ManageGuild, PermissionsBitField.Flags.UseApplicationCommands];
+  if (message.content === "!check_perms") {
+    const botMember = await message.guild.members.fetch(client.user.id);
+    const requiredPerms = [PermissionsBitField.Flags.Administrator, PermissionsBitField.Flags.ManageGuild, PermissionsBitField.Flags.UseApplicationCommands];
 
-  //   const missingPerms = requiredPerms.filter((perm) => !botMember.permissions.has(perm));
+    const missingPerms = requiredPerms.filter((perm) => !botMember.permissions.has(perm));
 
-  //   if (missingPerms.length > 0) {
-  //     await message.author.send(`Missing permissions: ${missingPerms.join(", ")}`);
-  //   } else {
-  //     await message.author.send("All required permissions are granted.");
-  //   }
-  //   message.delete();
-  // }
+    if (missingPerms.length > 0) {
+      await message.author.send(`Missing permissions: ${missingPerms.join(", ")}`);
+    } else {
+      await message.author.send("All required permissions are granted.");
+    }
+    message.delete();
+  }
 });
 
 // --------------------------------------------------------------

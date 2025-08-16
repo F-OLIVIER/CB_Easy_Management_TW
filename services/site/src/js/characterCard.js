@@ -1,4 +1,4 @@
-import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
+import { communBlock, createHTMLElement, fetchServer, fetchlogout, houseLate } from "./useful.js";
 import { adressAPI } from "./config.js";
 import { loadTranslate } from "./translate.js";
 import { showNotification } from "./notification.js";
@@ -106,18 +106,43 @@ function containerCharacterCard(data, translate) {
   let etatInscripted = document.createElement("div");
   let listButton = createHTMLElement("div", "listButton");
   if (data.Gestion.BotActivate) {
+    const currenthouse = localStorage.getItem("user_house");
+    const stateLate = houseLate(data.House, currenthouse);
+
     if (data.UserInfo.EtatInscription === 0 || data.UserInfo.EtatInscription === -1) {
       etatInscripted.textContent = translate.characterCard.info_GvG.inscripted.nodata;
       // button present
       let buttonPresent = createHTMLElement("button", "inscriptedPresent");
       buttonPresent.textContent = translate.characterCard.info_GvG.button.present;
       listButton.appendChild(buttonPresent);
+      // Boutton retard
+      if (stateLate) {
+        let buttonLate = createHTMLElement("button", "inscriptedLate");
+        buttonLate.textContent = translate.characterCard.info_GvG.button.late;
+        listButton.appendChild(buttonLate);
+      }
       // button absent
       let buttonAbsent = createHTMLElement("button", "inscriptedAbsent");
       buttonAbsent.textContent = translate.characterCard.info_GvG.button.absent;
       listButton.appendChild(buttonAbsent);
     } else if (data.UserInfo.EtatInscription == 1) {
       etatInscripted.textContent = translate.characterCard.info_GvG.inscripted.present;
+      // Boutton retard
+      if (stateLate) {
+        let buttonLate = createHTMLElement("button", "inscriptedLate");
+        buttonLate.textContent = translate.characterCard.info_GvG.button.late;
+        listButton.appendChild(buttonLate);
+      }
+      // button absent
+      let buttonAbsent = createHTMLElement("button", "inscriptedAbsent");
+      buttonAbsent.textContent = translate.characterCard.info_GvG.button.absent;
+      listButton.appendChild(buttonAbsent);
+    } else if (data.UserInfo.EtatInscription == 2) {
+      etatInscripted.textContent = translate.characterCard.info_GvG.inscripted.late;
+      // button present
+      let buttonPresent = createHTMLElement("button", "inscriptedPresent");
+      buttonPresent.textContent = translate.characterCard.info_GvG.button.present;
+      listButton.appendChild(buttonPresent);
       // button absent
       let buttonAbsent = createHTMLElement("button", "inscriptedAbsent");
       buttonAbsent.textContent = translate.characterCard.info_GvG.button.absent;
@@ -128,6 +153,12 @@ function containerCharacterCard(data, translate) {
       let buttonPresent = createHTMLElement("button", "inscriptedPresent");
       buttonPresent.textContent = translate.characterCard.info_GvG.button.present;
       listButton.appendChild(buttonPresent);
+      // Boutton retard
+      if (stateLate) {
+        let buttonLate = createHTMLElement("button", "inscriptedLate");
+        buttonLate.textContent = translate.characterCard.info_GvG.button.late;
+        listButton.appendChild(buttonLate);
+      }
     }
   } else {
     etatInscripted.textContent = translate.characterCard.info_GvG.noinscription;
@@ -155,25 +186,33 @@ function containerCharacterCard(data, translate) {
     event.preventDefault();
     majPersonnage(translate);
   });
+
   if (data.Gestion.BotActivate) {
     if (document.getElementById("inscriptedPresent")) {
       document.getElementById("inscriptedPresent").addEventListener("click", () => {
-        changeInscription(true);
+        fetchData({ EtatInscription: 1 });
       });
     }
+
+    if (document.getElementById("inscriptedLate")) {
+      document.getElementById("inscriptedLate").addEventListener("click", () => {
+        fetchData({ EtatInscription: 2 });
+      });
+    }
+
     if (document.getElementById("inscriptedAbsent")) {
       document.getElementById("inscriptedAbsent").addEventListener("click", () => {
-        changeInscription(false);
+        fetchData({ EtatInscription: 3 });
       });
     }
-  }
 
-  if (data.Gestion.Notification.Notif) {
-    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+    if (data.Gestion.Notification.Notif) {
+      showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+    }
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 50);
   }
-  setTimeout(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, 50);
 }
 
 function majPersonnage(translate) {
@@ -200,16 +239,6 @@ function majPersonnage(translate) {
   } else {
     fetchData(dataToSend);
   }
-}
-
-function changeInscription(incripted) {
-  let dataToSend = {};
-  if (incripted) {
-    dataToSend.EtatInscription = 1; // present
-  } else {
-    dataToSend.EtatInscription = 3; // absent
-  }
-  fetchData(dataToSend);
 }
 
 async function fetchData(dataToSend) {

@@ -345,6 +345,7 @@
 .subContainer,
 .containerhouses,
 .subcontainerAdmin,
+.subcontainerSetting,
 .subcontainerForum {
   display: flex;
   flex-direction: column;
@@ -502,6 +503,7 @@
 .buttonAppAdmin,
 .buttonStat,
 .buttonconsulcaserne,
+.buttonsettingbot,
 .buttonAppForum,
 .buttondivCreatePost,
 .buttondivArchivePost,
@@ -539,6 +541,7 @@
 .buttonAppAdmin:hover,
 .buttonStat:hover,
 .buttonconsulcaserne:hover,
+.buttonsettingbot:hover,
 .buttonAppForum:hover,
 .buttondivCreatePost:hover,
 .buttondivArchivePost:hover,
@@ -2074,6 +2077,106 @@
 }
 
 /* --------------------------------------------- */
+/* ------------------- setting ----------------- */
+/* --------------------------------------------- */
+.divSetting {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 100%;
+  background-color: var(--main-background-color);
+  border-radius: 20px;
+  border: 1px solid white;
+}
+
+.titleSetting {
+  font-size: 50px;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0), 0 0 1em rgb(0, 0, 0), 0 0 0.2em rgb(0, 0, 0);
+  padding-bottom: 15px;
+}
+
+.formSetting {
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.formSetting input {
+  font-size: 16px;
+  text-align: center;
+  border: 2px solid white;
+  border-radius: 15px;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.formSetting p {
+  text-align: left;
+}
+
+.formSetting a {
+  color: blue;
+}
+
+.subsetting img {
+  height: 120px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.subsetting {
+  width: 100%;
+  font-size: x-large;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.subsetting > *:nth-child(1) {
+  flex: 6;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.subsetting > *:nth-child(2) {
+  flex: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input_settingHouseLangage {
+  border-radius: 20px;
+  margin-bottom: 5px;
+  text-align: center;
+  font-size: large;
+}
+
+.switchLate,
+.switchRecall_GvG,
+.switchAllumage {
+  margin-bottom: 5px;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.buttonUpdateSetting {
+  margin-top: 25px;
+}
+
+/* --------------------------------------------- */
 /* ------------------- mention ----------------- */
 /* --------------------------------------------- */
 .mention {
@@ -2130,6 +2233,18 @@
   .personnage {
     margin-bottom: 20px;
   }
+
+  .subsetting {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .subsetting > *:nth-child(1),
+  .subsetting > *:nth-child(2) {
+    flex: none;
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 600px) {
@@ -2139,6 +2254,7 @@
   .buttonAppAdmin,
   .buttonStat,
   .buttonconsulcaserne,
+  .buttonsettingbot,
   .buttondivCreatePost,
   .buttondivArchivePost,
   .buttondivCreateComment,

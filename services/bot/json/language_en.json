@@ -28,6 +28,7 @@
     "noperm": "The bot does not have permission to send messages in the channel",
     "avertissement": "We're going to go over all the information needed for `Easy Management TW` applications to work properly.\nPlease read the explanations on the website before continuing, as you may need to make some Discord settings.\n\nLink to explanations on the website: ",
     "ID_Chan_GvG": "**In which Discord channel will users register for the TW?**",
+    "late": "Would you like a **`late` button** in addition to the `present` and `absent` buttons on the TW registration message?",
     "Recall_GvG": "**Would you like a reminder** to users who have not voted the day before each territorial war?",
     "ID_Chan_Gestion": "**In which Discord channel will information messages to TW managers be sent?**",
     "ID_Chan_Users": "**In which Discord channels will information messages to users (managers and members) be sent?**",
@@ -128,6 +129,7 @@
 
   "EmbedGvG": {
     "button_present": "Present",
+    "button_late": "Late",
     "button_absent": "Absent",
     "button_close": "Registration closed",
     "title": "🇹 🇼    🇷 🇪 🇬 🇮 🇸 🇹 🇷 🇦 🇹 🇮 🇴 🇳",
@@ -136,6 +138,7 @@
 
     "date": "Next TW date",
     "nbpresent": "Present",
+    "nblate": "Late",
     "nbabsent": "Absent",
     "noinscrit": "None"
   },

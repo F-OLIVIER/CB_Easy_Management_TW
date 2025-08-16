@@ -29,15 +29,15 @@ export async function Resetac(db, arrayDate) {
     const updateQuery = `UPDATE Users
                       SET
                         DateLastGvGParticiped_FR = CASE
-                                                  WHEN EtatInscription IN (1) THEN ?
+                                                  WHEN EtatInscription IN (1, 2) THEN ?
                                                   ELSE DateLastGvGParticiped_FR
                                                 END,
                         DateLastGvGParticiped_EN = CASE
-                                                  WHEN EtatInscription IN (1) THEN ?
+                                                  WHEN EtatInscription IN (1, 2) THEN ?
                                                   ELSE DateLastGvGParticiped_EN
                                                 END,
                         NbGvGParticiped = NbGvGParticiped + CASE
-                                                  WHEN EtatInscription IN (1) THEN 1
+                                                  WHEN EtatInscription IN (1, 2) THEN 1
                                                   ELSE 0
                                                 END,
                         EtatInscription = 0,

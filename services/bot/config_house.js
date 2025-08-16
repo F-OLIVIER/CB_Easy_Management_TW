@@ -55,6 +55,7 @@ export async function config_2_avertissement(interaction) {
     ID_Chan_GvG: "",
     ID_Chan_Gestion: "",
     ID_Chan_Users: "",
+    Late: 0,
     Recall_GvG: 0,
     Allumage: 0,
     ID_MessageGvG: "",
@@ -78,11 +79,51 @@ export async function config_3_ID_Chan_GvG(interaction) {
   return await list_discord_channels(interaction, translate.config.ID_Chan_GvG, "config_3_ID_Chan_GvG");
 }
 
-export async function config_4_recall(interaction) {
+export async function config_4_late(interaction) {
   const userId = interaction.user.id;
   // Mise à jour du cache
   let houseData = interactionsCache.get(userId);
   houseData.ID_Chan_GvG = interaction.values[0];
+  interactionsCache.set(userId, houseData);
+  const translate = await loadTranslations(houseData.Langage);
+  const valid = await verif_perm_channel(houseData.ID_Chan_GvG);
+  if (valid) {
+    // Si le chan à les permissions continuer l'interaction
+    const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("config_late_yes")
+        .setLabel("✅ " + translate.yes)
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("config_late_no")
+        .setLabel("✖️ " + translate.no)
+        .setStyle(ButtonStyle.Danger)
+    );
+
+    // Reponse à l'utilisateur
+    await interaction.deferUpdate();
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${userId}>\n${translate.config.late}`,
+      flags: MessageFlags.Ephemeral,
+      components: [buttons],
+    });
+  } else {
+    await interaction.deferUpdate();
+    await interaction.deleteReply();
+    await interaction.followUp({
+      content: `<@${interaction.user.id}>\n${translate.config.noperm} <#${houseData.ID_Chan_GvG}>`,
+      components: [],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+}
+
+export async function config_4_recall(interaction, option) {
+  const userId = interaction.user.id;
+  // Mise à jour du cache
+  let houseData = interactionsCache.get(userId);
+  houseData.Late = option;
   interactionsCache.set(userId, houseData);
   // Reponse à l'utilisateur
   const translate = await loadTranslations(houseData.Langage);
@@ -216,11 +257,11 @@ export async function config_finish(interaction) {
 
   if (exist_id_house == 0) {
     // Création du message GvG initial
-    houseData.ID_MessageGvG = await initial_msgreactgvg(houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users);
+    houseData.ID_MessageGvG = await initial_msgreactgvg(houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users, houseData.Late);
   } else {
     const db_houseData = await get_houseData(interaction.guildId);
     if (db_houseData.ID_Chan_GvG != houseData.ID_Chan_GvG) {
-      houseData.ID_MessageGvG = await initial_msgreactgvg(houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users);
+      houseData.ID_MessageGvG = await initial_msgreactgvg(houseData.Langage, houseData.ID_Chan_GvG, houseData.ID_Group_Users, houseData.Late);
     } else {
       houseData.ID_MessageGvG = db_houseData.ID_Chan_GvG;
       houseData.Allumage = db_houseData.Allumage;
@@ -377,8 +418,8 @@ async function config_house_db(houseData, exist_id_house) {
     if (exist_id_house == 0) {
       // Création de maison dans la table Houses car par d'ID trouvé
       const insertQuery_Houses = `INSERT INTO Houses 
-        (House_name, House_logo, Langage, ID_Server, ID_Group_Users, ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Recall_GvG, ID_MessageGvG) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+        (House_name, House_logo, Langage, ID_Server, ID_Group_Users, ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Late, Recall_GvG, ID_MessageGvG) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
       const result_house = await db.run(insertQuery_Houses, [
         houseData.House_name,
@@ -390,6 +431,7 @@ async function config_house_db(houseData, exist_id_house) {
         houseData.ID_Chan_GvG,
         houseData.ID_Chan_Gestion,
         houseData.ID_Chan_Users,
+        houseData.Late,
         houseData.Recall_GvG,
         houseData.ID_MessageGvG,
       ]);
@@ -401,7 +443,7 @@ async function config_house_db(houseData, exist_id_house) {
       await createGroupsTable(insertedID, db);
       logToFile(`Création de la maison ${houseData.House_name} (${houseData.ID_Server})`);
     } else {
-      // Mise a jour des information de la maison
+      // Mise a jour des informations de la maison
       const updateQuery_house = `UPDATE Houses SET
                                     House_name = ?, 
                                     House_logo = ?, 
@@ -411,6 +453,7 @@ async function config_house_db(houseData, exist_id_house) {
                                     ID_Chan_GvG = ?, 
                                     ID_Chan_Gestion = ?, 
                                     ID_Chan_Users = ?, 
+                                    Late = ?,
                                     Recall_GvG = ?,
                                     Allumage = ?,
                                     ID_MessageGvG = ?
@@ -425,6 +468,7 @@ async function config_house_db(houseData, exist_id_house) {
         houseData.ID_Chan_GvG,
         houseData.ID_Chan_Gestion,
         houseData.ID_Chan_Users,
+        houseData.Late,
         houseData.Recall_GvG,
         houseData.Allumage,
         houseData.ID_MessageGvG,
@@ -559,7 +603,7 @@ export async function get_houseData(ID_Server) {
   try {
     const selectQuery = `
       SELECT ID, House_name, House_logo, Langage, ID_Server, ID_Group_Users, 
-            ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Allumage, ID_MessageGvG 
+            ID_Group_Officier, ID_Chan_GvG, ID_Chan_Gestion, ID_Chan_Users, Allumage, ID_MessageGvG, Late 
       FROM Houses 
       WHERE ID_Server = ?;
     `;

@@ -11,7 +11,7 @@ import moment from "moment-timezone";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
-export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) {
+export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users, Late) {
   const chan = client.channels.cache.get(ID_Chan_GvG);
   if (!chan) {
     logToFile(`Chan ${ID_Chan_GvG} innexistant`, "errors_bot.log");
@@ -28,8 +28,8 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
   const sendMessage = await chan.send({
     files: [imageAttachment],
     content: "<@&" + ID_Group_Users + ">",
-    embeds: [await EmbedInscription(Langage, [], [])],
-    components: [await ButtonEmbedInscription(Langage)],
+    embeds: [await EmbedInscription(Langage, [], [], [], Late)],
+    components: [await ButtonEmbedInscription(Langage, Late)],
   });
 
   // Retourne l'id du message pour création de la maison dans la table Houses
@@ -37,7 +37,7 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users) 
 }
 
 // Renouvellement du message d'inscription GvG pour reset les réactions
-export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan_GvG, ID_Group_Users) {
+export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan_GvG, ID_Group_Users, Late = 0) {
   const chan = client.channels.cache.get(ID_Chan_GvG);
   if (!chan) {
     logToFile(`Chan ${ID_Chan_GvG} innexistant pour le serveur ${ID_Server}`, "errors_bot.log");
@@ -58,18 +58,23 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
   const sendMessage = await chan.send({
     files: [imageAttachment],
     content: "<@&" + ID_Group_Users + ">",
-    embeds: [await EmbedInscription(Langage, [], [])],
-    components: [await ButtonEmbedInscription(Langage)],
+    embeds: [await EmbedInscription(Langage, [], [], [], Late)],
+    components: [await ButtonEmbedInscription(Langage, Late)],
   });
 
   // Inscription du nouvelle ID du message dans la db
   updateIdMessage(db, ID_Server, sendMessage.id);
 }
 
-export async function EmbedInscription(Langage, presents = [], absents = []) {
+export async function EmbedInscription(Langage, presents = [], late = [], absents = [], Late) {
   let nbpresent = 0;
   if (presents.length !== undefined) {
     nbpresent = presents.length;
+  }
+
+  let nblate = 0;
+  if (late.length !== undefined) {
+    nblate = late.length;
   }
 
   let nbabsents = 0;
@@ -79,43 +84,89 @@ export async function EmbedInscription(Langage, presents = [], absents = []) {
 
   const translate = await loadTranslations(Langage);
 
-  const embedData = new EmbedBuilder()
-    .setTitle(translate.EmbedGvG.title)
-    .setColor(13373715)
-    .setDescription(translate.EmbedGvG.description)
-    .setThumbnail(siteInternet + "/img/imgdiscord/heros_att.webp")
-    .addFields(
-      { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
-      {
-        name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__",
-        value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit,
-        inline: true,
-      },
-      {
-        name: "❌ " + nbabsents + " __" + translate.EmbedGvG.nbabsent + "__",
-        value: absents.length ? absents.join("\n") : translate.EmbedGvG.noinscrit,
-        inline: true,
-      }
-    );
+  if (Late == 1) {
+    const embedData = new EmbedBuilder()
+      .setTitle(translate.EmbedGvG.title)
+      .setColor(13373715)
+      .setDescription(translate.EmbedGvG.description)
+      .setThumbnail(siteInternet + "/img/imgdiscord/heros_att.webp")
+      .addFields(
+        { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
+        {
+          name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__",
+          value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit,
+          inline: true,
+        },
+        {
+          name: "🕐 " + nblate + " __" + translate.EmbedGvG.nblate + "__",
+          value: late.length ? late.join("\n") : translate.EmbedGvG.noinscrit,
+          inline: true,
+        },
+        {
+          name: "❌ " + nbabsents + " __" + translate.EmbedGvG.nbabsent + "__",
+          value: absents.length ? absents.join("\n") : translate.EmbedGvG.noinscrit,
+          inline: true,
+        }
+      );
 
-  return embedData;
+    return embedData;
+  } else {
+    const embedData = new EmbedBuilder()
+      .setTitle(translate.EmbedGvG.title)
+      .setColor(13373715)
+      .setDescription(translate.EmbedGvG.description)
+      .setThumbnail(siteInternet + "/img/imgdiscord/heros_att.webp")
+      .addFields(
+        { name: translate.EmbedGvG.date, value: dateGvG(Langage) + "\n\n", inline: false },
+        {
+          name: "✅ " + nbpresent + " __" + translate.EmbedGvG.nbpresent + "__",
+          value: presents.length ? presents.join("\n") : translate.EmbedGvG.noinscrit,
+          inline: true,
+        },
+        {
+          name: "❌ " + nbabsents + " __" + translate.EmbedGvG.nbabsent + "__",
+          value: absents.length ? absents.join("\n") : translate.EmbedGvG.noinscrit,
+          inline: true,
+        }
+      );
+
+    return embedData;
+  }
 }
 
-export async function ButtonEmbedInscription(Langage) {
+export async function ButtonEmbedInscription(Langage, Late = 0) {
   const translate = await loadTranslations(Langage);
 
-  const buttons = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId("present")
-      .setLabel("✅ " + translate.EmbedGvG.button_present)
-      .setStyle(ButtonStyle.Success),
-    new ButtonBuilder()
-      .setCustomId("absent")
-      .setLabel("✖️ " + translate.EmbedGvG.button_absent)
-      .setStyle(ButtonStyle.Danger)
-  );
-
-  return buttons;
+  if (Late == 1) {
+    const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("present")
+        .setLabel("✅ " + translate.EmbedGvG.button_present)
+        .setStyle(ButtonStyle.Success),
+      // ajout du bouton "en retard"
+      new ButtonBuilder()
+        .setCustomId("late")
+        .setLabel("🕐 " + translate.EmbedGvG.button_late)
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId("absent")
+        .setLabel("✖️ " + translate.EmbedGvG.button_absent)
+        .setStyle(ButtonStyle.Danger)
+    );
+    return buttons;
+  } else {
+    const buttons = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("present")
+        .setLabel("✅ " + translate.EmbedGvG.button_present)
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("absent")
+        .setLabel("✖️ " + translate.EmbedGvG.button_absent)
+        .setStyle(ButtonStyle.Danger)
+    );
+    return buttons;
+  }
 }
 
 export async function ButtonNotActifEmbedInscription(Langage) {

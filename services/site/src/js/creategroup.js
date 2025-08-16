@@ -292,7 +292,11 @@ async function listInscripted(data, translate, Language) {
       divuser.appendChild(divplace);
 
       let name = await createHTMLElement("div", "inscriptedname");
-      name.textContent = player.Username;
+      if (player.EtatInscription == 2) {
+        name.textContent = `🕐 ${player.Username}`;
+      } else {
+        name.textContent = player.Username;
+      }
       divuser.appendChild(name);
 
       let influence = await createHTMLElement("div", "inscriptedinfluence");
@@ -474,6 +478,7 @@ async function createExistGroupe(data, userIngroup, translate) {
     if (userIngroup[i] != undefined && userIngroup[i] != null) {
       currentUser.ID = userIngroup[i].User_ID;
       currentUser.Username = userIngroup[i].Username;
+      currentUser.Late = userIngroup[i].Late;
       currentUser.Unit1 = userIngroup[i].Unit1;
       currentUser.Unit2 = userIngroup[i].Unit2;
       currentUser.Unit3 = userIngroup[i].Unit3;
@@ -525,7 +530,11 @@ async function createExistGroupe(data, userIngroup, translate) {
       label.htmlFor = checkbox.id;
     } else {
       defaultoption.value = currentUser.Username;
-      defaultoption.text = currentUser.Username;
+      if (currentUser.Late) {
+        defaultoption.text = `🕐 ${currentUser.Username}`;
+      } else {
+        defaultoption.text = currentUser.Username;
+      }
       let option = document.createElement("option");
       option.value = "";
       option.text = translate.create_group.create_group.delete;
@@ -999,7 +1008,11 @@ function createOneGroupe(data, translate) {
         const userInscripted = data.ListInscripted[j];
         let option = document.createElement("option");
         option.value = userInscripted.Username;
-        option.text = userInscripted.Username;
+        if (userInscripted.EtatInscription == 2) {
+          option.text = `🕐 ${userInscripted.Username}`;
+        } else {
+          option.text = userInscripted.Username;
+        }
         name.appendChild(option);
       }
     }

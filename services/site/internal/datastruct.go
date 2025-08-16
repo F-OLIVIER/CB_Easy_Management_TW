@@ -101,6 +101,7 @@ type UserGvG struct {
 	Unit3       string `json:"Unit3"`
 	Unit4       string `json:"Unit4"`
 	Comment     string `json:"commentaire"`
+	Late        bool   `json:"Late"`
 }
 
 type SendHTML struct {
@@ -114,6 +115,7 @@ type SendHTML struct {
 	House          []Houses
 	Statistique    Stat
 	Forum          []Post
+	Settingbot     SettingBot
 }
 
 type Houses struct {
@@ -122,6 +124,7 @@ type Houses struct {
 	House_logo string `json:"House_logo"`
 	Langage    string `json:"Language"`
 	ID_Server  string `json:"Discord"`
+	Late       int    `json:"Late"`
 }
 
 type SaveGroup struct {
@@ -177,4 +180,18 @@ type Post struct {
 	Archive bool   `json:"Archive"`
 
 	Comments []*Post
+}
+
+type SettingBot struct {
+	House_name        *string `json:"House_name"`
+	House_logo        *string `json:"House_logo"`
+	Langage           *string `json:"Langage"`
+	ID_Group_Users    *string `json:"ID_Group_Users"`
+	ID_Group_Officier *string `json:"ID_Group_Officier"`
+	ID_Chan_GvG       *string `json:"ID_Chan_GvG"`
+	ID_Chan_Gestion   *string `json:"ID_Chan_Gestion"`
+	ID_Chan_Users     *string `json:"ID_Chan_Users"`
+	Late              *int    `json:"Late"`
+	Recall_GvG        *int    `json:"Recall_GvG"`
+	Allumage          *int    `json:"Allumage"`
 }

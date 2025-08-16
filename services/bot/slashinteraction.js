@@ -5,6 +5,7 @@ import {
   config_2_avertissement,
   config_3_ID_Chan_GvG,
   config_4_ID_Chan_Gestion,
+  config_4_late,
   config_4_recall,
   config_5_ID_Chan_Users,
   config_6_ID_Group_Users,
@@ -21,7 +22,7 @@ import { siteInternet, store_app_android, store_app_ios } from "./config.js";
 import { PlayerCreateOrUpdate } from "./FuncData.js";
 import { MAJinscription } from "./FuncRaid.js";
 import { genereTokenApp } from "./appMobile.js";
-import { EmbedInscription } from "./Embed_gvg.js";
+import { ButtonEmbedInscription, EmbedInscription } from "./Embed_gvg.js";
 import { EmbedData } from "./Embed_data.js";
 import { EmbedGuide } from "./Embed_guide.js";
 import { reponseUserInteraction } from "./Constant.js";
@@ -30,6 +31,7 @@ import { loadTranslations } from "./language.js";
 // Module nodejs et npm
 import { MessageFlags } from "discord.js";
 import {} from "dotenv/config";
+import { logToFile } from "./log.js";
 
 export async function slash_interaction(interaction) {
   if (interaction.user.bot) return;
@@ -45,14 +47,17 @@ export async function slash_interaction(interaction) {
     }
 
     // Gestion des boutons d'inscription au GvG
-    if (interaction.customId === "present" || interaction.customId === "absent") {
+    if (interaction.customId === "present" || interaction.customId === "late" || interaction.customId === "absent") {
       const houseData = await get_houseData(interaction.guildId);
 
       // console.log("houseData : ", houseData);
 
-      if (houseData.ID) { // if anticrash temporaire
+      if (houseData.ID) {
+        // if anticrash temporaire
         if (interaction.customId === "present") {
           await MAJinscription(userId, 1, houseData.ID);
+        } else if (interaction.customId === "late") {
+          await MAJinscription(userId, 2, houseData.ID);
         } else if (interaction.customId === "absent") {
           await MAJinscription(userId, 3, houseData.ID);
         }
@@ -62,29 +67,37 @@ export async function slash_interaction(interaction) {
         let presentList = [];
         if (listinscrit[0] !== undefined) {
           presentList = await Promise.all(
-            listinscrit[0]
-              .filter((id) => BigInt(id) !== BigInt(0)) // Filtrer les id égaux à 0 (user de test)
-              .map(async (id) => {
-                const userId = BigInt(id);
-                return "<@" + userId.toString() + ">";
-              })
+            listinscrit[0].map(async (id) => {
+              const userId = BigInt(id);
+              return "<@" + userId.toString() + ">";
+            })
+          );
+        }
+
+        let lateList = [];
+        if (listinscrit[1] !== undefined) {
+          lateList = await Promise.all(
+            listinscrit[1].map(async (id) => {
+              const userId = BigInt(id);
+              return "<@" + userId.toString() + ">";
+            })
           );
         }
 
         let absentList = [];
-        if (listinscrit[1] !== undefined) {
+        if (listinscrit[2] !== undefined) {
           absentList = await Promise.all(
-            listinscrit[1]
-              .map(async (id) => {
-                const userId = BigInt(id);
-                return "<@" + userId.toString() + ">";
-              })
+            listinscrit[2].map(async (id) => {
+              const userId = BigInt(id);
+              return "<@" + userId.toString() + ">";
+            })
           );
         }
 
         await interaction
           .update({
-            embeds: [await EmbedInscription(houseData.Langage, presentList, absentList)],
+            embeds: [await EmbedInscription(houseData.Langage, presentList, lateList, absentList, houseData.Late)],
+            components: [await ButtonEmbedInscription(houseData.Langage, houseData.Late)],
           })
           .catch((err) => {
             logToFile(`Error update Embed EmbedInscription \nhouseData : ${houseData}\n${err}`, "errors_bot.log");
@@ -112,8 +125,15 @@ export async function slash_interaction(interaction) {
       return true;
     }
     if (interaction.customId === "config_3_ID_Chan_GvG") {
-      await config_4_recall(interaction);
-      // await config_4_ID_Chan_Gestion(interaction);
+      await config_4_late(interaction);
+      return true;
+    }
+    if (interaction.customId === "config_late_yes") {
+      await config_4_recall(interaction, 1);
+      return true;
+    }
+    if (interaction.customId === "config_late_no") {
+      await config_4_recall(interaction, 0);
       return true;
     }
     if (interaction.customId === "config_recall_yes") {

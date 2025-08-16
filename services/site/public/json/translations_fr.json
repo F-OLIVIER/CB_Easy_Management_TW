@@ -2,7 +2,11 @@
   "commun": {
     "connect": "Connexion avec Discord",
     "disconnected": "Se déconnecter",
-    "err_no_fields": "Aucun champ modifié !!!"
+    "err_no_fields": "Aucun champ modifié !!!",
+    "Langage": {
+      "fr": ["fr", "🇫🇷 Français"],
+      "en": ["en", "🇬🇧 English"]
+    }
   },
 
   "descriptionIntro": {
@@ -80,14 +84,8 @@
           "Privé (utilisateur connecté)",
           "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage (arme jouée, influence & niveau de héros)</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont)</span>"
         ],
-        [
-          "Android",
-          "<span>L'application est disponible sur le google Play Store à l'adresse suivante :</br><a href=\"\">En cour de déploiement</a></span>"
-        ],
-        [
-          "iOS",
-          "<span>L'application est prévue dans le futur.</span>"
-        ],
+        ["Android", "<span>L'application est disponible sur le google Play Store à l'adresse suivante :</br><a href=\"\">En cour de déploiement</a></span>"],
+        ["iOS", "<span>L'application est prévue dans le futur.</span>"],
         [
           "Windows",
           "<span>L'installateur de l'application est disponible à l'adresse suivante :</br><a href=\"https://easymanagementtw.fr/download/EasyManagementTW.zip\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>AVERTISSEMENT</u> : Cette application est proposée gratuitement et n'est pas signée numériquement. Par conséquent, Windows peut afficher un message d'avertissement, et certains antivirus peuvent la signaler à tort comme une menace (faux positif). Nous vous assurons qu'elle est sans danger.</span>"
@@ -115,6 +113,7 @@
     "groupGvG": "Créer les groupes TW",
     "stat": "Statistique",
     "caserne_other": "Consulter une caserne",
+    "settingbot": "Paramétrage du bot Discord",
     "zone_admin": "Réservé aux administrateurs",
     "admin": "Page d'administration",
     "commun_zone": "Espace multi-maison",
@@ -148,10 +147,12 @@
       "inscripted": {
         "nodata": "⁉️ Vous n'éte pas inscrit pour la prochaine TW",
         "present": "✅ Inscrit présent pour la prochaine TW",
+        "late": "🕐 Inscrit en retard pour la prochaine TW",
         "absent": "❌ Inscrit absent pour la prochaine TW"
       },
       "button": {
         "present": "M'inscrire présent",
+        "late": "M'inscrire en retard",
         "absent": "M'inscrire absent"
       },
       "nbGvG": "Nombre de TW participé",
@@ -342,6 +343,28 @@
     "error": {
       "notext": "merci de compléter tous les champs",
       "prohibe": "Contenu interdit !!!"
+    }
+  },
+
+  "settingbot": {
+    "name": "Nom de la maison",
+    "ID_Chan_Gestion": "ID du chan d'information aux Gestionnaires",
+    "ID_Chan_GvG": "ID du chan Discord ou les utilisateurs vote",
+    "ID_Chan_Users": "ID du chan Discord d'information aux utilisateurs",
+    "ID_Group_Officier": "ID du groupe Discord des gestionnaires",
+    "ID_Group_Users": "ID du groupe Discord des utilisateurs",
+    "Langage": "Langue du bot Discord",
+    "Late": "Affichage du bouton \"En retard\" pour les votes",
+    "Recall_GvG": "Activation du rappel automatique de vote aux utilisateurs",
+    "Allumage": "Activation des votes",
+    "tutoID": "Voici un tuto pour récupérer les ID sur Discord : ",
+    "explainLate": "Pour voir où faire disparaître le bouton \"En retard\" sur Discord, appuyer sur un des boutons du message d'inscription pour effectuer la mise à jour après modification du paramètre.",
+    "explainRecall_GvG": "Les rappels automatiques ont lieu la veille de chaque TW à 20h.",
+    "explainAllumage": "Désactiver les votes permet de ne pas spammer les utilisateurs sur Discord pendant les périodes d'intersaison.",
+    "updateButton": "Appliquer la mise à jour des paramètres du bot Discord.",
+    "notif": {
+      "idDiscord": "Un champs ne contient pas un ID Discord valide",
+      "empty": "Aucun changement détecté"
     }
   },
 
