@@ -212,7 +212,7 @@ function collectData(dataOrigin, translate) {
   document.getElementById("formSetting").addEventListener("submit", async (event) => {
     event.preventDefault();
     // fenetre de confirmation
-    const userConfirmed = await confirmwindows(`Confirmer les modification des paramétres du bot Discord ?`);
+    const userConfirmed = await confirmwindows(translate.settingbot.confirm);
     if (userConfirmed) {
       const now = Date.now();
       if (now - timerThrottlebutton > 500) {

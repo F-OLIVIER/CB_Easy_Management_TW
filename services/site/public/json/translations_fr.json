@@ -362,6 +362,7 @@
     "explainRecall_GvG": "Les rappels automatiques ont lieu la veille de chaque TW à 20h.",
     "explainAllumage": "Désactiver les votes permet de ne pas spammer les utilisateurs sur Discord pendant les périodes d'intersaison.",
     "updateButton": "Appliquer la mise à jour des paramètres du bot Discord.",
+    "confirm": "Confirmer les modifications des paramètres du bot Discord ?",
     "notif": {
       "idDiscord": "Un champs ne contient pas un ID Discord valide",
       "empty": "Aucun changement détecté"

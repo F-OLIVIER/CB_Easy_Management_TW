@@ -362,6 +362,7 @@
     "explainRecall_GvG": "Automatic reminders are sent out at 8 p.m. on the day before each TW.",
     "explainAllumage": "Disabling voting prevents users from being spammed on Discord during off-season periods.",
     "updateButton": "Apply the Discord bot settings update.",
+    "confirm": "Confirm changes to Discord bot settings?",
     "notif": {
       "idDiscord": "A field does not contain a valid Discord ID",
       "empty": "No changes detected"
