@@ -1,4 +1,7 @@
-import { loadModule } from "./config.js";
+import { versionJS } from "./config.js";
+async function loadModule(name) {
+    return await import(`./${name}${versionJS}`);
+}
 const { communBlock_notconnected, createHTMLElement, lang_select } = await loadModule("useful.js");
 const { loadTranslate } = await loadModule("translate.js");
 

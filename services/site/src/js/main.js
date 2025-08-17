@@ -1,4 +1,7 @@
-import { cookieName, loadModule } from "./config.js";
+import { cookieName, versionJS } from "./config.js";
+async function loadModule(name) {
+    return await import(`./${name}${versionJS}`);
+}
 const { administration } = await loadModule("administration.js");
 const { characterCard } = await loadModule("characterCard.js");
 const { consulcaserne } = await loadModule("consulcaserne.js");

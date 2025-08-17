@@ -1,4 +1,7 @@
-import { adressAPI, cookieName, domain, LINK_DISCORD, loadModule } from "./config.js";
+import { adressAPI, cookieName, domain, LINK_DISCORD, versionJS } from "./config.js";
+async function loadModule(name) {
+  return await import(`./${name}${versionJS}`);
+}
 const { loadTranslate } = await loadModule("translate.js");
 
 export async function fetchServer(option) {

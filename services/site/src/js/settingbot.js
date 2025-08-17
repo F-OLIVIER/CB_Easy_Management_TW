@@ -1,4 +1,7 @@
-import { adressAPI, loadModule } from "./config.js";
+import { adressAPI, versionJS } from "./config.js";
+async function loadModule(name) {
+  return await import(`./${name}${versionJS}`);
+}
 const { communBlock, confirmwindows, createHTMLElement, fetchServer, fetchlogout } = await loadModule("useful.js");
 const { showNotification } = await loadModule("notification.js");
 const { loadTranslate } = await loadModule("translate.js");

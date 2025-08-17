@@ -1,4 +1,7 @@
-import { loadModule } from "./config.js";
+import { versionJS } from "./config.js";
+async function loadModule(name) {
+    return await import(`./${name}${versionJS}`);
+}
 const { communBlock, createHTMLElement, fetchServer, fetchlogout } = await loadModule("useful.js");
 const { loadTranslate } = await loadModule("translate.js");
 
