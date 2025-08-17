@@ -191,6 +191,8 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 			CheckErr("9- Requete DB UpdateCharacter", errdb)
 			stmt3.Exec(newUserInfo.EtatInscription, currentUser.User_id)
 
+			notif.Type = "success"
+
 			switch newUserInfo.EtatInscription {
 			case 1:
 				notif.Content = data.ListLanguage{
