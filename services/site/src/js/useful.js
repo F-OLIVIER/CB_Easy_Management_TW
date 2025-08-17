@@ -1,5 +1,5 @@
-import { adressAPI, cookieName, domain, LINK_DISCORD } from "./config.js";
-import { loadTranslate } from "./translate.js";
+import { adressAPI, cookieName, domain, LINK_DISCORD, loadModule } from "./config.js";
+const { loadTranslate } = await loadModule("translate.js");
 
 export async function fetchServer(option) {
   try {
@@ -225,9 +225,9 @@ export function houseLate(listHouse, currenthouse) {
   for (let i = 0; i < listHouse.length; i++) {
     if (listHouse[i].Discord == currenthouse) {
       if (listHouse[i].Late == 1) {
-        return true
+        return true;
       } else {
-        return false
+        return false;
       }
     }
   }

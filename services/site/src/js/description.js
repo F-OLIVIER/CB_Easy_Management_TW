@@ -1,5 +1,6 @@
-import { loadTranslate } from "./translate.js";
-import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
+import { loadModule } from "./config.js";
+const { communBlock_notconnected, createHTMLElement, lang_select } = await loadModule("useful.js");
+const { loadTranslate } = await loadModule("translate.js");
 
 let currentSectionIndex = null;
 let currentImageIndex = null;

@@ -1,17 +1,17 @@
-import { cookieName } from "./config.js";
-import { administration } from "./administration.js";
-import { characterCard } from "./characterCard.js";
-import { consulcaserne } from "./consulcaserne.js";
-import { creategroup } from "./creategroup.js";
-import { viewgroup } from "./viewGroup.js";
-import { caserne } from "./caserne.js";
-import { home } from "./home.js";
-import { stat } from "./stat.js";
-import { accueil } from "./accueil.js";
-import { description } from "./description.js";
-import { mention } from "./mentionlegale.js";
-import { forum } from "./forum.js";
-import { settingbot } from "./settingbot.js";
+import { cookieName, loadModule } from "./config.js";
+const { administration } = await loadModule("administration.js");
+const { characterCard } = await loadModule("characterCard.js");
+const { consulcaserne } = await loadModule("consulcaserne.js");
+const { creategroup } = await loadModule("creategroup.js");
+const { description } = await loadModule("description.js");
+const { settingbot } = await loadModule("settingbot.js");
+const { mention } = await loadModule("mentionlegale.js");
+const { viewgroup } = await loadModule("viewGroup.js");
+const { caserne } = await loadModule("caserne.js");
+const { accueil } = await loadModule("accueil.js");
+const { forum } = await loadModule("forum.js");
+const { stat } = await loadModule("stat.js");
+const { home } = await loadModule("home.js");
 
 let path = window.location.pathname;
 switch (path) {
@@ -35,7 +35,7 @@ switch (path) {
   case "/discord":
     // page géré de façon externe
     break;
-containerCharacterCard
+
   case "/home":
     // Home connected
     home();

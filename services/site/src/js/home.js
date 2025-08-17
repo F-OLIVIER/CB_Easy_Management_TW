@@ -1,5 +1,6 @@
-import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
-import { loadTranslate } from "./translate.js";
+import { loadModule } from "./config.js";
+const { communBlock, createHTMLElement, fetchServer, fetchlogout } = await loadModule("useful.js");
+const { loadTranslate } = await loadModule("translate.js");
 
 export async function home() {
   const currenthouse = localStorage.getItem("user_house");

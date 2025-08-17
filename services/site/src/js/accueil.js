@@ -1,7 +1,8 @@
-import { communBlock_notconnected, createHTMLElement, lang_select } from "./useful.js";
-import { loadTranslate } from "./translate.js";
-import { showNotification } from "./notification.js";
-import { LINK_INVITE_BOT } from "./config.js";
+import { loadModule } from "./config.js";
+const { communBlock_notconnected, createHTMLElement, lang_select } = await loadModule("useful.js");
+const { showNotification } = await loadModule("notification.js");
+const { loadTranslate } = await loadModule("translate.js");
+const { LINK_INVITE_BOT } = await loadModule("config.js");
 
 export async function accueil() {
   const language = localStorage.getItem("selectedLang") || "en";
@@ -36,7 +37,7 @@ export async function accueil() {
   let buttoninvitebot = document.createElement("a");
   buttoninvitebot.id = "buttoninvitebot";
   buttoninvitebot.classList = "no-style-link ";
-  buttoninvitebot.target = "_blank"
+  buttoninvitebot.target = "_blank";
   buttoninvitebot.href = LINK_INVITE_BOT;
 
   let imginvitebot = document.createElement("img");

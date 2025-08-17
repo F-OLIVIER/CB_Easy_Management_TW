@@ -1,5 +1,7 @@
-import { communBlock_notconnected, lang_select } from "./useful.js";
-import { loadTranslate } from "./translate.js";
+import { loadModule } from "./config.js";
+const { communBlock_notconnected, lang_select } = await loadModule("useful.js");
+const { loadTranslate } = await loadModule("translate.js");
+
 
 export async function mention() {
   const language = localStorage.getItem("selectedLang") || "en";

@@ -1,6 +1,8 @@
+import { versionJS } from "./config.js";
+
 export async function loadTranslate(langue) {
   try {
-    const response = await fetch(`/json/translations_${langue}.json`);
+    const response = await fetch(`/json/translations_${langue}.json${versionJS}`);
     const data = await response.json();
     return data;
   } catch (err) {

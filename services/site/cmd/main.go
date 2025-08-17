@@ -85,8 +85,7 @@ func main() {
 
 	fmt.Println("│ • Initializing obfuscation file JS              │")
 	utils.ObfuscateAllFiles("./src/js", "./public/js")
-	// mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
-	mux.Handle("/js/", http.StripPrefix("/js/", firstVisitCacheMiddleware(http.FileServer(http.Dir("./public/js")))))
+	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
 	mux.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 		http.StripPrefix("/css/", http.FileServer(http.Dir("public/css"))).ServeHTTP(w, r)
@@ -130,40 +129,6 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
 		// Interdit explicitement certaines API
 		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
-		next.ServeHTTP(w, r)
-	})
-}
-
-// Fonction pour forcer la mise à jour du cache des utilisateurs lors de la 1ere visite apres une MAJ
-func firstVisitCacheMiddleware(next http.Handler) http.Handler {
-	oldcookie := "08-2025_js_cache_updated"
-	newCookie := "17-08-2025_js_cache_updated"
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Vérifie si le cookie existe
-		_, err := r.Cookie(newCookie)
-		if err != nil {
-			// Premier passage -> on force la mise a jour du cache
-			w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-			w.Header().Set("Pragma", "no-cache")
-			w.Header().Set("Expires", "0")
-
-			// Création du cookie de mise à jour
-			http.SetCookie(w, &http.Cookie{
-				Name:   newCookie,
-				Value:  "true",
-				Path:   "/",
-				MaxAge: 60 * 60 * 24 * 365, // 1 an
-			})
-
-			// Suppression de l'ancien cookie de mise à jour
-			http.SetCookie(w, &http.Cookie{
-				Name:   oldcookie,
-				Value:  "",
-				Path:   "/",
-				MaxAge: -1,
-			})
-		}
 		next.ServeHTTP(w, r)
 	})
 }

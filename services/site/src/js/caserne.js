@@ -1,7 +1,7 @@
-import { communBlock, createHTMLElement, fetchServer, fetchlogout } from "./useful.js";
-import { adressAPI } from "./config.js";
-import { loadTranslate } from "./translate.js";
-import { showNotification } from "./notification.js";
+import { adressAPI, loadModule } from "./config.js";
+const { communBlock, createHTMLElement, fetchServer, fetchlogout } = await loadModule("useful.js");
+const { showNotification } = await loadModule("notification.js");
+const { loadTranslate } = await loadModule("translate.js");
 
 export async function caserne() {
   const currenthouse = localStorage.getItem("user_house");

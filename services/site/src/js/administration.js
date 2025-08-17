@@ -1,7 +1,8 @@
-import { communBlock, confirmwindows, createHTMLElement, fetchServer, fetchlogout, removeHTMLTags } from "./useful.js";
-import { showNotification } from "./notification.js";
-import { loadTranslate } from "./translate.js";
-import { adressAPI } from "./config.js";
+import { adressAPI, loadModule } from "./config.js";
+const { communBlock, confirmwindows, createHTMLElement, fetchServer, fetchlogout, removeHTMLTags } = await loadModule("useful.js");
+const { showNotification } = await loadModule("notification.js");
+const { loadTranslate } = await loadModule("translate.js");
+
 
 export async function administration() {
   const currenthouse = localStorage.getItem("user_house");
