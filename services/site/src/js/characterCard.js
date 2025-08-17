@@ -1,6 +1,6 @@
 import { adressAPI, versionJS } from "./config.js";
 async function loadModule(name) {
-    return await import(`./${name}${versionJS}`);
+  return await import(`./${name}${versionJS}`);
 }
 const { communBlock, createHTMLElement, fetchServer, fetchlogout, houseLate } = await loadModule("useful.js");
 const { showNotification } = await loadModule("notification.js");
@@ -208,14 +208,14 @@ function containerCharacterCard(data, translate) {
         fetchData({ EtatInscription: 3 });
       });
     }
-
-    if (data.Gestion.Notification.Notif) {
-      showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
-    }
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 50);
   }
+
+  if (data.Gestion.Notification.Notif) {
+    showNotification(data.Gestion.Notification.content[data.UserInfo.Language], data.Gestion.Notification.Type);
+  }
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, 50);
 }
 
 function majPersonnage(translate) {
