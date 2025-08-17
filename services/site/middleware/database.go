@@ -98,6 +98,8 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 	CheckErr("Erreur de décodage JSON UpdateCharacter", err)
 
 	// fmt.Println("newUserInfo : ", newUserInfo)
+	notif.Type = "success"
+	notif.Notif = true
 
 	if newUserInfo.GameCharacter.FR != "" {
 		stmt1, errdb := database.Prepare("SELECT ID FROM ListGameCharacter WHERE ClasseFR = ?")
@@ -111,7 +113,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("2- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, newUserInfo.Lvl, newUserInfo.Influence, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre influence, level et arme ont été mis à jour avec succès.",
 			EN: "Your influence, level and weapon have been successfully updated.",
@@ -122,7 +123,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("3- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.Lvl, newUserInfo.Influence, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre influence et level ont été mis à jour avec succès.",
 			EN: "Your influence and level have been successfully updated.",
@@ -133,7 +133,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("4- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, newUserInfo.Influence, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre influence et arme ont été mis à jour avec succès.",
 			EN: "Your influence and weapon have been successfully updated.",
@@ -144,7 +143,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("5- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, newUserInfo.Lvl, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre level et arme ont été mis à jour avec succès.",
 			EN: "Your level and weapon have been successfully updated.",
@@ -155,7 +153,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("6- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.GameCharacter_ID, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre arme a été mis à jour avec succès.",
 			EN: "Your weapon has been successfully updated.",
@@ -166,7 +163,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("7- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.Lvl, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre level a été mis à jour avec succès.",
 			EN: "Your level has been successfully updated.",
@@ -177,7 +173,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		CheckErr("8- Requete DB UpdateCharacter", errdb)
 		stmt2.Exec(newUserInfo.Influence, currentUser.User_id)
 
-		notif.Type = "success"
 		notif.Content = data.ListLanguage{
 			FR: "Votre influence a été mis à jour avec succès.",
 			EN: "Your influence has been successfully updated.",
@@ -196,7 +191,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 			CheckErr("9- Requete DB UpdateCharacter", errdb)
 			stmt3.Exec(newUserInfo.EtatInscription, currentUser.User_id)
 
-			notif.Type = "success"
 			switch newUserInfo.EtatInscription {
 			case 1:
 				notif.Content = data.ListLanguage{
@@ -223,7 +217,6 @@ func UpdateCharacter(r *http.Request, currentUser data.ScearchUserInfo, database
 		}
 	}
 
-	notif.Notif = true
 	return notif
 }
 
