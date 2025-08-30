@@ -44,10 +44,16 @@ export async function config_2_avertissement(interaction) {
     logToFile(`Erreur server = null (config_2_avertissement) : ${translate.noperm}`);
     return;
   }
+
+  let logo = "";
+  if (interaction.guild.iconURL()) {
+    logo = interaction.guild.iconURL();
+  }
+
   // Initialisation du cache pour l'utilisateur
   interactionsCache.set(userId, {
     House_name: "",
-    House_logo: interaction.guild.iconURL(),
+    House_logo: logo,
     Langage: language,
     ID_Server: server,
     ID_Group_Users: "",

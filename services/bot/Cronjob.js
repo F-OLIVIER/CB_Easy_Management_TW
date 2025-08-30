@@ -185,11 +185,25 @@ export async function cronRecallTw() {
         continue;
       }
 
-      const listping = rows_users.map((u) => u.DiscordID).join(">, <@");
-      if (house.Langage == "fr") {
-        chan.send(`<@${listping}>\n${translate_fr.recallTW} <#${house.ID_Chan_GvG}>`);
-      } else {
-        chan.send(`<@${listping}>\n${translate_en.recallTW} <#${house.ID_Chan_GvG}>`);
+      // Découpe un tableau en sous éléments
+      function sub_element_Array(array, size) {
+        const sub_element = [];
+        for (let i = 0; i < array.length; i += size) {
+          sub_element.push(array.slice(i, i + size));
+        }
+        return sub_element;
+      }
+
+      const userIds = rows_users.map((u) => u.DiscordID);
+      const sub_list_users = sub_element_Array(userIds, 50); // par paquets de 50
+
+      for (const list_users of sub_list_users) {
+        const listping = list_users.map((id) => `<@${id}>`).join(", ");
+        if (house.Langage == "fr") {
+          await chan.send(`${listping}\n${translate_fr.recallTW} <#${house.ID_Chan_GvG}>`);
+        } else {
+          await chan.send(`${listping}\n${translate_en.recallTW} <#${house.ID_Chan_GvG}>`);
+        }
       }
     }
   } catch (err) {
