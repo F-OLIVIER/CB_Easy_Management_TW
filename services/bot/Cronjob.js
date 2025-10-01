@@ -46,7 +46,7 @@ export async function cronDesactivateButtonMsgreact() {
 
       let lateList = [];
       if (listinscrit[1] !== undefined) {
-        presentList = await Promise.all(
+        lateList = await Promise.all(
           listinscrit[1].map(async (id) => {
             const userId = BigInt(id);
             return "<@" + userId.toString() + ">";

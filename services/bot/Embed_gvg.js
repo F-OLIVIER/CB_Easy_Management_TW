@@ -67,24 +67,13 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
 }
 
 export async function EmbedInscription(Langage, presents = [], late = [], absents = [], Late) {
-  let nbpresent = 0;
-  if (presents.length !== undefined) {
-    nbpresent = presents.length;
-  }
-
-  let nblate = 0;
-  if (late.length !== undefined) {
-    nblate = late.length;
-  }
-
-  let nbabsents = 0;
-  if (absents.length !== undefined) {
-    nbabsents = absents.length;
-  }
+  const nbpresent = presents.length;
+  const nblate = late.length;
+  const nbabsents = absents.length;
 
   const translate = await loadTranslations(Langage);
 
-  if (Late == 1) {
+  if (Late === 1) {
     const embedData = new EmbedBuilder()
       .setTitle(translate.EmbedGvG.title)
       .setColor(13373715)

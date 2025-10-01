@@ -15,7 +15,7 @@
     "cron": "^4.3.3",
     "date-fns": "^4.1.0",
     "discord.js": "^14.19.3",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.3",
     "moment-timezone": "^0.5.48",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
