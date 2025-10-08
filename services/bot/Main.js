@@ -31,7 +31,7 @@ client.on("warn", (warning) => {
 // --------------------------------------------------------------
 
 // definition des chan utilisé par le bot
-client.on("clientReady", async () => {
+client.on("ready", async () => {
   console.log(`╭─────────────────────────────────────────────────╮
 │         Bot starting up, please wait ...        │
 │─────────────────────────────────────────────────│`);
