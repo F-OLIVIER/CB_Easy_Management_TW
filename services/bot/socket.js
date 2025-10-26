@@ -140,7 +140,21 @@ async function updateSettingBot(jsonMessage) {
   const serv = client.guilds.cache.get(jsonMessage.ID_Server);
   if (!serv) {
     logToFile(`Serveur introuvable : ${ID_Server}, suppression de la db.`, "errors_bot.log");
-    await deleteHouse(ID_Server);
+    
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+    
+    try {
+      await deleteHouse(db, ID_Server);
+      logToFile(`Le bot a été retiré du serveur : ${guild.name} (ID: ${guild.id})`);
+    } catch (err) {
+      logToFile(`Erreur checkAllUser ${guild.name} (ID: ${guild.id}) :\n${err.message}`, "errors_bot.log");
+      throw err;
+    } finally {
+      await db.close();
+    }
   }
   try {
     const members = await serv.members.fetch();
@@ -150,7 +164,7 @@ async function updateSettingBot(jsonMessage) {
       }
     }
   } catch (err) {
-    logToFile(`Erreur lors de la récupération des membres pour ${jsonMessage.ID_Server} (updateSettingBot) :\n${err}`, "errors_bot.log");
+    logToFile(`Erreur lors de la récupération des membres pour ${jsonMessage.ID_Server} (updateSettingBot) :\n${err.message}`, "errors_bot.log");
   }
 }
 

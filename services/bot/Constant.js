@@ -64,6 +64,7 @@ export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
     return;
   }
   chan.send(name + " (" + nickname + ") " + msg);
+  logToFile(`Utilisateur ${name} (${nickname}) supprimé de la db`);
 }
 
 export async function sendPrivateMsg(userId, msg = "") {

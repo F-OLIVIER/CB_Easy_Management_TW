@@ -1,15 +1,17 @@
 // Fichier annexe
 import { ButtonNotActifEmbedInscription, EmbedInscription, msgreactgvg } from "./Embed_gvg.js";
+import { deleteUser, getUserDiscordRole, updateHouseLogo } from "./database.js";
+import { PlayerCreateOrUpdate } from "./FuncData.js";
+import { deleteHouse } from "./config_house.js";
+import { loadTranslations } from "./language.js";
 import { Resetac } from "./FuncRaid.js";
 import { adressdb } from "./config.js";
 import { client } from "./Constant.js";
 import { logToFile } from "./log.js";
-import { loadTranslations } from "./language.js";
 
 // module nodejs et npm
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
-import { updateHouseLogo } from "./database.js";
 
 // fonction de changement automatique du message de réaction à 21h mardi et samedi
 export async function cronDesactivateButtonMsgreact() {
@@ -208,6 +210,71 @@ export async function cronRecallTw() {
     }
   } catch (err) {
     logToFile(`Erreur lors du cronjob Recall TW (cronRecallTw) :\n${err.message}`, "errors_bot.log");
+    throw err;
+  } finally {
+    await db.close();
+  }
+}
+
+// fonction de mise a jour des utilisateurs du Discord
+export async function cronCleanDB() {
+  const db = await open({
+    filename: adressdb,
+    driver: sqlite3.Database,
+  });
+
+  try {
+    // Récupération de la liste des serveurs Discord
+    const requestQuery = `SELECT ID_Server FROM Houses;`;
+    const rows = await db.all(requestQuery);
+
+    if (!rows || rows.length === 0) return;
+
+    for (const row of rows) {
+      // Vérification de l'existance du serveur
+      const serv = client.guilds.cache.get(row.ID_Server);
+      if (!serv) {
+        logToFile(`Serveur introuvable : ${row.ID_Server}, suppression de la db.`, "errors_bot.log");
+        await deleteHouse(db, row.ID_Server);
+        continue;
+      }
+
+      try {
+        // Récupération de la liste des utilisateurs dans la DB
+        const playerLists = await db.all(`SELECT DiscordID, DiscordName FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Houses.ID_Server = ?;`, [row.ID_Server]);
+        const userMap = new Map(playerLists.map((u) => [u.DiscordID, u.DiscordName]));
+
+        // Récupération des rôles autorisés sur le serveur
+        const list_role = await getUserDiscordRole(row.ID_Server);
+
+        // Récupération de la liste des utilisateurs du Discord
+        const members = await serv.members.fetch();
+
+        const tasks = Array.from(userMap.entries()).map(async ([dbUserId, dbUsername]) => {
+          const member = members.get(dbUserId);
+
+          if (!member) {
+            // L'utilisateur n'existe plus
+            return deleteUser(db, row.ID_Server, { user: { username: dbUsername, id: dbUserId } }, true);
+          } else {
+            const hasUserRole = member.roles.cache.has(list_role.ID_Group_Users);
+            const hasOfficierRole = member.roles.cache.has(list_role.ID_Group_Officier);
+
+            if (hasUserRole || hasOfficierRole) {
+              return PlayerCreateOrUpdate(row.ID_Server, member.user.id);
+            } else {
+              return deleteUser(db, row.ID_Server, member, true);
+            }
+          }
+        });
+
+        await Promise.all(tasks);
+      } catch (error) {
+        logToFile(`Erreur lors de la récupération des membres pour ${row.ID_Server} (cronCleanDB) :\n${error}`, "errors_bot.log");
+      }
+    }
+  } catch (err) {
+    logToFile(`Erreur lors du cronjob cronCleanDB :\n${err.message}`, "errors_bot.log");
     throw err;
   } finally {
     await db.close();
