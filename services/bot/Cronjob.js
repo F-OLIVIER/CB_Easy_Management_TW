@@ -218,6 +218,7 @@ export async function cronRecallTw() {
 
 // fonction de mise a jour des utilisateurs du Discord
 export async function cronCleanDB() {
+  logToFile(`Demarrage du Cronjob cronCleanDB.`);
   const db = await open({
     filename: adressdb,
     driver: sqlite3.Database,
@@ -278,6 +279,6 @@ export async function cronCleanDB() {
     throw err;
   } finally {
     await db.close();
-    console.log("Cronjob cronCleanDB terminé.");
+    logToFile(`Cronjob cronCleanDB terminé.`);
   }
 }

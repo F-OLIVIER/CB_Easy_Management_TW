@@ -193,8 +193,8 @@ client.on("messageCreate", async (message) => {
   // --------------------------------------------
   if (MC.startsWith("!test")) {
     console.log('--- cronCleanDB ---');
-    cronCleanDB();
-    // cronRecallTw();
+    // cronCleanDB();
+    cronRecallTw();
     console.log('-------------------');
   }
 
