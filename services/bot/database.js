@@ -303,6 +303,22 @@ export async function listInscription(ID_House) {
   }
 }
 
+export async function listNoInscrip(ID_House, db) {
+  try {
+    const requestQueries = [
+      `SELECT DiscordID FROM Users WHERE EtatInscription = 0 AND ID_House = ?;`, // List "Non inscrit"
+    ];
+
+    const playerLists = await Promise.all(requestQueries.map((query) => db.all(query, [ID_House])));
+    await db.close();
+
+    return playerLists.map((rows) => rows.map((row) => row.DiscordID));
+  } catch (err) {
+    logToFile(`Erreur récupération des non inscrit house : ${ID_House} (listNoInscrip) :\n ${err.message}`, "errors_bot.log");
+    return [];
+  }
+}
+
 export async function listclass(language) {
   const db = await open({
     filename: adressdb,

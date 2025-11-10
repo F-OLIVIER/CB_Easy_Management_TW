@@ -60,6 +60,7 @@
   },
 
   "recallTW": "Vous n'avez pas encore indiqué votre présence pour la TW de demain, merci de vous inscrire dans le chan Discord",
+  "listNoInscrip": "Voici la liste des héros n'ayant pas indiqué leur présence pour la TW de ce soir :",
 
   "gestion": {
     "resetmanuelmsggvg": "viens d'effectuer un reset manuel du message d'inscription au TW",

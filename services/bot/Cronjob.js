@@ -1,6 +1,6 @@
 // Fichier annexe
 import { ButtonNotActifEmbedInscription, EmbedInscription, msgreactgvg } from "./Embed_gvg.js";
-import { deleteUser, getUserDiscordRole, updateHouseLogo } from "./database.js";
+import { deleteUser, getUserDiscordRole, listNoInscrip, updateHouseLogo } from "./database.js";
 import { PlayerCreateOrUpdate } from "./FuncData.js";
 import { deleteHouse } from "./config_house.js";
 import { loadTranslations } from "./language.js";
@@ -102,6 +102,34 @@ export async function cronDesactivateButtonMsgreact() {
     }
   } catch (err) {
     logToFile(`Erreur lors du cronjob DesactivateButton TW (cronDesactivateButtonMsgreact) :\n${err.message}`, "errors_bot.log");
+    throw err;
+  } finally {
+    await db.close();
+  }
+}
+
+// Fonction qui affiche les utilisateur non inscrits dans le chan gestionnaire
+export async function cronListNoInscrip() {
+  const db = await open({
+    filename: adressdb,
+    driver: sqlite3.Database,
+    mode: sqlite3.OPEN_READONLY,
+  });
+
+  try {
+    const rows_house = await db.all(`SELECT ID, ID_Server, ID_Group_Officier, ID_Chan_GvG, Langage FROM Houses WHERE Allumage = 0 AND Recall_GvG = 1;`);
+    if (!rows_house || rows_house.length === 0) return;
+
+    for (const house of rows_house) {
+      const listNoInscrip = await listNoInscrip(house.ID);
+      if (!listNoInscrip || listNoInscrip.length === 0) continue;
+
+      const translate = await loadTranslations(house.Langage);
+
+      msgChanDiscord(house.ID_Group_Officier, house.ID_Chan_GvG, `${translate.listNoInscrip}\n${listNoInscrip.map((id) => `<@${id}>`).join(", ")}`);
+    }
+  } catch (err) {
+    logToFile(`Erreur lors du cronjob listNoInscrip (cronListNoInscrip) :\n${err.message}`, "errors_bot.log");
     throw err;
   } finally {
     await db.close();

@@ -60,6 +60,7 @@
   },
 
   "recallTW": "If you have not yet registered for tomorrow's TW, please register in the chan Discord",
+  "listNoInscrip": "Here is the list of heroes who have not confirmed their attendance for tonight's TW:",
 
   "gestion": {
     "resetmanuelmsggvg": "has just manually reset the TW registration message.",
