@@ -1,6 +1,6 @@
 // Fichier annexe
 import { adressdb, discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
-import { cronCleanDB, cronDesactivateButtonMsgreact, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
+import { cronCleanDB, cronDesactivateButtonMsgreact, cronListNoInscrip, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
 import { change_admin, deleteUser, getUserDiscordRole, list_admin } from "./database.js";
 import { PlayerCreateOrUpdate, checkAllUser } from "./FuncData.js";
 import { deleteHouse, houseExist } from "./config_house.js";
@@ -191,11 +191,10 @@ client.on("messageCreate", async (message) => {
   // --------------------------------------------
   // ------------- Fonction de Test -------------
   // --------------------------------------------
-  // if (MC.startsWith("!test")) {
-  //   console.log('--- TEST ---');
-
-  //   console.log('-------------------');
-  // }
+  if (MC.startsWith("!test")) {
+    console.log("--- TEST ---");
+    console.log("-------------------");
+  }
 
   // --------------------------------------------
   // ----------- Création d'un admin ------------
@@ -281,8 +280,8 @@ function TaskHandle() {
   // fonction de rappel automatique d'inscription aux TW à 20h lundi et vendredi
   let recallTw = new CronJob(
     "0 0 20 * * 1,5",
-    function () {
-      cronRecallTw();
+    async function () {
+      await cronRecallTw();
     },
     null,
     true,
@@ -293,8 +292,9 @@ function TaskHandle() {
   // fonction de désactivation automatique des button du message de réaction à 17h mardi et samedi
   let desactivateButtonMsgreact = new CronJob(
     "0 0 17 * * 2,6",
-    function () {
-      cronDesactivateButtonMsgreact();
+    async function () {
+      await cronDesactivateButtonMsgreact();
+      await cronListNoInscrip();
     },
     null,
     true,
@@ -305,8 +305,8 @@ function TaskHandle() {
   // fonction de changement automatique du message de réaction à 21h mardi et samedi
   let resetMsgreact = new CronJob(
     "0 0 4 * * 3,0",
-    function () {
-      cronResetMsgReaction();
+    async function () {
+      await cronResetMsgReaction();
     },
     null,
     true,
@@ -317,8 +317,8 @@ function TaskHandle() {
   // fonction de nettoyage de la DB à 16h mardi et samedi
   let cleanDB = new CronJob(
     "0 0 16 * * 1,5",
-    function () {
-      cronCleanDB();
+    async function () {
+      await cronCleanDB();
     },
     null,
     true,

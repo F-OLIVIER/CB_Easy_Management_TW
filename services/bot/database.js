@@ -305,17 +305,16 @@ export async function listInscription(ID_House) {
 
 export async function listNoInscrip(ID_House, db) {
   try {
-    const requestQueries = [
-      `SELECT DiscordID FROM Users WHERE EtatInscription = 0 AND ID_House = ?;`, // List "Non inscrit"
-    ];
+    // Utilisateurs avec EtatInscription = -1
+    const rowsMinusOne = await db.all(`SELECT DiscordID FROM Users WHERE EtatInscription = -1 AND ID_House = ?;`, [ID_House]);
+    // Utilisateurs avec EtatInscription = 0
+    const rowsZero = await db.all(`SELECT DiscordID FROM Users WHERE EtatInscription = 0 AND ID_House = ?;`, [ID_House]);
 
-    const playerLists = await Promise.all(requestQueries.map((query) => db.all(query, [ID_House])));
-    await db.close();
-
-    return playerLists.map((rows) => rows.map((row) => row.DiscordID));
+    // Retourne une array où [0] = -1 et [1] = 0
+    return [rowsMinusOne.map((row) => row.DiscordID), rowsZero.map((row) => row.DiscordID)];
   } catch (err) {
-    logToFile(`Erreur récupération des non inscrit house : ${ID_House} (listNoInscrip) :\n ${err.message}`, "errors_bot.log");
-    return [];
+    logToFile(`Erreur récupération des non inscrits house : ${ID_House} (listNoInscrip) :\n${err.message}`, "errors_bot.log");
+    return [[], []];
   }
 }
 

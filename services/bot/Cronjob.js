@@ -6,7 +6,7 @@ import { deleteHouse } from "./config_house.js";
 import { loadTranslations } from "./language.js";
 import { Resetac } from "./FuncRaid.js";
 import { adressdb } from "./config.js";
-import { client } from "./Constant.js";
+import { client, msgChanDiscord } from "./Constant.js";
 import { logToFile } from "./log.js";
 
 // module nodejs et npm
@@ -109,6 +109,14 @@ export async function cronDesactivateButtonMsgreact() {
 }
 
 // Fonction qui affiche les utilisateur non inscrits dans le chan gestionnaire
+function chunkArray(array, size) {
+  const chunks = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
+
 export async function cronListNoInscrip() {
   const db = await open({
     filename: adressdb,
@@ -117,16 +125,25 @@ export async function cronListNoInscrip() {
   });
 
   try {
-    const rows_house = await db.all(`SELECT ID, ID_Server, ID_Group_Officier, ID_Chan_GvG, Langage FROM Houses WHERE Allumage = 0 AND Recall_GvG = 1;`);
+    const rows_house = await db.all(`SELECT ID, ID_Server, ID_Group_Officier, ID_Chan_GvG, Langage FROM Houses;`);
     if (!rows_house || rows_house.length === 0) return;
 
     for (const house of rows_house) {
-      const listNoInscrip = await listNoInscrip(house.ID);
-      if (!listNoInscrip || listNoInscrip.length === 0) continue;
+      const noInscripLists = await listNoInscrip(house.ID, db); // [0] = -1, [1] = 0
 
       const translate = await loadTranslations(house.Langage);
 
-      msgChanDiscord(house.ID_Group_Officier, house.ID_Chan_GvG, `${translate.listNoInscrip}\n${listNoInscrip.map((id) => `<@${id}>`).join(", ")}`);
+      // Traite les deux listes séparément
+      for (let i = 0; i < 2; i++) {
+        const list = noInscripLists[i];
+        if (!list || list.length === 0) continue;
+
+        const chunks = chunkArray(list, 50);
+        for (const chunk of chunks) {
+          const msg = `${translate.listNoInscrip[i]}\n${chunk.map((id) => `<@${id}>`).join(", ")}`;
+          await msgChanDiscord(house.ID_Group_Officier, house.ID_Chan_GvG, msg);
+        }
+      }
     }
   } catch (err) {
     logToFile(`Erreur lors du cronjob listNoInscrip (cronListNoInscrip) :\n${err.message}`, "errors_bot.log");
