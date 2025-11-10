@@ -268,7 +268,9 @@ export async function cronCleanDB() {
           }
         });
 
-        await Promise.all(tasks);
+        for (const task of tasks) {
+          await task;
+        }
       } catch (error) {
         logToFile(`Erreur lors de la récupération des membres pour ${row.ID_Server} (cronCleanDB) :\n${error}`, "errors_bot.log");
       }
@@ -278,5 +280,6 @@ export async function cronCleanDB() {
     throw err;
   } finally {
     await db.close();
+    console.log("Cronjob cronCleanDB terminé.");
   }
 }
