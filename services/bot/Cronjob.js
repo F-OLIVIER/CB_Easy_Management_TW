@@ -242,34 +242,32 @@ export async function cronCleanDB() {
       try {
         // Récupération de la liste des utilisateurs dans la DB
         const playerLists = await db.all(`SELECT DiscordID, DiscordName FROM Users INNER JOIN Houses ON Users.ID_House = Houses.ID WHERE Houses.ID_Server = ?;`, [row.ID_Server]);
-        const userMap = new Map(playerLists.map((u) => [u.DiscordID, u.DiscordName]));
 
         // Récupération des rôles autorisés sur le serveur
         const list_role = await getUserDiscordRole(row.ID_Server);
 
-        // Récupération de la liste des utilisateurs du Discord
-        const members = await serv.members.fetch();
+        // Parcours séquentiel des utilisateurs
+        for (const { DiscordID: dbUserId, DiscordName: dbUsername } of playerLists) {
+          let member = null;
 
-        const tasks = Array.from(userMap.entries()).map(async ([dbUserId, dbUsername]) => {
-          const member = members.get(dbUserId);
+          try {
+            member = await serv.members.fetch(dbUserId);
+          } catch {
+            member = null; // le membre n'existe plus ou fetch impossible
+          }
 
           if (!member) {
-            // L'utilisateur n'existe plus
-            return deleteUser(db, row.ID_Server, { user: { username: dbUsername, id: dbUserId } }, true);
+            await deleteUser(db, row.ID_Server, { user: { username: dbUsername, id: dbUserId } }, true);
           } else {
             const hasUserRole = member.roles.cache.has(list_role.ID_Group_Users);
             const hasOfficierRole = member.roles.cache.has(list_role.ID_Group_Officier);
 
             if (hasUserRole || hasOfficierRole) {
-              return PlayerCreateOrUpdate(row.ID_Server, member.user.id);
+              await PlayerCreateOrUpdate(row.ID_Server, member.user.id);
             } else {
-              return deleteUser(db, row.ID_Server, member, true);
+              await deleteUser(db, row.ID_Server, member, true);
             }
           }
-        });
-
-        for (const task of tasks) {
-          await task;
         }
       } catch (error) {
         logToFile(`Erreur lors de la récupération des membres pour ${row.ID_Server} (cronCleanDB) :\n${error}`, "errors_bot.log");
