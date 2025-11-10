@@ -194,6 +194,7 @@ client.on("messageCreate", async (message) => {
   if (MC.startsWith("!test")) {
     console.log('--- cronCleanDB ---');
     cronCleanDB();
+    // cronRecallTw();
     console.log('-------------------');
   }
 
@@ -314,8 +315,9 @@ function TaskHandle() {
   );
   resetMsgreact.start();
 
+  // fonction de nettoyage de la DB à 16h mardi et samedi
   // let cleanDB = new CronJob(
-  //   "0 0 21 * * 2,6",
+  //   "0 0 16 * * 1,5",
   //   function () {
   //     cronCleanDB();
   //   },
