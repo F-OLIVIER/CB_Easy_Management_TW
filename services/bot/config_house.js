@@ -662,17 +662,12 @@ export async function list_ID_house() {
   }
 }
 
-export async function deleteHouse(ID_Server) {
+export async function deleteHouse(db, ID_Server) {
   const houseData = await get_houseData(ID_Server);
 
   if (!houseData) {
     return;
   }
-
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
 
   try {
     // Suppression des tables de la maison si elles existent
@@ -697,8 +692,6 @@ export async function deleteHouse(ID_Server) {
   } catch (err) {
     logToFile(`Erreur lors de la suppression de la House : ${houseData.House_name} (${houseData.ID_Server}).\n${err.message}`, "errors_bot.log");
     throw err;
-  } finally {
-    await db.close();
   }
 }
 

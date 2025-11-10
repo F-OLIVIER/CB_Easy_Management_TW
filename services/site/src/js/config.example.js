@@ -6,5 +6,7 @@ export const LINK_DISCORD = "https://discord.com/oauth2/authorize?client_id=1234
 export const adressAPI = "http://localhost/api/";
 
 // Gestion des versions JS
-export const versionJS = "?v=date";
-
+export const versionJS = "?v=20250817";
+export async function loadModule(name) {
+    return await import(`./${name}${versionJS}`);
+}

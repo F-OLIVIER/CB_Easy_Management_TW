@@ -11,12 +11,7 @@ import { logToFile } from "./log.js";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
-export async function CreateOrUpdateUser(data) {
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
-
+export async function CreateOrUpdateUser(db, data) {
   try {
     const sql = "SELECT DiscordID FROM Users WHERE DiscordID = ? AND ID_House = ?";
     const rows = await db.all(sql, [data.DiscordID, data.ID_House]);
@@ -56,8 +51,6 @@ export async function CreateOrUpdateUser(data) {
     }
   } catch (err) {
     logToFile(`Erreur dans CreateOrUpdateUser :\n${err.message}`, "errors_bot.log");
-  } finally {
-    await db.close();
   }
 }
 
@@ -207,13 +200,13 @@ export async function updateInflu(ID_Server, AuthorID, influ) {
   }
 }
 
-export async function deleteUser(ID_Server, member, leaveDiscord = false) {
-  const id_house = await get_ID_House(ID_Server);
+export async function deleteUser(db, ID_Server, member, leaveDiscord = false) {
+  // Ignorer l'utilisateur test
+  if (member.user.username === "user test" && member.user.id === "0") {
+    return;
+  }
 
-  const db = await open({
-    filename: adressdb,
-    driver: sqlite3.Database,
-  });
+  const id_house = await get_ID_House(ID_Server);
 
   try {
     const selectUserQuery = `
@@ -254,8 +247,6 @@ export async function deleteUser(ID_Server, member, leaveDiscord = false) {
     }
   } catch (err) {
     logToFile(`Erreur lors de la suppression de l'utilisateur ${member.user.id} (deleteUser) :\n${err.message}`, "errors_bot.log");
-  } finally {
-    await db.close();
   }
 }
 

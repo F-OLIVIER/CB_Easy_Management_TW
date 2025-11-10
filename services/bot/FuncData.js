@@ -3,9 +3,11 @@ import { CreateOrUpdateUser, deleteUser, getUserDiscordRole, isMember } from "./
 import { deleteHouse, get_ID_House, list_ID_house } from "./config_house.js";
 import { client } from "./Constant.js";
 import { logToFile } from "./log.js";
-import { listUserBan } from "./config.js";
+import { adressdb, listUserBan } from "./config.js";
 
 // module nodejs et npm
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
 // Check l'ensemble des utilisateur (pour le demarrage du bot Discord, mise à jour aprés un arret server)
 export async function checkAllUser() {
@@ -16,7 +18,21 @@ export async function checkAllUser() {
 
     if (!serv) {
       logToFile(`Serveur introuvable : ${ID_Server}, suppression de la db.`, "errors_bot.log");
-      await deleteHouse(ID_Server);
+
+      const db = await open({
+        filename: adressdb,
+        driver: sqlite3.Database,
+      });
+
+      try {
+        await deleteHouse(db, ID_Server);
+        logToFile(`Le bot a été retiré du serveur : ${guild.name} (ID: ${guild.id})`);
+      } catch (err) {
+        logToFile(`Erreur checkAllUser ${guild.name} (ID: ${guild.id})`, "errors_bot.log");
+        throw err;
+      } finally {
+        await db.close();
+      }
       continue;
     }
 
@@ -61,43 +77,55 @@ export async function PlayerCreateOrUpdate(ServerID, MemberID) {
       allListRole.push(role.id);
     });
 
-    let CreateOrUpdateinDB = false;
-    // check de la liste des roles discord pour garder le plus élevé pour les permissions du site internet
-    let MemberRole = "";
-    if (listUserBan.includes(MemberID)) {
-      deleteUser(ServerID, MemberID);
-      return;
-    } else if (allListRole.includes(list_role.ID_Group_Officier)) {
-      MemberRole = "Officier";
-      CreateOrUpdateinDB = true;
-    } else if (allListRole.includes(list_role.ID_Group_Users)) {
-      MemberRole = "Membre";
-      CreateOrUpdateinDB = true;
-    } else {
-      deleteUser(ServerID, MemberID);
-      return;
-    }
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
 
-    if (CreateOrUpdateinDB) {
-      const id_house = await get_ID_House(ServerID);
-
-      let discordPhoto = "./img/noavatar.jpg";
-      if (guildMember.user.avatarURL() != null && guildMember.user.avatarURL() != undefined) {
-        discordPhoto = guildMember.user.avatarURL();
+    try {
+      let CreateOrUpdateinDB = false;
+      // check de la liste des roles discord pour garder le plus élevé pour les permissions du site internet
+      let MemberRole = "";
+      if (listUserBan.includes(MemberID)) {
+        await deleteUser(db, ServerID, MemberID);
+        return;
+      } else if (allListRole.includes(list_role.ID_Group_Officier)) {
+        MemberRole = "Officier";
+        CreateOrUpdateinDB = true;
+      } else if (allListRole.includes(list_role.ID_Group_Users)) {
+        MemberRole = "Membre";
+        CreateOrUpdateinDB = true;
+      } else {
+        await deleteUser(db, ServerID, MemberID);
+        return;
       }
-      const data = {
-        DiscordID: MemberID,
-        DiscordName: guildMember.displayName,
-        DiscordBaseName: guildMember.user.username,
-        DiscordRole: MemberRole,
-        DiscordPhoto: discordPhoto,
-        ID_Server: ServerID,
-        ID_House: id_house,
-      };
 
-      if (id_house != 0) {
-        await CreateOrUpdateUser(data);
+      if (CreateOrUpdateinDB) {
+        const id_house = await get_ID_House(ServerID);
+
+        let discordPhoto = "./img/noavatar.jpg";
+        if (guildMember.user.avatarURL() != null && guildMember.user.avatarURL() != undefined) {
+          discordPhoto = guildMember.user.avatarURL();
+        }
+        const data = {
+          DiscordID: MemberID,
+          DiscordName: guildMember.displayName,
+          DiscordBaseName: guildMember.user.username,
+          DiscordRole: MemberRole,
+          DiscordPhoto: discordPhoto,
+          ID_Server: ServerID,
+          ID_House: id_house,
+        };
+
+        if (id_house != 0) {
+          await CreateOrUpdateUser(db, data);
+        }
       }
+    } catch (err) {
+      logToFile(`PlayerCreateOrUpdate utilisateur : ${MemberID}, serveur ${ServerID} :\n${err.message}`, "errors_bot.log");
+      throw err;
+    } finally {
+      await db.close();
     }
   }
 }

@@ -1,6 +1,6 @@
 // Fichier annexe
-import { discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
-import { cronDesactivateButtonMsgreact, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
+import { adressdb, discordTest_chanDM, discordTest_groupAdminForum, discordTest_id, ListAdmin } from "./config.js";
+import { cronCleanDB, cronDesactivateButtonMsgreact, cronRecallTw, cronResetMsgReaction } from "./Cronjob.js";
 import { change_admin, deleteUser, getUserDiscordRole, list_admin } from "./database.js";
 import { PlayerCreateOrUpdate, checkAllUser } from "./FuncData.js";
 import { deleteHouse, houseExist } from "./config_house.js";
@@ -14,6 +14,8 @@ import { socket } from "./socket.js";
 import { PermissionsBitField } from "discord.js";
 import {} from "dotenv/config";
 import { CronJob } from "cron";
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
 // Connexion du client et gestion d'erreur
 client.login(process.env.TOKEN);
@@ -60,7 +62,22 @@ client.on("guildMemberRemove", async (member) => {
   if (member.user.bot) return;
   // console.log(`${member.user.username} a quitté le serveur.`);
   if (await houseExist(member.guild.id)) {
-    await deleteUser(member.guild.id, member, true);
+    const db = await open({
+      filename: adressdb,
+      driver: sqlite3.Database,
+    });
+
+    try {
+      await deleteUser(db, member.guild.id, member, true);
+    } catch (err) {
+      logToFile(
+        `Impossible de supprimer l'utilisateur (guildMemberRemove) ${member.user.displayName} (${member.user.username})(ID: ${member.user.id}) de la guilde ${member.guild.id}`,
+        "errors_bot.log"
+      );
+      throw err;
+    } finally {
+      await db.close();
+    }
   }
 });
 
@@ -79,8 +96,20 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 // ------------------ Bot kick or ban discord ------------------------
 // -------------------------------------------------------------------
 client.on("guildDelete", async (guild) => {
-  await deleteHouse(guild.id);
-  console.log(`Le bot a été retiré du serveur : ${guild.name} (ID: ${guild.id})`);
+  const db = await open({
+    filename: adressdb,
+    driver: sqlite3.Database,
+  });
+
+  try {
+    await deleteHouse(db, guild.id);
+    logToFile(`Le bot a été retiré du serveur : ${guild.name} (ID: ${guild.id})`);
+  } catch (err) {
+    logToFile(`Erreur guildDelete ${guild.name} (ID: ${guild.id})`, "errors_bot.log");
+    throw err;
+  } finally {
+    await db.close();
+  }
 });
 
 // -------------------------------------------------------------------
@@ -88,36 +117,30 @@ client.on("guildDelete", async (guild) => {
 // -------------------------------------------------------------------
 client.on("guildMemberUpdate", async (oldMember, newMember) => {
   if (newMember.user.bot) return;
-  if (await houseExist(newMember.guild.id)) {
-    // Roles utilisateur
-    const oldRoles = oldMember.roles.cache;
-    const newRoles = newMember.roles.cache;
+  if (!(await houseExist(newMember.guild.id))) return;
 
-    // Récupére les roles autorisé pour le bot sur le serveur
-    const list_role = await getUserDiscordRole(newMember.guild.id);
+  const oldRoles = oldMember.roles.cache;
+  const newRoles = newMember.roles.cache;
 
-    // Has Role user ?
-    const oldHasuser = oldRoles.has(list_role.ID_Group_Users);
-    const newHasuser = newRoles.has(list_role.ID_Group_Users);
-    // Check if removed or added
-    if (oldHasuser && !newHasuser) {
-      // Role user remove
-      await deleteUser(newMember.guild.id, newMember);
-    } else if (!oldHasuser && newHasuser) {
-      // Role user add
-      await PlayerCreateOrUpdate(newMember.guild.id, newMember.user.id);
+  const list_role = await getUserDiscordRole(newMember.guild.id);
+
+  const hasUserRole = newRoles.has(list_role.ID_Group_Users);
+  const hasOfficierRole = newRoles.has(list_role.ID_Group_Officier);
+
+  // Si l'utilisateur n'a aucun des deux rôles, on le supprime de la db
+  if (!hasUserRole && !hasOfficierRole) {
+    const db = await open({ filename: adressdb, driver: sqlite3.Database });
+    try {
+      await deleteUser(db, newMember.guild.id, newMember);
+    } catch (err) {
+      logToFile(`Impossible de supprimer l'utilisateur ${newMember.user.tag} de la guilde ${newMember.guild.id}`, "errors_bot.log");
+      throw err;
+    } finally {
+      await db.close();
     }
-
-    // Has Role officier ?
-    const oldHasofficier = oldRoles.has(list_role.ID_Group_Officier);
-    const newHasofficier = newRoles.has(list_role.ID_Group_Officier);
-    if (oldHasofficier && !newHasofficier) {
-      // Role officier remove
-      await PlayerCreateOrUpdate(newMember.guild.id, newMember.user.id);
-    } else if (!oldHasofficier && newHasofficier) {
-      // Role officier add
-      await PlayerCreateOrUpdate(newMember.guild.id, newMember.user.id);
-    }
+  } else {
+    // Sinon on crée ou met à jour l'utilisateur
+    await PlayerCreateOrUpdate(newMember.guild.id, newMember.user.id);
   }
 });
 
@@ -168,8 +191,12 @@ client.on("messageCreate", async (message) => {
   // --------------------------------------------
   // ------------- Fonction de Test -------------
   // --------------------------------------------
-  // if (MC.startsWith("!test")) {
-  // }
+  if (MC.startsWith("!test")) {
+    console.log('--- cronCleanDB ---');
+    cronCleanDB();
+    // cronRecallTw();
+    console.log('-------------------');
+  }
 
   // --------------------------------------------
   // ----------- Création d'un admin ------------
@@ -278,7 +305,7 @@ function TaskHandle() {
 
   // fonction de changement automatique du message de réaction à 21h mardi et samedi
   let resetMsgreact = new CronJob(
-    "0 0 21 * * 2,6",
+    "0 0 4 * * 3,0",
     function () {
       cronResetMsgReaction();
     },
@@ -287,4 +314,16 @@ function TaskHandle() {
     "Europe/Paris"
   );
   resetMsgreact.start();
+
+  // fonction de nettoyage de la DB à 16h mardi et samedi
+  // let cleanDB = new CronJob(
+  //   "0 0 16 * * 1,5",
+  //   function () {
+  //     cronCleanDB();
+  //   },
+  //   null,
+  //   true,
+  //   "Europe/Paris"
+  // );
+  // cleanDB.start();
 }
