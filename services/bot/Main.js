@@ -191,12 +191,11 @@ client.on("messageCreate", async (message) => {
   // --------------------------------------------
   // ------------- Fonction de Test -------------
   // --------------------------------------------
-  if (MC.startsWith("!test")) {
-    console.log('--- cronCleanDB ---');
-    // cronCleanDB();
-    cronRecallTw();
-    console.log('-------------------');
-  }
+  // if (MC.startsWith("!test")) {
+  //   console.log('--- TEST ---');
+
+  //   console.log('-------------------');
+  // }
 
   // --------------------------------------------
   // ----------- Création d'un admin ------------
@@ -316,14 +315,14 @@ function TaskHandle() {
   resetMsgreact.start();
 
   // fonction de nettoyage de la DB à 16h mardi et samedi
-  // let cleanDB = new CronJob(
-  //   "0 0 16 * * 1,5",
-  //   function () {
-  //     cronCleanDB();
-  //   },
-  //   null,
-  //   true,
-  //   "Europe/Paris"
-  // );
-  // cleanDB.start();
+  let cleanDB = new CronJob(
+    "0 0 16 * * 1,5",
+    function () {
+      cronCleanDB();
+    },
+    null,
+    true,
+    "Europe/Paris"
+  );
+  cleanDB.start();
 }
