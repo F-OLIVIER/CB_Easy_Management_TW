@@ -125,7 +125,7 @@ export async function cronListNoInscrip() {
   });
 
   try {
-    const rows_house = await db.all(`SELECT ID, ID_Server, ID_Group_Officier, ID_Chan_GvG, Langage FROM Houses;`);
+    const rows_house = await db.all(`SELECT ID, ID_Server, ID_Group_Officier, ID_Chan_GvG, Langage FROM Houses WHERE Allumage = 0 AND Recall_GvG = 1;`);
     if (!rows_house || rows_house.length === 0) return;
 
     for (const house of rows_house) {
