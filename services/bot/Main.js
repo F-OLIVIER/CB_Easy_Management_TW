@@ -277,6 +277,18 @@ function TaskHandle() {
   //  │ │ │  │ │ │
   //  0 0 20 * * 1,5
 
+  // fonction de nettoyage de la DB à 16h lundi et vendredi
+  let cleanDB = new CronJob(
+    "0 0 16 * * 1,5",
+    async function () {
+      await cronCleanDB();
+    },
+    null,
+    true,
+    "Europe/Paris"
+  );
+  cleanDB.start();
+
   // fonction de rappel automatique d'inscription aux TW à 20h lundi et vendredi
   let recallTw = new CronJob(
     "0 0 20 * * 1,5",
@@ -304,7 +316,7 @@ function TaskHandle() {
 
   // fonction de changement automatique du message de réaction à 21h mardi et samedi
   let resetMsgreact = new CronJob(
-    "0 0 4 * * 3,0",
+    "0 0 21 * * 2,6",
     async function () {
       await cronResetMsgReaction();
     },
@@ -313,16 +325,4 @@ function TaskHandle() {
     "Europe/Paris"
   );
   resetMsgreact.start();
-
-  // fonction de nettoyage de la DB à 16h mardi et samedi
-  let cleanDB = new CronJob(
-    "0 0 16 * * 1,5",
-    async function () {
-      await cronCleanDB();
-    },
-    null,
-    true,
-    "Europe/Paris"
-  );
-  cleanDB.start();
 }
