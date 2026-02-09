@@ -25,15 +25,21 @@ export async function initial_msgreactgvg(Langage, ID_Chan_GvG, ID_Group_Users, 
 
   // Génére le message initial d'inscription au GvG et l'envoi sur discord
   const imageAttachment = new AttachmentBuilder(siteInternet + "/img/imgdiscord/banner_tw.webp");
-  const sendMessage = await chan.send({
-    files: [imageAttachment],
-    content: "<@&" + ID_Group_Users + ">",
-    embeds: [await EmbedInscription(Langage, [], [], [], Late)],
-    components: [await ButtonEmbedInscription(Langage, Late)],
-  });
+  try {
+    const sendMessage = await chan.send({
+      files: [imageAttachment],
+      content: "<@&" + ID_Group_Users + ">",
+      embeds: [await EmbedInscription(Langage, [], [], [], Late)],
+      components: [await ButtonEmbedInscription(Langage, Late)],
+      allowedMentions: { roles: [ID_Group_Users] },
+    });
 
-  // Retourne l'id du message pour création de la maison dans la table Houses
-  return sendMessage.id;
+    // Retourne l'id du message pour création de la maison dans la table Houses
+    return sendMessage.id;
+  } catch (err) {
+    logToFile(`Erreur send initial_msgreactgvg dans chan ${ID_Chan_GvG} : ${err}`, "errors_bot.log");
+    return -1;
+  }
 }
 
 // Renouvellement du message d'inscription GvG pour reset les réactions
@@ -55,15 +61,21 @@ export async function msgreactgvg(db, ID_Server, ID_MessageGvG, Langage, ID_Chan
 
   const imageAttachment = new AttachmentBuilder(siteInternet + "/img/imgdiscord/banner_tw.webp");
   // Génére le message et l'envoi sur discord
-  const sendMessage = await chan.send({
-    files: [imageAttachment],
-    content: "<@&" + ID_Group_Users + ">",
-    embeds: [await EmbedInscription(Langage, [], [], [], Late)],
-    components: [await ButtonEmbedInscription(Langage, Late)],
-  });
+  try {
+    const sendMessage = await chan.send({
+      files: [imageAttachment],
+      content: "<@&" + ID_Group_Users + ">",
+      embeds: [await EmbedInscription(Langage, [], [], [], Late)],
+      components: [await ButtonEmbedInscription(Langage, Late)],
+      allowedMentions: { roles: [ID_Group_Users] },
+    });
 
-  // Inscription du nouvelle ID du message dans la db
-  updateIdMessage(db, ID_Server, sendMessage.id);
+    // Inscription du nouvelle ID du message dans la db
+    updateIdMessage(db, ID_Server, sendMessage.id);
+  } catch (err) {
+    logToFile(`Erreur send msgreactgvg dans chan ${ID_Chan_GvG} pour serveur ${ID_Server} : ${err}`, "errors_bot.log");
+    return;
+  }
 }
 
 export async function EmbedInscription(Langage, presents = [], late = [], absents = [], Late) {
@@ -192,10 +204,16 @@ export async function noGvGReactMsgGvG(houseData) {
     .setThumbnail(siteInternet + "/img/imgdiscord/heros_repos.webp");
 
   // Génére le message et l'envoi sur discord
-  const sendMessage = await chan.send({
-    files: [imageAttachment],
-    embeds: [embedData],
-  });
+  let sendMessage;
+  try {
+    sendMessage = await chan.send({
+      files: [imageAttachment],
+      embeds: [embedData],
+    });
+  } catch (err) {
+    logToFile(`Erreur send noGvGReactMsgGvG dans chan ${houseData.ID_Chan_GvG} pour serveur ${houseData.ID_Server} : ${err}`, "errors_bot.log");
+    return;
+  }
 
   // Inscription du nouvelle ID du message dans la db
   const db = await open({

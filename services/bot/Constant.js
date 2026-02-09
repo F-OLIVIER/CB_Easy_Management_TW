@@ -39,7 +39,7 @@ export async function reponseUserInteraction(interaction, msg) {
 }
 
 // Log dans un chan Discord (chan utilisateur ou chan de gestion)
-export function msgChanDiscord(ID_Group, ID_Chan, msg) {
+export async function msgChanDiscord(ID_Group, ID_Chan, msg) {
   const chan = client.channels.cache.get(ID_Chan);
   if (!chan) {
     logToFile(`Chan ${ID_Chan} innexistant`, "errors_bot.log");
@@ -49,11 +49,15 @@ export function msgChanDiscord(ID_Group, ID_Chan, msg) {
     logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan}`, "errors_bot.log");
     return;
   }
-  chan.send("<@&" + ID_Group + ">\n" + msg);
+  try {
+    await chan.send({ content: "<@&" + ID_Group + ">\n" + msg, allowedMentions: { roles: [ID_Group] } });
+  } catch (err) {
+    logToFile(`Erreur send msgChanDiscord dans chan ${ID_Chan} : ${err}`, "errors_bot.log");
+  }
 }
 
 // Message utilisateur retirer de la database
-export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
+export async function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
   const chan = client.channels.cache.get(ID_Chan_Gestion);
   if (!chan) {
     logToFile(`Chan ${ID_Chan_Gestion} innexistant`, "errors_bot.log");
@@ -63,8 +67,12 @@ export function UserLeave(ID_Chan_Gestion, name, nickname, msg) {
     logToFile(`Le bot n'a pas la permission d'envoyer des messages dans ${ID_Chan_Gestion}`, "errors_bot.log");
     return;
   }
-  chan.send(name + " (" + nickname + ") " + msg);
-  logToFile(`Utilisateur ${name} (${nickname}) supprimé de la db`);
+  try {
+    await chan.send(name + " (" + nickname + ") " + msg);
+    logToFile(`Utilisateur ${name} (${nickname}) supprimé de la db`);
+  } catch (err) {
+    logToFile(`Erreur send UserLeave dans chan ${ID_Chan_Gestion} : ${err}`, "errors_bot.log");
+  }
 }
 
 export async function sendPrivateMsg(userId, msg = "") {
