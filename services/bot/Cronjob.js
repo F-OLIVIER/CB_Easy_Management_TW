@@ -12,6 +12,7 @@ import { logToFile } from "./log.js";
 // module nodejs et npm
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { log } from "console";
 
 // fonction de changement automatique du message de réaction à 21h mardi et samedi
 export async function cronDesactivateButtonMsgreact() {
@@ -66,9 +67,15 @@ export async function cronDesactivateButtonMsgreact() {
         );
       }
 
-      const chan = await client.channels.fetch(row.ID_Chan_GvG);
-      if (!chan) {
-        logToFile(`Chan TW ${row.ID_Chan_GvG} innexistant pour la maison ${row.ID_Server}`, "errors_bot.log");
+      let chan;
+      try {
+        chan = await client.channels.fetch(row.ID_Chan_GvG);
+      } catch (err) {
+        if (err.code === 10003) {
+          logToFile(`Channel ${row.ID_Chan_GvG} supprimé ou inaccessible`, "errors_bot.log");
+        } else {
+          logToFile(`Erreur lors de la récupération du chan ${row.ID_Chan_GvG}, serveur ${row.ID_Server} : ${err.message}`, "errors_bot.log");
+        }
         continue;
       }
 
