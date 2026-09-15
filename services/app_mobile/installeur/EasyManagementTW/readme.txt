@@ -16,7 +16,7 @@ Si l'application est téléchargée sur le site officiel, nous vous assurons que
 Pour plus de détail, rendez-vous sur : https://easymanagementtw.fr/mentionlegale
 
 - Contact
-E-mail du développeur : fabiendeveloppeur76@gmail.com
+E-mail du développeur : fabiendeveloppeur76@tuta.com
 
 ----------------------------------------------
 ------------------- ANGLAIS ------------------
@@ -32,5 +32,5 @@ If the application is downloaded from the official site, we can assure you that 
 For more details, go to: https://easymanagementtw.fr/mentionlegale
 
 - Contact details
-E-mail from the developer: fabiendeveloppeur76@gmail.com
+E-mail from the developer: fabiendeveloppeur76@tuta.com
 
