@@ -508,7 +508,7 @@
     },
     "cookie": {
       "title": "Cookies et stockage dans votre navigateur",
-      "content": "Le site utilise uniquement un cookie de session, strictement nécessaire à la connexion.</br>L'application enregistre aussi dans votre navigateur la langue choisie, la maison sélectionnée et le logo de vos maisons (stockage local), ainsi qu'une copie de ses fichiers pour un démarrage rapide et hors ligne. À la déconnexion, la maison, les logos et les photos de profil en cache sont effacés.</br>Aucun cookie ni traceur de mesure d'audience ou de publicité n'est utilisé : aucun consentement n'est donc requis."
+      "content": "Le site utilise uniquement un cookie de session, strictement nécessaire à la connexion.</br>L'application enregistre aussi dans votre navigateur la langue choisie, la maison sélectionnée et le logo de vos maisons (stockage local), ainsi qu'une copie de ses fichiers pour un démarrage rapide et hors ligne. À la déconnexion ou à l'expiration de la session, la maison sélectionnée et les logos sont effacés de votre navigateur.</br>Aucun cookie ni traceur de mesure d'audience ou de publicité n'est utilisé : aucun consentement n'est donc requis."
     },
     "use": {
       "title": "Utilisation des informations",

@@ -38,7 +38,8 @@ test.describe("En-têtes de sécurité (Nginx)", () => {
     await page.goto("/");
     const asset = await page.locator('script[type="module"]').getAttribute("src");
 
-    for (const path of ["/", "/home", "/index.html", "/sw.js", asset!, `/api/home/?house=null`]) {
+    // Pages, fichiers, API et images relayées (en-têtes du backend remplacés : une seule valeur par en-tête)
+    for (const path of ["/", "/home", "/index.html", "/sw.js", asset!, `/api/home/?house=null`, "/img/weapon/Lance.png", "/img/Logo_EMTW.webp"]) {
       const response = await page.request.get(path, { headers: { cookie: "user_token=invalide" } });
       const headers = response.headers();
       for (const [name, pattern] of Object.entries(EXPECTED_HEADERS)) {

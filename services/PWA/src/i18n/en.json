@@ -507,7 +507,7 @@
     },
     "cookie": {
       "title": "Cookies and browser storage",
-      "content": "The website only uses a session cookie, which is strictly necessary for logging in.</br>The application also stores in your browser the chosen language, the selected house and your houses' logos (local storage), as well as a copy of its files for fast and offline start-up. When you log out, the house, logos and cached profile pictures are deleted.</br>No audience measurement or advertising cookie or tracker is used: no consent is therefore required."
+      "content": "The website only uses a session cookie, which is strictly necessary for logging in.</br>The application also stores in your browser the chosen language, the selected house and your houses' logos (local storage), as well as a copy of its files for fast and offline start-up. When you log out or your session expires, the selected house and the logos are deleted from your browser.</br>No audience measurement or advertising cookie or tracker is used: no consent is therefore required."
     },
     "use": {
       "title": "Use of Information",

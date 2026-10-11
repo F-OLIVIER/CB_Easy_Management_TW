@@ -381,11 +381,11 @@ function basemodal(translate) {
 
 function showmodal(post, admin, language, translate) {
   const titlepost = document.getElementById("modaltitlepost");
-  titlepost.innerHTML = post.Title;
+  titlepost.textContent = post.Title;
   const contentpost = document.getElementById("modallinecontentpost");
   contentpost.innerHTML = post.Content;
   const author = document.getElementById("modallinecontentpostauthor");
-  author.innerHTML = `${translate.forum.post.on} ${formatDate(post.Date, language)} ${translate.forum.post.by} ${post.Author}`;
+  author.textContent = `${translate.forum.post.on} ${formatDate(post.Date, language)} ${translate.forum.post.by} ${post.Author}`;
   const commentspost = document.getElementById("modalcommentspost");
   commentspost.innerHTML = "";
 

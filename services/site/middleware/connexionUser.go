@@ -5,43 +5,81 @@ import (
 	data "easemanagementtw/internal"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
 	"github.com/gofrs/uuid"
 )
 
+// Cookie de session : HttpOnly (illisible par JavaScript, donc par une faille XSS) et SameSite=Lax
+// (non envoyé par les requêtes POST d'autres sites : protection CSRF).
+const SessionCookieName = "user_token"
+
+// Cookie indicateur, sans valeur sensible : permet aux fronts de savoir qu'une session existe
+const SessionFlagCookieName = "user_logged"
+
+func sessionCookies(value string, expires time.Time) []*http.Cookie {
+	session := &http.Cookie{
+		Name:     SessionCookieName,
+		Value:    value,
+		Expires:  expires,
+		Domain:   data.SITE_DOMAIN,
+		Path:     "/",
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	flag := &http.Cookie{
+		Name:     SessionFlagCookieName,
+		Value:    "1",
+		Expires:  expires,
+		Domain:   data.SITE_DOMAIN,
+		Path:     "/",
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	if value == "" { // suppression
+		for _, cookie := range []*http.Cookie{session, flag} {
+			cookie.Value = ""
+			cookie.Expires = time.Unix(0, 0)
+			cookie.MaxAge = -1
+		}
+	}
+	return []*http.Cookie{session, flag}
+}
+
 func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
-	var discordUser data.DiscordUser
-	err := json.NewDecoder(r.Body).Decode(&discordUser)
+	// Le front envoie le jeton Discord ; l'identité est vérifiée auprès de Discord
+	var token discordToken
+	err := json.NewDecoder(io.LimitReader(r.Body, 1<<16)).Decode(&token)
 	CheckErr("Erreur de décodage JSON CheckUser", err)
 
-	if discordUser.Id != "" {
+	discordID, err := verifiedDiscordID(token)
+	if err != nil {
+		CheckErr("Connexion Discord refusée (CheckUser)", err)
+		return false
+	}
+
+	if discordID != "" {
 		var id string
 		stmt, err := database.Prepare("SELECT ID FROM Users WHERE DiscordID = ?")
 		CheckErr("db Prepare user_db_uuid : ", err)
-		err1 := stmt.QueryRow(discordUser.Id).Scan(&id)
+		err1 := stmt.QueryRow(discordID).Scan(&id)
 
 		if err1 == nil {
 			userUUID := uuid.Must(uuid.NewV4())
 			new_uuid := userUUID.String()
 			dateCookie := time.Now().Add(720 * time.Hour) // 1 mois
-			cookie := &http.Cookie{
-				Name:    "user_token",
-				Value:   new_uuid,
-				Expires: dateCookie,
-				Domain:  data.SITE_DOMAIN,
-				Path:    "/",
-				Secure:  true,
+			cookies := sessionCookies(new_uuid, dateCookie)
+			for _, cookie := range cookies {
+				if err := cookie.Valid(); err != nil {
+					CheckErr("invalid cookie: ", err)
+					return false
+				}
 			}
 
-			err := cookie.Valid()
-			if err != nil {
-				CheckErr("invalid cookie: ", err)
-				return false
-			}
-
-			SessionLogger(w, discordUser.Id, cookie, database)
+			SessionLogger(w, discordID, cookies, database)
 			return true
 		}
 	}
@@ -49,16 +87,18 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 }
 
 // Fonction qui crée le cookie et sa correspondance dans la db
-func SessionLogger(w http.ResponseWriter, discordId string, cookie *http.Cookie, database *sql.DB) {
+func SessionLogger(w http.ResponseWriter, discordId string, cookies []*http.Cookie, database *sql.DB) {
+	session := cookies[0]
 	// Convertir en string avec un format spécifique
 	layout := "2006-01-02 15:04:05"
-	strDate_cookie := cookie.Expires.Format(layout)
+	strDate_cookie := session.Expires.Format(layout)
 
 	stmt, err := database.Prepare("UPDATE Users SET uuid = ?, DateCookie = ? WHERE DiscordID = ?")
 	CheckErr("sessionlogger (SessionLogger): ", err)
-	stmt.Exec(cookie.Value, strDate_cookie, discordId)
-	// fmt.Println("cookie.Value : ", cookie.Value)
-	http.SetCookie(w, cookie)
+	stmt.Exec(session.Value, strDate_cookie, discordId)
+	for _, cookie := range cookies {
+		http.SetCookie(w, cookie)
+	}
 }
 
 // Fonction qui compare le cookie utilisateur avec la map de gestion des cookies
@@ -88,22 +128,15 @@ func CheckToken(c *http.Cookie, database *sql.DB) bool {
 
 // Fonction de déconnexion (supression du cookie) et suppression de l'uuid dans la db
 func Logout(w http.ResponseWriter, r *http.Request, database *sql.DB) {
-	c, err := r.Cookie("user_token")
-	if err == http.ErrNoCookie {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+	// Session invalidée en base (si le navigateur en présente une), cookies supprimés dans tous les cas
+	if c, err := r.Cookie(SessionCookieName); err == nil && c.Value != "" {
+		stmt, err := database.Prepare("UPDATE Users SET uuid = '', DateCookie = '' WHERE uuid = ?")
+		CheckErr("2- logout :", err)
+		if err == nil {
+			stmt.Exec(c.Value)
+		}
 	}
-
-	stmt, err := database.Prepare("UPDATE Users SET uuid = '', DateCookie = '' WHERE uuid = ?")
-	CheckErr("2- logout :", err)
-	stmt.Exec(c.Value)
-
-	cookie := &http.Cookie{
-		Name:    "user_token",
-		Value:   "",
-		Expires: time.Unix(0, 0),
-		MaxAge:  -1,
-		Domain:  data.SITE_DOMAIN,
-		Path:    "/",
+	for _, cookie := range sessionCookies("", time.Time{}) {
+		http.SetCookie(w, cookie)
 	}
-	http.SetCookie(w, cookie)
 }

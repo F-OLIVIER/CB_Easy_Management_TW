@@ -31,7 +31,8 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
 export function sanitizeHtml(html: string): string {
   return DOMPurify.sanitize(html, {
     USE_PROFILES: { html: true },
-    FORBID_ATTR: ["style"],
+    // style/class/id : un post ne doit pas pouvoir imiter l'interface de l'application (faux boutons, notifications…)
+    FORBID_ATTR: ["style", "class", "id"],
     FORBID_TAGS: ["form", "input", "button", "textarea", "select", "style"],
   });
 }

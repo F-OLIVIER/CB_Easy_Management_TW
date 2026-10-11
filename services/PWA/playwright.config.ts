@@ -24,10 +24,10 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: /(mobile|security)\.spec\.ts/ },
+    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: /(^|\/)(mobile|security)\.spec\.ts$/ },
     { name: "mobile", use: { ...devices["Pixel 7"] }, testMatch: /mobile\.spec\.ts/ },
-    // Image de production (Nginx) : en-têtes de sécurité et CSP appliquée à l'application réelle
-    { name: "prod", use: { ...devices["Desktop Chrome"], baseURL: PROD_URL }, testMatch: /security\.spec\.ts/ },
+    // Image de production (Nginx) : en-têtes de sécurité, CSP, et protections du backend derrière le vrai proxy
+    { name: "prod", use: { ...devices["Desktop Chrome"], baseURL: PROD_URL }, testMatch: /(^|\/)(backend-)?security\.spec\.ts$/ },
   ],
   webServer: {
     command: `npx vite --port ${PWA_PORT} --strictPort`,

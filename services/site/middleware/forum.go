@@ -5,7 +5,6 @@ import (
 	data "easemanagementtw/internal"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -28,6 +27,9 @@ func Forum(database *sql.DB) (listpost []data.Post) {
 		var post data.Post
 		err := rows.Scan(&post.ID, &post.Date, &post.Title, &post.Content, &post.Valid, &post.Archive, &post.Author)
 		CheckErr("2- scan Forum", err)
+		// Nettoyage aussi à l'affichage : couvre les posts enregistrés avant le nettoyage à la saisie
+		post.Title = PlainText(post.Title)
+		post.Content = SanitizeRichText(post.Content)
 		post.Comments = SearchPostComment(post.ID, database)
 		listpost = append(listpost, post)
 	}
@@ -53,6 +55,7 @@ func SearchPostComment(post_ID string, database *sql.DB) (listComment []*data.Po
 		comment := &data.Post{}
 		err := rows.Scan(&comment.ID, &comment.Date, &comment.Content, &comment.Author)
 		CheckErr("2- scan comment SearchPostComment", err)
+		comment.Content = SanitizeRichText(comment.Content)
 		listComment = append(listComment, comment)
 	}
 
@@ -63,8 +66,10 @@ func NewPost(r *http.Request, author string, database *sql.DB) (notif data.Notif
 	var newpost data.Post
 	err := json.NewDecoder(r.Body).Decode(&newpost)
 	CheckErr("Erreur de décodage JSON NewPost", err)
+	newpost.Title = PlainText(newpost.Title)
+	newpost.Content = SanitizeRichText(newpost.Content)
 
-	if newpost.Title != "" && !strings.Contains(strings.ToLower(newpost.Title), "<script>") && newpost.Content != "" && !strings.Contains(strings.ToLower(newpost.Content), "<script>") {
+	if newpost.Title != "" && newpost.Content != "" {
 		stmt, err := database.Prepare("INSERT INTO Forum(Author, Date, Title, Content) Values(?,?,?,?)")
 		CheckErr("2- INSERT NewPost", err)
 		stmt.Exec(author, time.Now(), newpost.Title, newpost.Content)
@@ -110,8 +115,9 @@ func NewComment(r *http.Request, author string, database *sql.DB) (notif data.No
 	var newcomment data.Post
 	err := json.NewDecoder(r.Body).Decode(&newcomment)
 	CheckErr("Erreur de décodage JSON NewPost", err)
+	newcomment.Content = SanitizeRichText(newcomment.Content)
 
-	if newcomment.Content != "" && !strings.Contains(strings.ToLower(newcomment.Content), "<script>") && !strings.Contains(strings.ToLower(newcomment.Content), "</script>") {
+	if newcomment.Content != "" {
 		stmt, err := database.Prepare("INSERT INTO Comments(Post_ID, Author, Date, Content) Values(?,?,?,?)")
 		CheckErr("1- INSERT NewComment", err)
 		stmt.Exec(newcomment.ID, author, time.Now(), newcomment.Content)
@@ -159,10 +165,22 @@ func NewComment(r *http.Request, author string, database *sql.DB) (notif data.No
 	return notif
 }
 
-func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Notif) {
+func Modifpost(r *http.Request, author string, isAdmin bool, database *sql.DB) (notif data.Notif) {
 	var modifpost data.Post
 	err := json.NewDecoder(r.Body).Decode(&modifpost)
 	CheckErr("Erreur de décodage JSON NewPost", err)
+	notif.Notif = true
+
+	// Validation, archivage et suppression : administrateurs uniquement. Signalement : tout utilisateur.
+	if modifpost.Content != "report" && !isAdmin {
+		LogFile("Modération du forum refusée (non administrateur) : utilisateur " + author + ", post " + modifpost.ID + ", action " + modifpost.Content)
+		notif.Type = "error"
+		notif.Content = data.ListLanguage{
+			FR: "Action réservée aux administrateurs.",
+			EN: "Action reserved for administrators.",
+		}
+		return notif
+	}
 
 	exist := 0
 	var discordID, discordName, userLangage, titlepost string
@@ -192,7 +210,7 @@ func Modifpost(r *http.Request, author string, database *sql.DB) (notif data.Not
 			FR: "Erreur 500, post inexistant.",
 			EN: "500 error, post does not exist.",
 		}
-
+		return notif
 	}
 
 	if modifpost.Content == "report" {

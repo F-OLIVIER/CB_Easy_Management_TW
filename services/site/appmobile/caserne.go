@@ -27,6 +27,10 @@ func UpdateAppCaserne(newCaserne data.ChangeUnitCaserne, database *sql.DB) {
 			doctrineInflu := strings.Split(doctrineRaw, ",")
 
 			for _, unit := range newCaserne.NewAppUnitCaserne {
+				// L'ID devient un nom de colonne SQL : chiffres uniquement (injection SQL)
+				if !utils.IsUnitColumn("Unit" + unit.ID) {
+					continue
+				}
 				// Mise à jour du level
 				if unit.Lvl != "" {
 					setConditionslevel = append(setConditionslevel, "Unit"+unit.ID+" = ?") // Liste des colonnes à set

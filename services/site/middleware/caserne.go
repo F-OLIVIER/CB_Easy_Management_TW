@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -163,12 +164,27 @@ func CaserneUser(userID, id_house string, database *sql.DB) (ListUnit []data.Uni
 	return ListUnit
 }
 
+// Nom de colonne d'unité des tables Caserne : "Unit" suivi de l'ID de l'unité.
+// Les noms de colonnes ne pouvant pas être paramétrés en SQL, toute autre valeur est rejetée (injection SQL).
+var unitColumnPattern = regexp.MustCompile(`^Unit[0-9]{1,5}$`)
+
+// IsUnitColumn indique si la valeur est un nom de colonne d'unité valide
+func IsUnitColumn(column string) bool {
+	return unitColumnPattern.MatchString(column)
+}
+
 func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (usermaj string) {
 	var newCaserne data.ChangeUnitCaserne
 	err := json.NewDecoder(r.Body).Decode(&newCaserne)
 	CheckErr("Erreur de décodage JSON MAJCaserne", err)
 
 	if userID == "0" {
+		// Caserne d'un autre joueur (gestionnaire) : uniquement un joueur de la même maison
+		var houseOfUser string
+		if err := database.QueryRow("SELECT ID_House FROM Users WHERE ID = ?", newCaserne.Userid).Scan(&houseOfUser); err != nil || houseOfUser != id_House {
+			LogFile("Mise à jour de caserne refusée : joueur " + newCaserne.Userid + " hors de la maison " + id_House)
+			return ""
+		}
 		userID = newCaserne.Userid
 		usermaj = SpecificUserInfo(userID, database)
 	}
@@ -179,8 +195,12 @@ func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (use
 	var doctrineInfluence []string
 
 	for _, unit := range newCaserne.NewLvlUnitCaserne {
+		// Ligne attendue : [colonne "UnitX", level, maîtrise, doctrine] ; toute autre forme est ignorée
+		if len(unit) < 4 || !IsUnitColumn(unit[0]) {
+			continue
+		}
 		// mise à jour du level
-		if unit[1] != "" && strings.Contains(unit[0], "Unit") {
+		if unit[1] != "" {
 			if unit[1] == "-1" { // Suppression de l'unité
 				setConditionslevel = append(setConditionslevel, unit[0]+" = ?") // Liste des colonnes à set
 				updateLevel = append(updateLevel, "0")                          // Liste des valeurs des colonnes Caserne
@@ -191,7 +211,7 @@ func MAJCaserne(r *http.Request, userID, id_House string, database *sql.DB) (use
 		}
 
 		// mise à jour de la maitrise
-		if unit[2] != "" && strings.Contains(unit[0], "Unit") {
+		if unit[2] != "" {
 			if unit[1] == "-1" { // Suppression de l'unité
 				setConditionsmaitrise = append(setConditionsmaitrise, unit[0]+" = ?") // Liste des colonnes à set
 				updateMaitrise = append(updateMaitrise, "0")                          // Liste des valeur des colonnes CaserneMaitrise

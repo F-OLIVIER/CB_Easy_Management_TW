@@ -1,7 +1,10 @@
 // Configuration issue des variables d'environnement (voir env.example).
 
-/** Nom du cookie de session posé par le backend Go */
-export const COOKIE_NAME = "user_token";
+/**
+ * Cookie indicateur de session posé par le backend Go. Le cookie de session lui-même (user_token)
+ * est HttpOnly : illisible en JavaScript, donc hors de portée d'une faille XSS.
+ */
+export const SESSION_FLAG_COOKIE = "user_logged";
 
 /** Clés localStorage partagées avec l'ancien front (même domaine = même stockage) */
 export const STORAGE_KEYS = {
@@ -11,7 +14,7 @@ export const STORAGE_KEYS = {
   guildIcons: "discord_guild_icons",
 } as const;
 
-/** Cache du service worker contenant les avatars Discord (voir vite.config.ts), vidé à la déconnexion */
+/** Ancien cache des avatars Discord (versions précédentes de la PWA) : supprimé au démarrage et à la déconnexion */
 export const AVATAR_CACHE = "emtw-discord-avatars";
 
 const redirectUri = import.meta.env.VITE_DISCORD_REDIRECT_URI || `${window.location.origin}/discord`;

@@ -303,11 +303,11 @@ async function listInscripted(data, translate, Language) {
       divuser.appendChild(name);
 
       let influence = await createHTMLElement("div", "inscriptedinfluence");
-      influence.innerHTML = player.Influence;
+      influence.textContent = player.Influence;
       divuser.appendChild(influence);
 
       let classPlayer = await createHTMLElement("div", "inscriptedclass");
-      classPlayer.innerHTML = player.GameCharacter[Language];
+      classPlayer.textContent = player.GameCharacter[Language];
       divuser.appendChild(classPlayer);
       divinscripted.appendChild(divuser);
     }

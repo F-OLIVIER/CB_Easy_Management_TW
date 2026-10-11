@@ -18,6 +18,7 @@ interface Fixtures {
   /** Ouvre une session pour un rôle (cookie de session + maison sélectionnée) */
   loginAs: (role: Role) => Promise<void>;
   /** Simule Discord (OAuth2 + API) ; renvoie les paramètres de la demande d'autorisation */
+  /** Simule Discord dans le navigateur. Le jeton renvoyé (jeton-<id>) est vérifié par le backend auprès du faux serveur Discord. */
   mockDiscord: (identity: DiscordIdentity, options?: { tamperState?: boolean }) => Promise<{ authorizeParams: () => URLSearchParams | null }>;
   /** Clique sur « Oui » dans la fenêtre de confirmation */
   confirm: () => Promise<void>;
@@ -39,7 +40,12 @@ export const test = base.extend<Fixtures & { _isolation: void }>({
   loginAs: async ({ context, baseURL }, use) => {
     await use(async (role) => {
       const user = USERS[role];
-      await context.addCookies([{ name: "user_token", value: user.token, domain: new URL(baseURL!).hostname, path: "/" }]);
+      const domain = new URL(baseURL!).hostname;
+      // Comme le backend : cookie de session HttpOnly + cookie indicateur lisible par la PWA
+      await context.addCookies([
+        { name: "user_token", value: user.token, domain, path: "/", httpOnly: true, sameSite: "Lax" },
+        { name: "user_logged", value: "1", domain, path: "/", sameSite: "Lax" },
+      ]);
       await context.addInitScript((house) => {
         if (!localStorage.getItem("user_house")) localStorage.setItem("user_house", house);
         if (!localStorage.getItem("selectedLang")) localStorage.setItem("selectedLang", "fr");
@@ -53,7 +59,7 @@ export const test = base.extend<Fixtures & { _isolation: void }>({
       await page.route("https://discord.com/oauth2/authorize?**", (route: Route) => {
         authorizeParams = new URL(route.request().url()).searchParams;
         const state = options.tamperState ? "etat-falsifie" : authorizeParams.get("state");
-        const redirect = `${authorizeParams.get("redirect_uri")}#token_type=Bearer&access_token=jeton-test&state=${state}`;
+        const redirect = `${authorizeParams.get("redirect_uri")}#token_type=Bearer&access_token=jeton-${identity.id}&state=${state}`;
         return route.fulfill({ status: 302, headers: { location: redirect } });
       });
       await page.route("https://discord.com/api/users/@me", (route) => route.fulfill({ json: { id: identity.id, username: identity.username } }));

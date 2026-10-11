@@ -178,7 +178,8 @@ function containerviewGroup(data, translate) {
 
         if (currentPlayer.commentaire != undefined && currentPlayer.commentaire != "") {
           let linecomment = createHTMLElement("div", "linecomment");
-          linecomment.innerHTML = `ℹ️&nbsp;&nbsp; ${currentPlayer.commentaire}`;
+          // Texte saisi par un gestionnaire : affiché comme texte, jamais comme HTML
+          linecomment.textContent = `ℹ️\u00a0\u00a0 ${currentPlayer.commentaire}`;
           linedivuser.appendChild(linecomment);
         }
 

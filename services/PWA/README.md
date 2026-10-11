@@ -56,6 +56,24 @@ npm run test:e2e
 Documentation complète (fonctionnement, données de test, écriture d'un test, dépannage) :
 [`e2e/README.md`](e2e/README.md).
 
+## Sécurité et RGPD
+
+- **En-têtes de sécurité** (`security-headers.conf`, inclus par `nginx.conf.template`) : CSP stricte (aucun script
+  tiers ni en ligne), HSTS, `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, COOP ;
+  version de Nginx masquée. Les en-têtes du backend relayé sont remplacés (`proxy-backend.conf`).
+- **Aucun tiers** hors Discord : polices hébergées avec l'application (`@fontsource`), pas de Google Fonts,
+  pas de mesure d'audience.
+- **Minimisation** : la liste des serveurs Discord reste en mémoire ; seuls les logos des maisons de l'utilisateur
+  sont conservés. Maison, logos et ancien cache d'avatars sont effacés à la déconnexion et au démarrage sans session.
+- **Forum** : HTML nettoyé par DOMPurify à l'affichage (scripts, événements, `style`, `class` et `id` retirés).
+- **Mentions légales** (`src/i18n/*.json`, section `mention`) : données traitées, base légale, droits, stockage
+  dans le navigateur, partage avec Discord.
+- **Backend** : identité Discord vérifiée côté serveur (jeton délivré pour l'application `DISCORD_CLIENT_ID`,
+  variable obligatoire), requêtes SQL de la caserne protégées contre l'injection,
+  cookie de session `HttpOnly` + `SameSite=Lax`, requêtes d'un autre site refusées (en-tête `Origin`), droits
+  administrateur/propriétaire contrôlés, HTML du forum nettoyé (bluemonday), limiteur de débit par client.
+- Vérifié par les tests e2e `security.spec.ts` et `backend-security.spec.ts` (ce dernier via Vite et via Nginx).
+
 ## Architecture
 
 ```
@@ -77,8 +95,10 @@ Le front reproduit volontairement certains comportements attendus par le backend
 
 - `saveGroupInDB` ignore la 1re ligne envoyée (ex-ligne d'en-tête du DOM) : une ligne vide est ajoutée en tête.
 - Les noms de groupe ne sont enregistrés que si le 1er élément de `namegroup` est non vide : seuls les noms saisis sont envoyés.
-- Le limiteur de débit global (5 req/s) répond `200` avec un corps vide : le client réessaie automatiquement.
-- Sans cookie, le backend plante (réponse vide) : le client ne l'appelle pas et renvoie vers l'accueil.
+- Le limiteur de débit (5 req/s par client) répond `429` : le client réessaie automatiquement.
+- Le cookie de session `user_token` est `HttpOnly` : la PWA détecte la session grâce au cookie indicateur
+  `user_logged` posé par le backend. Connexion : la PWA envoie le jeton Discord à `/api/discord`, le backend vérifie
+  lui-même l'identité auprès de Discord. Déconnexion : `POST /api/logout`.
 - Le cookie de session `user_token` est partagé avec l'ancien front (les cookies ignorent le port) ; le `localStorage`
   (`selectedLang`, `user_house`) reprend les mêmes clés mais reste propre à chaque origine (port compris).
 
@@ -86,7 +106,8 @@ Le front reproduit volontairement certains comportements attendus par le backend
 
 - Installable (manifeste, icônes, bannière « Installer l'application »), mise à jour proposée à l'utilisateur.
 - App shell en cache (consultation rapide, démarrage hors-ligne) ; l'API n'est **jamais** mise en cache
-  (`NetworkOnly`), les images du backend et avatars Discord sont mis en cache (`StaleWhileRevalidate`).
+  (`NetworkOnly`), les images du backend le sont (`StaleWhileRevalidate`). Les avatars et logos Discord ne sont
+  pas mis en cache (données personnelles).
 - Le service worker n'est actif qu'en HTTPS (ou sur `localhost`).
 
 ## Mise en production (après validation)

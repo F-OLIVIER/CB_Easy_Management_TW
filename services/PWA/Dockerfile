@@ -19,5 +19,7 @@ FROM nginx:1.27-alpine
 # Le point d'entrée Nginx remplace ${SITE_UPSTREAM} au démarrage
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY security-headers.conf /etc/nginx/snippets/security-headers.conf
+# Contient ${SITE_UPSTREAM} : traité comme un template (sortie : /etc/nginx/conf.d/snippets/, hors include *.conf)
+COPY proxy-backend.conf /etc/nginx/templates/snippets/proxy-backend.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80

@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import { router } from "./router";
+import { cleanupStaleSession } from "./stores/session";
 // Polices hébergées avec l'application (aucune requête vers Google Fonts : adresse IP des visiteurs non transmise).
 // Sous-ensembles latin uniquement : caractères français et anglais.
 import "@fontsource/agbalumo/latin-400.css";
@@ -15,4 +16,5 @@ import "@fontsource/inter/latin-700.css";
 import "@fontsource/inter/latin-ext-700.css";
 import "./styles/main.css";
 
+cleanupStaleSession();
 createApp(App).use(router).mount("#app");

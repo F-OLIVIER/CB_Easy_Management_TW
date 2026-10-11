@@ -51,7 +51,9 @@ test.describe("Forum", () => {
     const comments = queryAll<{ Author: number; Content: string }>("SELECT Author, Content FROM Comments WHERE Post_ID = ?", FORUM.active.id);
     expect(comments).toHaveLength(1);
     expect(comments[0]).toMatchObject({ Author: USERS.member.id });
-    expect(comments[0].Content).toContain("Merci pour l'accueil !");
+    // HTML nettoyé par le serveur : apostrophe encodée (&#39;), affichée normalement
+    expect(comments[0].Content).toMatch(/Merci pour l(&#39;|')accueil !/);
+    await expect(modal.locator(".comment").getByText("Merci pour l'accueil !")).toBeVisible();
   });
 
   test("le HTML piégé d'un post n'est jamais exécuté", async ({ page, loginAs }) => {
@@ -63,5 +65,8 @@ test.describe("Forum", () => {
     expect(await page.evaluate(() => (window as unknown as { __xss?: boolean }).__xss)).toBeUndefined();
     await expect(modal.locator(".rich-content script")).toHaveCount(0);
     await expect(modal.locator(".rich-content img[onerror]")).toHaveCount(0);
+    // Pas d'imitation de l'interface : classes, identifiants et styles retirés
+    await expect(modal.locator(".rich-content").getByText("Faux message")).toBeVisible();
+    await expect(modal.locator(".rich-content [class], .rich-content [id], .rich-content [style]")).toHaveCount(0);
   });
 });

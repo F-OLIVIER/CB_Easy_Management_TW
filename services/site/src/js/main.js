@@ -20,7 +20,8 @@ let path = window.location.pathname;
 switch (path) {
   case "/":
     // Accueil
-    if (document.cookie.split(";").some((item) => item.trim().startsWith(cookieName + "="))) {
+    // Cookie indicateur de session (le cookie de session est HttpOnly)
+    if (document.cookie.split(";").some((item) => item.trim().startsWith("user_logged="))) {
       window.location.href = "/home";
     } else {
       accueil({});

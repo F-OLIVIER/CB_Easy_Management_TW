@@ -111,7 +111,7 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 				groupNumber := strings.Replace(currentline.NameGroup, "group", "", 1)
 				stmt2, errdb := database.Prepare(requestInsertDB)
 				CheckErr("2- INSERT - Requete DB SaveCreateGroup", errdb)
-				stmt2.Exec(username_ID, groupNumber, unit1, unit2, unit3, unit4, currentline.Comment)
+				stmt2.Exec(username_ID, groupNumber, PlainText(unit1), PlainText(unit2), PlainText(unit3), PlainText(unit4), PlainText(currentline.Comment))
 
 			}
 		}
@@ -121,7 +121,7 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 	if len(listGroup.Namegroup) > 0 && len(listGroup.Namegroup[0]) > 0 {
 		// fmt.Println("listGroup : ", listGroup.Namegroup)
 		for _, arrayGroup := range listGroup.Namegroup {
-			if len(arrayGroup) == 0 {
+			if len(arrayGroup) < 2 {
 				continue
 			}
 
@@ -137,12 +137,12 @@ func SaveCreateGroup(r *http.Request, id_House string, database *sql.DB) (notif 
 				requeststmtNotExist := fmt.Sprintf("INSERT INTO NameGroupGvG%s (GroupNumber,NameGroup) Values(?,?)", id_House)
 				stmtNotExist, errdb := database.Prepare(requeststmtNotExist)
 				CheckErr("2- Requete DB  INSERT NameGroup", errdb)
-				stmtNotExist.Exec(arrayGroup[0], arrayGroup[1])
+				stmtNotExist.Exec(arrayGroup[0], PlainText(arrayGroup[1]))
 			} else { // nom de groupe existant
 				requeststmtExist := fmt.Sprintf("UPDATE NameGroupGvG%s SET NameGroup = ? WHERE GroupNumber = ?", id_House)
 				stmtExist, errdb := database.Prepare(requeststmtExist)
 				CheckErr("2- Requete DB  update NameGroup", errdb)
-				stmtExist.Exec(arrayGroup[1], arrayGroup[0])
+				stmtExist.Exec(PlainText(arrayGroup[1]), arrayGroup[0])
 			}
 		}
 	}

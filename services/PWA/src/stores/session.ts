@@ -1,6 +1,6 @@
 import { computed, reactive, ref } from "vue";
 import type { ApiResponse, Gestion, House, UserInfo } from "../api/types";
-import { AVATAR_CACHE, COOKIE_NAME, STORAGE_KEYS } from "../config";
+import { AVATAR_CACHE, SESSION_FLAG_COOKIE, STORAGE_KEYS } from "../config";
 import { isLang, setLang } from "../i18n";
 
 interface SessionState {
@@ -68,7 +68,7 @@ export function setHouse(id: string | null): void {
 }
 
 export function hasSessionCookie(): boolean {
-  return document.cookie.split(";").some((item) => item.trim().startsWith(`${COOKIE_NAME}=`));
+  return document.cookie.split(";").some((item) => item.trim().startsWith(`${SESSION_FLAG_COOKIE}=`));
 }
 
 /** Met à jour la session à partir d'une réponse authentifiée du backend */
@@ -82,6 +82,19 @@ export function applyResponse(data: ApiResponse): void {
   if (session.houses.length === 1) setHouse(session.houses[0].Discord);
 }
 
+function deleteAvatarCache(): void {
+  if ("caches" in window) caches.delete(AVATAR_CACHE).catch(() => undefined);
+}
+
+/**
+ * Au démarrage : sans session (déconnexion, ou cookie expiré application fermée),
+ * aucune donnée liée à l'ancien utilisateur ne doit rester sur l'appareil.
+ */
+export function cleanupStaleSession(): void {
+  deleteAvatarCache();
+  if (!hasSessionCookie() && (localStorage.getItem(STORAGE_KEYS.house) || localStorage.getItem(STORAGE_KEYS.guildIcons))) clearSession();
+}
+
 export function clearSession(): void {
   session.user = null;
   session.houses = [];
@@ -91,16 +104,18 @@ export function clearSession(): void {
   pendingGuildIcons = null;
   guildIcons.value = {};
   localStorage.removeItem(STORAGE_KEYS.guildIcons);
-  if ("caches" in window) caches.delete(AVATAR_CACHE).catch(() => undefined);
+  deleteAvatarCache();
   // Le backend pose le cookie avec Domain=<SITE_DOMAIN> : on tente les deux variantes
-  const expired = `${COOKIE_NAME}=; Max-Age=0; path=/`;
+  // Indicateur de session effacé localement (le cookie HttpOnly est supprimé par le serveur à la déconnexion)
+  const expired = `${SESSION_FLAG_COOKIE}=; Max-Age=0; path=/`;
   document.cookie = expired;
   document.cookie = `${expired}; domain=${window.location.hostname}`;
 }
 
 export async function logout(): Promise<void> {
   try {
-    await fetch("/api/logout", { credentials: "same-origin" });
+    // POST obligatoire (le backend refuse la déconnexion en GET)
+    await fetch("/api/logout", { method: "POST", credentials: "same-origin" });
   } catch {
     // déconnexion locale même si le serveur est injoignable
   }

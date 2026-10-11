@@ -53,14 +53,10 @@ onMounted(async () => {
   }
 
   try {
-    const authorization = `${tokenType} ${accessToken}`;
-    const response = await fetch("https://discord.com/api/users/@me", { headers: { authorization } });
-    if (!response.ok) throw new Error(`Discord ${response.status}`);
-    const { id, username } = (await response.json()) as { id: string; username: string };
-    await fetchGuildIcons(authorization);
+    await fetchGuildIcons(`${tokenType} ${accessToken}`);
 
-    // Le backend pose le cookie de session si l'utilisateur existe en base
-    const data = await postJson<ApiResponse>("/api/discord", { id, username });
+    // Le backend vérifie le jeton auprès de Discord (identité et application) puis pose le cookie de session
+    const data = await postJson<ApiResponse>("/api/discord", { access_token: accessToken });
     notify(data.Gestion?.Notification);
     router.replace(data.Gestion?.Logged ? "/home" : "/");
   } catch (error) {

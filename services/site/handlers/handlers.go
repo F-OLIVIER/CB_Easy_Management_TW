@@ -14,11 +14,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var tb = utils.NewTokenBucket(5, 5)
+// Limite de débit par client (adresse IP) : 5 requêtes/s en rafale, puis 5 par seconde
+var limiter = utils.NewIPRateLimiter(5, 5)
 
 // Home page "/"
 func ServeDispatch(w http.ResponseWriter, r *http.Request) {
-	if tb.Request(1) {
+	if limiter.Allow(w, r) {
 		var ts *template.Template
 		var err error
 
@@ -37,8 +38,8 @@ func ServeDispatch(w http.ResponseWriter, r *http.Request) {
 
 // Discord transition, user connects
 func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {
-	if tb.Request(1) {
-		if r.Method == "POST" {
+	if limiter.Allow(w, r) {
+		if r.Method == "POST" && !utils.RejectCrossOrigin(w, r) {
 			var sendHTML *data.SendHTML
 
 			switch r.URL.Path {
@@ -91,21 +92,32 @@ func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	if tb.Request(1) {
-		_, err := r.Cookie("user_token")
-		if err != http.ErrNoCookie {
-			database, err := sql.Open("sqlite3", data.ADRESS_DB)
-			utils.CheckErr("open db in homehandler", err)
-			defer database.Close()
-			utils.Logout(w, r, database)
+	if limiter.Allow(w, r) {
+		// POST uniquement, depuis le même site : une image ou un lien d'un autre site ne peut pas déconnecter
+		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", http.MethodPost)
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			return
 		}
+		if utils.RejectCrossOrigin(w, r) {
+			return
+		}
+		database, err := sql.Open("sqlite3", data.ADRESS_DB)
+		utils.CheckErr("open db in LogoutHandler", err)
+		defer database.Close()
+		utils.Logout(w, r, database)
+		w.WriteHeader(http.StatusNoContent)
 	}
 }
 
 func ApiHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("r.URL.Path in ApiHandler : ", r.URL.Path)
 
-	if tb.Request(1) {
+	if limiter.Allow(w, r) {
+		// Requêtes d'un autre site refusées (CSRF), en plus du cookie SameSite=Lax
+		if utils.RejectCrossOrigin(w, r) {
+			return
+		}
 		var sendHTML *data.SendHTML
 		// Read cookie
 		cookie, err1 := r.Cookie("user_token")
@@ -134,9 +146,12 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 
 				id_House := ""
 				var currentUser data.ScearchUserInfo
+				// Seules les maisons de l'utilisateur sont accessibles : aucune donnée d'une autre maison
 				if id_Server == "null" {
 					// Si pas de maison set par l'utilisateur la 1er de la liste est prise
-					id_House = list_houses[0].ID
+					if len(list_houses) > 0 {
+						id_House = list_houses[0].ID
+					}
 				} else {
 					// Recherche de la maison set par l'utilisateur
 					for _, values := range list_houses {
@@ -199,7 +214,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 						sendHTML.Forum = utils.Forum(database)
 
 					case "/api/modifpostforum/":
-						gestion.Notification = utils.Modifpost(r, currentUser.User_id, database)
+						gestion.Notification = utils.Modifpost(r, currentUser.User_id, currentUser.Admin, database)
 						sendHTML.Forum = utils.Forum(database)
 
 					// --------------------------------------------------
@@ -320,13 +335,24 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 							if r.Method == "POST" {
 								usermaj := utils.MAJCaserne(r, "0", id_House, database)
 
-								gestion.Notification = data.Notif{
-									Notif: true,
-									Type:  "success",
-									Content: data.ListLanguage{
-										FR: "La caserne de " + usermaj + " a bien été mise à jour.",
-										EN: "The barracks of " + usermaj + " have been successfully updated.",
-									},
+								if usermaj == "" {
+									gestion.Notification = data.Notif{
+										Notif: true,
+										Type:  "error",
+										Content: data.ListLanguage{
+											FR: "Ce joueur n'appartient pas à votre maison.",
+											EN: "This player does not belong to your house.",
+										},
+									}
+								} else {
+									gestion.Notification = data.Notif{
+										Notif: true,
+										Type:  "success",
+										Content: data.ListLanguage{
+											FR: "La caserne de " + usermaj + " a bien été mise à jour.",
+											EN: "The barracks of " + usermaj + " have been successfully updated.",
+										},
+									}
 								}
 
 								sendHTML.ListUnit = utils.CaserneUser(currentUser.User_id, currentUser.ID_House, database)
@@ -365,7 +391,7 @@ func ApiHandler(w http.ResponseWriter, r *http.Request) {
 							gestion.Notification = utils.UploadInformationsBot(r, database)
 
 						case "/api/UpdateAdmin/":
-							notif := utils.UpdateAdministration(r, database)
+							notif := utils.UpdateAdministration(r, currentUser.Owner, database)
 							gestion.Notification = notif
 
 						default:
@@ -426,7 +452,7 @@ func AppMobileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tb.Request(1) {
+	if limiter.Allow(w, r) {
 		// Open database
 		database, errdb := sql.Open("sqlite3", data.ADRESS_DB)
 		utils.CheckErr("open db in homehandler", errdb)
@@ -522,7 +548,7 @@ func AppMajCaserneHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tb.Request(1) {
+	if limiter.Allow(w, r) {
 		// Open database
 		database, errdb := sql.Open("sqlite3", data.ADRESS_DB)
 		utils.CheckErr("open db in homehandler", errdb)

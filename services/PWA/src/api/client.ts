@@ -10,8 +10,8 @@ export class SessionExpiredError extends Error {
   }
 }
 
-// Le backend applique un limiteur de débit global (5 req/s) et répond
-// alors 200 avec un corps vide, sans rien traiter : on peut réessayer.
+// Le backend limite le débit par client (5 req/s) : réponse 429, on réessaie.
+// (Les anciennes versions du backend répondaient 200 avec un corps vide : même traitement.)
 const MAX_ATTEMPTS = 5;
 const RETRY_DELAY_MS = 300;
 
@@ -29,6 +29,10 @@ export async function postJson<T>(url: string, body?: unknown): Promise<T> {
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     const response = await fetch(url, init);
+    if (response.status === 429) {
+      await sleep(RETRY_DELAY_MS * attempt);
+      continue;
+    }
     if (!response.ok) throw new Error(`Erreur réseau : ${response.status}`);
 
     const text = await response.text();
@@ -49,7 +53,7 @@ export function notify(notification: Notif | undefined): void {
  * Met à jour la session et affiche la notification éventuelle du backend.
  */
 export async function apiCall(endpoint: string, body?: unknown): Promise<ApiResponse> {
-  // Sans cookie, le backend plante (réponse vide) : inutile de l'appeler
+  // Sans session, inutile d'appeler le backend
   if (!hasSessionCookie()) {
     clearSession();
     throw new SessionExpiredError();

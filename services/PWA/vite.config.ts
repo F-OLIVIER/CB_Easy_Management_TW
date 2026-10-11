@@ -70,16 +70,8 @@ export default defineConfig(({ mode }) => {
                 expiration: { maxEntries: 300, maxAgeSeconds: 60 * 60 * 24 * 30, purgeOnQuotaError: true },
               },
             },
-            {
-              urlPattern: ({ url }) => url.origin === "https://cdn.discordapp.com",
-              handler: "StaleWhileRevalidate",
-              options: {
-                // Nom repris par AVATAR_CACHE (src/config.ts) : cache vidé à la déconnexion
-                cacheName: "emtw-discord-avatars",
-                // Réponses opaques (no-cors) : comptées lourdement dans le quota du navigateur
-                expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 7, purgeOnQuotaError: true },
-              },
-            },
+            // Avatars et logos Discord volontairement non mis en cache : données personnelles,
+            // et la CSP du service worker (connect-src) n'autorise pas cdn.discordapp.com.
           ],
         },
       }),

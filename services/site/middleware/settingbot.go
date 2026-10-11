@@ -29,6 +29,8 @@ func UpdateSettingbot(r *http.Request, id_user, id_House string, database *sql.D
 
 	modif := 0
 	if newSetting.House_name != nil {
+		cleanName := PlainText(*newSetting.House_name)
+		newSetting.House_name = &cleanName
 		stmt, err := database.Prepare(`UPDATE Houses SET House_name = ? WHERE ID = ?;`)
 		if err != nil {
 			CheckErr("Update House_name UpdateSettingbot ", err)

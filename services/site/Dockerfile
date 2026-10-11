@@ -1,7 +1,7 @@
 # Site internet (backend Go + ancien front) — Easy Management TW
 # go-sqlite3 nécessite CGO : build et exécution sur la même base glibc (Debian bookworm).
 
-FROM golang:1.24-bookworm AS build
+FROM golang:1.27-bookworm AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download

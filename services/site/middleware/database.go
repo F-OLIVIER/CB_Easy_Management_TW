@@ -368,10 +368,24 @@ func UpdateLanguage(r *http.Request, id_user string, database *sql.DB) {
 	stmt.Exec(user_receive.Language, id_user)
 }
 
-func UpdateAdministration(r *http.Request, database *sql.DB) (notif data.Notif) {
+func UpdateAdministration(r *http.Request, isOwner bool, database *sql.DB) (notif data.Notif) {
 	var datajson data.AdministrateBot
 	err := json.NewDecoder(r.Body).Decode(&datajson)
 	CheckErr("Erreur de décodage JSON SaveCreateGroup", err)
+
+	// Information à toutes les maisons et message privé Discord : propriétaire uniquement
+	if (datajson.Informationdiscord || datajson.DmDiscord) && !isOwner {
+		LogFile("Action propriétaire refusée (information Discord / message privé) pour un administrateur non propriétaire")
+		notif.Notif = true
+		notif.Type = "error"
+		notif.Content = data.ListLanguage{
+			FR: "Action réservée au propriétaire.",
+			EN: "Action reserved for the owner.",
+		}
+		return notif
+	}
+	datajson.NewWeapon.FR = PlainText(datajson.NewWeapon.FR)
+	datajson.NewWeapon.EN = PlainText(datajson.NewWeapon.EN)
 
 	if !datajson.Informationdiscord && !datajson.DmDiscord && datajson.NewWeapon.FR != "" && datajson.NewWeapon.EN != "" { // ajout d'une nouvelle arme de héros
 		// insertion de la nouvelle arme dans la db
@@ -445,6 +459,9 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) (notif data.Notif)
 			var formData data.AdministrateBot
 			err = json.Unmarshal([]byte(jsonData), &formData)
 			CheckErr("UploadInformationsBot: Erreur lors de la lecture des données JSON", err)
+			for _, name := range []*string{&formData.CreateUnit.Name.FR, &formData.CreateUnit.Name.EN, &formData.ChangeUnit.Newunitname.FR, &formData.ChangeUnit.Newunitname.EN} {
+				*name = PlainText(*name)
+			}
 			// fmt.Println("formData : ", formData)
 
 			// Image d'une arme de héros (traitement indépendant des unités)
@@ -761,7 +778,7 @@ func UpdateStat(r *http.Request, id_House string, database *sql.DB) (notif data.
 	}
 
 	for i := 0; i < len(newinfoStat.List); i++ {
-		CommentGestionnaire := newinfoStat.List[i].CommentGestionnaire
+		CommentGestionnaire := PlainText(newinfoStat.List[i].CommentGestionnaire)
 		if CommentGestionnaire != "" && (strings.Contains(CommentGestionnaire, "<script>") || strings.Contains(CommentGestionnaire, "</script>")) {
 			notif.Type = "error"
 			notif.Content = data.ListLanguage{

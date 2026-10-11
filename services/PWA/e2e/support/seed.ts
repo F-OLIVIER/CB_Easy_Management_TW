@@ -129,7 +129,7 @@ export function buildSeedDatabase(file: string): void {
     const insertPost = db.prepare("INSERT INTO Forum (ID, Author, Date, Title, Content, Valid, Archive) VALUES (?, ?, '2026-10-01 18:30:00', ?, ?, ?, 0)");
     insertPost.run(FORUM.active.id, USERS.officer.id, FORUM.active.title, "<p>Premier message du forum.</p>", 1);
     insertPost.run(FORUM.pending.id, USERS.member.id, FORUM.pending.title, "<p>Ce post attend un administrateur.</p>", 0);
-    insertPost.run(FORUM.xss.id, USERS.member.id, FORUM.xss.title, `<p>Bonjour</p><img src="x" onerror="window.__xss = true"><script>window.__xss = true</script>`, 1);
+    insertPost.run(FORUM.xss.id, USERS.member.id, FORUM.xss.title, `<p>Bonjour</p><img src="x" onerror="window.__xss = true"><script>window.__xss = true</script><p class="toast toast--error" id="faux-message" style="position:fixed">Faux message</p>`, 1);
   } finally {
     db.close();
   }

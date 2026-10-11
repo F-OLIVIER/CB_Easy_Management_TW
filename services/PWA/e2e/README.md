@@ -57,7 +57,7 @@ run.sh ─┬─ prépare e2e/.work/ (dossiers, contexte de build du backend)
 
 | Élément | Rôle |
 | --- | --- |
-| `../../../docker-compose.e2e.yml` | Les deux conteneurs et le réseau de test (projet Compose `emtw-e2e`) |
+| `../../../docker-compose.e2e.yml` | Les conteneurs et le réseau de test (projet Compose `emtw-e2e`) : backend, PWA de production (`pwa-e2e`, Nginx), lanceur |
 | `docker/run.sh` | Point d'entrée : préparation, build, lancement, nettoyage |
 | `docker/runner.Dockerfile` | Image du lanceur : `mcr.microsoft.com/playwright` + sources et dépendances de la PWA |
 | `docker/config.e2e.go` | `config.go` du backend de test : port `8080`, domaine `localhost`, propriétaire de test |
@@ -67,6 +67,19 @@ run.sh ─┬─ prépare e2e/.work/ (dossiers, contexte de build du backend)
 | `support/db.ts` | Remise à zéro et lecture directe de la base |
 | `support/env.ts` | Chemins, ports et constantes |
 | `../playwright.config.ts` | Configuration Playwright (projets, délais, serveur Vite) |
+
+### Faux serveur Discord
+
+Le backend vérifie chaque connexion auprès de Discord (`GET /oauth2/@me`). Dans les tests, il interroge le
+conteneur `discord-mock` (`docker/discord-mock.mjs`, variable `DISCORD_API_URL`) :
+
+| Jeton | Réponse |
+| --- | --- |
+| `jeton-<discordId>` | jeton valide, délivré pour l'application de test (`100000000000000000`) |
+| `jeton-autre-app-<discordId>` | jeton valide, délivré pour une autre application (doit être refusé) |
+| autre | 401 (jeton invalide) |
+
+Dans le navigateur, `mockDiscord()` simule la page d'autorisation Discord et renvoie `jeton-<id>`.
 
 ### Backend de test
 
@@ -161,7 +174,11 @@ interceptée survient dans la page.
   être affichée (voir `save()` dans `groups.spec.ts`).
 - **Contraintes natives des champs** (`min`, `max`, `pattern`) : le navigateur bloque l'envoi avant la PWA.
   Vérifier `input.validity` et l'absence de requête, plutôt qu'une notification (voir `character.spec.ts`).
-- **Fichiers `*mobile.spec.ts` :** exécutés sur un téléphone simulé (Pixel 7) ; les autres sur ordinateur.
+- **Projets :** `mobile.spec.ts` s'exécute sur un téléphone simulé (Pixel 7) ; `security.spec.ts` sur l'image de
+  production de la PWA (`pwa-e2e` : build + Nginx, adresse `http://pwa-e2e`) ; `backend-security.spec.ts` sur les
+  deux ; les autres sur le serveur Vite, sur ordinateur.
+- **Limiteur de débit :** le backend limite chaque client à 5 requêtes par seconde (réponse 429). Les appels
+  directs à l'API depuis un test doivent réessayer sur 429 (voir `call()` dans `backend-security.spec.ts`).
 
 ## Couverture
 
@@ -177,12 +194,14 @@ interceptée survient dans la page.
 | `forum.spec.ts` | Publication, validation par un administrateur, réponse, HTML piégé non exécuté |
 | `admin.spec.ts` | Remplacement de l'image d'une arme, ajout d'une arme |
 | `mobile.spec.ts` | Affichage sur téléphone sans débordement horizontal |
+| `backend-security.spec.ts` | **Protections du backend** (via Vite et via Nginx) : identité Discord vérifiée (sans jeton, jeton d'une autre application, jeton invalide), cookies `HttpOnly`/`SameSite`, requêtes d'un autre site refusées, déconnexion en GET refusée, droits administrateur/propriétaire, HTML nettoyé par le serveur, limiteur de débit par client |
+| `security.spec.ts` | **Image de production (Nginx)** : en-têtes de sécurité sur pages, fichiers, API et images relayées ; aucune ressource bloquée par la CSP ni domaine tiers ; éditeur du forum, aperçu d'image et export des groupes fonctionnels sous CSP |
 
 ## Configuration
 
 | Réglage | Valeur | Pourquoi |
 | --- | --- | --- |
-| Workers | `1` | Les tests partagent la base, et le backend limite le débit à 5 requêtes par seconde |
+| Workers | `1` | Les tests partagent la base, et le backend limite chaque client à 5 requêtes par seconde |
 | Délai par test / par assertion | 30 s / 10 s | `playwright.config.ts` |
 | Nouvel essai en cas d'échec | 0 (1 si `CI` est défini) | Pour ne pas masquer un test instable en local |
 | Service worker | bloqué | Chaque test part d'un navigateur vierge |

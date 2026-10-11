@@ -4,9 +4,15 @@ async function loadModule(name) {
 }
 const { loadTranslate } = await loadModule("translate.js");
 
+// Cookie indicateur posé par le serveur : le cookie de session (cookieName) est HttpOnly, illisible en JavaScript
+export const SESSION_FLAG_COOKIE = "user_logged";
+export function hasSession() {
+  return document.cookie.split(";").some((item) => item.trim().startsWith(SESSION_FLAG_COOKIE + "="));
+}
+
 export async function fetchServer(option) {
   try {
-    if (!document.cookie.split(";").some((item) => item.trim().startsWith(cookieName + "="))) {
+    if (!hasSession()) {
       window.location.href = "/";
       return;
     }
@@ -70,9 +76,13 @@ export async function communBlock_notconnected(translate = "") {
   loginButton.type = "submit";
   loginButton.textContent = translate.commun.connect;
 
-  // Lien vers l'authentification Discord
+  // Lien vers l'authentification Discord, avec un state aléatoire vérifié au retour (CSRF de connexion)
   loginButton.onclick = function () {
-    window.location.href = LINK_DISCORD;
+    const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    sessionStorage.setItem("discord_oauth_state", state);
+    const url = new URL(LINK_DISCORD);
+    url.searchParams.set("state", state);
+    window.location.href = url.toString();
   };
 
   headerdivuser.appendChild(loginButton);
@@ -128,7 +138,7 @@ function DisconnectedButton() {
     const now = new Date();
     if (now - timerThrottlebutton > 500) {
       timerThrottlebutton = now;
-      document.cookie = cookieName + "=; Max-Age=0; path=/; domain=" + domain + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      // Les cookies de session sont supprimés par le serveur
       fetchlogout();
     }
   }
@@ -142,10 +152,13 @@ export function createHTMLElement(type, name) {
   return div;
 }
 
-export function fetchlogout() {
-  fetch(adressAPI + "logout").catch((error) => {
+// Déconnexion en POST (refusée en GET), attendue avant de quitter la page
+export async function fetchlogout() {
+  try {
+    await fetch(adressAPI + "logout", { method: "POST" });
+  } catch (error) {
     console.error("Data recovery error:", error);
-  });
+  }
   window.location.href = "/";
 }
 

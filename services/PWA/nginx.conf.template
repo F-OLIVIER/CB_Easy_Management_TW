@@ -1,4 +1,11 @@
 # Sert la PWA et relaie les routes du backend Go (service "site" du réseau easy_management)
+
+# Protocole d'origine : celui annoncé par le proxy TLS (Caddy), sinon celui de la connexion
+map $http_x_forwarded_proto $forwarded_proto {
+    default $http_x_forwarded_proto;
+    ""      $scheme;
+}
+
 server {
     listen 80;
     server_name _;
@@ -15,27 +22,14 @@ server {
 
     # Images d'armes remplaçables depuis l'administration : toujours revalidées (304 si inchangées)
     location ^~ /img/weapon/ {
-        proxy_pass http://${SITE_UPSTREAM};
-        proxy_set_header Host $host;
+        include /etc/nginx/conf.d/snippets/proxy-backend.conf;
         proxy_hide_header Cache-Control;
         add_header Cache-Control "no-cache" always;
         include /etc/nginx/snippets/security-headers.conf;
     }
 
     location ~ ^/(api|img|video|download)/ {
-        proxy_pass http://${SITE_UPSTREAM};
-        # Host d'origine conservé : le cookie de session est posé pour SITE_DOMAIN
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        # En-têtes de sécurité du backend remplacés par ceux de la PWA (une seule politique)
-        proxy_hide_header Content-Security-Policy;
-        proxy_hide_header Strict-Transport-Security;
-        proxy_hide_header X-Frame-Options;
-        proxy_hide_header X-Content-Type-Options;
-        proxy_hide_header Referrer-Policy;
-        proxy_hide_header Permissions-Policy;
+        include /etc/nginx/conf.d/snippets/proxy-backend.conf;
     }
 
     # Le service worker et le shell doivent toujours être revalidés

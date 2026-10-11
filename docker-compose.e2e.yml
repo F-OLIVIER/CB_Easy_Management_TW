@@ -22,17 +22,33 @@ services:
       TZ: Europe/Paris
       # Aucun bot : l'envoi des messages Discord échoue immédiatement
       BOT_HOST: 127.0.0.2
+      # Vérification des jetons de connexion auprès du faux serveur Discord
+      DISCORD_API_URL: http://discord-mock:8000/api
+      DISCORD_CLIENT_ID: "100000000000000000"
     volumes:
       - ./services/PWA/e2e/.work/database:/app/database
       - ./services/site/public/img:/app/site/public/img:ro
       - ./services/PWA/e2e/.work/weapon:/app/site/public/img/weapon
       - ./services/PWA/e2e/.work/app.log:/app/site/app.log
       - ./services/PWA/e2e/.work/logfile.log:/app/site/logfile.log
+    depends_on:
+      discord-mock:
+        condition: service_started
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 3s
       timeout: 5s
       retries: 60
+    networks: [e2e]
+
+  # Faux serveur Discord interrogé par le backend pour vérifier les jetons de connexion
+  discord-mock:
+    image: node:24-bookworm-slim
+    command: ["node", "/discord-mock.mjs"]
+    environment:
+      DISCORD_CLIENT_ID: "100000000000000000"
+    volumes:
+      - ./services/PWA/e2e/docker/discord-mock.mjs:/discord-mock.mjs:ro
     networks: [e2e]
 
   # PWA de production (build Vite + Nginx + en-têtes de sécurité) : tests du projet « prod »

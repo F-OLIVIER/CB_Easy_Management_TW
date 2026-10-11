@@ -4,6 +4,20 @@ import { expect, HOUSE, queryOne, test, toast, USERS } from "./support/fixtures"
 // 1x1 pixel PNG : icône de serveur Discord simulée
 const PNG_PIXEL = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGOISP30HwAFdwKvhpvLXgAAAABJRU5ErkJggg==", "base64");
 
+test("sans session au démarrage, les données de l'ancien utilisateur sont effacées", async ({ page, context }) => {
+  // Session expirée application fermée : il ne reste que des données locales
+  await context.addInitScript((house) => {
+    if (!sessionStorage.getItem("seeded")) {
+      sessionStorage.setItem("seeded", "1");
+      localStorage.setItem("user_house", house);
+      localStorage.setItem("discord_guild_icons", JSON.stringify({ [house]: "https://cdn.discordapp.com/icons/x/y.webp" }));
+    }
+  }, HOUSE.serverId);
+  await page.goto("/");
+  const leftovers = await page.evaluate(() => ["discord_guild_icons", "user_house"].filter((key) => localStorage.getItem(key) !== null));
+  expect(leftovers).toEqual([]);
+});
+
 test.describe("Connexion Discord", () => {
   test("la connexion ouvre une session et récupère le logo à jour de la maison", async ({ page, mockDiscord }) => {
     const discord = await mockDiscord({
@@ -28,6 +42,10 @@ test.describe("Connexion Discord", () => {
     await expect(page.locator(".header__username")).toHaveText(USERS.member.name);
     // Le jeton Discord ne reste pas dans l'adresse
     expect(page.url()).not.toContain("access_token");
+    // Cookies posés par le backend : session HttpOnly + SameSite=Lax, indicateur lisible par la PWA
+    const cookies = await page.context().cookies();
+    expect(cookies.find((cookie) => cookie.name === "user_token")).toMatchObject({ httpOnly: true, sameSite: "Lax" });
+    expect(cookies.find((cookie) => cookie.name === "user_logged")).toMatchObject({ httpOnly: false, value: "1" });
     // Session créée en base par le backend (nouveau jeton)
     const session = queryOne<{ uuid: string }>("SELECT uuid FROM Users WHERE ID = ?", USERS.member.id)!;
     expect(session.uuid).not.toBe(USERS.member.token);
