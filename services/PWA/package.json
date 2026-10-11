@@ -1,0 +1,29 @@
+{
+  "name": "easy-management-tw-pwa",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Front PWA (Vue 3 + TypeScript) de Easy Management TW",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "icons": "python3 scripts/generate-icons.py"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.16",
+    "html2canvas": "^1.4.1",
+    "quill": "^2.0.3",
+    "vue": "^3.5.43",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "typescript": "~6.0.3",
+    "vite": "^8.3.4",
+    "vite-plugin-pwa": "^2.0.0",
+    "vue-tsc": "^3.3.13"
+  }
+}

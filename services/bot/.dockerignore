@@ -1,0 +1,11 @@
+# Secrets : fournis à l'exécution via env_file
+.env
+.env.*
+
+# Données montées en volume / inutiles à l'image
+logs
+*.log
+node_modules
+tests
+Dockerfile
+.dockerignore

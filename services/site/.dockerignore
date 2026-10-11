@@ -1,0 +1,13 @@
+# Données montées en volume par docker-compose (jamais copiées dans l'image)
+public/img
+public/download
+public/video
+public/js
+*.log
+
+# Fichiers inutiles à l'image
+node_modules
+main
+test
+Dockerfile
+.dockerignore

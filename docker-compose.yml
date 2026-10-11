@@ -1,0 +1,122 @@
+# Easy Management TW — lancement de l'ensemble (site + bot Discord + PWA)
+#
+#   cp env.docker.example .env   # puis compléter
+#   docker compose up -d --build
+#
+# Base de données : le dossier ./services/database de l'hôte est monté tel quel dans les
+# conteneurs (bind mount). Le fichier databaseGvG.db ne change pas d'emplacement et ses
+# données sont conservées ; supprimer/recréer les conteneurs ne le touche pas.
+
+name: easy-management-tw
+
+x-service: &service
+  restart: unless-stopped
+  # Utilisateur propriétaire des fichiers de l'hôte (DB, images, logs)
+  user: "${APP_UID:-1000}:${APP_GID:-1000}"
+  networks:
+    - easy_management
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+# Dossier de la base partagé par le site et le bot. On monte le DOSSIER (et non le seul
+# fichier .db) pour que SQLite puisse créer ses fichiers de journal à côté de la base.
+x-database: &database
+  type: bind
+  source: ./services/database
+  target: /app/database
+  bind:
+    create_host_path: false
+
+services:
+  # ------------------------------------------------------------------
+  # Site internet : backend Go + ancien front (crée/initialise la base)
+  # ------------------------------------------------------------------
+  site:
+    <<: *service
+    build: ./services/site
+    image: easy-management-tw/site
+    container_name: emtw_site
+    environment:
+      TZ: Europe/Paris
+      # Doit être égal à PORT dans services/site/internal/config.go
+      SITE_PORT: ${SITE_PORT:-8080}
+      # Conteneur du bot vers lequel est relayé ws://localhost:8081 (voir Dockerfile du site)
+      BOT_HOST: bot
+    ports:
+      - "${BIND_ADDRESS:-0.0.0.0}:${SITE_PORT:-8080}:${SITE_PORT:-8080}"
+    volumes:
+      - *database
+      # Images (dont les unités uploadées depuis la page admin) : conservées sur l'hôte
+      - ./services/site/public/img:/app/site/public/img
+      - ./services/site/public/download:/app/site/public/download:ro
+      - ./services/site/public/video:/app/site/public/video:ro
+      # Journaux écrits par le serveur dans son dossier de travail
+      - type: bind
+        source: ./services/site/app.log
+        target: /app/site/app.log
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./services/site/logfile.log
+        target: /app/site/logfile.log
+        bind:
+          create_host_path: false
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:'+process.env.SITE_PORT+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      # Le démarrage inclut l'obfuscation de src/js (peut prendre une minute)
+      start_period: 120s
+
+  # ------------------------------------------------------------------
+  # Bot Discord
+  # ------------------------------------------------------------------
+  bot:
+    <<: *service
+    build: ./services/bot
+    image: easy-management-tw/bot
+    container_name: emtw_bot
+    # TOKEN et ID_APP du bot (ex. ./services/bot/.env.prod en production)
+    env_file:
+      - ${BOT_ENV_FILE:-./services/bot/.env}
+    environment:
+      TZ: Europe/Paris
+    volumes:
+      - *database
+      - ./services/bot/logs:/app/bot/logs
+    # Au tout premier lancement, le site doit avoir créé la base avant le bot
+    depends_on:
+      site:
+        condition: service_healthy
+
+  # ------------------------------------------------------------------
+  # Nouveau front PWA (en validation, sur un port distinct)
+  # ------------------------------------------------------------------
+  pwa:
+    <<: *service
+    # Nginx officiel : démarre en root puis abaisse ses privilèges lui-même
+    user: root
+    build:
+      context: ./services/PWA
+      args:
+        VITE_DISCORD_CLIENT_ID: ${VITE_DISCORD_CLIENT_ID:-}
+        VITE_DISCORD_REDIRECT_URI: ${VITE_DISCORD_REDIRECT_URI:-}
+        VITE_LINK_INVITE_BOT: ${VITE_LINK_INVITE_BOT:-}
+    image: easy-management-tw/pwa
+    container_name: emtw_pwa
+    environment:
+      # Backend relayé par Nginx (/api, /img, /video, /download)
+      SITE_UPSTREAM: site:${SITE_PORT:-8080}
+    ports:
+      - "${BIND_ADDRESS:-0.0.0.0}:${PWA_PORT:-8082}:80"
+    depends_on:
+      site:
+        condition: service_healthy
+
+networks:
+  easy_management:
+    name: easy_management

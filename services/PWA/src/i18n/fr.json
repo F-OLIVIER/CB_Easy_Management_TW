@@ -1,0 +1,622 @@
+{
+  "commun": {
+    "connect": "Connexion avec Discord",
+    "disconnected": "Se déconnecter",
+    "err_no_fields": "Aucun champ modifié !!!",
+    "Langage": {
+      "fr": [
+        "fr",
+        "🇫🇷 Français"
+      ],
+      "en": [
+        "en",
+        "🇬🇧 English"
+      ]
+    }
+  },
+  "descriptionIntro": {
+    "title": "Principe de fonctionnement",
+    "content": [
+      "Imaginez, vous inviter un bot Discord pour le jeu Conqueror's Blade. Vous lui appliquez une configuration et cette configuration configure automatiquement un site internet et d'une application mobile.",
+      "",
+      "Avec ces 3 applications, vos utilisateurs ont le choix de remplir leurs informations de caserne via le site internet ou l'application mobile et leurs informations de héros ainsi que leur présence aux guerres de territoires via le Bot Discord, le site internet ou l'application mobile. Un système multi-plateforme pour vos utilisateurs.",
+      "",
+      "Et vous, en tant que gestionnaire des guerres de territoire, qui gagnez vous ?",
+      "Vous pouvez préparer les guerres de territoire de façon simplifié et optimisé les groupes via le site internet."
+    ]
+  },
+  "descriptionSections": [
+    {
+      "title": "Bot Discord",
+      "commands": [
+        [
+          "/config",
+          "<span>Permet de configurer le bot pour votre serveur</span><span>• Si le bot n'a jamais été paramétré :  tous les utilisateur peuvent utiliser cet commande</span><span>• Si le bot a un paramétre existant pour le serveur, seul les membres du goupe de gestion ou le propriétaire du serveur Discord peuvent modifier la configuration</span>"
+        ],
+        [
+          "/help",
+          "Liste des commandes du bot"
+        ],
+        [
+          "/website",
+          "Affiche le lien du site internet associé au bot"
+        ],
+        [
+          "/data",
+          "Affiche les informations de l'utilisateur"
+        ],
+        [
+          "/class",
+          "Mettre à jour l'arme jouée avec votre héros"
+        ],
+        [
+          "/level",
+          "Mettre à jour le level de votre héros"
+        ],
+        [
+          "/influence",
+          "Mettre à jour l'influence de votre héros"
+        ],
+        [
+          "/smartphone",
+          "Génère un token de connexion pour l'application mobile"
+        ],
+        [
+          "/reset_msg_tw",
+          "Reset manuel du message de réaction d'inscription TW (gestionnaire uniquement)"
+        ],
+        [
+          "/activation_msg_tw",
+          "Active ou désactive le message d'inscription au TW (gestionnaire uniquement)"
+        ]
+      ],
+      "images": [
+        "img/description/bot/slashcommand.png",
+        "img/description/bot/message_gvg_on.png",
+        "img/description/bot/message_gvg_off.png",
+        "img/description/bot/commanddata.png"
+      ]
+    },
+    {
+      "title": "Liste des paramètres dont Discord Bot a besoin (commande /config)",
+      "commands": [
+        [
+          "Nom de la maison",
+          "Nom de la maison"
+        ],
+        [
+          "Langue",
+          "Langue dans lesquel le bot Discord enverra les messages sur Discord"
+        ],
+        [
+          "Channel du message d'inscription au TW",
+          "Chan Discord ou les utilisateurs vont s'inscrire (message avec les boutons de réaction)."
+        ],
+        [
+          "Rappel automatique TW",
+          "Permet d'activer ou non un rappel automatique pour les joueurs n'ayant pas encore indiqué leur présence 24h avant la TW."
+        ],
+        [
+          "Channel utilisateur",
+          "Chan Discord ou des messages d'information au utilisateur du bot s'afficheront (nouvelle unité ajoutée, etc.)."
+        ],
+        [
+          "Channel de gestion",
+          "Chan Discord ou des messages d'information d'administration s'afficheront (utilisateur qui quitte le Discord et se retrouve supprimer de la base de données)."
+        ],
+        [
+          "Permission channel",
+          "Dans chaque channel (message d'inscription au TW, utilisateur et de gestion), vous devez impérativement autorisé le bot à :</br><ul><li>voir logs du serveur</li><li>envoyer des messages</li><li>integrer des liens</li><li>joindre des fichiers</li><li>gerer les messages</li><li>voir les anciens messages</li><li>se connecter</li><li>utiliser les commande de l'application</li></ul>"
+        ],
+        [
+          "Groupe utilisateur",
+          "Groupe qui aura accès au site internet pour remplir leurs informations (caserne, lvl, etc.)."
+        ],
+        [
+          "Groupe de gestion",
+          "Groupe qui aura accès à de l'administration du bot Discord (ils ont automatiquement les droits de Groupe utilisateur)."
+        ]
+      ]
+    },
+    {
+      "title": "Site Internet",
+      "commands": [
+        [
+          "Privé (utilisateur connecté)",
+          "<span>Home (tableau de bord)</span><span>Fiche personnage (arme jouée, influence, niveau de héros & état de l'inscription TW).</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont).</span>"
+        ],
+        [
+          "Privé (groupe gestionnaire)",
+          "<span>Création des groupes en fonction des inscriptions et des unités (level & maîtrise) indiqué par les joueurs.</span><span>Statistiques des informations de la maison.</span><span>Gestion des casernes utilisateur (les gestionnaires ont accès aux casernes des utilisateurs).</span>"
+        ]
+      ],
+      "images": [
+        "img/description/site/dashboard1.png",
+        "img/description/site/dashboard2.png",
+        "img/description/site/charactercard.png",
+        "img/description/site/caserne.png",
+        "img/description/site/groupgvg.png"
+      ]
+    },
+    {
+      "title": "Application mobile (Android, iOS) & desktop (Windows)",
+      "commands": [
+        [
+          "Privé (utilisateur connecté)",
+          "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage (arme jouée, influence & niveau de héros)</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont)</span>"
+        ],
+        [
+          "Android",
+          "<span>L'application est disponible sur le google Play Store à l'adresse suivante :</br><a href=\"\">En cour de déploiement</a></span>"
+        ],
+        [
+          "iOS",
+          "<span>L'application est prévue dans le futur.</span>"
+        ],
+        [
+          "Windows",
+          "<span>L'installateur de l'application est disponible à l'adresse suivante :</br><a href=\"https://easymanagementtw.fr/download/EasyManagementTW.zip\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>AVERTISSEMENT</u> : Cette application est proposée gratuitement et n'est pas signée numériquement. Par conséquent, Windows peut afficher un message d'avertissement, et certains antivirus peuvent la signaler à tort comme une menace (faux positif). Nous vous assurons qu'elle est sans danger.</span>"
+        ]
+      ],
+      "images": [
+        "img/description/smartphone/flutter_01.png",
+        "img/description/smartphone/flutter_02.png",
+        "img/description/smartphone/flutter_03.png",
+        "img/description/smartphone/flutter_04.png"
+      ]
+    }
+  ],
+  "accueil": {
+    "description": "Easy Management TW, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 3 applications interconnecté ensemble :</br>un bot Discord, ce site internet et une application mobile.",
+    "explain": "ℹ️ Comment sa marche ?",
+    "adddiscord": "Ajouter à Discord"
+  },
+  "home": {
+    "houses": {
+      "one": "Ma Maison",
+      "two": "Mes Maisons",
+      "button": "Selectionner"
+    },
+    "characterChard": "Ma fiche personnage",
+    "caserne": "Ma caserne",
+    "zone_gestion": "Réservé aux gestionnaires",
+    "groupGvG": "Créer les groupes TW",
+    "stat": "Statistique",
+    "caserne_other": "Consulter une caserne",
+    "settingbot": "Paramétrage du bot Discord",
+    "zone_admin": "Réservé aux administrateurs",
+    "admin": "Page d'administration",
+    "commun_zone": "Espace multi-maison",
+    "forum": "Forum"
+  },
+  "characterCard": {
+    "info_user": {
+      "title": "Informations de mon héros",
+      "classe": {
+        "new": "Choisissez",
+        "get": "Classe actuel",
+        "set": "Changer de classe"
+      },
+      "level": {
+        "nodata": "Level jamais saisie",
+        "new": "Nouveau level",
+        "get": "Level actuel",
+        "set": "Changer de level"
+      },
+      "influence": {
+        "new": "Nouvelle influence",
+        "get": "Influence actuel",
+        "set": "Changer l'influence"
+      },
+      "button": "Mettre à jour mon personnage"
+    },
+    "info_GvG": {
+      "title": "Informations TW",
+      "inscripted": {
+        "nodata": "⁉️ Vous n'éte pas inscrit pour la prochaine TW",
+        "present": "✅ Inscrit présent pour la prochaine TW",
+        "late": "🕐 Inscrit en retard pour la prochaine TW",
+        "absent": "❌ Inscrit absent pour la prochaine TW"
+      },
+      "button": {
+        "present": "M'inscrire présent",
+        "late": "M'inscrire en retard",
+        "absent": "M'inscrire absent"
+      },
+      "nbGvG": "Nombre de TW participé",
+      "lastGvG": {
+        "nodata": "Jamais participé",
+        "description": "Derniére TW participé"
+      },
+      "noinscription": "Pas d'inscription pour les TW actuellement"
+    },
+    "error": {
+      "err_select": "Tous les champs de mise à jour de votre héros sont vide !!!",
+      "err_lvl": "Ce level est impossible, veuillez corriger la valeur.",
+      "err_influ": "Cet influence est impossible, veuillez corriger la valeur."
+    }
+  },
+  "caserne": {
+    "consulcaserne": "Selectionner la caserne du joueur que vous souhaitez voir",
+    "select": "Choisissez",
+    "influence": "Influence",
+    "level": "level",
+    "listoption_maitrise": [
+      [
+        "0",
+        "Maîtrise non démarré",
+        "red"
+      ],
+      [
+        "1",
+        "Maitrise en cours",
+        "orange"
+      ],
+      [
+        "2",
+        "Maitrise compléte",
+        "green"
+      ]
+    ],
+    "nodata": "Unité non débloqué",
+    "buttonconsul": "Mettre à jour la caserne",
+    "avertissement": "Pensez à sauvegarder votre caserne en cliquant sur le bouton \"Mettre à jour ma caserne\" en bas de page",
+    "button": "Mettre à jour ma caserne"
+  },
+  "stat": {
+    "filter": {
+      "title": "Filtrer par :",
+      "name": "Pseudo",
+      "class": "Classe joué",
+      "influ": "Influence",
+      "lvl": "Level",
+      "nbGvG": "Nb TW",
+      "lastGvG": "Derniére TW"
+    },
+    "title": {
+      "name": "Pseudo",
+      "class": "Classe joué",
+      "influ": "Influence",
+      "lvl": "Level",
+      "nbGvG": "TW participé/total",
+      "lastGvG": "Dernière TW participé",
+      "comment": "Commentaire"
+    },
+    "placeholderComment": "Votre commentaire",
+    "buttoncomment": "Ajouter les commentaires"
+  },
+  "create_group": {
+    "legend": {
+      "title": "Légende :",
+      "username": "pseudo",
+      "influ": "influence <br> unités / joueur",
+      "unit1": "unité 1",
+      "unit2": "unité 2",
+      "unit3": "unité 3",
+      "unit4": "unité 4",
+      "namegroup": "Nom du groupe"
+    },
+    "select": "Choisissez",
+    "list_users": {
+      "title": "》 Liste des inscrits",
+      "listLegendplaced": [
+        "✅ Joueur placé dans un groupe",
+        "❌ Joueur NON placé dans un groupe"
+      ],
+      "username": "pseudo",
+      "influ": "influence joueur",
+      "class": "classe d'arme"
+    },
+    "who_have_unit": {
+      "title": "》 Qui à l'unité parmis les inscrits ?",
+      "who": "Choississez une unité pour connaitre la liste des joueurs qui ont cet unité",
+      "no_player": "Aucun joueurs n'a cet unité"
+    },
+    "create_group": {
+      "title": "》 Création des groupes TW",
+      "listLegend": [
+        "🔴 Unité non maitrisé",
+        "🟡 Unité en cour de maitrise",
+        "🟢 Unité maitrisé"
+      ],
+      "listFilter": [
+        "Toute",
+        "T2",
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "filter": {
+        "title": "Filtre :"
+      },
+      "comment": {
+        "usercomment": "Ajout commentaire",
+        "placeholder": "Commentaire pour"
+      },
+      "add_group": "➕ Ajouter un groupe",
+      "save_group": "💾 Sauvegarder les groupes",
+      "group_type": {
+        "title": "》 Groupes type",
+        "description": "Sauvegarder un groupe type va écraser le groupe type correspondant (attaque ou defense si celui-ci existe).</br>Lors du chargement d'un groupe type, les joueurs non inscrits ne seront pas affichés et les lignes resteront vides.",
+        "att": "Attaque",
+        "def": "Défense",
+        "save": "Sauvegarder le groupe en tant que groupe type",
+        "load": "Charger le groupe type"
+      },
+      "delete": "Supprimer le joueur",
+      "selectmenu": {
+        "title": "Option de gestion",
+        "t5": "T5",
+        "t4": "T4",
+        "t3": "T3",
+        "t2": "T2",
+        "delete": "Supprimer l'unité",
+        "other": "Consulter un officier"
+      }
+    },
+    "preview": "Prévisualisations des groupes"
+  },
+  "view_group": {
+    "player": "Joueur",
+    "class": "classe joué",
+    "unit1": "unité 1",
+    "unit2": "unité 2",
+    "unit3": "unité 3",
+    "unit4": "unité 4",
+    "group": "Groupe",
+    "off": "Consulter un officier",
+    "download": "Télécharger l'image des groupes",
+    "back": "Revenir à l'édition des groupes"
+  },
+  "forum": {
+    "title": "Espace forum multi-maisons",
+    "description": "Ce forum vous permet de communiquer avec les administrateurs de Easy Management TW.</br>Vous pouvez ainsi remonter des bugs ou proposer des améliorations.",
+    "regle": {
+      "display": "Régles du forum",
+      "hide": "Masquer les régles du forum",
+      "description": [
+        "1. Respect et courtoisie",
+        "<li>Soyez respectueux.</li>",
+        "<li>Pas d'insultes, de propos haineux, racistes, sexistes ou discriminatoires.</li>",
+        "<li>Les attaques personnelles ne sont pas tolérées.</li>",
+        "2. Pas de spam",
+        "<li>Ne postez pas de messages publicitaires ou promotionnels.</li>",
+        "<li>Évitez les messages en double ou inutiles.</li>",
+        "3. Restez dans le sujet",
+        "<li>Restez pertinent par rapport au sujet du fil de discussion.</li>",
+        "<li>Créez un nouveau sujet si nécessaire.</li>",
+        "4. Utilisez un langage clair",
+        "<li>Évitez le langage SMS ou trop d’abréviations.</li>",
+        "5. Pas de contenu illégal ou offensant",
+        "<li>Ne partagez pas de liens ou contenus pirates, pornographiques, violents ou illicites.</li>",
+        "<li>Le non-respect des régles entraînera un bannissement permanant.</li>",
+        "6. Respect de la vie privée",
+        "<li>Ne postez pas d’informations personnelles (votre adresse, numéro de téléphone, etc.) ni celles d’autrui.</li>",
+        "7. Modération",
+        "<li>Respectez les décisions des modérateurs et administrateurs.</li>"
+      ]
+    },
+    "valid": {
+      "title": "Post à valider",
+      "button": "Valider le post"
+    },
+    "create": {
+      "display": "Créer un nouveau post",
+      "hide": "Masquer la création de post",
+      "title": "Titre du post",
+      "placeholder": "Saisissez votre texte...",
+      "button": "Publier le post"
+    },
+    "actif": "Post actif du Forum",
+    "post": {
+      "date": "Date",
+      "author": "Auteur",
+      "on": "Le",
+      "by": "par",
+      "delete": "Supprimer le post"
+    },
+    "comment": {
+      "display": "Ecrire une réponse",
+      "hide": "Masquer la création de réponse",
+      "button": "Publier la réponse"
+    },
+    "archive": {
+      "display": "Afficher les posts archivé",
+      "hide": "Masquer les posts archivé",
+      "button": "Archiver le post"
+    },
+    "report": "Signaler le fil de discussion",
+    "error": {
+      "notext": "merci de compléter tous les champs",
+      "prohibe": "Contenu interdit !!!"
+    }
+  },
+  "settingbot": {
+    "name": "Nom de la maison",
+    "ID_Chan_Gestion": "ID du chan d'information aux Gestionnaires",
+    "ID_Chan_GvG": "ID du chan Discord ou les utilisateurs vote",
+    "ID_Chan_Users": "ID du chan Discord d'information aux utilisateurs",
+    "ID_Group_Officier": "ID du groupe Discord des gestionnaires",
+    "ID_Group_Users": "ID du groupe Discord des utilisateurs",
+    "Langage": "Langue du bot Discord",
+    "Late": "Affichage du bouton \"En retard\" pour les votes",
+    "Recall_GvG": "Activation du rappel automatique de vote aux utilisateurs",
+    "Allumage": "Activation des votes",
+    "tutoID": "Voici un tuto pour récupérer les ID sur Discord : ",
+    "explainLate": "Pour voir où faire disparaître le bouton \"En retard\" sur Discord, appuyer sur un des boutons du message d'inscription pour effectuer la mise à jour après modification du paramètre.",
+    "explainRecall_GvG": "Les rappels automatiques ont lieu la veille de chaque TW à 20h.",
+    "explainAllumage": "Désactiver les votes permet de ne pas spammer les utilisateurs sur Discord pendant les périodes d'intersaison.",
+    "updateButton": "Appliquer la mise à jour des paramètres du bot Discord.",
+    "confirm": "Confirmer les modifications des paramètres du bot Discord ?",
+    "notif": {
+      "idDiscord": "Un champs ne contient pas un ID Discord valide",
+      "empty": "Aucun changement détecté"
+    }
+  },
+  "mention": {
+    "intro": {
+      "title": "Introduction",
+      "content": [
+        "Les présentes Conditions Générales d’Utilisation (CGU) et politique de confidentialité encadrent l’utilisation des services de \"Easy Management TW\" incluant les 3 applications.",
+        "",
+        "Les CGU constituent le contrat entre les services proposés nommé \"Easy Management TW\", l'accès aux services s'effectue par l’intermédiaire d'une des trois applications. L’accès aux services signifie l’acceptation sans réserve des présentes Conditions Générales d’Utilisation.",
+        "",
+        "Les 3 applications sont :"
+      ]
+    },
+    "listapp": [
+      "Un bot Discord",
+      "Ce site internet",
+      "Une application mobile"
+    ],
+    "presentation": {
+      "title": "Présentation et objectifs des services",
+      "content": "Les services de \"Easy Management TW\" permettent d’accéder à différentes fonctionnalités facilitant la gestion de vos membres et l'organisation des guerres de territoire sur le jeu Conqueror's Blade."
+    },
+    "acces": {
+      "title": "Accès aux applications",
+      "content": [
+        "L’accès aux services necessite internet. Les moyens d'accès à internet sont à la charge de l'utilisateur.",
+        "Ce site est destiné à un public âgé de 16 ans et plus, conformément à la classification PEGI 16 en Europe du jeu \"Conqueror's Blade\". En accédant à ce site, vous confirmez avoir au moins 16 ans.",
+        "",
+        "L’accès à l’application Discord requiert son installation sur la plateforme Discord (Discord Inc.). Ceci s’effectue en cliquant sur le bouton \"Ajouter à Discord\" sur la page d'acceuil de ce site internet. Une fois sur votre serveur Discord, la commande \"/config\" permet d'éffectuer les paramétrages nécessaire aux 3 applications.",
+        "L’accès à l’application mobile ainsi qu'à la partie privée de ce site internet requiert l'installation et le paramétrage du bot Discord sur son serveur Discord.",
+        "L’accès à la partie privée du site internet s’effectue par authentification OAuth2 Discord du compte de l’utilisateur.",
+        "L’accès à l’application mobile s’effectue par l'intermédiaire d'un jeton d'accées généré par la commande \"/smartphone\" via le bot Discord",
+        "",
+        "Pour des raisons de maintenance ou de panne, l’accès à une ou plusieurs application(s) peut être suspendu pour une durée déterminée ou indéterminée."
+      ]
+    },
+    "Responsabilite": {
+      "title": "Responsabilité",
+      "content": [
+        "\"Easy Management TW\" ne peut être tenu pour responsable de tout abus lié à une mauvaise utilisation de ses services. En tant qu’Utilisateur, vous vous engagez donc à signaler toute faille sans l’exploiter.",
+        "",
+        "Le site ne peut être tenu pour responsable en cas de force majeure ou du fait imprévisible et insurmontable d’un tiers."
+      ]
+    },
+    "collect": {
+      "title": "Informations collectées",
+      "content": "Nous ne collectons aucune information personnel, les informations collecté sont les suivantes :",
+      "list": [
+        "Informations personnelles : Aucune collecte d'information",
+        "Informations d'utilisation : Aucune collecte d'information",
+        "Informations de localisation : Aucune collecte d'information",
+        "Informations Discord : Votre identifiant, username, photo de profil et les roles discord",
+        "Informations de contenu du jeu Conqueror's Blade : les informations des unités (level, maitrise) de votre caserne IG (in game / en jeu) ainsi que de votre héros (level, classe joué, infuence) et de votre présence à la prochaine guerre de territoire"
+      ]
+    },
+    "cookie": {
+      "title": "Cookies",
+      "content": "Le site internet utilise uniquement un cookie de fonctionnement (Cookies strictement nécessaires).</br>Il n'y a aucun Cookies de performance, Cookies de fonctionnalité ou Cookies de ciblage marketing."
+    },
+    "use": {
+      "title": "Utilisation des informations",
+      "content": "Les informations collectées sont mises à disposition des utilisateurs du groupe gestionnaire afin de leur permettre de préparer les guerres de territoire. Aucune autre utilisation n'en est fait."
+    },
+    "storage": {
+      "title": "Stockage des données",
+      "content": "Les données sont stockées tant que vous été dans un groupe associé au bot Discord, si vous été retirer des groupes associé au bot Discord, toutes vos données sont supprimer de notre base de données.</br>De même, si le bot Discord et retirer d'un discord (expulsé ou ban), l'ensemble des données concernant la maison, le discord ainsi que les joueurs dans les groupes associé sont supprimer de notre base de données."
+    },
+    "rgpd": {
+      "title": "Protection des données",
+      "content": "La garantie totale de la sécurité et la confidentialité des données n’est pas assurée par le site. Cependant, nous prenons la sécurité de vos données très au sérieux et nous utilisons des mesures de sécurité standards pour protéger vos informations contre tout accès non autorisé, altération ou divulgation."
+    },
+    "share": {
+      "title": "Partage des informations",
+      "content": "Nous ne vendons ni ne partageons les informations avec aucun tiers."
+    },
+    "author": {
+      "title": "Créateur du site",
+      "content": "Le site internet a été créé et est maintenu par un particulier (OLIVIER Fabien).</br>Adresse : 76100 Rouen</br>Email: <a href=\"mailto:fabiendeveloppeur76@tuta.com\">fabiendeveloppeur76@tuta.com</a></br></br> Si vous souhaitez soutenir le developpeur, vous pouvez effectuer une donation via <a href= \"https://paypal.me/faolivier\" target=\"_blank\">ce lien PayPal</a>"
+    },
+    "image_right": {
+      "title": "Avis sur les droits des contenus de Conqueror's Blade",
+      "content": "Les images, logos et autres contenus présents sur ce site appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces éléments et ils sont utilisés uniquement à des fins informatives ou illustratives.</br>Si vous êtes le détenteur des droits d’un contenu et souhaitez qu’il soit modifié ou supprimé, veuillez nous contacter à <a href=\"mailto:fabiendeveloppeur76@tuta.com\">fabiendeveloppeur76@tuta.com</a>. Nous nous engageons à prendre les mesures nécessaires dans les plus brefs délais."
+    },
+    "host": {
+      "title": "Hébergeur",
+      "content": "Le site internet ainsi que le bot Discord sont héberger chez SAS PulseHeberg.</br>Adresse: 9, Boulevard de Strasbourg, 83000 Toulon</br>Téléphone: +33 (0)4 22 14 13 60</br>Email: contact@pulseheberg.com</br>Site internet: <a href=\"https://pulseheberg.com\" target=\"_blank\">https://pulseheberg.com</a>"
+    }
+  },
+  "footer": {
+    "sections": [
+      {
+        "title": "À propos",
+        "content": "<p>Le meilleur systéme pour gérer vos guerres de territoire sur Conqueror's Blade</p>"
+      },
+      {
+        "title": "Liens interne",
+        "content": "<ul><li><a href=\"/\">Accueil</a></li><li><a href=\"/description\">Comment sa marche ?</a></li><li><a href=\"/mentionlegale\">Mentions légales</a></li></ul>"
+      },
+      {
+        "title": "Liens externe",
+        "content": "<ul><li><a href=\"https://www.conquerorsblade.com\" target=\"_blank\">Jeu Conqueror's Blade</a></li></ul>"
+      },
+      {
+        "title": "Développeur",
+        "content": "<ul><li><a href=\"mailto:fabiendeveloppeur76@tuta.com\">fabiendeveloppeur76@tuta.com</a></li><li><a href=\"/mentionlegale#author\">Soutenir le developpeur</a></li></ul>"
+      }
+    ],
+    "bottom": "<p>Ce site contient des images et des informations sur le jeu Conqueror's Blade. Tous les droits relatifs à ces éléments appartiennent à leurs propriétaires respectifs. Nous ne revendiquons aucun droit sur ces contenus, qui sont utilisés uniquement à des fins informatives et illustratives.</p><p>&copy; Copyright 2025 OLIVIER Fabien - Tous droits réservés</p>"
+  },
+  "pwa": {
+    "search_unit": "Rechercher une unité",
+    "search_player": "Rechercher un joueur",
+    "only_unlocked": "Unités débloquées uniquement",
+    "doctrine": "Doctrine d'influence",
+    "no_result": "Aucun résultat",
+    "unsaved": "Modifications non enregistrées",
+    "type_loaded": "Groupe type chargé : pensez à sauvegarder",
+    "remove_group": "Supprimer le groupe",
+    "confirm_remove_group": "Supprimer ce groupe ? (effectif après sauvegarde)",
+    "confirm_save_type": "Remplacer le groupe type existant par les groupes actuels ?",
+    "confirm_discard": "Des modifications ne sont pas enregistrées. Continuer quand même ?",
+    "confirm_delete_post": "Supprimer définitivement ce post et ses commentaires ?",
+    "confirm_report_post": "Signaler ce fil de discussion aux administrateurs ?",
+    "admin": {
+      "stats_title": "Statistiques de la base",
+      "tables": "Nombre de tables",
+      "house": "Maison",
+      "users": "Utilisateurs",
+      "language": "Langue",
+      "new_unit": "Créer une unité",
+      "edit_unit": "Modifier une unité",
+      "select_unit": "Choisir une unité",
+      "name_en": "Nom (anglais)",
+      "name_fr": "Nom (français)",
+      "influence": "Influence",
+      "lvl_max": "Level max",
+      "tier": "Tier",
+      "type": "Type",
+      "current": "Actuel",
+      "mastery": "Maîtrise d'unité",
+      "mastery_yes": "Présente",
+      "mastery_no": "Absente",
+      "add_mastery": "Ajouter une maîtrise à l'unité",
+      "image": "Image (jpg / png)",
+      "add_unit": "Ajouter l'unité",
+      "edit_unit_btn": "Modifier l'unité",
+      "new_weapon": "Ajouter une arme",
+      "add_weapon": "Ajouter l'arme",
+      "info_discord": "Information Discord (toutes les maisons)",
+      "info_en": "Message (anglais)",
+      "info_fr": "Message (français)",
+      "send_info": "Envoyer l'information",
+      "dm_discord": "Message privé Discord",
+      "dm_user": "ID Discord du destinataire",
+      "dm_msg": "Message",
+      "send_dm": "Envoyer le message privé",
+      "confirm_new_unit": "Confirmer la création de la nouvelle unité ?",
+      "confirm_edit_unit": "Confirmer la modification de l'unité",
+      "confirm_weapon": "Confirmer l'ajout de l'arme",
+      "confirm_info": "Envoyer l'information sur le Discord de toutes les maisons ?",
+      "confirm_dm": "Envoyer ce message privé Discord ?",
+      "err_fields": "Merci de compléter tous les champs.",
+      "err_influence": "Influence impossible (0 à 500).",
+      "err_lvl": "Level max impossible (0 à 50).",
+      "err_filename": "Le nom du fichier image ne doit pas contenir de caractères spéciaux.",
+      "err_nochange": "Renseignez au moins un champ ou une image pour modifier l'unité."
+    }
+  }
+}
