@@ -484,10 +484,12 @@ label {
   color: #1b160f;
 }
 
+/* Fond opaque : l'image de fond de la page ne doit pas transparaître derrière les données */
 .table-wrap {
   overflow-x: auto;
   border-radius: var(--radius);
   border: 1px solid var(--border);
+  background: var(--surface-solid);
 }
 
 .table {
@@ -514,11 +516,11 @@ label {
 }
 
 .table tbody tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--surface-2);
 }
 
 .table tbody tr:hover {
-  background: rgba(254, 244, 195, 0.05);
+  background: var(--surface-3);
 }
 
 details.collapse {
