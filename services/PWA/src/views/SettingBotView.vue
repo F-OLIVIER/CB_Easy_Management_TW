@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from "vue";
+import HouseLogo from "../components/HouseLogo.vue";
 import { usePage } from "../api/usePage";
 import type { SettingBot } from "../api/types";
 import { t } from "../i18n";
@@ -72,7 +73,7 @@ async function save() {
   <form v-else-if="data" class="card stack settings" @submit.prevent="save">
     <div class="card__title">
       <h1>{{ t.home.settingbot }}</h1>
-      <img v-if="origin?.House_logo" :src="origin.House_logo" alt="" class="logo" />
+      <HouseLogo :src="origin?.House_logo" :name="origin?.House_name ?? ''" :size="56" />
     </div>
 
     <div class="form-grid">
@@ -147,12 +148,6 @@ async function save() {
 .settings {
   max-width: 900px;
   margin: 0 auto;
-}
-.logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 hr {
   width: 100%;

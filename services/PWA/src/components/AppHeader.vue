@@ -7,6 +7,7 @@ import { loginWithDiscord } from "../config";
 import { lang, LANG_OPTIONS, setLang, t } from "../i18n";
 import { currentHouse, hasSessionCookie, houseId, isLogged, logout, session } from "../stores/session";
 import logo from "../assets/logo.webp";
+import HouseLogo from "./HouseLogo.vue";
 
 const router = useRouter();
 
@@ -37,7 +38,7 @@ async function disconnect() {
 
     <div class="header__actions">
       <span v-if="currentHouse" class="header__house" :title="currentHouse.House_name">
-        <img v-if="currentHouse.House_logo" :src="currentHouse.House_logo" alt="" />
+        <HouseLogo :src="currentHouse.House_logo" :name="currentHouse.House_name" :size="26" />
         <span>{{ currentHouse.House_name }}</span>
       </span>
 
@@ -100,13 +101,7 @@ async function disconnect() {
   color: var(--muted);
   max-width: 200px;
 }
-.header__house img {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.header__house span {
+.header__house > span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import HouseLogo from "../components/HouseLogo.vue";
 import { usePage } from "../api/usePage";
 import { t } from "../i18n";
 import { houseId, isAdmin, isOfficer, setHouse } from "../stores/session";
@@ -39,7 +40,7 @@ async function selectHouse(id: string) {
       <h1>{{ houses.length > 1 ? t.home.houses.two : t.home.houses.one }}</h1>
       <div class="grid houses" style="--min: 240px">
         <article v-for="house in houses" :key="house.Discord" class="house" :class="{ 'house--active': house.Discord === houseId }">
-          <img v-if="house.House_logo" :src="house.House_logo" :alt="house.House_name" class="house__logo" />
+          <HouseLogo :src="house.House_logo" :name="house.House_name" :size="64" />
           <div class="house__body">
             <h2>{{ house.House_name }}</h2>
             <button
@@ -103,13 +104,6 @@ async function selectHouse(id: string) {
 }
 .house--active {
   border-color: var(--gold);
-}
-.house__logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
 }
 .house__body {
   display: flex;
