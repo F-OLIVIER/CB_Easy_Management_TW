@@ -616,7 +616,7 @@
       "err_lvl": "Impossible max level (0 to 50).",
       "err_filename": "The image file name must not contain special characters.",
       "err_nochange": "Fill in at least one field or an image to modify the unit.",
-      "weapon_img": "Weapon image",
+      "weapon_img": "Change a weapon's image",
       "weapon_select": "Select a weapon",
       "weapon_new": "New",
       "weapon_file": "New image (PNG, JPG or GIF, 2 MB max.)",
