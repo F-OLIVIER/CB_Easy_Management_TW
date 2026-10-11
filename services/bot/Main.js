@@ -9,6 +9,7 @@ import { createCommands } from "./slashcommand.js";
 import { client } from "./Constant.js";
 import { logToFile } from "./log.js";
 import { socket } from "./socket.js";
+import { weaponLogoCommand } from "./weaponLogo.js";
 
 // Module nodejs et npm
 import { PermissionsBitField } from "discord.js";
@@ -186,6 +187,18 @@ client.on("messageCreate", async (message) => {
       content: `<@${AuthorID}>, Liste des admin du site internet :\n${list.join("")}`,
     });
     await message.delete();
+  }
+
+  // --------------------------------------------
+  // ---------- Image d'une arme de héros -------
+  // --------------------------------------------
+  // !weapon_logo                    -> liste des armes et présence de leur image
+  // !weapon_logo Épée bâtarde       -> + image PNG en pièce jointe (nom FR, EN ou ID)
+  if (MC.startsWith("!weapon_logo")) {
+    const reponse = await weaponLogoCommand(message, MC.replace("!weapon_logo", "").trim());
+    await message.reply({ content: `<@${AuthorID}>, ${reponse}` });
+    // Impossible de supprimer un message en MP
+    if (message.guild) await message.delete().catch(() => {});
   }
 
   // --------------------------------------------

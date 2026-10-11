@@ -88,6 +88,8 @@ services:
     volumes:
       - *database
       - ./services/bot/logs:/app/bot/logs
+      # Images d'armes modifiables par la commande admin !weapon_logo (lues par le site et la PWA)
+      - ./services/site/public/img/weapon:/app/site/public/img/weapon
     # Au tout premier lancement, le site doit avoir créé la base avant le bot
     depends_on:
       site:
