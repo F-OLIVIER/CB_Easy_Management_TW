@@ -9,9 +9,13 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
-    "icons": "python3 scripts/generate-icons.py"
+    "icons": "python3 scripts/generate-icons.py",
+    "test:e2e": "bash e2e/docker/run.sh",
+    "test:e2e:report": "playwright show-report e2e/.work/report"
   },
   "dependencies": {
+    "@fontsource/agbalumo": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
     "dompurify": "^3.4.16",
     "html2canvas": "^1.4.1",
     "quill": "^2.0.3",
@@ -19,6 +23,7 @@
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@types/node": "^26.6.5",
     "@vitejs/plugin-vue": "^6.0.10",
     "typescript": "~6.0.3",

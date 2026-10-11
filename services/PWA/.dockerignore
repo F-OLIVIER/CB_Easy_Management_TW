@@ -6,3 +6,5 @@ dev-dist
 .omc
 Dockerfile
 .dockerignore
+# Données générées par les tests e2e
+e2e/.work

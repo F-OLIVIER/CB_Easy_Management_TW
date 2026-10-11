@@ -1,6 +1,6 @@
 import { computed, reactive, ref } from "vue";
 import type { ApiResponse, Gestion, House, UserInfo } from "../api/types";
-import { COOKIE_NAME, STORAGE_KEYS } from "../config";
+import { AVATAR_CACHE, COOKIE_NAME, STORAGE_KEYS } from "../config";
 import { isLang, setLang } from "../i18n";
 
 interface SessionState {
@@ -23,6 +23,8 @@ export const isAdmin = computed(() => session.gestion?.Admin === true);
 // ------------------------- Logos des maisons -------------------------
 // Le backend renvoie l'URL d'icône enregistrée au /config du bot, périmée si l'icône du
 // serveur Discord a changé depuis. À la connexion, la PWA lit l'icône actuelle chez Discord.
+// Minimisation (RGPD) : la liste complète des serveurs de l'utilisateur reste en mémoire ;
+// seules les icônes de ses maisons sont conservées dans le navigateur.
 
 function loadGuildIcons(): Record<string, string | null> {
   try {
@@ -35,9 +37,21 @@ function loadGuildIcons(): Record<string, string | null> {
 /** ID serveur Discord → URL de l'icône actuelle (null : serveur sans icône) */
 export const guildIcons = ref<Record<string, string | null>>(loadGuildIcons());
 
-export function setGuildIcons(icons: Record<string, string | null>): void {
-  guildIcons.value = icons;
-  localStorage.setItem(STORAGE_KEYS.guildIcons, JSON.stringify(icons));
+/** Icônes reçues de Discord à la connexion, en attente de la liste des maisons (jamais enregistrées) */
+let pendingGuildIcons: Record<string, string | null> | null = null;
+
+export function receiveGuildIcons(icons: Record<string, string | null>): void {
+  pendingGuildIcons = icons;
+}
+
+/** Ne garde que les icônes des maisons de l'utilisateur */
+function retainHouseIcons(houses: House[]): void {
+  const source = pendingGuildIcons ?? guildIcons.value;
+  pendingGuildIcons = null;
+  const kept = Object.fromEntries(houses.filter((house) => house.Discord in source).map((house) => [house.Discord, source[house.Discord]]));
+  guildIcons.value = kept;
+  if (Object.keys(kept).length) localStorage.setItem(STORAGE_KEYS.guildIcons, JSON.stringify(kept));
+  else localStorage.removeItem(STORAGE_KEYS.guildIcons);
 }
 
 /** Logo à afficher : icône actuelle lue chez Discord, sinon celle enregistrée par le bot */
@@ -62,6 +76,7 @@ export function applyResponse(data: ApiResponse): void {
   session.user = data.UserInfo;
   session.houses = data.House ?? [];
   session.gestion = data.Gestion;
+  retainHouseIcons(session.houses);
 
   if (isLang(data.UserInfo?.Language)) setLang(data.UserInfo.Language);
   if (session.houses.length === 1) setHouse(session.houses[0].Discord);
@@ -72,6 +87,11 @@ export function clearSession(): void {
   session.houses = [];
   session.gestion = null;
   setHouse(null);
+  // Données personnelles laissées sur l'appareil (appareil partagé) : logos des maisons et avatars
+  pendingGuildIcons = null;
+  guildIcons.value = {};
+  localStorage.removeItem(STORAGE_KEYS.guildIcons);
+  if ("caches" in window) caches.delete(AVATAR_CACHE).catch(() => undefined);
   // Le backend pose le cookie avec Domain=<SITE_DOMAIN> : on tente les deux variantes
   const expired = `${COOKIE_NAME}=; Max-Age=0; path=/`;
   document.cookie = expired;

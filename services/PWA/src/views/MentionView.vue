@@ -10,7 +10,9 @@ const m = computed(() => t.value.mention);
 const simpleSections = computed(() => [
   { id: "cookie", ...m.value.cookie },
   { id: "use", ...m.value.use },
+  { id: "legal", ...m.value.legal },
   { id: "storage", ...m.value.storage },
+  { id: "rights", ...m.value.rights },
   { id: "rgpd", ...m.value.rgpd },
   { id: "share", ...m.value.share },
   { id: "author", ...m.value.author },

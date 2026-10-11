@@ -496,19 +496,19 @@
       ]
     },
     "collect": {
-      "title": "Informations collectées",
-      "content": "Nous ne collectons aucune information personnel, les informations collecté sont les suivantes :",
+      "title": "Données personnelles traitées",
+      "content": "Les données personnelles traitées sont les suivantes :",
       "list": [
-        "Informations personnelles : Aucune collecte d'information",
-        "Informations d'utilisation : Aucune collecte d'information",
-        "Informations de localisation : Aucune collecte d'information",
-        "Informations Discord : Votre identifiant, username, photo de profil et les roles discord",
-        "Informations de contenu du jeu Conqueror's Blade : les informations des unités (level, maitrise) de votre caserne IG (in game / en jeu) ainsi que de votre héros (level, classe joué, infuence) et de votre présence à la prochaine guerre de territoire"
+        "Informations Discord : identifiant, nom d'utilisateur, photo de profil et rôles sur les serveurs Discord où le bot est installé",
+        "Informations de jeu Conqueror's Blade : caserne (level et maîtrise des unités), héros (level, classe jouée, influence) et présence aux guerres de territoire",
+        "Contributions : posts et réponses publiés sur le forum, commentaires des gestionnaires de votre maison vous concernant",
+        "Session de connexion : un identifiant aléatoire valable 30 jours, enregistré dans un cookie et dans la base de données",
+        "Aucun nom réel, adresse e-mail, adresse postale, donnée de localisation, de paiement ou de suivi publicitaire n'est collecté"
       ]
     },
     "cookie": {
-      "title": "Cookies",
-      "content": "Le site internet utilise uniquement un cookie de fonctionnement (Cookies strictement nécessaires).</br>Il n'y a aucun Cookies de performance, Cookies de fonctionnalité ou Cookies de ciblage marketing."
+      "title": "Cookies et stockage dans votre navigateur",
+      "content": "Le site utilise uniquement un cookie de session, strictement nécessaire à la connexion.</br>L'application enregistre aussi dans votre navigateur la langue choisie, la maison sélectionnée et le logo de vos maisons (stockage local), ainsi qu'une copie de ses fichiers pour un démarrage rapide et hors ligne. À la déconnexion, la maison, les logos et les photos de profil en cache sont effacés.</br>Aucun cookie ni traceur de mesure d'audience ou de publicité n'est utilisé : aucun consentement n'est donc requis."
     },
     "use": {
       "title": "Utilisation des informations",
@@ -524,7 +524,7 @@
     },
     "share": {
       "title": "Partage des informations",
-      "content": "Nous ne vendons ni ne partageons les informations avec aucun tiers."
+      "content": "Nous ne vendons ni ne partageons vos données avec des tiers.</br>La connexion passe par Discord (Discord Inc., États-Unis) : l'application lit votre identifiant, votre nom d'utilisateur et la liste de vos serveurs Discord. Cette liste sert uniquement, dans votre navigateur, à afficher le logo à jour de vos maisons ; elle n'est jamais transmise à nos serveurs. Les photos de profil et les logos sont affichés depuis les serveurs de Discord."
     },
     "author": {
       "title": "Créateur du site",
@@ -537,6 +537,14 @@
     "host": {
       "title": "Hébergeur",
       "content": "Le site internet ainsi que le bot Discord sont héberger chez SAS PulseHeberg.</br>Adresse: 9, Boulevard de Strasbourg, 83000 Toulon</br>Téléphone: +33 (0)4 22 14 13 60</br>Email: contact@pulseheberg.com</br>Site internet: <a href=\"https://pulseheberg.com\" target=\"_blank\">https://pulseheberg.com</a>"
+    },
+    "legal": {
+      "title": "Base légale",
+      "content": "Les données sont traitées pour fournir le service que vous utilisez via le bot Discord, le site internet et l'application (exécution du service, article 6.1.b du RGPD). Les commentaires des gestionnaires reposent sur l'intérêt légitime de votre maison à organiser les guerres de territoire (article 6.1.f du RGPD)."
+    },
+    "rights": {
+      "title": "Vos droits",
+      "content": "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données. Pour les exercer, écrivez à <a href=\"mailto:fabiendeveloppeur76@tuta.com\">fabiendeveloppeur76@tuta.com</a>.</br>Vous pouvez aussi quitter les groupes Discord associés au bot : vos données sont alors supprimées.</br>En cas de difficulté, vous pouvez adresser une réclamation à la CNIL (<a href=\"https://www.cnil.fr\" target=\"_blank\" rel=\"noopener noreferrer\">www.cnil.fr</a>)."
     }
   },
   "footer": {

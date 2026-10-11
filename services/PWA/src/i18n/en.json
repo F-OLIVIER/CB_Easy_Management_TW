@@ -495,19 +495,19 @@
       ]
     },
     "collect": {
-      "title": "Information collected",
-      "content": "We do not collect any personal information, the information collected is as follows:",
+      "title": "Personal data processed",
+      "content": "The personal data processed are as follows:",
       "list": [
-        "Personal information: No information collection",
-        "Usage Information: No information collection",
-        "Location Information: No information collected",
-        "Discord Information: Your ID, username, profile picture and discord roles",
-        "Conqueror's Blade game content information: information about the units (level, mastery) of your IG barracks (in game) as well as your hero (level, class played, influence) and your presence at the next territory war"
+        "Discord information: ID, username, profile picture and roles on the Discord servers where the bot is installed",
+        "Conqueror's Blade game information: barracks (unit level and mastery), hero (level, class played, influence) and attendance at territory wars",
+        "Contributions: posts and replies published on the forum, comments about you written by your house managers",
+        "Login session: a random identifier valid for 30 days, stored in a cookie and in the database",
+        "No real name, email address, postal address, location, payment or advertising tracking data is collected"
       ]
     },
     "cookie": {
-      "title": "Cookies",
-      "content": "The website only uses a functional cookie (Strictly Necessary Cookies).</br>There are no Performance Cookies, Functionality Cookies or Marketing Targeting Cookies."
+      "title": "Cookies and browser storage",
+      "content": "The website only uses a session cookie, which is strictly necessary for logging in.</br>The application also stores in your browser the chosen language, the selected house and your houses' logos (local storage), as well as a copy of its files for fast and offline start-up. When you log out, the house, logos and cached profile pictures are deleted.</br>No audience measurement or advertising cookie or tracker is used: no consent is therefore required."
     },
     "use": {
       "title": "Use of Information",
@@ -522,8 +522,8 @@
       "content": "We take the security of your data very seriously. We use industry-standard security measures to protect your information from unauthorized access, alteration, or disclosure."
     },
     "share": {
-      "title": "Sharing information",
-      "content": "We do not sell or share information with any third parties."
+      "title": "Sharing of information",
+      "content": "We neither sell nor share your data with third parties.</br>Login goes through Discord (Discord Inc., United States): the application reads your ID, your username and the list of your Discord servers. This list is only used, in your browser, to display the up-to-date logo of your houses; it is never sent to our servers. Profile pictures and logos are displayed from Discord's servers."
     },
     "author": {
       "title": "Creator of the site",
@@ -536,6 +536,14 @@
     "host": {
       "title": "Host",
       "content": "The website and the Discord bot are hosted by SAS PulseHeberg.</br>Address: 9, Boulevard de Strasbourg, 83000 Toulon</br>Phone: +33 (0)4 22 14 13 60</br>Email: contact@pulseheberg.com</br>Website: <a href=\"https://pulseheberg.com\" target=\"_blank\">https://pulseheberg.com</a>"
+    },
+    "legal": {
+      "title": "Legal basis",
+      "content": "The data is processed to provide the service you use through the Discord bot, the website and the application (performance of the service, article 6.1.b of the GDPR). Managers' comments are based on your house's legitimate interest in organising territory wars (article 6.1.f of the GDPR)."
+    },
+    "rights": {
+      "title": "Your rights",
+      "content": "Under the GDPR, you have the right to access, rectify, erase, restrict, object to and port your data. To exercise these rights, write to <a href=\"mailto:fabiendeveloppeur76@tuta.com\">fabiendeveloppeur76@tuta.com</a>.</br>You can also leave the Discord groups linked to the bot: your data is then deleted.</br>If you encounter any difficulty, you can lodge a complaint with the CNIL, the French data protection authority (<a href=\"https://www.cnil.fr\" target=\"_blank\" rel=\"noopener noreferrer\">www.cnil.fr</a>)."
     }
   },
   "footer": {

@@ -11,6 +11,9 @@ export const STORAGE_KEYS = {
   guildIcons: "discord_guild_icons",
 } as const;
 
+/** Cache du service worker contenant les avatars Discord (voir vite.config.ts), vidé à la déconnexion */
+export const AVATAR_CACHE = "emtw-discord-avatars";
+
 const redirectUri = import.meta.env.VITE_DISCORD_REDIRECT_URI || `${window.location.origin}/discord`;
 
 /** Clé sessionStorage du paramètre OAuth2 `state` (protection CSRF de la connexion) */

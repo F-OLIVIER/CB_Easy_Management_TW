@@ -5,7 +5,7 @@ import { notify, postJson } from "../api/client";
 import { OAUTH_STATE_KEY } from "../config";
 import type { ApiResponse } from "../api/types";
 import { lang } from "../i18n";
-import { setGuildIcons } from "../stores/session";
+import { receiveGuildIcons } from "../stores/session";
 import { showToast } from "../stores/toast";
 
 const router = useRouter();
@@ -25,7 +25,7 @@ async function fetchGuildIcons(authorization: string): Promise<void> {
     for (const { id, icon } of guilds) {
       icons[id] = icon ? `https://cdn.discordapp.com/icons/${id}/${icon}.${icon.startsWith("a_") ? "gif" : "webp"}` : null;
     }
-    setGuildIcons(icons);
+    receiveGuildIcons(icons);
   } catch (error) {
     console.warn("Icônes des serveurs Discord indisponibles", error);
   }

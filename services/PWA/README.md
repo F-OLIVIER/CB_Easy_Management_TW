@@ -44,6 +44,18 @@ Les variables `VITE_*` sont intégrées au bundle : elles sont publiques, n'y me
 | `npm run typecheck` | Vérification TypeScript seule |
 | `npm run icons` | Régénère les icônes PWA depuis `services/site/public/img/Logo_EMTW.webp` (Python + Pillow) |
 
+## Tests e2e
+
+Tests de bout en bout de la PWA avec Playwright, exécutés entièrement dans des conteneurs Docker contre le vrai
+backend Go et une base de test générée :
+
+```sh
+npm run test:e2e
+```
+
+Documentation complète (fonctionnement, données de test, écriture d'un test, dépannage) :
+[`e2e/README.md`](e2e/README.md).
+
 ## Architecture
 
 ```

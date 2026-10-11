@@ -3,6 +3,9 @@ server {
     listen 80;
     server_name _;
     root /usr/share/nginx/html;
+    # Version de Nginx masquée dans les en-têtes et les pages d'erreur
+    server_tokens off;
+    include /etc/nginx/snippets/security-headers.conf;
 
     # Upload des images d'unités (page admin) : le backend accepte 10 Mo
     client_max_body_size 10m;
@@ -16,6 +19,7 @@ server {
         proxy_set_header Host $host;
         proxy_hide_header Cache-Control;
         add_header Cache-Control "no-cache" always;
+        include /etc/nginx/snippets/security-headers.conf;
     }
 
     location ~ ^/(api|img|video|download)/ {
@@ -25,19 +29,29 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        # En-têtes de sécurité du backend remplacés par ceux de la PWA (une seule politique)
+        proxy_hide_header Content-Security-Policy;
+        proxy_hide_header Strict-Transport-Security;
+        proxy_hide_header X-Frame-Options;
+        proxy_hide_header X-Content-Type-Options;
+        proxy_hide_header Referrer-Policy;
+        proxy_hide_header Permissions-Policy;
     }
 
     # Le service worker et le shell doivent toujours être revalidés
     location = /sw.js {
         add_header Cache-Control "no-cache";
+        include /etc/nginx/snippets/security-headers.conf;
     }
     location = /index.html {
         add_header Cache-Control "no-cache";
+        include /etc/nginx/snippets/security-headers.conf;
     }
 
     # Fichiers fingerprintés par Vite : cache long
     location /assets/ {
         add_header Cache-Control "public, max-age=31536000, immutable";
+        include /etc/nginx/snippets/security-headers.conf;
     }
 
     location = /manifest.webmanifest {

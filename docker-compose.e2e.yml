@@ -1,0 +1,78 @@
+# Tests e2e de la PWA, entièrement conteneurisés : lancer services/PWA/e2e/docker/run.sh
+# (prépare les dossiers et l'image du backend de test, puis exécute les tests et arrête tout).
+#
+# Isolation : réseau dédié sans accès extérieur, base de test générée dans services/PWA/e2e/.work,
+# images du projet en lecture seule. La base réelle (services/database/databaseGvG.db) n'est jamais montée.
+
+name: emtw-e2e
+
+x-e2e-user: &e2e-user
+  # Même utilisateur que l'hôte : les fichiers générés restent modifiables et supprimables
+  user: "${E2E_UID:-1000}:${E2E_GID:-1000}"
+
+services:
+  # Backend Go de production, construit avec le config.go de test (e2e/docker/config.e2e.go)
+  site-e2e:
+    <<: *e2e-user
+    build:
+      context: ./services/PWA/e2e/.work/site-build
+      dockerfile: Dockerfile
+    image: emtw-e2e/site
+    environment:
+      TZ: Europe/Paris
+      # Aucun bot : l'envoi des messages Discord échoue immédiatement
+      BOT_HOST: 127.0.0.2
+    volumes:
+      - ./services/PWA/e2e/.work/database:/app/database
+      - ./services/site/public/img:/app/site/public/img:ro
+      - ./services/PWA/e2e/.work/weapon:/app/site/public/img/weapon
+      - ./services/PWA/e2e/.work/app.log:/app/site/app.log
+      - ./services/PWA/e2e/.work/logfile.log:/app/site/logfile.log
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 3s
+      timeout: 5s
+      retries: 60
+    networks: [e2e]
+
+  # PWA de production (build Vite + Nginx + en-têtes de sécurité) : tests du projet « prod »
+  pwa-e2e:
+    build:
+      context: ./services/PWA
+      args:
+        VITE_DISCORD_CLIENT_ID: "100000000000000000"
+        VITE_DISCORD_REDIRECT_URI: http://pwa-e2e/discord
+    image: emtw-e2e/pwa
+    environment:
+      SITE_UPSTREAM: site-e2e:8080
+    depends_on:
+      site-e2e:
+        condition: service_started
+    networks: [e2e]
+
+  # PWA (serveur Vite) + navigateurs + tests Playwright
+  e2e:
+    <<: *e2e-user
+    build:
+      context: ./services/PWA
+      dockerfile: e2e/docker/runner.Dockerfile
+    image: emtw-e2e/runner
+    environment:
+      E2E_BACKEND_URL: http://site-e2e:8080
+    volumes:
+      - ./services/PWA/e2e/.work:/e2e/services/PWA/e2e/.work
+      - ./services/database:/e2e/services/database:ro
+      - ./services/site/public/img/weapon:/e2e/services/site/public/img/weapon:ro
+    # Chromium a besoin de plus que les 64 Mo de /dev/shm par défaut
+    shm_size: 1gb
+    depends_on:
+      site-e2e:
+        condition: service_healthy
+      pwa-e2e:
+        condition: service_started
+    networks: [e2e]
+
+networks:
+  e2e:
+    name: easy_management_e2e
+    internal: true
