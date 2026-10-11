@@ -6,7 +6,7 @@ import { lang, t, tr } from "../i18n";
 import { confirmDialog } from "../stores/confirm";
 import { showToast } from "../stores/toast";
 import { stripTags } from "../utils/format";
-import { groupUnits, TIERS } from "../utils/units";
+import { groupUnits, onWeaponError, TIERS, weaponImg, weaponImgVersion } from "../utils/units";
 
 const { data, loading, busy, submit } = usePage("CheckAppAdmin", "admin");
 
@@ -120,6 +120,38 @@ const dm = reactive({ userId: "", message: "" });
 async function sendAdmin(payload: object, confirmMessage: string): Promise<boolean> {
   if (!(await confirmDialog(confirmMessage))) return false;
   return Boolean(isSuccess(await submit("UpdateAdmin", payload)));
+}
+
+// ---------------------------- Image d'une arme ----------------------------
+const MAX_WEAPON_IMG_SIZE = 2 * 1024 * 1024;
+const weaponImgForm = reactive({ weapon: "", image: null as File | null });
+const weaponImgInput = ref<HTMLInputElement | null>(null);
+const weapons = computed(() => data.value?.Gestion.ListClass ?? []);
+/** Aperçu local du fichier choisi, avant envoi */
+const weaponPreview = ref("");
+
+watch(
+  () => weaponImgForm.image,
+  (file) => {
+    if (weaponPreview.value) URL.revokeObjectURL(weaponPreview.value);
+    weaponPreview.value = file ? URL.createObjectURL(file) : "";
+  },
+);
+
+async function updateWeaponImage() {
+  const weapon = weapons.value.find((item) => item.fr === weaponImgForm.weapon);
+  const image = weaponImgForm.image;
+  if (!weapon || !image) return showToast(ta.value.err_fields, "error");
+  if (image.size > MAX_WEAPON_IMG_SIZE) return showToast(ta.value.err_weapon_size, "error");
+  if (!(await confirmDialog(`${ta.value.confirm_weapon_img} "${weapon[lang.value]}" ?`))) return;
+
+  // Le nom du fichier envoyé est ignoré : le serveur enregistre <nom FR de l'arme>.png
+  const response = await sendForm({ changeWeapon: { fr: weapon.fr } }, image);
+  if (isSuccess(response)) {
+    weaponImgVersion.value = Date.now();
+    weaponImgForm.image = null;
+    if (weaponImgInput.value) weaponImgInput.value.value = "";
+  }
 }
 
 async function addWeapon() {
@@ -266,6 +298,30 @@ async function sendDm() {
         <button type="submit" class="btn btn--primary" :disabled="busy">{{ ta.add_weapon }}</button>
       </form>
 
+      <!-- Image d'une arme -->
+      <form class="card stack" @submit.prevent="updateWeaponImage">
+        <h2>{{ ta.weapon_img }}</h2>
+        <select v-model="weaponImgForm.weapon" required>
+          <option value="">{{ ta.weapon_select }}</option>
+          <option v-for="item in weapons" :key="item.fr" :value="item.fr">{{ item[lang] }}</option>
+        </select>
+        <div v-if="weaponImgForm.weapon" class="weapon-preview">
+          <figure>
+            <img :src="weaponImg(weaponImgForm.weapon)" alt="" @error="onWeaponError" />
+            <figcaption class="muted small">{{ ta.current }}</figcaption>
+          </figure>
+          <figure v-if="weaponPreview">
+            <img :src="weaponPreview" alt="" />
+            <figcaption class="muted small">{{ ta.weapon_new }}</figcaption>
+          </figure>
+        </div>
+        <label class="field">
+          <span>{{ ta.weapon_file }}</span>
+          <input ref="weaponImgInput" type="file" accept=".png,.jpg,.jpeg,.gif" required @change="weaponImgForm.image = fileOf($event)" />
+        </label>
+        <button type="submit" class="btn btn--primary" :disabled="busy">{{ ta.weapon_img_btn }}</button>
+      </form>
+
       <template v-if="isOwner">
         <!-- Information Discord à toutes les maisons -->
         <form class="card stack" @submit.prevent="sendInfo">
@@ -288,6 +344,23 @@ async function sendDm() {
 </template>
 
 <style scoped>
+.weapon-preview {
+  display: flex;
+  gap: 16px;
+}
+.weapon-preview figure {
+  margin: 0;
+  text-align: center;
+}
+.weapon-preview img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
 fieldset {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);

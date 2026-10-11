@@ -616,7 +616,14 @@
       "err_influence": "Influence impossible (0 à 500).",
       "err_lvl": "Level max impossible (0 à 50).",
       "err_filename": "Le nom du fichier image ne doit pas contenir de caractères spéciaux.",
-      "err_nochange": "Renseignez au moins un champ ou une image pour modifier l'unité."
+      "err_nochange": "Renseignez au moins un champ ou une image pour modifier l'unité.",
+      "weapon_img": "Image d'une arme",
+      "weapon_select": "Choisir une arme",
+      "weapon_new": "Nouvelle",
+      "weapon_file": "Nouvelle image (PNG, JPG ou GIF, 2 Mo max.)",
+      "weapon_img_btn": "Remplacer l'image",
+      "confirm_weapon_img": "Remplacer l'image de l'arme",
+      "err_weapon_size": "Image trop lourde (2 Mo maximum)."
     }
   }
 }

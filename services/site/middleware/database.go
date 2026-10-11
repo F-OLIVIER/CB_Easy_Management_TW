@@ -5,8 +5,12 @@ import (
 	data "easemanagementtw/internal"
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/png"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -443,6 +447,11 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) (notif data.Notif)
 			CheckErr("UploadInformationsBot: Erreur lors de la lecture des données JSON", err)
 			// fmt.Println("formData : ", formData)
 
+			// Image d'une arme de héros (traitement indépendant des unités)
+			if formData.ChangeWeapon.FR != "" {
+				return updateImgWeapon(r, formData.ChangeWeapon.FR, database)
+			}
+
 			file, header, err := r.FormFile("image")
 			if err == nil {
 				defer file.Close()
@@ -499,6 +508,79 @@ func UploadInformationsBot(r *http.Request, database *sql.DB) (notif data.Notif)
 	}
 
 	notif.Notif = true
+	return notif
+}
+
+// Taille maximale (en pixels) d'une image d'arme, contre les images piégées très lourdes à décoder
+const maxWeaponImgSide = 2048
+
+// Remplace l'image d'une arme : ./public/img/weapon/<ClasseFR>.png (lue par le site et la PWA)
+func updateImgWeapon(r *http.Request, classeFR string, database *sql.DB) (notif data.Notif) {
+	notif.Notif = true
+	notif.Type = "error"
+
+	// Le nom du fichier vient de la base, jamais directement de la requête
+	var weaponName string
+	err := database.QueryRow("SELECT ClasseFR FROM ListGameCharacter WHERE ClasseFR = ?", classeFR).Scan(&weaponName)
+	if err != nil || strings.ContainsAny(weaponName, `/\`) || strings.Contains(weaponName, "..") {
+		notif.Content = data.ListLanguage{FR: "Arme introuvable.", EN: "Weapon not found."}
+		return notif
+	}
+
+	file, _, err := r.FormFile("image")
+	if err != nil {
+		notif.Content = data.ListLanguage{FR: "Aucune image reçue.", EN: "No image received."}
+		return notif
+	}
+	defer file.Close()
+
+	invalid := data.ListLanguage{
+		FR: "Image invalide (PNG, JPG ou GIF, 2048 x 2048 pixels maximum).",
+		EN: "Invalid image (PNG, JPG or GIF, 2048 x 2048 pixels maximum).",
+	}
+	config, _, err := image.DecodeConfig(file)
+	if err != nil || config.Width > maxWeaponImgSide || config.Height > maxWeaponImgSide {
+		notif.Content = invalid
+		return notif
+	}
+	if _, err = file.Seek(0, io.SeekStart); err != nil {
+		CheckErr("updateImgWeapon: seek", err)
+		notif.Content = invalid
+		return notif
+	}
+	img, _, err := image.Decode(file)
+	if err != nil {
+		notif.Content = invalid
+		return notif
+	}
+
+	// Écriture dans un fichier temporaire puis renommage : jamais d'image à moitié écrite servie
+	destination := "./public/img/weapon/" + weaponName + ".png"
+	temporary := destination + ".tmp"
+	output, err := os.Create(temporary)
+	if err != nil {
+		CheckErr("updateImgWeapon: création du fichier", err)
+		notif.Content = data.ListLanguage{FR: "Erreur 500 : enregistrement impossible.", EN: "Error 500: unable to save."}
+		return notif
+	}
+	err = png.Encode(output, img)
+	output.Close()
+	if err == nil {
+		err = os.Rename(temporary, destination)
+	}
+	if err != nil {
+		os.Remove(temporary)
+		CheckErr("updateImgWeapon: écriture de l'image", err)
+		notif.Content = data.ListLanguage{FR: "Erreur 500 : enregistrement impossible.", EN: "Error 500: unable to save."}
+		return notif
+	}
+
+	LogFile("Mise à jour de l'image de l'arme : " + weaponName)
+	notif.Type = "success"
+	notif.Content = data.ListLanguage{
+		FR: "Image de l'arme « " + weaponName + " » mise à jour.",
+		EN: "Image of the weapon \"" + weaponName + "\" updated.",
+	}
 	return notif
 }
 

@@ -10,6 +10,14 @@ server {
     gzip on;
     gzip_types text/css application/javascript application/json image/svg+xml application/manifest+json;
 
+    # Images d'armes remplaçables depuis l'administration : toujours revalidées (304 si inchangées)
+    location ^~ /img/weapon/ {
+        proxy_pass http://${SITE_UPSTREAM};
+        proxy_set_header Host $host;
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "no-cache" always;
+    }
+
     location ~ ^/(api|img|video|download)/ {
         proxy_pass http://${SITE_UPSTREAM};
         # Host d'origine conservé : le cookie de session est posé pour SITE_DOMAIN

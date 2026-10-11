@@ -149,6 +149,7 @@ type AdministrateBot struct {
 	NewWeapon          ListLanguage `json:"newWeapon"`
 	CreateUnit         Unit         `json:"createUnit"`
 	ChangeUnit         Unit         `json:"changeUnit"`
+	ChangeWeapon       ListLanguage `json:"changeWeapon"` // image d'une arme (identifiée par son nom FR)
 	Resetnbgvg         bool         `json:"resetnbgvg"`
 	Informationdiscord bool         `json:"Informationdiscord"`
 	DmDiscord          bool         `json:"dmDiscord"`

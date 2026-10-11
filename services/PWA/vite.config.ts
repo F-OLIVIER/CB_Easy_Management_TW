@@ -53,6 +53,16 @@ export default defineConfig(({ mode }) => {
               handler: "NetworkOnly",
             },
             {
+              // Images d'armes remplaçables depuis l'administration : réseau d'abord, cache hors-ligne
+              urlPattern: ({ url }) => url.pathname.startsWith("/img/weapon/"),
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "emtw-weapons",
+                networkTimeoutSeconds: 3,
+                expiration: { maxEntries: 60, purgeOnQuotaError: true },
+              },
+            },
+            {
               urlPattern: ({ url }) => url.pathname.startsWith("/img/"),
               handler: "StaleWhileRevalidate",
               options: {

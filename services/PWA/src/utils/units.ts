@@ -1,3 +1,4 @@
+import { ref } from "vue";
 import type { I18nText, Lang, Unit } from "../api/types";
 
 /** Ligne attendue par le backend : [colonne "UnitX", level, maîtrise, doctrine ("0" = active)] */
@@ -29,8 +30,13 @@ export function onWeaponError(event: Event): void {
   onImgError(event, EMPTY_WEAPON_IMG);
 }
 
+/** Incrémenté après le remplacement d'une image d'arme : force le rechargement des <img> */
+export const weaponImgVersion = ref(0);
+
 export function weaponImg(classFr: string | null | undefined): string {
-  return classFr ? `/img/weapon/${encodeURIComponent(classFr)}.png` : EMPTY_WEAPON_IMG;
+  if (!classFr) return EMPTY_WEAPON_IMG;
+  const url = `/img/weapon/${encodeURIComponent(classFr)}.png`;
+  return weaponImgVersion.value ? `${url}?v=${weaponImgVersion.value}` : url;
 }
 
 export const toInt = (value: string | number | null | undefined, fallback = 0): number => {
