@@ -17,7 +17,7 @@ import {
   type Group,
   type Slot,
 } from "../utils/groups";
-import { groupUnits, isUnlocked, TIERS, unitInfluence, weaponImg } from "../utils/units";
+import { groupUnits, isUnlocked, TIERS, unitInfluence, onWeaponError, weaponImg } from "../utils/units";
 
 const route = useRoute();
 const router = useRouter();
@@ -191,7 +191,7 @@ async function preview() {
                 <td>{{ player.Influence }}</td>
                 <td>
                   <span class="row">
-                    <img class="weapon-icon" :src="weaponImg(player.GameCharacter.fr)" alt="" />
+                    <img class="weapon-icon" :src="weaponImg(player.GameCharacter.fr)" alt="" @error="onWeaponError" />
                     {{ tr(player.GameCharacter) }}
                   </span>
                 </td>
@@ -255,7 +255,7 @@ async function preview() {
 
         <div v-for="(slot, sIndex) in group.slots" :key="sIndex" class="slot">
           <div class="slot__player">
-            <img class="weapon-icon" :src="weaponImg(playerOf(slot)?.GameCharacter.fr)" alt="" />
+            <img class="weapon-icon" :src="weaponImg(playerOf(slot)?.GameCharacter.fr)" alt="" @error="onWeaponError" />
             <select v-model="slot.username" :aria-label="tg.legend.username" @change="onPlayerChange(slot)">
               <option value="">{{ tg.select }}</option>
               <option v-for="player in availablePlayers(slot)" :key="player.ID" :value="player.Username">

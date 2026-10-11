@@ -5,7 +5,7 @@ import { OFFICER_UNIT_VALUES } from "../config";
 import { lang, t, tr } from "../i18n";
 import { showToast } from "../stores/toast";
 import { buildGroups } from "../utils/groups";
-import { weaponImg } from "../utils/units";
+import { onWeaponError, weaponImg } from "../utils/units";
 
 const { data, loading } = usePage("creategroup", "officier");
 
@@ -80,7 +80,7 @@ async function download() {
               <tr>
                 <td class="vtable__name">{{ member.player?.EtatInscription === 2 ? "🕐 " : "" }}{{ member.username }}</td>
                 <td>
-                  <img class="weapon" :src="weaponImg(member.player?.GameCharacter.fr)" :alt="tr(member.player?.GameCharacter)" />
+                  <img class="weapon" :src="weaponImg(member.player?.GameCharacter.fr)" :alt="tr(member.player?.GameCharacter)" @error="onWeaponError" />
                 </td>
                 <td v-for="(unit, index) in member.units" :key="index" :class="{ officer: isOfficer(unit) }">
                   {{ isOfficer(unit) ? tv.off : unit }}

@@ -4,7 +4,7 @@ import { usePage } from "../api/usePage";
 import { lang, t, tr } from "../i18n";
 import { currentHouse } from "../stores/session";
 import { showToast } from "../stores/toast";
-import { weaponImg } from "../utils/units";
+import { onWeaponError, weaponImg } from "../utils/units";
 
 const { data, loading, busy, submit } = usePage("charactercard");
 
@@ -74,7 +74,7 @@ function setInscription(state: number) {
     <section class="card">
       <div class="card__title">
         <h2>{{ tc.info_user.title }}</h2>
-        <img class="weapon" :src="weaponImg(user.GameCharacter.fr)" :alt="tr(user.GameCharacter)" />
+        <img class="weapon" :src="weaponImg(user.GameCharacter.fr)" :alt="tr(user.GameCharacter)" @error="onWeaponError" />
       </div>
 
       <dl class="facts">

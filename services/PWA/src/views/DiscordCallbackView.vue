@@ -5,9 +5,31 @@ import { notify, postJson } from "../api/client";
 import { OAUTH_STATE_KEY } from "../config";
 import type { ApiResponse } from "../api/types";
 import { lang } from "../i18n";
+import { setGuildIcons } from "../stores/session";
 import { showToast } from "../stores/toast";
 
 const router = useRouter();
+
+interface DiscordGuild {
+  id: string;
+  icon: string | null;
+}
+
+/** Icônes actuelles des serveurs de l'utilisateur ; un échec ne bloque pas la connexion */
+async function fetchGuildIcons(authorization: string): Promise<void> {
+  try {
+    const response = await fetch("https://discord.com/api/users/@me/guilds", { headers: { authorization } });
+    if (!response.ok) return;
+    const guilds = (await response.json()) as DiscordGuild[];
+    const icons: Record<string, string | null> = {};
+    for (const { id, icon } of guilds) {
+      icons[id] = icon ? `https://cdn.discordapp.com/icons/${id}/${icon}.${icon.startsWith("a_") ? "gif" : "webp"}` : null;
+    }
+    setGuildIcons(icons);
+  } catch (error) {
+    console.warn("Icônes des serveurs Discord indisponibles", error);
+  }
+}
 
 const MESSAGES = {
   cancelled: { fr: "Connexion Discord annulée.", en: "Discord login cancelled." },
@@ -31,11 +53,11 @@ onMounted(async () => {
   }
 
   try {
-    const response = await fetch("https://discord.com/api/users/@me", {
-      headers: { authorization: `${tokenType} ${accessToken}` },
-    });
+    const authorization = `${tokenType} ${accessToken}`;
+    const response = await fetch("https://discord.com/api/users/@me", { headers: { authorization } });
     if (!response.ok) throw new Error(`Discord ${response.status}`);
     const { id, username } = (await response.json()) as { id: string; username: string };
+    await fetchGuildIcons(authorization);
 
     // Le backend pose le cookie de session si l'utilisateur existe en base
     const data = await postJson<ApiResponse>("/api/discord", { id, username });

@@ -5,6 +5,7 @@ import { usePage } from "../api/usePage";
 import type { SettingBot } from "../api/types";
 import { t } from "../i18n";
 import { confirmDialog } from "../stores/confirm";
+import { currentHouse, houseLogoUrl } from "../stores/session";
 import { showToast } from "../stores/toast";
 
 const { data, loading, busy, submit } = usePage("settingbot", "officier");
@@ -73,7 +74,7 @@ async function save() {
   <form v-else-if="data" class="card stack settings" @submit.prevent="save">
     <div class="card__title">
       <h1>{{ t.home.settingbot }}</h1>
-      <HouseLogo :src="origin?.House_logo" :name="origin?.House_name ?? ''" :size="56" />
+      <HouseLogo :src="houseLogoUrl(currentHouse) ?? origin?.House_logo" :name="origin?.House_name ?? ''" :size="56" />
     </div>
 
     <div class="form-grid">

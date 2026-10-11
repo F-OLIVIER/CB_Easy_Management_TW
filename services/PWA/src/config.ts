@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   lang: "selectedLang",
   house: "user_house",
   notif: "notif",
+  guildIcons: "discord_guild_icons",
 } as const;
 
 const redirectUri = import.meta.env.VITE_DISCORD_REDIRECT_URI || `${window.location.origin}/discord`;
@@ -15,7 +16,8 @@ const redirectUri = import.meta.env.VITE_DISCORD_REDIRECT_URI || `${window.locat
 /** Clé sessionStorage du paramètre OAuth2 `state` (protection CSRF de la connexion) */
 export const OAUTH_STATE_KEY = "discord_oauth_state";
 
-/** Redirige vers l'authentification Discord (flux implicite, scope identify) */
+/** Redirige vers l'authentification Discord (flux implicite).
+ *  `guilds` sert uniquement à récupérer l'icône à jour des serveurs (logo des maisons). */
 export function loginWithDiscord(): void {
   // getRandomValues fonctionne aussi hors HTTPS (contrairement à randomUUID)
   const state = Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) => byte.toString(16).padStart(2, "0")).join("");
@@ -26,7 +28,7 @@ export function loginWithDiscord(): void {
       client_id: import.meta.env.VITE_DISCORD_CLIENT_ID ?? "",
       response_type: "token",
       redirect_uri: redirectUri,
-      scope: "identify",
+      scope: "identify guilds",
       state,
     }).toString();
 }

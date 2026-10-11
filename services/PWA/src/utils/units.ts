@@ -22,8 +22,15 @@ export function onImgError(event: Event, fallback: string): void {
   img.src = fallback;
 }
 
+export const EMPTY_WEAPON_IMG = "/img/weapon/vide.png";
+
+/** Image d'arme absente du serveur (arme ajoutée sans image, casse différente) : cadre vide */
+export function onWeaponError(event: Event): void {
+  onImgError(event, EMPTY_WEAPON_IMG);
+}
+
 export function weaponImg(classFr: string | null | undefined): string {
-  return classFr ? `/img/weapon/${encodeURIComponent(classFr)}.png` : "/img/weapon/vide.png";
+  return classFr ? `/img/weapon/${encodeURIComponent(classFr)}.png` : EMPTY_WEAPON_IMG;
 }
 
 export const toInt = (value: string | number | null | undefined, fallback = 0): number => {

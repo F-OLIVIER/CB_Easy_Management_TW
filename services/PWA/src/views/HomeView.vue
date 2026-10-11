@@ -3,7 +3,7 @@ import { computed } from "vue";
 import HouseLogo from "../components/HouseLogo.vue";
 import { usePage } from "../api/usePage";
 import { t } from "../i18n";
-import { houseId, isAdmin, isOfficer, setHouse } from "../stores/session";
+import { houseId, houseLogoUrl, isAdmin, isOfficer, setHouse } from "../stores/session";
 
 const { data, loading, load } = usePage("home");
 
@@ -40,7 +40,7 @@ async function selectHouse(id: string) {
       <h1>{{ houses.length > 1 ? t.home.houses.two : t.home.houses.one }}</h1>
       <div class="grid houses" style="--min: 240px">
         <article v-for="house in houses" :key="house.Discord" class="house" :class="{ 'house--active': house.Discord === houseId }">
-          <HouseLogo :src="house.House_logo" :name="house.House_name" :size="64" />
+          <HouseLogo :src="houseLogoUrl(house)" :name="house.House_name" :size="64" />
           <div class="house__body">
             <h2>{{ house.House_name }}</h2>
             <button

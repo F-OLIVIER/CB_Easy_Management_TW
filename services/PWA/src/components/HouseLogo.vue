@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 
-// Le logo est l'URL CDN de l'icône Discord enregistrée au /config du bot :
-// elle devient invalide (404) si l'icône du serveur change. On affiche alors l'initiale.
+// Logo d'une maison (voir houseLogoUrl) ; si l'image est absente ou introuvable, on affiche l'initiale.
 const props = defineProps<{ src?: string | null; name: string; size?: number }>();
 
 const failed = ref(false);

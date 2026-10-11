@@ -4,7 +4,7 @@ import { usePage } from "../api/usePage";
 import type { UserInfo } from "../api/types";
 import { lang, t, tr } from "../i18n";
 import { showToast } from "../stores/toast";
-import { toInt, weaponImg } from "../utils/units";
+import { toInt, onWeaponError, weaponImg } from "../utils/units";
 
 const { data, loading, busy, submit } = usePage("statGvG", "officier");
 
@@ -102,7 +102,7 @@ function saveComments() {
             <td class="name">{{ user.Username }}</td>
             <td>
               <span class="row nowrap">
-                <img class="weapon" :src="weaponImg(user.GameCharacter.fr)" alt="" />
+                <img class="weapon" :src="weaponImg(user.GameCharacter.fr)" alt="" @error="onWeaponError" />
                 {{ tr(user.GameCharacter) }}
               </span>
             </td>

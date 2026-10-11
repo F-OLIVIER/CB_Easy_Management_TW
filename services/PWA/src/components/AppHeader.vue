@@ -5,7 +5,7 @@ import { postJson } from "../api/client";
 import type { Lang } from "../api/types";
 import { loginWithDiscord } from "../config";
 import { lang, LANG_OPTIONS, setLang, t } from "../i18n";
-import { currentHouse, hasSessionCookie, houseId, isLogged, logout, session } from "../stores/session";
+import { currentHouse, hasSessionCookie, houseId, houseLogoUrl, isLogged, logout, session } from "../stores/session";
 import logo from "../assets/logo.webp";
 import HouseLogo from "./HouseLogo.vue";
 
@@ -38,7 +38,7 @@ async function disconnect() {
 
     <div class="header__actions">
       <span v-if="currentHouse" class="header__house" :title="currentHouse.House_name">
-        <HouseLogo :src="currentHouse.House_logo" :name="currentHouse.House_name" :size="26" />
+        <HouseLogo :src="houseLogoUrl(currentHouse)" :name="currentHouse.House_name" :size="26" />
         <span>{{ currentHouse.House_name }}</span>
       </span>
 

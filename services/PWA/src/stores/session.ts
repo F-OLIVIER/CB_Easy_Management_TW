@@ -20,6 +20,33 @@ export const isLogged = computed(() => session.gestion?.Logged === true);
 export const isOfficer = computed(() => session.gestion?.Officier === true);
 export const isAdmin = computed(() => session.gestion?.Admin === true);
 
+// ------------------------- Logos des maisons -------------------------
+// Le backend renvoie l'URL d'icône enregistrée au /config du bot, périmée si l'icône du
+// serveur Discord a changé depuis. À la connexion, la PWA lit l'icône actuelle chez Discord.
+
+function loadGuildIcons(): Record<string, string | null> {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.guildIcons) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+/** ID serveur Discord → URL de l'icône actuelle (null : serveur sans icône) */
+export const guildIcons = ref<Record<string, string | null>>(loadGuildIcons());
+
+export function setGuildIcons(icons: Record<string, string | null>): void {
+  guildIcons.value = icons;
+  localStorage.setItem(STORAGE_KEYS.guildIcons, JSON.stringify(icons));
+}
+
+/** Logo à afficher : icône actuelle lue chez Discord, sinon celle enregistrée par le bot */
+export function houseLogoUrl(house: Pick<House, "Discord" | "House_logo"> | null | undefined): string | null {
+  if (!house) return null;
+  if (house.Discord in guildIcons.value) return guildIcons.value[house.Discord];
+  return house.House_logo || null;
+}
+
 export function setHouse(id: string | null): void {
   houseId.value = id;
   if (id) localStorage.setItem(STORAGE_KEYS.house, id);
