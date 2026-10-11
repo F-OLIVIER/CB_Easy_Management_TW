@@ -85,13 +85,14 @@ func main() {
 
 	fmt.Println("│ • Initializing obfuscation file JS              │")
 	utils.ObfuscateAllFiles("./src/js", "./public/js")
-	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js"))))
+	// JavaScript et traductions revalidés à chaque visite : une mise à jour n'est jamais masquée par le cache
+	mux.Handle("/js/", noCache(http.StripPrefix("/js/", http.FileServer(http.Dir("./public/js")))))
 	mux.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/css")
 		http.StripPrefix("/css/", http.FileServer(http.Dir("public/css"))).ServeHTTP(w, r)
 	})
 	mux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./public/img"))))
-	mux.Handle("/json/", http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json"))))
+	mux.Handle("/json/", noCache(http.StripPrefix("/json/", http.FileServer(http.Dir("./public/json")))))
 	mux.Handle("/download/", http.StripPrefix("/download/", http.FileServer(http.Dir("./public/download"))))
 	mux.Handle("/video/", http.StripPrefix("/video/", http.FileServer(http.Dir("./public/video"))))
 
@@ -129,6 +130,14 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
 		// Interdit explicitement certaines API
 		w.Header().Set("Permissions-Policy", "geolocation=(), microphone=()")
+		next.ServeHTTP(w, r)
+	})
+}
+
+// Oblige le navigateur à revalider le fichier (réponse 304 s'il n'a pas changé)
+func noCache(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-cache")
 		next.ServeHTTP(w, r)
 	})
 }

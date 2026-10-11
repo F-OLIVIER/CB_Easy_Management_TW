@@ -1,4 +1,4 @@
-import { versionJS } from "./config.js";
+import { versionJS } from "./version.js";
 
 export async function loadTranslate(langue) {
   try {

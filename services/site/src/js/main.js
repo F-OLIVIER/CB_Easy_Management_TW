@@ -1,4 +1,5 @@
-import { cookieName, versionJS } from "./config.js";
+import { cookieName } from "./config.js";
+import { versionJS } from "./version.js";
 async function loadModule(name) {
     return await import(`./${name}${versionJS}`);
 }

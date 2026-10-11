@@ -1,4 +1,5 @@
-import { adressAPI, cookieName, domain, LINK_DISCORD, versionJS } from "./config.js";
+import { adressAPI, cookieName, domain, LINK_DISCORD } from "./config.js";
+import { versionJS } from "./version.js";
 async function loadModule(name) {
   return await import(`./${name}${versionJS}`);
 }
