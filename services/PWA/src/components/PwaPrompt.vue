@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRegisterSW } from "virtual:pwa-register/vue";
+import { useRouter } from "vue-router";
 import { lang } from "../i18n";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -8,15 +9,33 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-const { needRefresh, updateServiceWorker } = useRegisterSW();
+const UPDATE_CHECK_INTERVAL_MS = 60 * 60 * 1000;
+
+const { needRefresh, updateServiceWorker } = useRegisterSW({
+  // Une PWA installée peut rester ouverte des jours : on cherche une nouvelle version toutes les heures
+  onRegisteredSW(_url, registration) {
+    if (!registration) return;
+    window.setInterval(() => {
+      if (navigator.onLine) registration.update().catch(() => undefined);
+    }, UPDATE_CHECK_INTERVAL_MS);
+  },
+});
+
+// Mise à jour automatique au prochain changement de page : la page quittée est abandonnée
+// de toute façon, le rechargement ne fait donc perdre aucune saisie en cours.
+// La navigation est déjà faite (afterEach) : le rechargement ouvre directement la page demandée.
+const router = useRouter();
+const removeAfterEach = router.afterEach((to, from) => {
+  if (needRefresh.value && to.fullPath !== from.fullPath) updateServiceWorker(true);
+});
 
 const installEvent = ref<BeforeInstallPromptEvent | null>(null);
 const installDismissed = ref(sessionStorage.getItem("pwa-install-dismissed") === "1");
 
 const text = computed(() =>
   lang.value === "fr"
-    ? { update: "Une nouvelle version est disponible.", reload: "Mettre à jour", install: "Installer l'application sur cet appareil ?", installBtn: "Installer", later: "Plus tard" }
-    : { update: "A new version is available.", reload: "Update", install: "Install the app on this device?", installBtn: "Install", later: "Later" },
+    ? { update: "Nouvelle version disponible : elle s'appliquera au prochain changement de page.", reload: "Maintenant", install: "Installer l'application sur cet appareil ?", installBtn: "Installer", later: "Plus tard" }
+    : { update: "New version available: it will be applied on the next page change.", reload: "Now", install: "Install the app on this device?", installBtn: "Install", later: "Later" },
 );
 
 function onBeforeInstall(event: Event) {
@@ -37,7 +56,10 @@ function dismissInstall() {
 }
 
 onMounted(() => window.addEventListener("beforeinstallprompt", onBeforeInstall));
-onBeforeUnmount(() => window.removeEventListener("beforeinstallprompt", onBeforeInstall));
+onBeforeUnmount(() => {
+  window.removeEventListener("beforeinstallprompt", onBeforeInstall);
+  removeAfterEach();
+});
 </script>
 
 <template>
