@@ -572,6 +572,8 @@
     "search_unit": "Rechercher une unité",
     "search_player": "Rechercher un joueur",
     "only_unlocked": "Unités débloquées uniquement",
+    "filters": "Filtres",
+    "filter_tier": "Tier :",
     "doctrine": "Doctrine d'influence",
     "no_result": "Aucun résultat",
     "unsaved": "Modifications non enregistrées",

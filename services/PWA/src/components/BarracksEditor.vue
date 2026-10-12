@@ -107,18 +107,22 @@ function save() {
       <input v-model="search" class="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
     </div>
 
-    <div class="filters">
+    <div class="filters" role="group" aria-labelledby="filters-title">
+      <span id="filters-title" class="filters__title">{{ t.pwa.filters }}</span>
       <label class="switch">
         <input v-model="onlyUnlocked" type="checkbox" />
         <span class="switch__track" />
         <span>{{ t.pwa.only_unlocked }}</span>
       </label>
       <span class="filters__sep" aria-hidden="true" />
-      <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
-        <input v-model="tierFilter" type="checkbox" :value="tier" />
-        <span class="switch__track" />
-        <span>{{ tier }}</span>
-      </label>
+      <div class="filters__group" role="group" aria-labelledby="tier-filter-label">
+        <span id="tier-filter-label" class="muted">{{ t.pwa.filter_tier }}</span>
+        <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
+          <input v-model="tierFilter" type="checkbox" :value="tier" />
+          <span class="switch__track" />
+          <span>{{ tier }}</span>
+        </label>
+      </div>
     </div>
 
     <div class="grid units" style="--min: 320px">
@@ -180,6 +184,19 @@ function save() {
   background: var(--surface-2);
   border: 1px solid var(--border-strong);
   font-weight: 600;
+}
+.filters__title {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.8rem;
+}
+.filters__group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 22px;
 }
 .filters__sep {
   width: 1px;

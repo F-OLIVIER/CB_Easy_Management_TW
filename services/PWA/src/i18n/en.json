@@ -571,6 +571,8 @@
     "search_unit": "Search a unit",
     "search_player": "Search a player",
     "only_unlocked": "Unlocked units only",
+    "filters": "Filters",
+    "filter_tier": "Tier:",
     "doctrine": "Influence doctrine",
     "no_result": "No result",
     "unsaved": "Unsaved changes",
