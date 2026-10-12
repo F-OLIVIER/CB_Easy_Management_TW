@@ -104,19 +104,20 @@ function save() {
           {{ typeLabel(index) }} <span class="muted small">({{ byType[type].length }})</span>
         </button>
       </div>
-      <div class="row filters">
-        <input v-model="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
-        <label class="switch">
-          <input v-model="onlyUnlocked" type="checkbox" />
-          <span class="switch__track" />
-          <span class="small">{{ t.pwa.only_unlocked }}</span>
-        </label>
-        <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
-          <input v-model="tierFilter" type="checkbox" :value="tier" />
-          <span class="switch__track" />
-          <span class="small">{{ tier }}</span>
-        </label>
-      </div>
+      <input v-model="search" class="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
+    </div>
+
+    <div class="row filters">
+      <label class="switch">
+        <input v-model="onlyUnlocked" type="checkbox" />
+        <span class="switch__track" />
+        <span class="small">{{ t.pwa.only_unlocked }}</span>
+      </label>
+      <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
+        <input v-model="tierFilter" type="checkbox" :value="tier" />
+        <span class="switch__track" />
+        <span class="small">{{ tier }}</span>
+      </label>
     </div>
 
     <div class="grid units" style="--min: 320px">
@@ -162,8 +163,11 @@ function save() {
 </template>
 
 <style scoped>
-.filters input[type="search"] {
+.search {
   width: 220px;
+}
+.filters {
+  gap: 10px 20px;
 }
 .unit {
   display: flex;
