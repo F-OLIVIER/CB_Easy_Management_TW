@@ -107,16 +107,17 @@ function save() {
       <input v-model="search" class="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
     </div>
 
-    <div class="row filters">
+    <div class="filters">
       <label class="switch">
         <input v-model="onlyUnlocked" type="checkbox" />
         <span class="switch__track" />
-        <span class="small">{{ t.pwa.only_unlocked }}</span>
+        <span>{{ t.pwa.only_unlocked }}</span>
       </label>
+      <span class="filters__sep" aria-hidden="true" />
       <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
         <input v-model="tierFilter" type="checkbox" :value="tier" />
         <span class="switch__track" />
-        <span class="small">{{ tier }}</span>
+        <span>{{ tier }}</span>
       </label>
     </div>
 
@@ -167,7 +168,23 @@ function save() {
   width: 220px;
 }
 .filters {
-  gap: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 22px;
+  align-self: center;
+  max-width: 100%;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  font-weight: 600;
+}
+.filters__sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border-strong);
 }
 .unit {
   display: flex;
