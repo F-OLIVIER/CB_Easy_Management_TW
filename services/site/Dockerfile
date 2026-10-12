@@ -10,8 +10,9 @@ RUN CGO_ENABLED=1 go build -trimpath -ldflags="-s -w" -o /out/main ./cmd/main.go
 
 # Node est requis à l'exécution : le serveur obfusque src/js au démarrage (npx javascript-obfuscator)
 FROM node:24-bookworm-slim
+# ca-certificates : le serveur Go vérifie les connexions auprès de https://discord.com (absent de l'image slim)
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends tzdata socat \
+    && apt-get install -y --no-install-recommends ca-certificates tzdata socat \
     && rm -rf /var/lib/apt/lists/*
 
 # Même arborescence que sur l'hôte : la base reste accessible via ../database/databaseGvG.db
