@@ -134,7 +134,7 @@ function save() {
             <option v-for="[value, label] in masteryOptions" :key="value" :value="value">{{ label }}</option>
           </select>
 
-          <label class="switch">
+          <label v-if="effectiveLvl(unit) > 0" class="switch">
             <input v-model="state[unit.Unit_id].doctrine" type="checkbox" />
             <span class="switch__track" />
             <span class="small">{{ t.pwa.doctrine }}</span>
