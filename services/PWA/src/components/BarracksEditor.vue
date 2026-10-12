@@ -25,6 +25,9 @@ const state = reactive<Record<string, UnitState>>({});
 const activeType = ref<(typeof UNIT_TYPES)[number]>("Infanterie");
 const search = ref("");
 const onlyUnlocked = ref(false);
+/** Tiers cochés ; aucun = tous les tiers */
+const TIER_FILTERS = ["T3", "T4", "T5"] as const;
+const tierFilter = ref<string[]>([]);
 
 function reset() {
   for (const key of Object.keys(state)) delete state[key];
@@ -41,6 +44,7 @@ const visibleUnits = computed(() => {
   const query = search.value.trim().toLowerCase();
   return byType.value[activeType.value].filter((unit) => {
     if (onlyUnlocked.value && effectiveLvl(unit) === 0) return false;
+    if (tierFilter.value.length > 0 && !tierFilter.value.includes(unit.Unit_tier)) return false;
     return !query || unit.Unit_name.fr.toLowerCase().includes(query) || unit.Unit_name.en.toLowerCase().includes(query);
   });
 });
@@ -107,6 +111,11 @@ function save() {
           <span class="switch__track" />
           <span class="small">{{ t.pwa.only_unlocked }}</span>
         </label>
+        <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
+          <input v-model="tierFilter" type="checkbox" :value="tier" />
+          <span class="switch__track" />
+          <span class="small">{{ tier }}</span>
+        </label>
       </div>
     </div>
 
@@ -126,7 +135,7 @@ function save() {
           </select>
 
           <select
-            v-if="unit.Unit_maitrise === '1'"
+            v-if="unit.Unit_maitrise === '1' && effectiveLvl(unit) > 0"
             v-model="state[unit.Unit_id].maitrise"
             class="unit__mastery"
             :style="{ '--mastery': masteryColor(state[unit.Unit_id].maitrise) }"

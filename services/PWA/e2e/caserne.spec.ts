@@ -32,6 +32,27 @@ test.describe("Ma caserne", () => {
     await expect(page.locator("article.unit")).toHaveCount(1);
     await expect(page.locator("article.unit")).toContainText(UNIT.name);
   });
+
+  test("le filtre par tier n'affiche que les tiers cochés", async ({ page, loginAs }) => {
+    await loginAs("member");
+    await page.goto("/caserne");
+    const units = page.locator("article.unit");
+    const tier = (name: string) => page.locator("label.switch", { hasText: new RegExp(`^${name}$`) });
+    await expect(units.first()).toBeVisible();
+    const total = await units.count();
+
+    await tier("T5").click();
+    await expect(units.first()).toBeVisible();
+    for (const text of await units.locator(".unit__body p").allTextContents()) expect(text).toMatch(/· T5$/);
+
+    await tier("T4").click();
+    for (const text of await units.locator(".unit__body p").allTextContents()) expect(text).toMatch(/· T[45]$/);
+
+    // Aucun tier coché : toutes les unités
+    await tier("T5").click();
+    await tier("T4").click();
+    await expect(units).toHaveCount(total);
+  });
 });
 
 test.describe("Consulter une caserne (gestionnaire)", () => {
