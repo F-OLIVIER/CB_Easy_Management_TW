@@ -3,7 +3,7 @@ import { computed, reactive, ref, watch } from "vue";
 import type { I18nText, Unit } from "../api/types";
 import { lang, t, tr } from "../i18n";
 import logo from "../assets/logo.webp";
-import { assetUrl, onImgError, toInt, UNIT_TYPES, unitsByType, type BarracksPayload } from "../utils/units";
+import { assetUrl, onImgError, TIERS, toInt, UNIT_TYPES, unitsByType, type BarracksPayload } from "../utils/units";
 
 const props = defineProps<{
   units: Unit[];
@@ -26,7 +26,7 @@ const activeType = ref<(typeof UNIT_TYPES)[number]>("Infanterie");
 const search = ref("");
 const onlyUnlocked = ref(false);
 /** Tiers cochés ; aucun = tous les tiers */
-const TIER_FILTERS = ["T3", "T4", "T5"] as const;
+const TIER_FILTERS = [...TIERS].reverse();
 const tierFilter = ref<string[]>([]);
 
 function reset() {
