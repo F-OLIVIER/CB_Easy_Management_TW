@@ -28,13 +28,18 @@ test.describe("Connexion : identité vérifiée auprès de Discord", () => {
 
   test("un jeton délivré pour une autre application Discord est refusé", async ({ page }) => {
     const response = await post(page, "/api/discord", { data: { access_token: `jeton-autre-app-${USERS.admin.discordId}` } });
-    expect((await response.json()).Gestion.Logged).toBe(false);
+    const { Gestion } = await response.json();
+    expect(Gestion.Logged).toBe(false);
+    // Message générique : la cause technique reste dans les journaux du serveur
+    expect(Gestion.Notification.content.fr).toBe("Connexion impossible pour le moment. Contactez un administrateur.");
     expect(sessionOf(USERS.admin.id)).toBe(USERS.admin.token);
   });
 
   test("un jeton invalide est refusé", async ({ page }) => {
     const response = await post(page, "/api/discord", { data: { access_token: "jeton-invente" } });
-    expect((await response.json()).Gestion.Logged).toBe(false);
+    const { Gestion } = await response.json();
+    expect(Gestion.Logged).toBe(false);
+    expect(Gestion.Notification.content.fr).toBe("Votre connexion Discord n'a pas pu être vérifiée. Reconnectez-vous avec Discord.");
   });
 
   test("un jeton valide ouvre une session aux cookies protégés", async ({ page }) => {

@@ -27,6 +27,15 @@ type discordAuthorization struct {
 	} `json:"user"`
 }
 
+// Causes d'échec de la connexion, pour afficher un message adapté à l'utilisateur (détail dans app.log)
+var (
+	ErrLoginConfig        = errors.New("configuration de la connexion Discord invalide")
+	ErrDiscordRejected    = errors.New("jeton Discord refusé")
+	ErrDiscordUnavailable = errors.New("API Discord indisponible")
+	ErrDiscordBusy        = errors.New("trop de vérifications Discord en cours")
+	ErrUserNotFound       = errors.New("utilisateur absent de la base")
+)
+
 var (
 	discordIDPattern  = regexp.MustCompile(`^\d{17,20}$`)
 	discordHTTPClient = &http.Client{Timeout: 10 * time.Second}
@@ -48,15 +57,15 @@ func discordAPIURL() string {
 // par une autre application Discord permettrait de se connecter à la place de son propriétaire.
 func verifiedDiscordID(token discordToken) (string, error) {
 	if token.AccessToken == "" {
-		return "", errors.New("jeton Discord absent")
+		return "", fmt.Errorf("%w : jeton absent", ErrDiscordRejected)
 	}
 	// Refus par défaut : sans application déclarée, l'origine des jetons ne peut pas être vérifiée
 	clientID := os.Getenv("DISCORD_CLIENT_ID")
 	if clientID == "" {
-		return "", errors.New("DISCORD_CLIENT_ID non défini : connexion refusée (ID de l'application Discord à renseigner)")
+		return "", fmt.Errorf("%w : DISCORD_CLIENT_ID non défini, connexion refusée (ID de l'application Discord à renseigner)", ErrLoginConfig)
 	}
 	if !discordVerifications.Request(1) {
-		return "", errors.New("trop de vérifications Discord en cours, réessayer plus tard")
+		return "", fmt.Errorf("%w, réessayer plus tard", ErrDiscordBusy)
 	}
 
 	req, err := http.NewRequest(http.MethodGet, discordAPIURL()+"/oauth2/@me", nil)
@@ -67,24 +76,29 @@ func verifiedDiscordID(token discordToken) (string, error) {
 
 	resp, err := discordHTTPClient.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("API Discord injoignable : %w", err)
+		return "", fmt.Errorf("%w : injoignable (%v)", ErrDiscordUnavailable, err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("jeton Discord refusé (HTTP %d)", resp.StatusCode)
+	switch {
+	case resp.StatusCode == http.StatusTooManyRequests:
+		return "", fmt.Errorf("%w (HTTP 429 de Discord)", ErrDiscordBusy)
+	case resp.StatusCode >= 500:
+		return "", fmt.Errorf("%w (HTTP %d)", ErrDiscordUnavailable, resp.StatusCode)
+	case resp.StatusCode != http.StatusOK:
+		return "", fmt.Errorf("%w (HTTP %d)", ErrDiscordRejected, resp.StatusCode)
 	}
 
 	var authorization discordAuthorization
 	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&authorization); err != nil {
-		return "", fmt.Errorf("réponse Discord illisible : %w", err)
+		return "", fmt.Errorf("%w : réponse illisible (%v)", ErrDiscordUnavailable, err)
 	}
 
 	if authorization.Application.ID != clientID {
-		return "", fmt.Errorf("jeton délivré pour une autre application Discord (%s)", authorization.Application.ID)
+		return "", fmt.Errorf("%w : jeton délivré pour l'application Discord %s, DISCORD_CLIENT_ID vaut %s", ErrLoginConfig, authorization.Application.ID, clientID)
 	}
 
 	if !discordIDPattern.MatchString(authorization.User.ID) {
-		return "", errors.New("identifiant Discord absent de la réponse (scope identify manquant ?)")
+		return "", fmt.Errorf("%w : identifiant Discord absent de la réponse (scope identify manquant ?)", ErrLoginConfig)
 	}
 	return authorization.User.ID, nil
 }

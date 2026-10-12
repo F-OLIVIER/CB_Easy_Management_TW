@@ -49,7 +49,8 @@ func sessionCookies(value string, expires time.Time) []*http.Cookie {
 	return []*http.Cookie{session, flag}
 }
 
-func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
+// Connexion d'un utilisateur ; l'erreur renvoyée enveloppe l'une des causes Err* (voir discordAuth.go)
+func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) error {
 	// Le front envoie le jeton Discord ; l'identité est vérifiée auprès de Discord
 	var token discordToken
 	err := json.NewDecoder(io.LimitReader(r.Body, 1<<16)).Decode(&token)
@@ -58,32 +59,29 @@ func CheckUser(w http.ResponseWriter, r *http.Request, database *sql.DB) bool {
 	discordID, err := verifiedDiscordID(token)
 	if err != nil {
 		CheckErr("Connexion Discord refusée (CheckUser)", err)
-		return false
+		return err
 	}
 
-	if discordID != "" {
-		var id string
-		stmt, err := database.Prepare("SELECT ID FROM Users WHERE DiscordID = ?")
-		CheckErr("db Prepare user_db_uuid : ", err)
-		err1 := stmt.QueryRow(discordID).Scan(&id)
+	var id string
+	stmt, err := database.Prepare("SELECT ID FROM Users WHERE DiscordID = ?")
+	CheckErr("db Prepare user_db_uuid : ", err)
+	if err := stmt.QueryRow(discordID).Scan(&id); err != nil {
+		return fmt.Errorf("%w (DiscordID %s)", ErrUserNotFound, discordID)
+	}
 
-		if err1 == nil {
-			userUUID := uuid.Must(uuid.NewV4())
-			new_uuid := userUUID.String()
-			dateCookie := time.Now().Add(720 * time.Hour) // 1 mois
-			cookies := sessionCookies(new_uuid, dateCookie)
-			for _, cookie := range cookies {
-				if err := cookie.Valid(); err != nil {
-					CheckErr("invalid cookie: ", err)
-					return false
-				}
-			}
-
-			SessionLogger(w, discordID, cookies, database)
-			return true
+	userUUID := uuid.Must(uuid.NewV4())
+	new_uuid := userUUID.String()
+	dateCookie := time.Now().Add(720 * time.Hour) // 1 mois
+	cookies := sessionCookies(new_uuid, dateCookie)
+	for _, cookie := range cookies {
+		if err := cookie.Valid(); err != nil {
+			CheckErr("invalid cookie (SITE_DOMAIN ?) : ", err)
+			return fmt.Errorf("%w : cookie de session invalide (%v)", ErrLoginConfig, err)
 		}
 	}
-	return false
+
+	SessionLogger(w, discordID, cookies, database)
+	return nil
 }
 
 // Fonction qui crée le cookie et sa correspondance dans la db

@@ -6,6 +6,7 @@ import (
 	data "easemanagementtw/internal"
 	utils "easemanagementtw/middleware"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -48,7 +49,7 @@ func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {
 				utils.CheckErr("open db in DiscordApiHandler discord", err)
 				defer database.Close()
 
-				if utils.CheckUser(w, r, database) { // user connects
+				if err := utils.CheckUser(w, r, database); err == nil { // user connects
 					gestion := &data.Gestion{
 						Logged:   true,
 						Redirect: "/home",
@@ -57,18 +58,14 @@ func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {
 						Gestion: *gestion,
 					}
 				} else { // Connection failed
-
 					sendHTML = &data.SendHTML{
 						Gestion: data.Gestion{
 							Logged:   false,
 							Redirect: "/",
 							Notification: data.Notif{
-								Notif: true,
-								Type:  "error",
-								Content: data.ListLanguage{
-									FR: "Vous n'existez pas dans la base de données. Configurez votre Discord avant de vous connecter ici.",
-									EN: "You do not exist in the database. Set up your Discord before logging in here.",
-								},
+								Notif:   true,
+								Type:    "error",
+								Content: loginErrorMessage(err),
 							},
 						},
 					}
@@ -87,6 +84,37 @@ func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(sendHTML)
+		}
+	}
+}
+
+// Message affiché selon la cause de l'échec de connexion (le détail technique est dans app.log)
+func loginErrorMessage(err error) data.ListLanguage {
+	switch {
+	case errors.Is(err, utils.ErrUserNotFound):
+		return data.ListLanguage{
+			FR: "Vous n'existez pas dans la base de données. Configurez votre Discord avant de vous connecter ici.",
+			EN: "You do not exist in the database. Set up your Discord before logging in here.",
+		}
+	case errors.Is(err, utils.ErrLoginConfig):
+		return data.ListLanguage{
+			FR: "Connexion impossible pour le moment. Contactez un administrateur.",
+			EN: "Unable to log in at the moment. Contact an administrator.",
+		}
+	case errors.Is(err, utils.ErrDiscordUnavailable):
+		return data.ListLanguage{
+			FR: "Discord est injoignable pour le moment. Réessayez dans quelques instants.",
+			EN: "Discord cannot be reached at the moment. Try again in a few moments.",
+		}
+	case errors.Is(err, utils.ErrDiscordBusy):
+		return data.ListLanguage{
+			FR: "Trop de connexions en cours. Réessayez dans quelques instants.",
+			EN: "Too many logins in progress. Try again in a few moments.",
+		}
+	default: // ErrDiscordRejected : jeton absent, invalide ou expiré
+		return data.ListLanguage{
+			FR: "Votre connexion Discord n'a pas pu être vérifiée. Reconnectez-vous avec Discord.",
+			EN: "Your Discord login could not be verified. Log in with Discord again.",
 		}
 	}
 }
