@@ -37,7 +37,7 @@ test.describe("Ma caserne", () => {
     await loginAs("member");
     await page.goto("/caserne");
     const units = page.locator("article.unit");
-    const tier = (name: string) => page.locator("label.switch", { hasText: new RegExp(`^${name}$`) });
+    const tier = (name: string) => page.locator("label.chip", { hasText: name });
     await expect(units.first()).toBeVisible();
     const total = await units.count();
 

@@ -91,38 +91,41 @@ function save() {
 
 <template>
   <div class="stack">
-    <section class="filters" aria-labelledby="filters-title">
-      <h2 id="filters-title" class="filters__title">{{ t.pwa.filters }}</h2>
-      <div class="filters__row">
-        <div class="tabs" role="tablist">
-          <button
-            v-for="(type, index) in UNIT_TYPES"
-            :key="type"
-            type="button"
-            role="tab"
-            :aria-selected="activeType === type"
-            @click="activeType = type"
-          >
-            {{ typeLabel(index) }} <span class="muted small">({{ byType[type].length }})</span>
-          </button>
+    <section class="card filters" aria-labelledby="filters-title">
+      <header class="filters__head">
+        <h2 id="filters-title" class="filters__title">{{ t.pwa.filters }}</h2>
+        <input v-model="search" class="filters__search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
+      </header>
+      <div class="filters__body">
+        <div class="filters__group">
+          <span id="type-filter-label" class="filters__label">{{ t.pwa.filter_type }}</span>
+          <div class="tabs" role="tablist" aria-labelledby="type-filter-label">
+            <button
+              v-for="(type, index) in UNIT_TYPES"
+              :key="type"
+              type="button"
+              role="tab"
+              :aria-selected="activeType === type"
+              @click="activeType = type"
+            >
+              {{ typeLabel(index) }} <span class="muted small">({{ byType[type].length }})</span>
+            </button>
+          </div>
         </div>
-        <input v-model="search" class="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
-      </div>
-      <div class="filters__row">
-        <label class="switch">
+        <div class="filters__group" role="group" aria-labelledby="tier-filter-label">
+          <span id="tier-filter-label" class="filters__label">{{ t.pwa.filter_tier }}</span>
+          <div class="tabs">
+            <label v-for="tier in TIER_FILTERS" :key="tier" class="chip">
+              <input v-model="tierFilter" type="checkbox" :value="tier" />
+              <span>{{ tier }}</span>
+            </label>
+          </div>
+        </div>
+        <label class="switch filters__unlocked">
           <input v-model="onlyUnlocked" type="checkbox" />
           <span class="switch__track" />
           <span>{{ t.pwa.only_unlocked }}</span>
         </label>
-        <span class="filters__sep" aria-hidden="true" />
-        <div class="filters__row" role="group" aria-labelledby="tier-filter-label">
-          <span id="tier-filter-label" class="muted">{{ t.pwa.filter_tier }}</span>
-          <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
-            <input v-model="tierFilter" type="checkbox" :value="tier" />
-            <span class="switch__track" />
-            <span>{{ tier }}</span>
-          </label>
-        </div>
       </div>
     </section>
 
@@ -169,46 +172,111 @@ function save() {
 </template>
 
 <style scoped>
-.search {
-  width: 220px;
-  max-width: 100%;
-}
 .filters {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 18px;
-  border-radius: var(--radius);
-  background: var(--surface-2);
-  border: 1px solid var(--border-strong);
-  font-weight: 600;
+  gap: 14px;
+  padding: 16px 20px;
 }
-.filters__title {
-  margin: 0;
-  font-family: inherit;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.8rem;
-}
-.filters__row {
+.filters__head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px 22px;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 }
-.filters__sep {
-  width: 1px;
-  align-self: stretch;
-  background: var(--border-strong);
+.filters__title {
+  margin: 0;
+  font-size: 1.25rem;
 }
-/* Sur petit écran les filtres passent à la ligne : le séparateur resterait seul en bout de ligne */
+.filters__search {
+  width: 280px;
+  max-width: 100%;
+  padding-left: 36px;
+  background: rgba(10, 8, 6, 0.65)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='7' cy='7' r='4.5' fill='none' stroke='%23b5a993' stroke-width='1.6'/%3E%3Cpath d='M10.5 10.5L14 14' stroke='%23b5a993' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")
+    12px center / 16px no-repeat;
+}
+.filters__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 32px;
+}
+.filters__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 100%;
+}
+.filters__label {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+/* Même hauteur que les groupes de boutons, pour rester aligné sur leur ligne */
+.filters__unlocked {
+  min-height: 46px;
+  font-weight: 600;
+}
+/* Tier : cases à cocher présentées comme les onglets, coche visible quand actif (pas seulement la couleur) */
+.chip {
+  position: relative;
+}
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.chip input:checked + span {
+  background: var(--accent);
+  color: #1b160f;
+}
+.chip input:checked + span::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 5.2l2.3 2.3 4.7-5' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.chip input:focus-visible + span {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+/* Petit écran : les 3 types se partagent la largeur, le nombre d'unités passe sous le nom */
 @media (max-width: 640px) {
-  .filters__sep {
-    display: none;
+  .filters__group:first-child {
+    width: 100%;
+  }
+  .filters__group:first-child .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    border-radius: var(--radius);
+  }
+  .filters__group:first-child .tabs button {
+    padding: 8px 4px;
+    border-radius: var(--radius-sm);
+    line-height: 1.2;
+  }
+  .filters__group:first-child .tabs button .small {
+    display: block;
   }
 }
 .unit {
