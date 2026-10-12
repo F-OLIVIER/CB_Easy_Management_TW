@@ -91,39 +91,40 @@ function save() {
 
 <template>
   <div class="stack">
-    <div class="row row--between">
-      <div class="tabs" role="tablist">
-        <button
-          v-for="(type, index) in UNIT_TYPES"
-          :key="type"
-          type="button"
-          role="tab"
-          :aria-selected="activeType === type"
-          @click="activeType = type"
-        >
-          {{ typeLabel(index) }} <span class="muted small">({{ byType[type].length }})</span>
-        </button>
+    <section class="filters" aria-labelledby="filters-title">
+      <h2 id="filters-title" class="filters__title">{{ t.pwa.filters }}</h2>
+      <div class="filters__row">
+        <div class="tabs" role="tablist">
+          <button
+            v-for="(type, index) in UNIT_TYPES"
+            :key="type"
+            type="button"
+            role="tab"
+            :aria-selected="activeType === type"
+            @click="activeType = type"
+          >
+            {{ typeLabel(index) }} <span class="muted small">({{ byType[type].length }})</span>
+          </button>
+        </div>
+        <input v-model="search" class="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
       </div>
-      <input v-model="search" class="search" type="search" :placeholder="t.pwa.search_unit" :aria-label="t.pwa.search_unit" />
-    </div>
-
-    <div class="filters" role="group" aria-labelledby="filters-title">
-      <span id="filters-title" class="filters__title">{{ t.pwa.filters }}</span>
-      <label class="switch">
-        <input v-model="onlyUnlocked" type="checkbox" />
-        <span class="switch__track" />
-        <span>{{ t.pwa.only_unlocked }}</span>
-      </label>
-      <span class="filters__sep" aria-hidden="true" />
-      <div class="filters__group" role="group" aria-labelledby="tier-filter-label">
-        <span id="tier-filter-label" class="muted">{{ t.pwa.filter_tier }}</span>
-        <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
-          <input v-model="tierFilter" type="checkbox" :value="tier" />
+      <div class="filters__row">
+        <label class="switch">
+          <input v-model="onlyUnlocked" type="checkbox" />
           <span class="switch__track" />
-          <span>{{ tier }}</span>
+          <span>{{ t.pwa.only_unlocked }}</span>
         </label>
+        <span class="filters__sep" aria-hidden="true" />
+        <div class="filters__row" role="group" aria-labelledby="tier-filter-label">
+          <span id="tier-filter-label" class="muted">{{ t.pwa.filter_tier }}</span>
+          <label v-for="tier in TIER_FILTERS" :key="tier" class="switch">
+            <input v-model="tierFilter" type="checkbox" :value="tier" />
+            <span class="switch__track" />
+            <span>{{ tier }}</span>
+          </label>
+        </div>
       </div>
-    </div>
+    </section>
 
     <div class="grid units" style="--min: 320px">
       <article v-for="unit in visibleUnits" :key="unit.Unit_id" class="unit" :class="lvlClass(unit)">
@@ -170,38 +171,45 @@ function save() {
 <style scoped>
 .search {
   width: 220px;
+  max-width: 100%;
 }
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px 22px;
-  align-self: center;
-  max-width: 100%;
-  padding: 10px 22px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
   border-radius: var(--radius);
   background: var(--surface-2);
   border: 1px solid var(--border-strong);
   font-weight: 600;
 }
 .filters__title {
+  margin: 0;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1;
   color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-size: 0.8rem;
 }
-.filters__group {
+.filters__row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
   gap: 10px 22px;
 }
 .filters__sep {
   width: 1px;
   align-self: stretch;
   background: var(--border-strong);
+}
+/* Sur petit écran les filtres passent à la ligne : le séparateur resterait seul en bout de ligne */
+@media (max-width: 640px) {
+  .filters__sep {
+    display: none;
+  }
 }
 .unit {
   display: flex;
