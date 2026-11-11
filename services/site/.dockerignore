@@ -1,6 +1,5 @@
 # Données montées en volume par docker-compose (jamais copiées dans l'image)
 public/img
-public/download
 public/video
 *.log
 

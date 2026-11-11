@@ -18,10 +18,9 @@ import {
   houseExist,
 } from "./config_house.js";
 import { botActivation, slashClass, slashHelp, slashInflu, slashLevel, slashResetmsggvg } from "./slashcommand.js";
-import { siteInternet, store_app_android, store_app_ios } from "./config.js";
+import { siteInternet } from "./config.js";
 import { PlayerCreateOrUpdate } from "./FuncData.js";
 import { MAJinscription } from "./FuncRaid.js";
-import { genereTokenApp } from "./appMobile.js";
 import { ButtonEmbedInscription, EmbedInscription } from "./Embed_gvg.js";
 import { EmbedData } from "./Embed_data.js";
 import { EmbedGuide } from "./Embed_guide.js";
@@ -287,41 +286,6 @@ export async function slash_interaction(interaction) {
   if (interaction.commandName === "website") {
     const translate = await loadTranslations("global");
     await reponseUserInteraction(interaction, `${translate.website}\n${siteInternet}`);
-    return true;
-  }
-
-  // interaction qui génére un toekn pour l'application mobile et donne les liens des application (Google play store et Apple store), Commant /app_mobile
-  if (interaction.commandName === "smartphone") {
-    if (await houseExist(interaction.guildId)) {
-      if (isMember(interaction.guildId, userId)) {
-        const tokenapp = await genereTokenApp(interaction.guildId, interaction.user.id);
-        const houseData = await get_houseData(interaction.guildId);
-        const translate = await loadTranslations(houseData.Langage);
-
-        if (tokenapp == "") {
-          await reponseUserInteraction(interaction, translate.information.smartphone.err);
-        } else {
-          await interaction.reply({
-            content:
-              `<@${interaction.user.id}>\n\n` +
-              `${translate.information.smartphone.ok.description.join("\n")}\n\n` +
-              `${translate.information.smartphone.ok.link_android} :\n<${store_app_android}>\n\n` +
-              `${translate.information.smartphone.ok.link_ios} :\n<${store_app_ios}>`,
-            flags: MessageFlags.Ephemeral,
-          });
-          await interaction.followUp({
-            content: tokenapp,
-            flags: MessageFlags.Ephemeral,
-          });
-        }
-      } else {
-        const translate = await loadTranslations("global");
-        await reponseUserInteraction(interaction, translate.global_config.noingroup);
-      }
-    } else {
-      const translate = await loadTranslations("global");
-      await reponseUserInteraction(interaction, `${translate.global_config.botNotExist}\n${siteInternet}`);
-    }
     return true;
   }
 

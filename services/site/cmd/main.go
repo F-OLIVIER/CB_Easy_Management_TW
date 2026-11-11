@@ -22,7 +22,7 @@ func main() {
 	// ServeMux pour gérer les routes
 	mux := http.NewServeMux()
 
-	// Le front est la PWA (conteneur pwa), qui relaie /api, /app, /img, /video et /download
+	// Le front est la PWA (conteneur pwa), qui relaie /api, /img et /video
 	// vers ce serveur. Healthcheck du conteneur : répond 200 dès que le serveur écoute.
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok"))
@@ -30,8 +30,6 @@ func main() {
 
 	// page de transition de connexion Discord site internet
 	mux.HandleFunc("/api/discord", handlers.DiscordApiHandler)
-	// Page de connexion pour l'application mobile
-	mux.HandleFunc("/api/discordapp", handlers.DiscordApiHandler)
 	// Systéme de déconnexion
 	mux.HandleFunc("/api/logout", handlers.LogoutHandler)
 	// page utilisateur connected/autorised site internet
@@ -64,23 +62,7 @@ func main() {
 		mux.HandleFunc(route, handlers.ApiHandler)
 	}
 
-	// page Application multi-plateforme
-	mux.HandleFunc("/app/updatecaserne", handlers.AppMajCaserneHandler)
-	routes_AppMobile := []string{
-		"/app/login",
-		"/app/user",
-		"/app/caserne",
-		"/app/charactercard",
-		"/app/updatecharactercard",
-		"/app/updateinscription",
-		"/app/setting",
-	}
-	for _, route := range routes_AppMobile {
-		mux.HandleFunc(route, handlers.AppMobileHandler)
-	}
-
 	mux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./public/img"))))
-	mux.Handle("/download/", http.StripPrefix("/download/", http.FileServer(http.Dir("./public/download"))))
 	mux.Handle("/video/", http.StripPrefix("/video/", http.FileServer(http.Dir("./public/video"))))
 
 	fmt.Println(`│─────────────────────────────────────────────────│

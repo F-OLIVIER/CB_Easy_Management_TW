@@ -52,7 +52,6 @@ services:
       - *database
       # Images (dont les unités uploadées depuis la page admin) : conservées sur l'hôte
       - ./services/site/public/img:/app/site/public/img
-      - ./services/site/public/download:/app/site/public/download:ro
       - ./services/site/public/video:/app/site/public/video:ro
       # Journaux écrits par le serveur dans son dossier de travail
       - type: bind
@@ -109,7 +108,7 @@ services:
     image: easy-management-tw/pwa
     container_name: emtw_pwa
     environment:
-      # Backend relayé par Nginx (/api, /app, /img, /video, /download)
+      # Backend relayé par Nginx (/api, /img, /video)
       SITE_UPSTREAM: site:${SITE_PORT:-8080}
     ports:
       - "${BIND_ADDRESS:-0.0.0.0}:${PWA_PORT:-8082}:80"

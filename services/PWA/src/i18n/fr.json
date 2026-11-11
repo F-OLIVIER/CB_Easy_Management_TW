@@ -17,9 +17,9 @@
   "descriptionIntro": {
     "title": "Principe de fonctionnement",
     "content": [
-      "Imaginez, vous inviter un bot Discord pour le jeu Conqueror's Blade. Vous lui appliquez une configuration et cette configuration configure automatiquement un site internet et d'une application mobile.",
+      "Imaginez, vous inviter un bot Discord pour le jeu Conqueror's Blade. Vous lui appliquez une configuration et cette configuration configure automatiquement un site internet, installable comme une application sur téléphone et ordinateur.",
       "",
-      "Avec ces 3 applications, vos utilisateurs ont le choix de remplir leurs informations de caserne via le site internet ou l'application mobile et leurs informations de héros ainsi que leur présence aux guerres de territoires via le Bot Discord, le site internet ou l'application mobile. Un système multi-plateforme pour vos utilisateurs.",
+      "Avec ces 2 applications, vos utilisateurs remplissent leurs informations de caserne via le site internet, et leurs informations de héros ainsi que leur présence aux guerres de territoires via le Bot Discord ou le site internet. Un système multi-plateforme pour vos utilisateurs.",
       "",
       "Et vous, en tant que gestionnaire des guerres de territoire, qui gagnez vous ?",
       "Vous pouvez préparer les guerres de territoire de façon simplifié et optimisé les groupes via le site internet."
@@ -56,10 +56,6 @@
         [
           "/influence",
           "Mettre à jour l'influence de votre héros"
-        ],
-        [
-          "/smartphone",
-          "Génère un token de connexion pour l'application mobile"
         ],
         [
           "/reset_msg_tw",
@@ -139,35 +135,21 @@
       ]
     },
     {
-      "title": "Application mobile (Android, iOS) & desktop (Windows)",
+      "title": "Application sur téléphone et ordinateur (PWA)",
       "commands": [
         [
-          "Privé (utilisateur connecté)",
-          "<span>Page de connexion</span><span>Page d'inscription au TW</span><span>Fiche personnage (arme jouée, influence & niveau de héros)</span><span>Caserne (permet aux joueurs d'indiquer quelles unités ils ont)</span>"
+          "Installation",
+          "<span>Le site s'installe comme une application, sans passer par un store :</span><span>Android (Chrome) : menu ⋮ puis « Installer l'application »</span><span>iPhone, iPad (Safari) : bouton Partager puis « Sur l'écran d'accueil »</span><span>Ordinateur (Chrome, Edge) : icône d'installation dans la barre d'adresse</span>"
         ],
         [
-          "Android",
-          "<span>L'application est disponible sur le google Play Store à l'adresse suivante :</br><a href=\"\">En cour de déploiement</a></span>"
-        ],
-        [
-          "iOS",
-          "<span>L'application est prévue dans le futur.</span>"
-        ],
-        [
-          "Windows",
-          "<span>L'installateur de l'application est disponible à l'adresse suivante :</br><a href=\"https://easymanagementtw.freivilo.fr/download/EasyManagementTW.zip\" target=\"_blank\">easy_management_tw_v1.0.0_installer.exe</a></span><span><u>AVERTISSEMENT</u> : Cette application est proposée gratuitement et n'est pas signée numériquement. Par conséquent, Windows peut afficher un message d'avertissement, et certains antivirus peuvent la signaler à tort comme une menace (faux positif). Nous vous assurons qu'elle est sans danger.</span>"
+          "Mises à jour",
+          "<span>Automatiques : l'application installée se met à jour avec le site.</span>"
         ]
-      ],
-      "images": [
-        "img/description/smartphone/flutter_01.png",
-        "img/description/smartphone/flutter_02.png",
-        "img/description/smartphone/flutter_03.png",
-        "img/description/smartphone/flutter_04.png"
       ]
     }
   ],
   "accueil": {
-    "description": "Easy Management TW, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 3 applications interconnecté ensemble :</br>un bot Discord, ce site internet et une application mobile.",
+    "description": "Easy Management TW, c'est quoi ?</br>C'est un systéme de gestion des guerres de territoire pour le jeu Conqueror's Blade</br>Ce systéme ce compose de 2 applications interconnectées :</br>un bot Discord et ce site internet, installable comme une application.",
     "explain": "ℹ️ Comment sa marche ?",
     "adddiscord": "Ajouter à Discord"
   },
@@ -459,15 +441,14 @@
       "content": [
         "Les présentes Conditions Générales d’Utilisation (CGU) et politique de confidentialité encadrent l’utilisation des services de \"Easy Management TW\" incluant les 3 applications.",
         "",
-        "Les CGU constituent le contrat entre les services proposés nommé \"Easy Management TW\", l'accès aux services s'effectue par l’intermédiaire d'une des trois applications. L’accès aux services signifie l’acceptation sans réserve des présentes Conditions Générales d’Utilisation.",
+        "Les CGU constituent le contrat entre les services proposés nommé \"Easy Management TW\", l'accès aux services s'effectue par l’intermédiaire d'une des deux applications. L’accès aux services signifie l’acceptation sans réserve des présentes Conditions Générales d’Utilisation.",
         "",
-        "Les 3 applications sont :"
+        "Les 2 applications sont :"
       ]
     },
     "listapp": [
       "Un bot Discord",
-      "Ce site internet",
-      "Une application mobile"
+      "Ce site internet, installable comme une application (PWA)"
     ],
     "presentation": {
       "title": "Présentation et objectifs des services",
@@ -479,10 +460,9 @@
         "L’accès aux services necessite internet. Les moyens d'accès à internet sont à la charge de l'utilisateur.",
         "Ce site est destiné à un public âgé de 16 ans et plus, conformément à la classification PEGI 16 en Europe du jeu \"Conqueror's Blade\". En accédant à ce site, vous confirmez avoir au moins 16 ans.",
         "",
-        "L’accès à l’application Discord requiert son installation sur la plateforme Discord (Discord Inc.). Ceci s’effectue en cliquant sur le bouton \"Ajouter à Discord\" sur la page d'acceuil de ce site internet. Une fois sur votre serveur Discord, la commande \"/config\" permet d'éffectuer les paramétrages nécessaire aux 3 applications.",
-        "L’accès à l’application mobile ainsi qu'à la partie privée de ce site internet requiert l'installation et le paramétrage du bot Discord sur son serveur Discord.",
+        "L’accès à l’application Discord requiert son installation sur la plateforme Discord (Discord Inc.). Ceci s’effectue en cliquant sur le bouton \"Ajouter à Discord\" sur la page d'acceuil de ce site internet. Une fois sur votre serveur Discord, la commande \"/config\" permet d'éffectuer les paramétrages nécessaire aux 2 applications.",
+        "L’accès à la partie privée de ce site internet requiert l'installation et le paramétrage du bot Discord sur son serveur Discord.",
         "L’accès à la partie privée du site internet s’effectue par authentification OAuth2 Discord du compte de l’utilisateur.",
-        "L’accès à l’application mobile s’effectue par l'intermédiaire d'un jeton d'accées généré par la commande \"/smartphone\" via le bot Discord",
         "",
         "Pour des raisons de maintenance ou de panne, l’accès à une ou plusieurs application(s) peut être suspendu pour une durée déterminée ou indéterminée."
       ]

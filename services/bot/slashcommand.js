@@ -55,12 +55,6 @@ export async function createCommands() {
         description: "Link to the bot's associated website",
       },
 
-      // Création de la commande '/smarthone'
-      {
-        name: "smartphone",
-        description: "Generates a connection token for the mobile application",
-      },
-
       // Création de la commande '/class'
       {
         name: "class",

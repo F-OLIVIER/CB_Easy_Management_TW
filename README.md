@@ -3,14 +3,13 @@
 ## 📝 Descriptif
 
 Le projet permet de gérer de façon automatisée les inscriptions aux guerres de territoire (TW) des joueurs pour le jeu [Conqueror's Blade](https://www.conquerorsblade.com) et la préparation des batailles en créant les groupes à l'avance avec les informations nécessaires pour optimiser les groupes.</br>
-Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un site internet et une application multi-plateforme (Android, IOS et Destop), les 3 applications ont en commun une base de données SQL.
+Le projet se décompose en 2 parties, un bot [Discord](https://discord.com) et un site internet (PWA, installable comme une application sur téléphone et ordinateur), qui ont en commun une base de données SQLite.
 
 Deux langues sont prises en charge, le Français et l'Anglais.
 
 **Accès à la plateforme**
 - Le site internet est disponible à l'adresse suivante : <a href="https://easymanagementtw.freivilo.fr" target="_blank">https://easymanagementtw.freivilo.fr</a>
 - Le bot Discord peut être inviter sur votre Discord directement depuis le site internet a l'adresse <a href="https://easymanagementtw.freivilo.fr" target="_blank">https://easymanagementtw.freivilo.fr</a>
-- L'application mobile est en phase de test sur le Google Play store sous le nom `Easy Management TW` (en cour de déploiement)
 
 
 **Partie 1 : le bot Discord** <br>
@@ -65,43 +64,28 @@ Les gestionnaires de la guilde ont accès à plusieurs onglets dont ne dispose p
     </tbody>
 </table>
 
-**Partie 3 : l'application multi-plateforme** <br>
-Seuls les utilisateurs présents sur le Discord associé peuvent récupérer un code d'application multi-plateforme avec la commande Discord `/smartphone` pour ce connecté à l'application multi-plateforme.
-Les utilisateurs peuvent indiquer la liste des unités qu'ils ont débloquée en jeu ainsi que le niveau des unités en question. Ils peuvent également mettre à jour les informations de leur héros pour ceux qui n'apprécient pas de le faire via Discord.
-
-<table align= "center" width="95%">
-    <tbody>
-        <tr>
-            <td><img src="./img/flutter_01.png"></td>
-            <td><img src="./img/flutter_02.png"></td>
-            <td><img src="./img/flutter_03.png"></td>
-            <td><img src="./img/flutter_04.png"></td>
-        </tr> 
-    </tbody>
-</table>
-
 ___
 ## ⚙️ Installation & usage
 
 **Avant de pouvoir exécuter le programme :**<br>
-Crée votre application Discord sur la [plateforme de développement Discord](https://discord.com/developers/applications) et aprés avoir crée le bot Discord, effectué les actions suivantes :
-  - Générer le lien d'invitation Discord et inscrivez le dans le fichier `./services/site/src/js/config.js`.
-  - Ajouter le lien de redirection de votre serveur puis générer le lien OAuth2 pour le scope `identify` et mettez-le dans le fichier `./services/site/src/js/config.js` en modifiant le `response_type=code` en `response_type=token`.
+Créez votre application Discord sur la [plateforme de développement Discord](https://discord.com/developers/applications) puis, après avoir créé le bot Discord :
+  - générez le lien d'invitation du bot et inscrivez-le dans `VITE_LINK_INVITE_BOT` du fichier `.env` ;
+  - ajoutez l'adresse de redirection OAuth2 `https://<VOTRE DOMAINE>/discord` (scope `identify`) et inscrivez-la dans `VITE_DISCORD_REDIRECT_URI` du fichier `.env`.
 
-
-Créer est complété les 4 fichiers de configurations suivant :</br>
+Créez et complétez les 4 fichiers de configuration suivants (ignorés par git) :</br>
+```sh
+# Fichier `./.env` : utilisateur des conteneurs, ports, application Discord (voir les commentaires du modèle)
+cp env.docker.example .env
+```
 ```js
-// Fichier `./services/bot/env`
+// Fichier `./services/bot/.env`
 TOKEN = "<TOKEN DU BOT DISCORD>"
 ID_APP = "<ID DE L'APPLICATION DU BOT DISCORD>"
 ```
-
 ```js
 // Fichier `./services/bot/config.js`
 export const adressdb = "../database/databaseGvG.db";
-export const siteInternet = "<NOM DE DOMAINE OU IP DU SITE INTERNET>";
-export const store_app_android = "<ADRESSE DE L'APPLICATION SUR LE GOOGLE PLAY STORE>";
-export const store_app_ios = "<ADRESSE DE L'APPLICATION SUR L'APPLE STORE>";
+export const siteInternet = "<ADRESSE DU SITE INTERNET, ex. https://easymanagementtw.freivilo.fr>";
 export const ListAdmin = ["<VOS ID DISCORD>"];
 export const listUserBan = ["<LES ID DISCORD>"];
 
@@ -113,39 +97,22 @@ export const discordTest_chanDM = "<ID CHAN DISCORD POUR LES MESSAGES PRIVEE>";
 ```
 ```go
 // Fichier `./services/site/internal/config.go`
-const PORT = "8080"
-const SITE_DOMAIN = "localhost"
+const PORT = "8080"                       // égal à SITE_PORT du fichier .env
+const SITE_DOMAIN = "localhost"           // domaine du site : le cookie de connexion lui est lié
 const ADRESS_DB = "../database/databaseGvG.db"
 const OWNER = "179655652153491456"
 ```
 
-```js
-// Fichier `./services/site/src/js/config.js`
-export const cookieName = "user_token";
-export const domain = "<NOM DE DOMAINE OU ADRESSE IP DU SITE>";
-export const LINK_INVITE_BOT = "<LIEN GENERE SUR LA PLATEFORME DE DEVELOPPEMENT DISCORD>";
-export const LINK_DISCORD = "<LIEN GENERE SUR LA PLATEFORME DE DEVELOPPEMENT DISCORD>"
-export const adressAPI = "http://<VOTRE ADRESSE>/api/";
-```
-
 **Méthode d'éxécution :** <br>
-Une méthode d'éxécutions possible sur un serveur ce fais via [Screen](https://doc.ubuntu-fr.org/screen)</br>
-
-Lors du premier lancement, le site internet doit être exécuté en premier, car c'est lui qui crée la base de donnée. Ensuite le bot discord peut être exécuté.
-
-Pour démarrer le site internet (qui se trouve dans le dossier `./services/site`)
+L'ensemble (API Go, bot Discord et PWA) tourne avec Docker Compose :
 ```sh
-screen -R site_internet
-sh ./launch_site.sh
-# Pour detacher la console, faite `[CTRL]+[a]` suivi de `[d]`
+docker compose up -d --build
+docker compose ps        # état des conteneurs
+docker compose logs -f   # journaux
 ```
-
-Pour démarrer le bot Discord (qui se trouve dans le dossier `./services/bot`)
-```sh
-screen -R bot_discord
-sh ./launch_bot.sh
-# Pour detacher la console, faite `[CTRL]+[a]` suivi de `[d]`
-```
+Lors du premier lancement, l'API crée la base de données ; le bot attend qu'elle soit prête (healthcheck) avant de démarrer.<br>
+La PWA est publiée sur le port `PWA_PORT` du fichier `.env` ; en production, elle est placée derrière un reverse proxy HTTPS (Caddy).<br>
+En production, chaque push sur la branche `main` déclenche le déploiement automatique sur le serveur (`.github/workflows/deploy.yml`).
 
 ___
 ## 🔗 Dépendences
@@ -159,29 +126,21 @@ Le serveur utilise la version 23 de [nodeJS](https://nodejs.org/en) est les modu
 - [moment-timezone](https://www.npmjs.com/package/moment-timezone)
 - [sqlite](https://www.npmjs.com/package/sqlite)
 - [sqlite3](https://www.npmjs.com/package/sqlite3)
-- [uuid](https://www.npmjs.com/package/uuid)
 - [ws](https://www.npmjs.com/package/ws)
 
 
 **Partie 2 : le site internet** <br>
-Le front utilise du `javascript`, `html` et `css`.<br>
-Le back utilise un serveur en `go version 1.21` et les librairies suivante :
-- [godotenv](https://github.com/joho/godotenv)
-- [uuid](https://github.com/gofrs/uuid)
+Le front est une PWA (`services/PWA`) en [Vue](https://vuejs.org) et [TypeScript](https://www.typescriptlang.org), construite avec [Vite](https://vite.dev) et [vite-plugin-pwa](https://vite-pwa-org.netlify.app), servie par [Nginx](https://nginx.org). Elle utilise les librairies suivantes :
+- [vue-router](https://router.vuejs.org)
+- [dompurify](https://www.npmjs.com/package/dompurify)
+- [html2canvas](https://www.npmjs.com/package/html2canvas)
+- [quill](https://www.npmjs.com/package/quill)
+
+Le back est une API en [Go](https://go.dev) (`services/site`) qui utilise les librairies suivantes :
 - [go-sqlite3](https://github.com/mattn/go-sqlite3)
-
-Une dépense NodeJS est utilisé par le back
-- [javascript-obfuscator](https://www.npmjs.com/package/javascript-obfuscator)
-
-
-**Partie 3 : l'application multi-plateforme** <br>
-Réaliser en [Flutter](https://flutter.dev) qui utilise le language [dart](https://dart.dev) et les dépendances suivante :
-- [cupertino_icons](https://pub.dev/packages/cupertino_icons)
-- [http](https://pub.dev/packages/http)
-- [path_provider](https://pub.dev/packages/path_provider)
-- [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications)
-- [internet_connection_checker_plus](https://pub.dev/packages/internet_connection_checker_plus)
-- [url_launcher](https://pub.dev/packages/url_launcher)
+- [gorilla/websocket](https://github.com/gorilla/websocket)
+- [bluemonday](https://github.com/microcosm-cc/bluemonday)
+- [uuid](https://github.com/gofrs/uuid)
 
 ___
 ## 🧑‍💻 Authors

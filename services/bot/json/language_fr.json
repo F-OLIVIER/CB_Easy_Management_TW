@@ -14,7 +14,6 @@
     "* `/class` permet de mettre à jour l'arme jouée de ton héros.",
     "* `/data` permet de voir les informations te concernant.",
     "* `/website` permet d'afficher le lien du site internet.",
-    "* `/smartphone` permet de générer un token à usage unique pour se connecter à l'application téléphone.",
     "",
     "**Voici la liste des commandes réservées aux gestionnaires**",
     "* `/config` permet de configurer la maison.",
@@ -92,17 +91,6 @@
       "confirm": "Votre arme à bien été mis à jour",
       "err": "Erreur lors de la mise à jour de votre arme",
       "delay": "Delais de réponse dépassé"
-    },
-    "smartphone": {
-      "err": "Vous ne faites pas partie de la maison sur le jeu Conqueror's Blade !!!",
-      "ok": {
-        "description": [
-          ":information_source: Votre Token (à usage unique) vous permet de vous connecter à l'application mobile, afin de pouvoir le copier facilement, il vous est envoyé dans un autre message (ci-dessous).",
-          ":warning: Ce Token est associé à votre compte, ne le donner à personne sous aucun prétexte."
-        ],
-        "link_android": "Lien de l'application Android (Google Play Store)",
-        "link_ios": "Lien de l'application iOS (Apple Store)"
-      }
     }
   },
 

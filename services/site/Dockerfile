@@ -16,10 +16,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Même arborescence que sur l'hôte : la base reste accessible via ../database/databaseGvG.db.
-# public/img, public/download et public/video sont montés depuis l'hôte (docker-compose.yml).
+# public/img et public/video sont montés depuis l'hôte (docker-compose.yml).
 WORKDIR /app/site
 COPY --from=build /out/main ./main
-RUN mkdir -p public/img public/download public/video /app/database
+RUN mkdir -p public/img public/video /app/database
 
 ENV TZ=Europe/Paris
 

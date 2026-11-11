@@ -3,8 +3,6 @@
 // ╰───────────────────────────────────────────────╯
 export const adressdb = "../database/databaseGvG.db";
 export const siteInternet = "http://localhost:8080";
-export const store_app_android = "https://play.google.com/store/games?gl=FR";
-export const store_app_ios = "Not currently available";
 
 // ID utilisateur Discord autorisé a utilisé les commandes pour gérer les admin du site internet
 export const ListAdmin = ["0123456789"];

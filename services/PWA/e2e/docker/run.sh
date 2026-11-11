@@ -19,7 +19,7 @@ touch "$WORK/app.log" "$WORK/logfile.log"
 # Le vrai config.go (ignoré par git) contient le port et le domaine de chaque machine.
 rsync -a --delete \
   --exclude node_modules --exclude main --exclude test --exclude '*.log' \
-  --exclude public/img --exclude public/video --exclude public/download --exclude public/js \
+  --exclude public/img --exclude public/video --exclude public/js \
   "$ROOT/services/site/" "$WORK/site-build/"
 cp "$ROOT/services/PWA/e2e/docker/config.e2e.go" "$WORK/site-build/internal/config.go"
 

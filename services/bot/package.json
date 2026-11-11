@@ -19,7 +19,6 @@
     "moment-timezone": "^0.5.48",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
-    "uuid": "^11.1.0",
     "ws": "^8.18.3"
   },
   "engines": {
