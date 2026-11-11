@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Pages publiques du site (les autres pages demandent une connexion Discord) -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://easymanagementtw.freivilo.fr/</loc>
+  </url>
+  <url>
+    <loc>https://easymanagementtw.freivilo.fr/description</loc>
+  </url>
+  <url>
+    <loc>https://easymanagementtw.freivilo.fr/mentionlegale</loc>
+  </url>
+</urlset>

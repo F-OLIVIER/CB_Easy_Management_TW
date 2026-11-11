@@ -52,3 +52,8 @@ router.beforeEach((to) => {
   if (to.meta.house && !houseId.value) return "/home";
   return true;
 });
+
+// Adresse canonique de chaque page (référencement) : domaine du site et chemin, sans paramètres
+router.afterEach((to) => {
+  document.querySelector('link[rel="canonical"]')?.setAttribute("href", `${window.location.origin}${to.path}`);
+});
