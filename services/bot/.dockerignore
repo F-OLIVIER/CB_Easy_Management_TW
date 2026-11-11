@@ -1,6 +1,7 @@
-# Secrets : fournis à l'exécution via env_file
+# Secrets : fournis à l'exécution (env_file pour .env, montage pour config.js)
 .env
 .env.*
+config.js
 
 # Données montées en volume / inutiles à l'image
 logs

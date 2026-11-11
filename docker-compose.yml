@@ -87,6 +87,14 @@ services:
     volumes:
       - *database
       - ./services/bot/logs:/app/bot/logs
+      # Configuration du bot (hors git) : montée au démarrage, jamais intégrée à l'image.
+      # Lisible par l'utilisateur du conteneur (APP_UID), propriétaire du fichier sur l'hôte.
+      - type: bind
+        source: ./services/bot/config.js
+        target: /app/bot/config.js
+        read_only: true
+        bind:
+          create_host_path: false
     # Au tout premier lancement, le site doit avoir créé la base avant le bot
     depends_on:
       site:
