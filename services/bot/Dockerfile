@@ -15,7 +15,9 @@ RUN apt-get update \
 WORKDIR /app/bot
 COPY --from=deps /app/bot/node_modules ./node_modules
 COPY . .
-RUN mkdir -p logs /app/database
+# Le code est copié avec les droits de l'hôte (sur le serveur, illisible hors de son
+# propriétaire) : le rendre lisible par l'utilisateur du conteneur (APP_UID), quel qu'il soit
+RUN chmod -R a+rX /app/bot && mkdir -p logs /app/database
 
 # Le TOKEN Discord est fourni à l'exécution (env_file), jamais intégré à l'image
 ENV NODE_ENV=production \
