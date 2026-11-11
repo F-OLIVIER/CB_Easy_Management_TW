@@ -8,8 +8,8 @@ Le projet se décompose en 3 parties, un bot [Discord](https://discord.com), un 
 Deux langues sont prises en charge, le Français et l'Anglais.
 
 **Accès à la plateforme**
-- Le site internet est disponible à l'adresse suivante : <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
-- Le bot Discord peut être inviter sur votre Discord directement depuis le site internet a l'adresse <a href="https://easymanagementtw.fr" target="_blank">https://easymanagementtw.fr</a>
+- Le site internet est disponible à l'adresse suivante : <a href="https://easymanagementtw.freivilo.fr" target="_blank">https://easymanagementtw.freivilo.fr</a>
+- Le bot Discord peut être inviter sur votre Discord directement depuis le site internet a l'adresse <a href="https://easymanagementtw.freivilo.fr" target="_blank">https://easymanagementtw.freivilo.fr</a>
 - L'application mobile est en phase de test sur le Google Play store sous le nom `Easy Management TW` (en cour de déploiement)
 
 

@@ -1,4 +1,4 @@
-# Easy Management TW — lancement de l'ensemble (site + bot Discord + PWA)
+# Easy Management TW — lancement de l'ensemble (API Go + bot Discord + PWA)
 #
 #   cp env.docker.example .env   # puis compléter
 #   docker compose up -d --build
@@ -32,7 +32,8 @@ x-database: &database
 
 services:
   # ------------------------------------------------------------------
-  # Site internet : backend Go + ancien front (crée/initialise la base)
+  # API Go (crée/initialise la base). Aucun port publié : seule la PWA
+  # l'atteint, par le réseau Docker (site:SITE_PORT).
   # ------------------------------------------------------------------
   site:
     <<: *service
@@ -47,8 +48,6 @@ services:
       BOT_HOST: bot
       # Application Discord autorisée : les jetons de connexion délivrés pour une autre application sont refusés
       DISCORD_CLIENT_ID: ${VITE_DISCORD_CLIENT_ID:-}
-    ports:
-      - "${BIND_ADDRESS:-0.0.0.0}:${SITE_PORT:-8080}:${SITE_PORT:-8080}"
     volumes:
       - *database
       # Images (dont les unités uploadées depuis la page admin) : conservées sur l'hôte
@@ -67,12 +66,11 @@ services:
         bind:
           create_host_path: false
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:'+process.env.SITE_PORT+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:$${SITE_PORT}/health >/dev/null"]
       interval: 10s
       timeout: 5s
       retries: 3
-      # Le démarrage inclut l'obfuscation de src/js (peut prendre une minute)
-      start_period: 120s
+      start_period: 20s
 
   # ------------------------------------------------------------------
   # Bot Discord
@@ -96,7 +94,7 @@ services:
         condition: service_healthy
 
   # ------------------------------------------------------------------
-  # Nouveau front PWA (en validation, sur un port distinct)
+  # Front PWA (Nginx), seul service exposé : derrière Caddy en production
   # ------------------------------------------------------------------
   pwa:
     <<: *service
@@ -111,7 +109,7 @@ services:
     image: easy-management-tw/pwa
     container_name: emtw_pwa
     environment:
-      # Backend relayé par Nginx (/api, /img, /video, /download)
+      # Backend relayé par Nginx (/api, /app, /img, /video, /download)
       SITE_UPSTREAM: site:${SITE_PORT:-8080}
     ports:
       - "${BIND_ADDRESS:-0.0.0.0}:${PWA_PORT:-8082}:80"

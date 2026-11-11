@@ -1,0 +1,58 @@
+# Déploiement automatique sur le serveur à chaque push sur main.
+#
+# À copier tel quel dans chaque dépôt : .github/workflows/deploy.yml
+# Le fichier est identique pour toutes les applications : c'est la clé SSH (secret
+# SSH_PRIVATE_KEY) qui décide quelle application est déployée. Sur le serveur, elle ne peut
+# lancer que « /srv/bin/deploy-app <application> » (voir serveur/README.md).
+#
+# Secrets du dépôt (Settings > Secrets and variables > Actions > Secrets) :
+#   SSH_HOST          adresse IP du serveur
+#   SSH_PRIVATE_KEY   clé privée dédiée à ce dépôt
+#   SSH_KNOWN_HOSTS   empreinte du serveur (ssh-keyscan), contre l'usurpation du serveur
+
+name: Déploiement
+
+on:
+  push:
+    branches: [main]
+  # Bouton « Run workflow » dans l'onglet Actions, pour redéployer sans nouveau commit
+  workflow_dispatch:
+
+# Un seul déploiement à la fois ; un push arrivé pendant un déploiement attend son tour
+concurrency:
+  group: deploiement
+  cancel-in-progress: false
+
+# Le workflow n'a besoin d'aucun droit sur le dépôt : le serveur récupère le code lui-même
+permissions: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Préparer la connexion SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Déployer sur le serveur
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        # Aucune commande n'est envoyée : le serveur lance celle imposée par la clé.
+        # Le code de sortie de deploy-app fait réussir ou échouer l'Action.
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 \
+            "deploy@$SSH_HOST"
+
+      - name: Effacer la clé
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

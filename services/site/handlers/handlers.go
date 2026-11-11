@@ -8,34 +8,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
-	"text/template"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 // Limite de débit par client (adresse IP) : 5 requêtes/s en rafale, puis 5 par seconde
 var limiter = utils.NewIPRateLimiter(5, 5)
-
-// Home page "/"
-func ServeDispatch(w http.ResponseWriter, r *http.Request) {
-	if limiter.Allow(w, r) {
-		var ts *template.Template
-		var err error
-
-		switch r.URL.Path {
-		case "/discord":
-			ts, err = template.ParseFiles("./discord.html")
-		default: // page "/"
-			ts, err = template.ParseFiles("./index.html")
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		ts.Execute(w, nil)
-	}
-}
 
 // Discord transition, user connects
 func DiscordApiHandler(w http.ResponseWriter, r *http.Request) {

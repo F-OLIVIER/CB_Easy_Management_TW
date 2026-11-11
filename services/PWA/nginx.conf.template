@@ -28,7 +28,8 @@ server {
         include /etc/nginx/snippets/security-headers.conf;
     }
 
-    location ~ ^/(api|img|video|download)/ {
+    # /app/ : routes de l'application mobile (Flutter)
+    location ~ ^/(api|app|img|video|download)/ {
         include /etc/nginx/conf.d/snippets/proxy-backend.conf;
     }
 

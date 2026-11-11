@@ -1,4 +1,4 @@
-# Site internet (backend Go + ancien front) — Easy Management TW
+# Site internet : API Go (le front est la PWA, conteneur pwa) — Easy Management TW
 # go-sqlite3 nécessite CGO : build et exécution sur la même base glibc (Debian bookworm).
 
 FROM golang:1.27-bookworm AS build
@@ -8,29 +8,20 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=1 go build -trimpath -ldflags="-s -w" -o /out/main ./cmd/main.go
 
-# Node est requis à l'exécution : le serveur obfusque src/js au démarrage (npx javascript-obfuscator)
-FROM node:24-bookworm-slim
-# ca-certificates : le serveur Go vérifie les connexions auprès de https://discord.com (absent de l'image slim)
+FROM debian:bookworm-slim
+# ca-certificates : le serveur Go vérifie les connexions auprès de https://discord.com
+# socat : relais du websocket vers le bot (voir CMD) ; curl : healthcheck du conteneur
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates tzdata socat \
+    && apt-get install -y --no-install-recommends ca-certificates tzdata socat curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Même arborescence que sur l'hôte : la base reste accessible via ../database/databaseGvG.db
+# Même arborescence que sur l'hôte : la base reste accessible via ../database/databaseGvG.db.
+# public/img, public/download et public/video sont montés depuis l'hôte (docker-compose.yml).
 WORKDIR /app/site
-COPY package*.json ./
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi && npm cache clean --force
-
-COPY index.html discord.html ./
-COPY src ./src
-COPY public ./public
 COPY --from=build /out/main ./main
+RUN mkdir -p public/img public/download public/video /app/database
 
-# public/js est régénéré à chaque démarrage, quel que soit l'utilisateur (APP_UID) du conteneur
-RUN mkdir -p public/js public/img /app/database && chmod 0777 public/js
-
-ENV TZ=Europe/Paris \
-    HOME=/tmp \
-    NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV TZ=Europe/Paris
 
 # Le code envoie ses messages au bot sur ws://localhost:8081 : socat relaie ce port local
 # vers le conteneur du bot (BOT_HOST) sur le réseau Docker. Le port d'écoute du site est
