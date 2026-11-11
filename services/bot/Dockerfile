@@ -1,12 +1,12 @@
 # Bot Discord — Easy Management TW
 
 # Dépendances (sqlite3 est un module natif : outils de compilation disponibles en secours)
-FROM node:24-bookworm AS deps
+FROM node:26-bookworm AS deps
 WORKDIR /app/bot
 COPY package*.json ./
 RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
 
-FROM node:24-bookworm-slim
+FROM node:26-bookworm-slim
 RUN apt-get update \
     && apt-get install -y --no-install-recommends tzdata \
     && rm -rf /var/lib/apt/lists/*

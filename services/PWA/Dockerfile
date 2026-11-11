@@ -1,6 +1,6 @@
 # Front PWA — build Vite puis service statique par Nginx (+ proxy vers le backend Go)
 
-FROM node:24-bookworm-slim AS build
+FROM node:26-bookworm-slim AS build
 WORKDIR /app
 COPY package*.json ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
